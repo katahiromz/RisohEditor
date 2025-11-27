@@ -48,6 +48,7 @@ public:
     {
         m_hCursor = NULL;
         m_cmb3.m_bAcceptSpace = TRUE;
+        m_cmb3.m_bIgnoreCase = TRUE;
     }
 
     ~MAddCursorDlg()

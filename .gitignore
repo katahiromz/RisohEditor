@@ -39,3 +39,4 @@ risoheditor-*.exe
 *.bak
 *.ninja
 .ninja_*
+_codeql_detected_source_root
