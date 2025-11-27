@@ -358,3 +358,5 @@
     - Aggiunto supporto DPI elevati.
 - v.5.9.2 (23.10.2025)
     - Risolto il problema della doppia firma.
+- v.5.9.3 (20XX-YY-ZZ)
+    - Fixed AutoComplete case-insensitiveness problem.

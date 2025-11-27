@@ -702,3 +702,5 @@
     - 高DPIサポートを追加。
 - v.5.9.2 (2025-10-23)
     - 二重署名問題を修正。
+- v.5.9.3 (20XX-YY-ZZ)
+    - Fixed AutoComplete case-insensitiveness problem.

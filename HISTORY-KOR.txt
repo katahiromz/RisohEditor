@@ -359,3 +359,5 @@
     - 높은 DPI 지원이 추가되었습니다.
 - v.5.9.2 (2025-10-23)
     - 이중 서명 문제가 수정되었습니다.
+- v.5.9.3 (20XX-YY-ZZ)
+    - Fixed AutoComplete case-insensitiveness problem.
