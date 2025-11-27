@@ -98,11 +98,17 @@ struct MIdOrString
         }
     }
 
+    // Returns the resource identifier as a pointer for Win32 API calls.
+    // String names are returned directly, integer IDs (including ID 0)
+    // are converted to MAKEINTRESOURCE. This allows resource ID 0 to be
+    // properly handled as a valid integer identifier.
     const TCHAR *ptr() const
     {
-        if (m_id)
-            return MAKEINTRESOURCE(m_id);
-        return m_str.c_str();
+        // If m_str is non-empty, this is a string resource name
+        if (!m_str.empty())
+            return m_str.c_str();
+        // Otherwise, it's an integer ID (including ID 0)
+        return MAKEINTRESOURCE(m_id);
     }
 
     bool is_zero() const
