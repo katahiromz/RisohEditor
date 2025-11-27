@@ -22,6 +22,7 @@
 #include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -81,17 +82,19 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 
-        TCHAR szText[32];
+        MString strText;
         INT iItem = ComboBox_GetCurSel(hCmb1);
         if (iItem == CB_ERR)
         {
+            TCHAR szText[32];
             ComboBox_GetText(hCmb1, szText, 32);
+            strText = szText;
         }
         else
         {
-            ComboBox_GetLBText(hCmb1, iItem, szText);
+            strText = GetComboBoxLBText(hCmb1, iItem);
         }
-        m_nCodePage = _tcstoul(szText, NULL, 0);
+        m_nCodePage = _tcstoul(strText.c_str(), NULL, 0);
 
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
             m_bComments = TRUE;

@@ -346,19 +346,21 @@ public:
     void OnCmb1(HWND hwnd)
     {
         // get the text of combobox cmb1
-        TCHAR szText[256];
+        MString strText;
         INT iItem = ComboBox_GetCurSel(m_cmb1);
         if (iItem == CB_ERR)
         {
+            TCHAR szText[256];
             ComboBox_GetText(m_cmb1, szText, ARRAYSIZE(szText));
+            strText = szText;
         }
         else
         {
-            ComboBox_GetLBText(m_cmb1, iItem, szText);
+            strText = GetComboBoxLBText(m_cmb1, iItem);
         }
 
-        // szText --> strIDType (trimmed)
-        MString strIDType = szText;
+        // strText --> strIDType (trimmed)
+        MString strIDType = strText;
         mstr_trim(strIDType);
 
         // cut off the text from " (" to end

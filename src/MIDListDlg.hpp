@@ -135,9 +135,8 @@ public:
     void OnCmb1(HWND hwnd)
     {
         INT iItem = ComboBox_GetCurSel(m_hCmb1);
-        TCHAR szText[256];
-        ComboBox_GetLBText(m_hCmb1, iItem, szText);
-        SetItems(szText);
+        MString szText = GetComboBoxLBText(m_hCmb1, iItem);
+        SetItems(szText.c_str());
     }
 
     void SetItem(LPCTSTR pszIDType, const MStringA& first, const MStringA& second, const EntryBase *entry = NULL)
@@ -298,10 +297,8 @@ public:
 
     void MakeUnique()
     {
-        WCHAR szText[128];
         INT k = ComboBox_GetCurSel(m_hCmb1);
-        ComboBox_GetLBText(m_hCmb1, k, szText);
-        MStringW strText = szText;
+        MStringW strText = GetComboBoxLBText(m_hCmb1, k);
 
         BOOL bAll = (strText == LoadStringDx(IDS_ALL));
 
@@ -472,11 +469,10 @@ public:
             SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
         }
 
-        TCHAR szText[128];
-        ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
+        MString szText = GetComboBoxLBText(lpDrawItem->hwndItem, lpDrawItem->itemID);
 
         InflateRect(&rc, -2, -2);
-        DrawText(lpDrawItem->hDC, szText, -1, &rc, 
+        DrawText(lpDrawItem->hDC, szText.c_str(), -1, &rc, 
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
         InflateRect(&rc, 2, 2);
 
@@ -488,10 +484,9 @@ public:
 
     int OnCompareItem(HWND hwnd, const COMPAREITEMSTRUCT * lpCompareItem)
     {
-        TCHAR szText1[128], szText2[128];
-        ComboBox_GetLBText(lpCompareItem->hwndItem, lpCompareItem->itemID1, szText1);
-        ComboBox_GetLBText(lpCompareItem->hwndItem, lpCompareItem->itemID2, szText2);
-        return lstrcmpi(szText1, szText2);
+        MString szText1 = GetComboBoxLBText(lpCompareItem->hwndItem, lpCompareItem->itemID1);
+        MString szText2 = GetComboBoxLBText(lpCompareItem->hwndItem, lpCompareItem->itemID2);
+        return lstrcmpi(szText1.c_str(), szText2.c_str());
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
