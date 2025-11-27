@@ -38,19 +38,19 @@
 
 // MAKEINTRESNAME: Like MAKEINTRESOURCE but handles ID 0 by returning a
 // non-NULL invalid pointer. This allows resource ID 0 to be distinguished
-// from "no resource" (NULL). The pointer value 0x10000 is used for ID 0
-// because it's outside the IS_INTRESOURCE range but still invalid memory.
-#define MAKEINTRESNAMEA(i) ((i) ? MAKEINTRESOURCEA(i) : (char *)0x10000)
-#define MAKEINTRESNAMEW(i) ((i) ? MAKEINTRESOURCEW(i) : (WCHAR *)0x10000)
+// from "no resource" (NULL). The mask 0xFFFF0000 is used to mark ID 0
+// as a special value that is clearly outside the IS_INTRESOURCE range.
+#define MAKEINTRESNAMEA(i) ((i) ? MAKEINTRESOURCEA(i) : (char *)0xFFFF0000)
+#define MAKEINTRESNAMEW(i) ((i) ? MAKEINTRESOURCEW(i) : (WCHAR *)0xFFFF0000)
 #ifdef UNICODE
     #define MAKEINTRESNAME  MAKEINTRESNAMEW
 #else
     #define MAKEINTRESNAME  MAKEINTRESNAMEA
 #endif
 
-// Check if a pointer represents resource ID 0 (the special 0x10000 value).
+// Check if a pointer represents resource ID 0 (the special 0xFFFF0000 value).
 // Use this to detect ID 0 when processing the result of ptr() or MAKEINTRESNAME.
-#define IS_INTRESID0(p) ((ULONG_PTR)(p) == 0x10000)
+#define IS_INTRESID0(p) ((ULONG_PTR)(p) == 0xFFFF0000)
 
 #ifndef _countof
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
