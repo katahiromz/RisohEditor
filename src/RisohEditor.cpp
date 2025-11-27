@@ -123,8 +123,8 @@ enum IMPORT_RESULT
     NOT_IMPORTABLE
 };
 
-MIdOrString g_RES_select_type = (WORD)0;
-MIdOrString g_RES_select_name = (WORD)0;
+MIdOrString g_RES_select_type = BAD_TYPE;
+MIdOrString g_RES_select_name = BAD_NAME;
 WORD g_RES_select_lang = BAD_LANG;
 
 WORD GetMachineOfBinary(LPCWSTR pszExeFile)
@@ -946,10 +946,13 @@ void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type)
 // initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 {
+    MIdOrString id2 = id;
+    if (id2 == BAD_NAME) id2.clear();
+
     InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
     // set the text of the ID
-    SetWindowTextW(hCmb, id.c_str());
+    SetWindowTextW(hCmb, id2.c_str());
 
     if (g_settings.bHideID)
         return;     // don't use macro IDs
@@ -970,7 +973,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
         {
             // add a resource ID to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)   // matched
+            if (table_entry.value == id2.m_id)   // matched
             {
                 k = i;  // matched index is k
                 ComboBox_SetCurSel(hCmb, i);    // select its
@@ -994,7 +997,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
         {
             // add the resource name to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)   // matched
+            if (table_entry.value == id2.m_id)   // matched
             {
                 ComboBox_SetCurSel(hCmb, i);    // selected
                 SetWindowTextW(hCmb, table_entry.name.c_str());  // set the text
@@ -1006,10 +1009,13 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 // initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
 {
+    MIdOrString id2 = id;
+    if (id2 == BAD_NAME) id2.clear();
+
     InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
     // set the ID text to combobox
-    SetWindowTextW(hCmb, id.c_str());
+    SetWindowTextW(hCmb, id2.c_str());
 
     if (g_settings.bHideID)
         return;     // don't use the macro IDs
@@ -1032,7 +1038,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
         {
             // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)   // matched
+            if (table_entry.value == id2.m_id)   // matched
             {
                 k = i;  // found
 
@@ -1058,7 +1064,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
         {
             // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)   // matched
+            if (table_entry.value == id2.m_id)   // matched
             {
                 k = i;  // found
 
@@ -1086,7 +1092,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
         {
             // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)   // matched
+            if (table_entry.value == id2.m_id)   // matched
             {
                 // select it in combobox
                 ComboBox_SetCurSel(hCmb, i);
@@ -1949,15 +1955,6 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     {
         // a numeric name
         name = WORD(mstr_parse_int(str.c_str()));
-        if (name == (WORD)0)
-        {
-            ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
-            SetFocus(hCmb2);    // set focus
-            // show error message
-            LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNONZERONAME),
-                           NULL, MB_ICONERROR);
-            return FALSE;   // failure
-        }
     }
     else
     {
@@ -2462,8 +2459,8 @@ protected:
     // parsing resource IDs
     BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
                       WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
-    BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
-    BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
+    BOOL CompileStringTable(MStringA& strOutput, WORD lang, const MStringW& strWide);
+    BOOL CompileMessageTable(MStringA& strOutput, WORD lang, const MStringW& strWide);
     BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
@@ -3201,17 +3198,17 @@ void MMainWnd::OnExtractRC(HWND hwnd)
     switch (e->m_et)
     {
     case ET_STRING:
-        g_res.search(found, ET_LANG, RT_STRING, WORD(0), e->m_lang);
+        g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, e->m_lang);
         break;
     case ET_MESSAGE:
-        g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), e->m_lang);
+        g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, e->m_lang);
         break;
     case ET_TYPE:
         if (type == RT_ICON)
             type = RT_GROUP_ICON;
         else if (type == RT_CURSOR)
             type = RT_GROUP_CURSOR;
-        g_res.search(found, ET_LANG, type, WORD(0), BAD_LANG);
+        g_res.search(found, ET_LANG, type, BAD_NAME, BAD_LANG);
         break;
     case ET_NAME:
         g_res.search(found, ET_LANG, type, e->m_name, BAD_LANG);
@@ -4349,7 +4346,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         {
             // search the strings
             EntrySet found;
-            g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
+            g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
 
             // copy them
             for (auto e : found)
@@ -4358,13 +4355,13 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             }
 
             // select the entry
-            SelectTV(ET_STRING, dialog.m_type, WORD(0), dialog.m_lang, FALSE);
+            SelectTV(ET_STRING, dialog.m_type, BAD_NAME, dialog.m_lang, FALSE);
         }
         else if (entry->m_et == ET_MESSAGE)
         {
             // search the messagetables
             EntrySet found;
-            g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+            g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
 
             // copy them
             for (auto e : found)
@@ -4373,7 +4370,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             }
 
             // select the entry
-            SelectTV(ET_MESSAGE, dialog.m_type, WORD(0), dialog.m_lang, FALSE);
+            SelectTV(ET_MESSAGE, dialog.m_type, BAD_NAME, dialog.m_lang, FALSE);
         }
         else
         {
@@ -4450,7 +4447,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
             {
                 // search the strings
                 EntrySet found;
-                g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
+                g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
 
                 // copy them
                 for (auto e : found)
@@ -4462,7 +4459,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
             {
                 // search the messagetables
                 EntrySet found;
-                g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+                g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
 
                 // copy them
                 for (auto e : found)
@@ -5040,7 +5037,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         // g_res --> found
         WORD lang = entry->m_lang;
         EntrySet found;
-        g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
+        g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
 
         // found --> str_res
         StringRes str_res;
@@ -5075,12 +5072,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             // compile the dumped result
             MStringA strOutput;
-            if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
+            if (CompileParts(strOutput, RT_STRING, BAD_NAME, lang, strWide))
             {
                 m_nStatusStringID = IDS_RECOMPILEOK;
 
                 // select the entry to update the source
-                SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
+                SelectTV(ET_STRING, RT_STRING, BAD_NAME, lang, FALSE);
             }
             else
             {
@@ -5103,7 +5100,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         // g_res --> found
         WORD lang = entry->m_lang;
         EntrySet found;
-        g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), lang);
+        g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
 
         // found --> msg_res
         MessageRes msg_res;
@@ -5143,7 +5140,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
                 m_nStatusStringID = IDS_RECOMPILEOK;
 
                 // select the entry
-                SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
+                SelectTV(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang, FALSE);
             }
             else
             {
@@ -6203,7 +6200,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 {
     // search the strings
     EntrySet found;
-    g_res.search(found, ET_LANG, RT_STRING, (WORD)0, entry.m_lang);
+    g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, entry.m_lang);
 
     // found --> str_res
     StringRes str_res;
@@ -6228,7 +6225,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
     // search the message tables
     EntrySet found;
-    g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
+    g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry.m_lang);
 
     // dump the text to m_hCodeEditor
     MString str;
@@ -6834,7 +6831,7 @@ MStringW MMainWnd::GetIncludesDumpForWindres() const
 }
 
 // compile the string table
-BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileStringTable(MStringA& strOutput, WORD lang, const MStringW& strWide)
 {
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
@@ -6944,7 +6941,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
                 if (bOK)
                 {
                     // merge
-                    g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
+                    g_res.search_and_delete(ET_LANG, RT_STRING, BAD_NAME, lang);
                     g_res.merge(res);
                 }
             }
@@ -7087,7 +7084,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
 }
 
 // compile the message table
-BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, WORD lang, const MStringW& strWide)
 {
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
@@ -7182,7 +7179,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
                 if (bOK)
                 {
                     // merge
-                    g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+                    g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
                     g_res.merge(res);
                 }
             }
@@ -7229,11 +7226,11 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 {
     if (type == RT_STRING)
     {
-        return CompileStringTable(strOutput, name, lang, strWide);
+        return CompileStringTable(strOutput, lang, strWide);
     }
     if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
     {
-        return CompileMessageTable(strOutput, name, lang, strWide);
+        return CompileMessageTable(strOutput, lang, strWide);
     }
     if (type == RT_RCDATA)
     {
@@ -8354,7 +8351,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 
     // search the language entries
     EntrySet found;
-    targets.search(found, ET_LANG, WORD(0), WORD(0), lang);
+    targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
 
     std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
@@ -8412,7 +8409,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 
     // search the string tables
     found.clear();
-    targets.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -8453,7 +8450,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
     found.clear();
     if (!g_settings.bUseMSMSGTABLE)
     {
-        targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+        targets.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
         if (found.size())
         {
             if (g_settings.bRedundantComments)
@@ -8511,7 +8508,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 
     // search the language entries
     EntrySet found;
-    targets.search(found, ET_LANG, WORD(0), WORD(0), lang);
+    targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
 
     std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
@@ -8567,7 +8564,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 
     // search the string tables
     found.clear();
-    targets.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -8605,7 +8602,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
     found.clear();
     if (!g_settings.bUseMSMSGTABLE)
     {
-        targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+        targets.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
         if (found.size())
         {
             if (g_settings.bRedundantComments)
@@ -12399,7 +12396,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             s_bModified = bModifiedOld;
         }
         if (!g_RES_select_type.is_zero() ||
-            !g_RES_select_name.is_zero() || 
+            g_RES_select_name != BAD_TYPE ||
             g_RES_select_lang != BAD_LANG)
         {
             EntrySet found;
@@ -12411,8 +12408,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                 break;
             }
 
-            g_RES_select_type = (WORD)0;
-            g_RES_select_name = (WORD)0;
+            g_RES_select_type = BAD_TYPE;
+            g_RES_select_name = BAD_NAME;
             g_RES_select_lang = BAD_LANG;
         }
         PostUpdateLangArrow(hwnd);
@@ -12886,21 +12883,17 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             WCHAR szNewText[MAX_PATH];
             StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
             mstr_trim(szNewText);
+            if (entry->m_et == ET_NAME && !szNewText[0])
+            {
+                ErrorBoxDx(IDS_INVALIDNAME);
+                return FALSE;   // reject
+            }
 
             if (entry->m_et == ET_NAME)
             {
                 // rename the name
                 MIdOrString old_name = GetNameFromText(szOldText);
                 MIdOrString new_name = GetNameFromText(szNewText);
-
-                if (old_name.empty())
-                    return FALSE;   // reject
-
-                if (new_name.empty())
-                {
-                    ErrorBoxDx(IDS_INVALIDNAME);
-                    return FALSE;   // reject
-                }
 
                 if (old_name == new_name)
                     return FALSE;   // reject
@@ -12966,7 +12959,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 // check if it already exists
-                if (g_res.find(ET_LANG, entry->m_type, WORD(0), new_lang))
+                if (g_res.find(ET_LANG, entry->m_type, BAD_NAME, new_lang))
                 {
                     ErrorBoxDx(IDS_ALREADYEXISTS);
                     return FALSE;   // reject
@@ -13035,7 +13028,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     {
     case ET_STRING:
         // serach the resource strings
-        g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+        g_res.search(found, ET_LANG, entry->m_type, BAD_NAME, old_lang);
 
         // replace the language
         for (auto e : found)
@@ -13049,7 +13042,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
     case ET_MESSAGE:
         // serach the resource messages
-        g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+        g_res.search(found, ET_LANG, entry->m_type, BAD_NAME, old_lang);
 
         // replace the language
         for (auto e : found)
@@ -14034,8 +14027,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
         // workaround to edit the Microsoft message table
-        if (dialog.m_type == RT_MESSAGETABLE &&
-            g_settings.bUseMSMSGTABLE)
+        if (dialog.m_type == RT_MESSAGETABLE && g_settings.bUseMSMSGTABLE)
         {
             g_settings.bUseMSMSGTABLE = FALSE;
         }
@@ -14066,9 +14058,9 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 
         // select the added entry
         if (dialog.m_type == RT_STRING)
-            SelectTV(ET_STRING, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
+            SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
         else if (dialog.m_type == RT_MESSAGETABLE)
-            SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
+            SelectTV(ET_MESSAGE, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
         else
             SelectTV(ET_LANG, dialog, FALSE);
    }
@@ -16874,7 +16866,7 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
     if (args.size() >= 3)
         arg2 = EGA_eval_arg(args[2], false);
 
-    MIdOrString type, name;
+    MIdOrString type, name = BAD_NAME;
     WORD lang = BAD_LANG;
 
     if (arg0)
@@ -16911,7 +16903,7 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
     if (args.size() >= 3)
         arg2 = EGA_eval_arg(args[2], false);
 
-    MIdOrString type, name;
+    MIdOrString type, name = BAD_NAME;
     WORD lang = BAD_LANG;
 
     if (arg0)
@@ -16946,7 +16938,7 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
     if (args.size() >= 3)
         arg2 = EGA_eval_arg(args[2], false);
 
-    MIdOrString type, src_name, dest_name;
+    MIdOrString type, src_name = BAD_NAME, dest_name;
     WORD lang = BAD_LANG;
 
     if (arg0)
@@ -17003,7 +16995,7 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
     if (args.size() >= 4)
         arg3 = EGA_eval_arg(args[3], false);
 
-    MIdOrString type, name;
+    MIdOrString type, name = BAD_NAME;
     WORD src_lang = BAD_LANG, dest_lang = BAD_LANG;
 
     if (arg0)
@@ -17048,7 +17040,7 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
         {
             // search the strings
             EntrySet found;
-            g_res.search(found, ET_LANG, RT_STRING, WORD(0), src_lang);
+            g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, src_lang);
 
             // copy them
             for (auto e : found)
@@ -17060,7 +17052,7 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
         {
             // search the messagetables
             EntrySet found;
-            g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+            g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
 
             // copy them
             for (auto e : found)
@@ -17158,7 +17150,7 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
     if (args.size() >= 3)
         arg2 = EGA_eval_arg(args[2], false);
 
-    MIdOrString type, name;
+    MIdOrString type, name = BAD_NAME;
     WORD lang = BAD_LANG;
 
     if (arg0)
@@ -17247,7 +17239,7 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
     WORD lang = static_cast<WORD>(EGA_get_int(arg0));
 
     EntrySet found;
-    g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
+    g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
     if (found.empty())
         return make_arg<AstContainer>(); // error
 
@@ -17287,7 +17279,7 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
         return make_arg<AstStr>(); // error
 
     EntrySet found;
-    g_res.search(found, ET_LANG, RT_STRING, static_cast<WORD>(0), lang);
+    g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
     if (found.empty())
         return make_arg<AstStr>(); // error
 
@@ -17335,7 +17327,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
         str_res.map()[str_id] = wide.c_str();
     }
 
-    g_res.search_and_delete(ET_ANY, RT_STRING, (WORD)0, lang);
+    g_res.search_and_delete(ET_ANY, RT_STRING, BAD_NAME, lang);
 
     std::set<WORD> names;
     for (auto& pair : str_res.map())
@@ -17368,7 +17360,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
     WORD lang = static_cast<WORD>(EGA_get_int(arg0));
 
     EntrySet found;
-    g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
+    g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
 
     // found --> str_res
     StringRes str_res;

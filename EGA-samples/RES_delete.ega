@@ -1,2 +1,2 @@
 @ Delete Japanese (1041) resources all.
-RES_delete(0, 0, 1041);
+RES_delete(0, "*", 1041);

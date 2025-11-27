@@ -225,7 +225,7 @@ public:
             if (Res_HasNoName(type))
             {
                 // if this type has no name, clear the related entries
-                g_res.search_and_delete(ET_NAME, type, (WORD)0, lang);
+                g_res.search_and_delete(ET_NAME, type, BAD_NAME, lang);
             }
 
             if (HasSample(type, name, lang))

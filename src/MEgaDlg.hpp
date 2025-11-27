@@ -136,8 +136,8 @@ public:
         if (filename && filename[0])
         {
             WideCharToMultiByte(CP_ACP, 0, filename, -1, szFileName, _countof(szFileName), NULL, NULL);
-            g_RES_select_type = (WORD)0;
-            g_RES_select_name = (WORD)0;
+            g_RES_select_type = BAD_TYPE;
+            g_RES_select_name = BAD_NAME;
             g_RES_select_lang = BAD_LANG;
             EGA_file_input(szFileName);
         }
@@ -200,8 +200,8 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        g_RES_select_type = (WORD)0;
-        g_RES_select_name = (WORD)0;
+        g_RES_select_type = BAD_TYPE;
+        g_RES_select_name = BAD_NAME;
         g_RES_select_lang = BAD_LANG;
         s_bEnter = TRUE;
         ::SetFocus(::GetDlgItem(hwnd, edt2));

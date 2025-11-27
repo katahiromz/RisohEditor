@@ -61,9 +61,10 @@ Res_IsEntityType(const MIdOrString& type)
 
 MStringW EntryBase::get_name_label() const
 {
+	if (m_name.is_zero()) return L"0";
+
     WORD id = m_name.m_id;
-    if (!id)
-        return m_name.m_str;        // string name resource name
+	if (!id) return m_name.m_str;        // string name resource name
 
     // get an IDTYPE_ value
     IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
@@ -603,8 +604,11 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
         if (!pv || !size)
             continue;
 
+        bool is_zero = (*entry).m_name.is_zero();
+
         // do update
-        if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(), (*entry).m_name.ptr(),
+        if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(),
+                               is_zero ? NULL : (*entry).m_name.ptr(),
                                (*entry).m_lang, pv, size))
         {
             assert(0);
@@ -1611,7 +1615,7 @@ BOOL EntrySet::extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
 
     case ET_STRING:
     case ET_MESSAGE:
-        search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
+        search(found, ET_LANG, entry->m_type, BAD_NAME, entry->m_lang);
         break;
 
     case ET_NAME:

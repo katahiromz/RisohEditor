@@ -199,7 +199,7 @@ public:
         SubclassChildDx(m_cmb4, cmb4);
 
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        InitResNameComboBox(hCmb5, WORD(0), IDTYPE_HELP);
+        InitResNameComboBox(hCmb5, BAD_NAME, IDTYPE_HELP);
         SetDlgItemInt(hwnd, cmb5, 0, FALSE);
         SubclassChildDx(m_cmb5, cmb5);
 

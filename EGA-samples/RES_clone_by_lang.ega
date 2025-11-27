@@ -1,2 +1,2 @@
 @ Clone English (1033) resources as Japanese (1041) resources.
-RES_clone_by_lang(0, 0, 1033, 1041);
+RES_clone_by_lang(0, "*", 1033, 1041);

@@ -86,6 +86,8 @@ enum EntryType
 ///////////////////////////////////////////////////////////////////////////////
 // EntryBase
 
+#define BAD_TYPE    ((WORD)0)
+#define BAD_NAME    L"*"        // invalid name
 #define BAD_LANG    0xFFFF      // invalid language value
 
 struct EntryBase
@@ -108,10 +110,11 @@ struct EntryBase
     }
 
     // constructor
-    EntryBase(EntryType et, const MIdOrString& type, 
-            const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
+    EntryBase(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG)
         : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
     {
+        if (m_name == BAD_NAME)
+            m_name.clear();
     }
 
     // destructor
@@ -161,14 +164,13 @@ struct EntryBase
     }
 
     // pattern match
-    bool match(EntryType et, const MIdOrString& type, const MIdOrString& name,
-               WORD lang = BAD_LANG) const
+    bool match(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG) const
     {
         if (et != ET_ANY && m_et != et)
             return false;
         if (!type.is_zero() && m_type != type)
             return false;
-        if (!name.is_zero() && m_name != name)
+        if (name != BAD_NAME && m_name != name)
             return false;
         if (lang != BAD_LANG && m_lang != lang)
             return false;
@@ -255,7 +257,7 @@ struct EntryBase
         clear_data();
         m_lang = BAD_LANG;
         m_name = (WORD)0;
-        m_type = (WORD)0;
+        m_type = BAD_TYPE;
     }
 
     // is it empty?
@@ -345,13 +347,13 @@ Res_NewNameEntry(const MIdOrString& type, const MIdOrString& name)
 inline EntryBase *
 Res_NewStringEntry(WORD lang)
 {
-    return new EntryBase(ET_STRING, RT_STRING, WORD(0), lang);
+    return new EntryBase(ET_STRING, RT_STRING, BAD_NAME, lang);
 }
 
 inline EntryBase *
 Res_NewMessageEntry(WORD lang)
 {
-    return new EntryBase(ET_MESSAGE, RT_MESSAGETABLE, WORD(0), lang);
+    return new EntryBase(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang);
 }
 
 inline EntryBase *
@@ -427,8 +429,8 @@ struct EntrySet : protected EntrySetBase
     }
 
     // search by pattern matching
-    bool search(self_type& found, EntryType et, const MIdOrString& type = WORD(0), 
-                const MIdOrString& name = WORD(0), WORD lang = BAD_LANG, bool invalid_ok = false) const
+    bool search(self_type& found, EntryType et, const MIdOrString& type = BAD_TYPE, 
+                const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         for (auto entry : *this)
         {
@@ -441,8 +443,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     // find by pattern matching
-    EntryBase *find(EntryType et, const MIdOrString& type = WORD(0),
-                    const MIdOrString& name = WORD(0),
+    EntryBase *find(EntryType et, const MIdOrString& type = BAD_NAME, const MIdOrString& name = BAD_NAME,
                     WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         self_type found;
@@ -505,8 +506,7 @@ struct EntrySet : protected EntrySetBase
     void delete_invalid();
 
     // search and delete
-    bool search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
-                           const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
+    bool search_and_delete(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG)
     {
         // search
         self_type found;
@@ -563,7 +563,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_string_entry(WORD lang)
     {
-        auto entry = find(ET_STRING, RT_STRING, (WORD)0, lang, true);
+        auto entry = find(ET_STRING, RT_STRING, BAD_NAME, lang, true);
         if (!entry)
             entry = Res_NewStringEntry(lang);
         return on_insert_entry(entry);
@@ -573,7 +573,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_message_entry(WORD lang)
     {
-        auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, true);
+        auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang, true);
         if (!entry)
             entry = Res_NewMessageEntry(lang);
         return on_insert_entry(entry);
@@ -593,7 +593,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
-        auto entry = find(ET_TYPE, type, (WORD)0, BAD_LANG, true);
+        auto entry = find(ET_TYPE, type, BAD_NAME, BAD_LANG, true);
         if (!entry)
             entry = Res_NewTypeEntry(type);
         return on_insert_entry(entry);
@@ -630,14 +630,14 @@ struct EntrySet : protected EntrySetBase
     void on_delete_string(EntryBase *entry)
     {
         assert(entry->m_et == ET_STRING);
-        search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
+        search_and_delete(ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
     }
 
     // helper method to delete the messages
     void on_delete_message(EntryBase *entry)
     {
         assert(entry->m_et == ET_MESSAGE);
-        search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
+        search_and_delete(ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
     }
 
     // helper method to delete the group icon
@@ -700,7 +700,7 @@ public:
         }
         else
         {
-            search_and_delete(ET_ANY, (WORD)0, (WORD)0, BAD_LANG);
+            search_and_delete(ET_ANY, BAD_TYPE, BAD_NAME, BAD_LANG);
             delete_invalid();
         }
     }

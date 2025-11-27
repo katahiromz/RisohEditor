@@ -360,3 +360,4 @@
     - Risolto il problema della doppia firma.
 - v.5.9.3 (20XX-YY-ZZ)
     - Fixed AutoComplete case-insensitiveness problem.
+    - Fixed handling of resource name zero.

@@ -129,8 +129,6 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        TCHAR szText[MAX_PATH];
-
         m_list.clear();
         INT i, nCount = ListBox_GetCount(m_hLst1);
         for (i = 0; i < nCount; ++i)
