@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "Common.hpp"
 
 struct MACRO_ENTRY;
 class MAddMacroDlg;
@@ -34,8 +35,8 @@ class MMacrosDlg;
 
 struct MACRO_ENTRY
 {
-    TCHAR szKey[128];
-    TCHAR szValue[256];
+    MString szKey;
+    MString szValue;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -71,13 +72,13 @@ public:
 
         MACRO_ENTRY entry;
 
-        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        entry.szKey = MWindowBase::GetWindowText(hCmb1);
+        entry.szValue = MWindowBase::GetWindowText(hCmb2);
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        if (entry.szKey[0] == 0)
+        if (entry.szKey.empty())
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -155,8 +156,8 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
 
-        SetWindowText(m_cmb1, m_entry.szKey);
-        SetWindowText(m_cmb2, m_entry.szValue);
+        MWindowBase::SetWindowText(m_cmb1, m_entry.szKey.c_str());
+        MWindowBase::SetWindowText(m_cmb2, m_entry.szValue.c_str());
 
         CenterWindowDx();
         return TRUE;
@@ -169,13 +170,13 @@ public:
 
         MACRO_ENTRY entry;
 
-        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        entry.szKey = MWindowBase::GetWindowText(hCmb1);
+        entry.szValue = MWindowBase::GetWindowText(hCmb2);
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        if (entry.szKey[0] == 0)
+        if (entry.szKey.empty())
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -259,10 +260,9 @@ public:
 
         ListView_DeleteItem(m_hLst1, iItem);
 
-        MACRO_ENTRY entry;
-        ListView_GetItemText(m_hLst1, iItem, 0, entry.szKey, _countof(entry.szKey));
+        MString strKey = GetListViewItemText(m_hLst1, iItem, 0);
 
-        m_map.erase(entry.szKey);
+        m_map.erase(strKey);
     }
 
     void OnAdd(HWND hwnd)
@@ -280,14 +280,14 @@ public:
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
-            item.pszText = entry.szKey;
+            item.pszText = const_cast<LPTSTR>(entry.szKey.c_str());
             ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
-            item.pszText = entry.szValue;
+            item.pszText = const_cast<LPTSTR>(entry.szValue.c_str());
             ListView_SetItem(m_hLst1, &item);
 
             UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -305,8 +305,8 @@ public:
         }
 
         MACRO_ENTRY entry;
-        ListView_GetItemText(m_hLst1, iItem, 0, entry.szKey, _countof(entry.szKey));
-        ListView_GetItemText(m_hLst1, iItem, 1, entry.szValue, _countof(entry.szValue));
+        entry.szKey = GetListViewItemText(m_hLst1, iItem, 0);
+        entry.szValue = GetListViewItemText(m_hLst1, iItem, 1);
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
@@ -322,14 +322,14 @@ public:
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
-            item.pszText = entry.szKey;
+            item.pszText = const_cast<LPTSTR>(entry.szKey.c_str());
             ListView_SetItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
-            item.pszText = entry.szValue;
+            item.pszText = const_cast<LPTSTR>(entry.szValue.c_str());
             ListView_SetItem(m_hLst1, &item);
         }
     }
@@ -338,14 +338,12 @@ public:
     {
         INT nCount = ListView_GetItemCount(m_hLst1);
 
-        MACRO_ENTRY entry;
-
         m_map.clear();
         for (INT i = 0; i < nCount; ++i)
         {
-            ListView_GetItemText(m_hLst1, i, 0, entry.szKey, _countof(entry.szKey));
-            ListView_GetItemText(m_hLst1, i, 1, entry.szValue, _countof(entry.szValue));
-            m_map[entry.szKey] = entry.szValue;
+            MString strKey = GetListViewItemText(m_hLst1, i, 0);
+            MString strValue = GetListViewItemText(m_hLst1, i, 1);
+            m_map[strKey] = strValue;
         }
 
         EndDialog(IDOK);

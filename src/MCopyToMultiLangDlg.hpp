@@ -142,9 +142,7 @@ public:
         MStringW str;
         if (iItem == CB_ERR)
         {
-            WCHAR szText[MAX_PATH];
-            GetDlgItemTextW(hwnd, cmb3, szText, _countof(szText));
-            str = szText;
+            str = ::GetDlgItemTextW(hwnd, cmb3);
         }
         else
         {

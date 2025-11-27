@@ -100,13 +100,8 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        WCHAR szText1[128], szText2[128];
-
-        GetDlgItemText(hwnd, edt1, szText1, _countof(szText1));
-        GetDlgItemText(hwnd, edt2, szText2, _countof(szText2));
-
-        MString str1 = szText1;
-        MString str2 = szText2;
+        MString str1 = GetDlgItemText(edt1);
+        MString str2 = GetDlgItemText(edt2);
         mstr_trim(str1);
         mstr_trim(str2);
 
@@ -147,9 +142,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        WCHAR szText1[128];
-        GetDlgItemText(hwnd, edt1, szText1, _countof(szText1));
-        MString str1 = szText1;
+        MString str1 = GetDlgItemText(edt1);
         mstr_trim(str1);
         size_t k1 = str1.find(L", ");
 
@@ -191,9 +184,7 @@ public:
 
     void OnPsh2(HWND hwnd)
     {
-        WCHAR szText2[128];
-        GetDlgItemText(hwnd, edt2, szText2, _countof(szText2));
-        MString str2 = szText2;
+        MString str2 = GetDlgItemText(edt2);
         mstr_trim(str2);
         size_t k2 = str2.find(L", ");
 

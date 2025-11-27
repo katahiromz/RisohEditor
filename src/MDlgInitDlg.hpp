@@ -28,6 +28,7 @@
 #include "MString.hpp"
 #include "DlgInitRes.hpp"
 #include "DlgInit.h"
+#include "Common.hpp"
 
 class MAddDlgInitDlg;
 class MModifyDlgInitDlg;
@@ -63,15 +64,15 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetWindowTextW(m_cmb1, m_entry.sz0, _countof(m_entry.sz0));
-        GetWindowTextW(m_cmb2, m_entry.sz1, _countof(m_entry.sz1));
-        GetDlgItemTextW(hwnd, edt1, m_entry.sz2, _countof(m_entry.sz2));
+        m_entry.sz0 = ::GetWindowTextW(m_cmb1);
+        m_entry.sz1 = ::GetWindowTextW(m_cmb2);
+        m_entry.sz2 = ::GetDlgItemTextW(hwnd, edt1);
         ReplaceFullWithHalf(m_entry.sz0);
         ReplaceFullWithHalf(m_entry.sz1);
         mstr_trim(m_entry.sz0);
         mstr_trim(m_entry.sz1);
         mstr_trim(m_entry.sz2);
-        if (m_entry.sz2[0] == L'"')
+        if (!m_entry.sz2.empty() && m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
 
         if (!g_db.HasResID(m_entry.sz0))
@@ -80,10 +81,10 @@ public:
             INT nValue = GetDlgItemInt(hwnd, cmb1, &bTranslated, TRUE);
             if (!bTranslated)
             {
-                if (mchr_is_digit(m_entry.sz0[0]) || 
-                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+')
+                if (!m_entry.sz0.empty() && (mchr_is_digit(m_entry.sz0[0]) || 
+                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+'))
                 {
-                    nValue = mstr_parse_int(m_entry.sz0);
+                    nValue = mstr_parse_int(m_entry.sz0.c_str());
                     SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
                 }
                 else
@@ -95,22 +96,21 @@ public:
                 }
             }
             SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
-            auto text = GetDlgItemText(hwnd, cmb1);
-            StringCchCopy(m_entry.sz0, _countof(m_entry.sz0), text.c_str());
+            m_entry.sz0 = GetDlgItemText(hwnd, cmb1);
         }
 
-        if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
-            lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
-            lstrcmpW(m_entry.sz1, L"CBEM_INSERTITEM") != 0)
+        if (m_entry.sz1 != L"LB_ADDSTRING" &&
+            m_entry.sz1 != L"CB_ADDSTRING" &&
+            m_entry.sz1 != L"CBEM_INSERTITEM")
         {
             BOOL bTranslated = FALSE;
             INT nValue = GetDlgItemInt(hwnd, cmb2, &bTranslated, TRUE);
             if (!bTranslated)
             {
-                if (mchr_is_digit(m_entry.sz1[0]) || 
-                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+')
+                if (!m_entry.sz1.empty() && (mchr_is_digit(m_entry.sz1[0]) || 
+                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+'))
                 {
-                    nValue = mstr_parse_int(m_entry.sz1);
+                    nValue = mstr_parse_int(m_entry.sz1.c_str());
                 }
                 else
                 {
@@ -122,7 +122,7 @@ public:
             }
             auto text = mstr_hex_word(nValue);
             SetDlgItemText(hwnd, cmb2, text.c_str());
-            StringCchCopy(m_entry.sz1, _countof(m_entry.sz1), text.c_str());
+            m_entry.sz1 = text;
         }
 
         EndDialog(IDOK);
@@ -183,13 +183,13 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitCtrlIDComboBox(hCmb1);
-        SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
+        SetDlgItemTextW(hwnd, cmb1, m_entry.sz0.c_str());
         SubclassChildDx(m_cmb1, cmb1);
 
         SubclassChildDx(m_cmb2, cmb2);
-        SetDlgItemTextW(hwnd, cmb2, m_entry.sz1);
+        SetDlgItemTextW(hwnd, cmb2, m_entry.sz1.c_str());
 
-        SetDlgItemTextW(hwnd, edt1, m_entry.sz2);
+        SetDlgItemTextW(hwnd, edt1, m_entry.sz2.c_str());
 
         ExecuteDlgInitDx(hwnd, GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_MODIFYDLGINIT));
 
@@ -199,15 +199,15 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetWindowTextW(m_cmb1, m_entry.sz0, _countof(m_entry.sz0));
-        GetWindowTextW(m_cmb2, m_entry.sz1, _countof(m_entry.sz1));
-        GetDlgItemTextW(hwnd, edt1, m_entry.sz2, _countof(m_entry.sz2));
+        m_entry.sz0 = ::GetWindowTextW(m_cmb1);
+        m_entry.sz1 = ::GetWindowTextW(m_cmb2);
+        m_entry.sz2 = ::GetDlgItemTextW(hwnd, edt1);
         ReplaceFullWithHalf(m_entry.sz0);
         ReplaceFullWithHalf(m_entry.sz1);
         mstr_trim(m_entry.sz0);
         mstr_trim(m_entry.sz1);
         mstr_trim(m_entry.sz2);
-        if (m_entry.sz2[0] == L'"')
+        if (!m_entry.sz2.empty() && m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
 
         if (!g_db.HasResID(m_entry.sz0))
@@ -216,10 +216,10 @@ public:
             INT nValue = GetDlgItemInt(hwnd, cmb1, &bTranslated, TRUE);
             if (!bTranslated)
             {
-                if (mchr_is_digit(m_entry.sz0[0]) || 
-                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+')
+                if (!m_entry.sz0.empty() && (mchr_is_digit(m_entry.sz0[0]) || 
+                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+'))
                 {
-                    nValue = mstr_parse_int(m_entry.sz0);
+                    nValue = mstr_parse_int(m_entry.sz0.c_str());
                 }
                 else
                 {
@@ -230,22 +230,21 @@ public:
                 }
             }
             SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
-            auto text = GetDlgItemText(hwnd, cmb1);
-            StringCchCopy(m_entry.sz0, _countof(m_entry.sz0), text.c_str());
+            m_entry.sz0 = GetDlgItemText(hwnd, cmb1);
         }
 
-        if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
-            lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
-            lstrcmpW(m_entry.sz1, L"CBEM_INSERTITEM") != 0)
+        if (m_entry.sz1 != L"LB_ADDSTRING" &&
+            m_entry.sz1 != L"CB_ADDSTRING" &&
+            m_entry.sz1 != L"CBEM_INSERTITEM")
         {
             BOOL bTranslated = FALSE;
             INT nValue = GetDlgItemInt(hwnd, cmb2, &bTranslated, TRUE);
             if (!bTranslated)
             {
-                if (mchr_is_digit(m_entry.sz1[0]) ||
-                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+')
+                if (!m_entry.sz1.empty() && (mchr_is_digit(m_entry.sz1[0]) ||
+                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+'))
                 {
-                    nValue = mstr_parse_int(m_entry.sz1);
+                    nValue = mstr_parse_int(m_entry.sz1.c_str());
                 }
                 else
                 {
@@ -257,7 +256,7 @@ public:
             }
             auto text = mstr_hex_word(nValue);
             SetDlgItemText(hwnd, cmb2, text.c_str());
-            StringCchCopy(m_entry.sz1, _countof(m_entry.sz1), text.c_str());
+            m_entry.sz1 = text;
         }
 
         EndDialog(IDOK);
@@ -332,19 +331,19 @@ public:
             return;
 
         DLGINIT_ENTRY die0, die1;
-        ListView_GetItemText(m_hLst1, iItem - 1, 0, die0.sz0, _countof(die0.sz0));
-        ListView_GetItemText(m_hLst1, iItem - 1, 1, die0.sz1, _countof(die0.sz1));
-        ListView_GetItemText(m_hLst1, iItem - 1, 2, die0.sz2, _countof(die0.sz2));
-        ListView_GetItemText(m_hLst1, iItem, 0, die1.sz0, _countof(die1.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, die1.sz1, _countof(die1.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, die1.sz2, _countof(die1.sz2));
+        die0.sz0 = GetListViewItemText(m_hLst1, iItem - 1, 0);
+        die0.sz1 = GetListViewItemText(m_hLst1, iItem - 1, 1);
+        die0.sz2 = GetListViewItemText(m_hLst1, iItem - 1, 2);
+        die1.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        die1.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        die1.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
 
-        ListView_SetItemText(m_hLst1, iItem - 1, 0, die1.sz0);
-        ListView_SetItemText(m_hLst1, iItem - 1, 1, die1.sz1);
-        ListView_SetItemText(m_hLst1, iItem - 1, 2, die1.sz2);
-        ListView_SetItemText(m_hLst1, iItem, 0, die0.sz0);
-        ListView_SetItemText(m_hLst1, iItem, 1, die0.sz1);
-        ListView_SetItemText(m_hLst1, iItem, 2, die0.sz2);
+        ListView_SetItemText(m_hLst1, iItem - 1, 0, const_cast<LPWSTR>(die1.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem - 1, 1, const_cast<LPWSTR>(die1.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem - 1, 2, const_cast<LPWSTR>(die1.sz2.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(die0.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(die0.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(die0.sz2.c_str()));
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem - 1, state, state);
@@ -357,19 +356,19 @@ public:
             return;
 
         DLGINIT_ENTRY die0, die1;
-        ListView_GetItemText(m_hLst1, iItem, 0, die0.sz0, _countof(die0.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, die0.sz1, _countof(die0.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, die0.sz2, _countof(die0.sz2));
-        ListView_GetItemText(m_hLst1, iItem + 1, 0, die1.sz0, _countof(die1.sz0));
-        ListView_GetItemText(m_hLst1, iItem + 1, 1, die1.sz1, _countof(die1.sz1));
-        ListView_GetItemText(m_hLst1, iItem + 1, 2, die1.sz2, _countof(die1.sz2));
+        die0.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        die0.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        die0.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
+        die1.sz0 = GetListViewItemText(m_hLst1, iItem + 1, 0);
+        die1.sz1 = GetListViewItemText(m_hLst1, iItem + 1, 1);
+        die1.sz2 = GetListViewItemText(m_hLst1, iItem + 1, 2);
 
-        ListView_SetItemText(m_hLst1, iItem, 0, die1.sz0);
-        ListView_SetItemText(m_hLst1, iItem, 1, die1.sz1);
-        ListView_SetItemText(m_hLst1, iItem, 2, die1.sz2);
-        ListView_SetItemText(m_hLst1, iItem + 1, 0, die0.sz0);
-        ListView_SetItemText(m_hLst1, iItem + 1, 1, die0.sz1);
-        ListView_SetItemText(m_hLst1, iItem + 1, 2, die0.sz2);
+        ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(die1.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(die1.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(die1.sz2.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 0, const_cast<LPWSTR>(die0.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 1, const_cast<LPWSTR>(die0.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 2, const_cast<LPWSTR>(die0.sz2.c_str()));
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem + 1, state, state);
@@ -407,14 +406,14 @@ public:
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
-        item.pszText = entry.sz0;
+        item.pszText = const_cast<LPWSTR>(entry.sz0.c_str());
         ListView_InsertItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
-        item.pszText = entry.sz1;
+        item.pszText = const_cast<LPWSTR>(entry.sz1.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         MString str2 = mstr_quote(entry.sz2);
@@ -440,18 +439,18 @@ public:
         }
 
         DLGINIT_ENTRY die;
-        ListView_GetItemText(m_hLst1, iItem, 0, die.sz0, _countof(die.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, die.sz1, _countof(die.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, die.sz2, _countof(die.sz2));
-        if (die.sz2[0] == L'"')
+        die.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        die.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        die.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
+        if (!die.sz2.empty() && die.sz2[0] == L'"')
             mstr_unquote(die.sz2);
 
         MModifyDlgInitDlg dialog(die);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             MString str2 = mstr_quote(die.sz2);
-            ListView_SetItemText(m_hLst1, iItem, 0, die.sz0);
-            ListView_SetItemText(m_hLst1, iItem, 1, die.sz1);
+            ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(die.sz0.c_str()));
+            ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(die.sz1.c_str()));
             ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
         }
     }
@@ -464,30 +463,30 @@ public:
         for (i = 0; i < nCount; ++i)
         {
             DLGINIT_ENTRY die;
-            ListView_GetItemText(m_hLst1, i, 0, die.sz0, _countof(die.sz0));
-            ListView_GetItemText(m_hLst1, i, 1, die.sz1, _countof(die.sz1));
-            ListView_GetItemText(m_hLst1, i, 2, die.sz2, _countof(die.sz2));
-            if (die.sz2[0] == L'"')
+            die.sz0 = GetListViewItemText(m_hLst1, i, 0);
+            die.sz1 = GetListViewItemText(m_hLst1, i, 1);
+            die.sz2 = GetListViewItemText(m_hLst1, i, 2);
+            if (!die.sz2.empty() && die.sz2[0] == L'"')
                 mstr_unquote(die.sz2);
 
             DlgInitEntry entry;
             entry.wCtrl = WORD(g_db.GetResIDValue(die.sz0));
 
-            if (lstrcmpiW(die.sz1, L"LB_ADDSTRING") == 0)
+            if (lstrcmpiW(die.sz1.c_str(), L"LB_ADDSTRING") == 0)
             {
                 entry.wMsg = LB_ADDSTRING;
             }
-            else if (lstrcmpiW(die.sz1, L"CB_ADDSTRING") == 0)
+            else if (lstrcmpiW(die.sz1.c_str(), L"CB_ADDSTRING") == 0)
             {
                 entry.wMsg = CB_ADDSTRING;
             }
-            else if (lstrcmpiW(die.sz1, L"CBEM_INSERTITEM") == 0)
+            else if (lstrcmpiW(die.sz1.c_str(), L"CBEM_INSERTITEM") == 0)
             {
                 entry.wMsg = CBEM_INSERTITEM;
             }
             else
             {
-                entry.wMsg = mstr_parse_int(die.sz1);
+                entry.wMsg = mstr_parse_int(die.sz1.c_str());
             }
 
             entry.strText = MTextToAnsi(CP_ACP, die.sz2).c_str();

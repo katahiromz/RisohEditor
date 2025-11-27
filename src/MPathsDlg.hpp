@@ -140,12 +140,10 @@ public:
             m_list.push_back(str);
         }
 
-        GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
-        MString strWindResExe = szText;
+        MString strWindResExe = GetDlgItemText(cmb1);
         mstr_trim(strWindResExe);
 
-        GetDlgItemText(hwnd, cmb2, szText, _countof(szText));
-        MString strCppExe = szText;
+        MString strCppExe = GetDlgItemText(cmb2);
         mstr_trim(strCppExe);
 
         if (strWindResExe.size() &&

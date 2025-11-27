@@ -61,13 +61,13 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
-        if (m_entry.szCaption[0] == L'"')
+        m_entry.szCaption = ::GetDlgItemTextW(hwnd, cmb1);
+        if (!m_entry.szCaption.empty() && m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
         }
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        m_entry.szCommandID = ::GetDlgItemTextW(hwnd, cmb2);
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_entry.szCommandID))
@@ -103,23 +103,23 @@ public:
             dwType |= MFT_RIGHTJUSTIFY;
 
         std::wstring str = GetMenuTypeAndState(dwType, dwState);
-        if (m_entry.szCaption[0] == 0 ||
-            lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0)
+        if (m_entry.szCaption.empty() ||
+            lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0)
         {
-            m_entry.szCaption[0] = 0;
+            m_entry.szCaption.clear();
             dwType |= MFT_SEPARATOR;
             str = GetMenuTypeAndState(dwType, dwState);
         }
-        lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
+        m_entry.szFlags = str;
 
-        GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        m_entry.szHelpID = ::GetDlgItemTextW(hwnd, cmb3);
         ReplaceFullWithHalf(m_entry.szHelpID);
         mstr_trim(m_entry.szHelpID);
 
         DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = g_db.GetNameOfResID(IDTYPE_HELP, help);
         ReplaceFullWithHalf(strHelp);
-        lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
+        m_entry.szHelpID = strHelp;
 
         EndDialog(IDOK);
     }
@@ -196,10 +196,10 @@ public:
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str()); //
 
         InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2));
-        SetDlgItemText(hwnd, cmb2, m_entry.szCommandID);
+        SetDlgItemText(hwnd, cmb2, m_entry.szCommandID.c_str());
         SubclassChildDx(m_cmb2, cmb2);
 
-        MIdOrString help_id(m_entry.szHelpID);
+        MIdOrString help_id(m_entry.szHelpID.c_str());
         InitResNameComboBox(GetDlgItem(hwnd, cmb3), help_id, IDTYPE_HELP);
         SubclassChildDx(m_cmb3, cmb3);
 
@@ -207,8 +207,8 @@ public:
         dwType = dwState = 0;
         SetMenuTypeAndState(dwType, dwState, m_entry.szFlags);
 
-        if (lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
-            m_entry.szCaption[0] == 0 || (dwType & MFT_SEPARATOR))
+        if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+            m_entry.szCaption.empty() || (dwType & MFT_SEPARATOR))
         {
             dwType |= MFT_SEPARATOR;
             SetDlgItemTextW(hwnd, cmb1, NULL);
@@ -245,13 +245,13 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
-        if (m_entry.szCaption[0] == L'"')
+        m_entry.szCaption = ::GetDlgItemTextW(hwnd, cmb1);
+        if (!m_entry.szCaption.empty() && m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
         }
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        m_entry.szCommandID = ::GetDlgItemTextW(hwnd, cmb2);
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_entry.szCommandID))
@@ -286,20 +286,18 @@ public:
         if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
             dwType |= MFT_RIGHTJUSTIFY;
 
-        if (lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
-            m_entry.szCaption[0] == 0 || (dwType & MFT_SEPARATOR))
+        if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+            m_entry.szCaption.empty() || (dwType & MFT_SEPARATOR))
         {
-            m_entry.szCaption[0] = 0;
+            m_entry.szCaption.clear();
             dwType |= MFT_SEPARATOR;
         }
 
-        std::wstring str = GetMenuTypeAndState(dwType, dwState);
-        lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
+        m_entry.szFlags = GetMenuTypeAndState(dwType, dwState);
 
-        GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        m_entry.szHelpID = ::GetDlgItemTextW(hwnd, cmb3);
         DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
-        MString strHelp = g_db.GetNameOfResID(IDTYPE_HELP, help);
-        lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
+        m_entry.szHelpID = g_db.GetNameOfResID(IDTYPE_HELP, help);
 
         EndDialog(IDOK);
     }
@@ -562,7 +560,7 @@ public:
     void OnAdd(HWND hwnd)
     {
         MENU_ENTRY m_entry;
-        ZeroMemory(&m_entry, sizeof(m_entry));
+        m_entry.wDepth = 0;
         MAddMItemDlg dialog(m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
@@ -574,7 +572,7 @@ public:
 
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = mstr_quote(m_entry.szCaption);
-        if (str.empty() || wcsstr(m_entry.szFlags, L"S ") != NULL)
+        if (str.empty() || m_entry.szFlags.find(L"S ") != MStringW::npos)
             str = LoadStringDx(IDS_SEPARATOR);
         str = mstr_repeat(strIndent, m_entry.wDepth) + str;
 
@@ -591,21 +589,21 @@ public:
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
-        item.pszText = m_entry.szFlags;
+        item.pszText = const_cast<LPWSTR>(m_entry.szFlags.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 2;
-        item.pszText = m_entry.szCommandID;
+        item.pszText = const_cast<LPWSTR>(m_entry.szCommandID.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 3;
-        item.pszText = m_entry.szHelpID;
+        item.pszText = const_cast<LPWSTR>(m_entry.szHelpID.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -615,8 +613,7 @@ public:
 
     BOOL GetEntry(HWND hwnd, MENU_ENTRY& entry, INT iItem)
     {
-        WCHAR szCaption[256];
-        ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
+        MStringW szCaption = GetListViewItemText(m_hLst1, iItem, 0);
 
         entry.wDepth = 0;
         MStringW str = szCaption, strIndent = LoadStringDx(IDS_INDENT);
@@ -625,7 +622,7 @@ public:
             str = str.substr(strIndent.size());
             ++entry.wDepth;
         }
-        if (str[0] == L'"')
+        if (!str.empty() && str[0] == L'"')
         {
             mstr_unquote(str);
         }
@@ -634,11 +631,11 @@ public:
             str.clear();
         }
 
-        lstrcpynW(entry.szCaption, str.c_str(), _countof(entry.szCaption));
+        entry.szCaption = str;
 
-        ListView_GetItemText(m_hLst1, iItem, 1, entry.szFlags, _countof(entry.szFlags));
-        ListView_GetItemText(m_hLst1, iItem, 2, entry.szCommandID, _countof(entry.szCommandID));
-        ListView_GetItemText(m_hLst1, iItem, 3, entry.szHelpID, _countof(entry.szHelpID));
+        entry.szFlags = GetListViewItemText(m_hLst1, iItem, 1);
+        entry.szCommandID = GetListViewItemText(m_hLst1, iItem, 2);
+        entry.szHelpID = GetListViewItemText(m_hLst1, iItem, 3);
         return TRUE;
     }
 
@@ -647,15 +644,15 @@ public:
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = mstr_repeat(strIndent, entry.wDepth);
 
-        if (entry.szCaption[0] == 0 || wcsstr(entry.szFlags, L"S ") != NULL)
+        if (entry.szCaption.empty() || entry.szFlags.find(L"S ") != MStringW::npos)
             str += LoadStringDx(IDS_SEPARATOR);
         else
             str += mstr_quote(entry.szCaption);
 
         ListView_SetItemText(m_hLst1, iItem, 0, &str[0]);
-        ListView_SetItemText(m_hLst1, iItem, 1, entry.szFlags);
-        ListView_SetItemText(m_hLst1, iItem, 2, entry.szCommandID);
-        ListView_SetItemText(m_hLst1, iItem, 3, entry.szHelpID);
+        ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(entry.szFlags.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(entry.szCommandID.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 3, const_cast<LPWSTR>(entry.szHelpID.c_str()));
         return TRUE;
     }
 

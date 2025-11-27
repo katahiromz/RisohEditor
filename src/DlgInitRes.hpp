@@ -33,9 +33,9 @@
 
 struct DLGINIT_ENTRY
 {
-    WCHAR sz0[64];
-    WCHAR sz1[64];
-    WCHAR sz2[256];
+    MStringW sz0;
+    MStringW sz1;
+    MStringW sz2;
 };
 
 struct DlgInitEntry

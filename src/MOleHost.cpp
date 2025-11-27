@@ -45,11 +45,10 @@ MOleSite::~MOleSite()
 
 BOOL MOleSite::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    WCHAR szText[40];
-    GetWindowTextW(hwnd, szText, _countof(szText));
+    MStringW strText = MWindowBase::GetWindowText(hwnd);
 
     CLSID clsid;
-    if (szText[0] != L'{' || ::CLSIDFromString(szText, &clsid) != S_OK)
+    if (strText.empty() || strText[0] != L'{' || ::CLSIDFromString(strText.c_str(), &clsid) != S_OK)
         return FALSE;
 
     m_pHost = DoGetActiveOleHost();

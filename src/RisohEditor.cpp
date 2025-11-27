@@ -1627,11 +1627,10 @@ WORD LangFromText(LPWSTR pszLang)
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type)
 {
     // get the text from combobox
-    WCHAR szLang[MAX_PATH];
-    GetWindowTextW(hCmb3, szLang, _countof(szLang));
+    MStringW strLang = MWindowBase::GetWindowText(hCmb3);
 
     // get the language ID from texts
-    lang = LangFromText(szLang);
+    lang = LangFromText(&strLang[0]);
     if ((type != LANG_TYPE_1 || IsValidUILang(lang)) && lang != BAD_LANG)
         return TRUE;    // success
 
@@ -1868,18 +1867,15 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 {
     // get the combobox text
-    WCHAR szType[MAX_PATH];
-    GetWindowTextW(hCmb1, szType, _countof(szType));
+    MStringW str = MWindowBase::GetWindowText(hCmb1);
 
     // replace the fullwidth characters with halfwidth characters
-    ReplaceFullWithHalf(szType);
+    ReplaceFullWithHalf(str);
 
-    // trim and store it to str and szType
-    MStringW str = szType;
+    // trim
     mstr_trim(str);
-    StringCchCopyW(szType, _countof(szType), str.c_str());
 
-    if (szType[0] == 0)  // an empty string
+    if (str.empty())  // an empty string
     {
         ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
         SetFocus(hCmb1);    // set focus
@@ -1888,10 +1884,10 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
                        NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
-    else if (mchr_is_digit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
+    else if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
     {
         // numeric type name
-        type = WORD(mstr_parse_int(szType));
+        type = WORD(mstr_parse_int(str.c_str()));
         if (type == (WORD)0)
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
@@ -1904,7 +1900,6 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     }
     else
     {
-        MStringW str = szType;
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
         {
@@ -1921,7 +1916,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
             else
             {
                 // a string type name
-                type = szType;
+                type = str.c_str();
             }
         }
     }
@@ -1933,18 +1928,15 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 {
     // get the combobox text
-    WCHAR szName[MAX_PATH];
-    GetWindowTextW(hCmb2, szName, _countof(szName));
+    MStringW str = MWindowBase::GetWindowText(hCmb2);
 
     // replace the fullwidth characters with halfwidth characters
-    ReplaceFullWithHalf(szName);
+    ReplaceFullWithHalf(str);
 
-    // trim and store it to str and szType
-    MStringW str = szName;
+    // trim
     mstr_trim(str);
-    StringCchCopyW(szName, _countof(szName), str.c_str());
 
-    if (szName[0] == 0) // an empty string
+    if (str.empty()) // an empty string
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
         SetFocus(hCmb2);    // set focus
@@ -1953,10 +1945,10 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
                        NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
-    else if (mchr_is_digit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
+    else if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
     {
         // a numeric name
-        name = WORD(mstr_parse_int(szName));
+        name = WORD(mstr_parse_int(str.c_str()));
         if (name == (WORD)0)
         {
             ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
@@ -1970,10 +1962,10 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     else
     {
         // a non-numeric name
-        if (g_db.HasResID(szName))
-            name = (WORD)g_db.GetResIDValue(szName);    // a valued name
+        if (g_db.HasResID(str))
+            name = (WORD)g_db.GetResIDValue(str);    // a valued name
         else
-            name = szName;  // a string name
+            name = str.c_str();  // a string name
     }
 
     return TRUE;    // success
@@ -1983,19 +1975,16 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 {
     // get the text from textbox
-    WCHAR szFile[MAX_PATH];
-    GetWindowTextW(hEdt1, szFile, _countof(szFile));
+    MStringW str = MWindowBase::GetWindowText(hEdt1);
 
-    // trim and store to str and szFile
-    MStringW str = szFile;
+    // trim
     mstr_trim(str);
-    StringCchCopyW(szFile, _countof(szFile), str.c_str());
 
-    if (!PathFileExistsW(szFile))    // not exists
+    if (!PathFileExistsW(str.c_str()))    // not exists
         return FALSE;   // failure
 
     // store
-    file = szFile;
+    file = str;
 
     return TRUE;    // success
 }
