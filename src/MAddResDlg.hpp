@@ -327,10 +327,10 @@ public:
         SetDlgItemTextW(hwnd, edt1, szFile);
 
         // If name was empty, use file title
-        WCHAR szText[MAX_PATH];
-        ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
-        if (!szText[0])
+        MString strText = GetComboBoxText(GetDlgItem(hwnd, cmb2));
+        if (strText.empty())
         {
+            WCHAR szText[MAX_PATH];
             StringCchCopyW(szText, _countof(szText), szFile);
             PathRemoveExtensionW(szText);
             ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
@@ -346,19 +346,19 @@ public:
     void OnCmb1(HWND hwnd)
     {
         // get the text of combobox cmb1
-        TCHAR szText[256];
+        MString strText;
         INT iItem = ComboBox_GetCurSel(m_cmb1);
         if (iItem == CB_ERR)
         {
-            ComboBox_GetText(m_cmb1, szText, ARRAYSIZE(szText));
+            strText = GetComboBoxText(m_cmb1);
         }
         else
         {
-            ComboBox_GetLBText(m_cmb1, iItem, szText);
+            strText = GetComboBoxLBText(m_cmb1, iItem);
         }
 
-        // szText --> strIDType (trimmed)
-        MString strIDType = szText;
+        // strText --> strIDType (trimmed)
+        MString strIDType = strText;
         mstr_trim(strIDType);
 
         // cut off the text from " (" to end
@@ -419,7 +419,7 @@ public:
             return;
 
         // prefix --> m_cmb2
-        ComboBox_GetText(m_cmb2, szText, _countof(szText));
+        MString strCmb2Text = GetComboBoxText(m_cmb2);
         ComboBox_ResetContent(m_cmb2);
         if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
@@ -429,7 +429,7 @@ public:
                 ComboBox_AddString(m_cmb2, table_entry.name.c_str());
             }
         }
-        ComboBox_SetText(m_cmb2, szText);
+        ComboBox_SetText(m_cmb2, strCmb2Text.c_str());
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

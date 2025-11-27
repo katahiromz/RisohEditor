@@ -248,9 +248,7 @@ public:
         if (iItem < 0)
             return;
 
-        WCHAR sz1[MAX_PATH];
-        sz1[0] = 0;
-        ListBox_GetText(m_hLst1, iItem, sz1);
+        MStringW sz1 = GetListBoxText(m_hLst1, iItem);
 
         MModifyTBBtnDlg dialog(IDD_MODIFYTBBTN, sz1);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -283,14 +281,12 @@ public:
         INT iItem = ListBox_GetCurSel(m_hLst1);
         if (iItem > 0)
         {
-            WCHAR sz1[MAX_PATH], sz2[MAX_PATH];
-            sz1[0] = sz2[0] = 0;
-            ListBox_GetText(m_hLst1, iItem - 1, sz1);
-            ListBox_GetText(m_hLst1, iItem, sz2);
+            MStringW sz1 = GetListBoxText(m_hLst1, iItem - 1);
+            MStringW sz2 = GetListBoxText(m_hLst1, iItem);
             ListBox_DeleteString(m_hLst1, iItem - 1);
             ListBox_DeleteString(m_hLst1, iItem - 1);
-            ListBox_InsertString(m_hLst1, iItem - 1, sz1);
-            ListBox_InsertString(m_hLst1, iItem - 1, sz2);
+            ListBox_InsertString(m_hLst1, iItem - 1, sz1.c_str());
+            ListBox_InsertString(m_hLst1, iItem - 1, sz2.c_str());
             ListBox_SetCurSel(m_hLst1, iItem - 1);
         }
     }
@@ -301,14 +297,12 @@ public:
         INT cItems = ListBox_GetCount(m_hLst1);
         if (iItem + 1 < cItems)
         {
-            WCHAR sz1[MAX_PATH], sz2[MAX_PATH];
-            sz1[0] = sz2[0] = 0;
-            ListBox_GetText(m_hLst1, iItem, sz1);
-            ListBox_GetText(m_hLst1, iItem + 1, sz2);
+            MStringW sz1 = GetListBoxText(m_hLst1, iItem);
+            MStringW sz2 = GetListBoxText(m_hLst1, iItem + 1);
             ListBox_DeleteString(m_hLst1, iItem);
             ListBox_DeleteString(m_hLst1, iItem);
-            ListBox_InsertString(m_hLst1, iItem, sz1);
-            ListBox_InsertString(m_hLst1, iItem, sz2);
+            ListBox_InsertString(m_hLst1, iItem, sz1.c_str());
+            ListBox_InsertString(m_hLst1, iItem, sz2.c_str());
             ListBox_SetCurSel(m_hLst1, iItem + 1);
         }
     }
@@ -342,17 +336,15 @@ public:
 
         for (INT iItem = 0; iItem < nCount; ++iItem)
         {
-            WCHAR sz1[MAX_PATH];
-            sz1[0] = 0;
-            ListBox_GetText(m_hLst1, iItem, sz1);
+            MStringW sz1 = GetListBoxText(m_hLst1, iItem);
 
-            if (!sz1[0] || sz1[0] == L'-')
+            if (sz1.empty() || sz1[0] == L'-')
             {
                 m_toolbar_res.push_back(0);
             }
             else
             {
-                INT id = (INT)g_db.GetResIDValue(sz1);
+                INT id = (INT)g_db.GetResIDValue(sz1.c_str());
                 m_toolbar_res.push_back(id);
             }
         }
@@ -407,9 +399,7 @@ public:
         RECT rcItem = lpDrawItem->rcItem;
         INT iItem = lpDrawItem->itemID;
 
-        WCHAR sz1[MAX_PATH];
-        sz1[0] = 0;
-        ListBox_GetText(m_hLst1, iItem, sz1);
+        MStringW sz1 = GetListBoxText(m_hLst1, iItem);
 
         if (lpDrawItem->itemState & ODS_SELECTED)
         {
@@ -427,7 +417,7 @@ public:
 
         InflateRect(&rcItem, -4, -4);
         UINT uFormat = DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX;
-        DrawText(hDC, sz1, -1, &rcItem, uFormat);
+        DrawText(hDC, sz1.c_str(), -1, &rcItem, uFormat);
         InflateRect(&rcItem, 4, 4);
 
         if (lpDrawItem->itemState & ODS_FOCUS)

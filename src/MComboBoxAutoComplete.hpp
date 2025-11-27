@@ -96,7 +96,6 @@ public:
 
         INT iItem = CB_ERR;
         INT nCount = GetCount();
-        TCHAR szText[128];
 
         if (m_bIgnoreCase)
         {
@@ -108,13 +107,11 @@ public:
             if (iItem == CB_ERR)
                 return;
 
-            GetLBText(iItem, szText);
-            MString strCandidate = szText;
+            MString strCandidate = GetLBText(iItem);
 
             for (INT i = iItem + 1; i < nCount; ++i)
             {
-                GetLBText(i, szText);
-                MString strText = szText;
+                MString strText = GetLBText(i);
                 CharUpperW(&strText[0]);
                 if (strText.find(strInputUpper) == 0)
                 {
@@ -132,8 +129,7 @@ public:
             // Case-sensitive search for matching item
             for (INT i = 0; i < nCount; ++i)
             {
-                GetLBText(i, szText);
-                MString strText = szText;
+                MString strText = GetLBText(i);
                 if (strText.find(strInput) == 0)
                 {
                     iItem = i;
@@ -143,13 +139,11 @@ public:
             if (iItem == CB_ERR)
                 return;
 
-            GetLBText(iItem, szText);
-            MString strCandidate = szText;
+            MString strCandidate = GetLBText(iItem);
 
             for (INT i = iItem + 1; i < nCount; ++i)
             {
-                GetLBText(i, szText);
-                MString strText = szText;
+                MString strText = GetLBText(i);
                 if (strText.find(strInput) == 0)
                 {
                     return;

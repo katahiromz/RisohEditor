@@ -7,6 +7,52 @@ enum LANG_TYPE
     LANG_TYPE_2
 };
 
+// Helper function to get ComboBox edit text without buffer size limitations
+inline MStringW GetComboBoxText(HWND hwndCombo)
+{
+    INT cch = ComboBox_GetTextLength(hwndCombo);
+    if (cch <= 0)
+        return MStringW();
+
+    MStringW str;
+    str.resize(cch + 1);
+    ComboBox_GetText(hwndCombo, &str[0], cch + 1);
+    str.resize(cch);  // Remove null terminator from string length
+    return str;
+}
+
+// Helper function to get ComboBox listbox text without buffer size limitations
+inline MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex)
+{
+    INT cch = ComboBox_GetLBTextLen(hwndCombo, nIndex);
+    if (cch == CB_ERR)
+        return MStringW();
+
+    MStringW str;
+    str.resize(cch);
+    cch = ComboBox_GetLBText(hwndCombo, nIndex, &str[0]);
+    if (cch == CB_ERR)
+        return MStringW();
+
+    return str;
+}
+
+// Helper function to get ListBox text without buffer size limitations
+inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
+{
+    INT cch = ListBox_GetTextLen(hwndListBox, nIndex);
+    if (cch == LB_ERR)
+        return MStringW();
+
+    MStringW str;
+    str.resize(cch);
+    cch = ListBox_GetText(hwndListBox, nIndex, &str[0]);
+    if (cch == LB_ERR)
+        return MStringW();
+
+    return str;
+}
+
 BOOL CheckCommand(MString strCommand);
 BOOL CheckCommand(MString& strCommand);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);

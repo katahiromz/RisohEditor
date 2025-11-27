@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "MResizable.hpp"
+#include "Common.hpp"
 
 class MPathsDlg;
 
@@ -108,7 +109,8 @@ public:
         if (iItem == LB_ERR)
             return;
 
-        ListBox_GetText(m_hLst1, iItem, szPath);
+        MString strPath = GetListBoxText(m_hLst1, iItem);
+        StringCchCopy(szPath, _countof(szPath), strPath.c_str());
 
         ZeroMemory(&bi, sizeof(bi));
         bi.hwndOwner = hwnd;
@@ -133,9 +135,9 @@ public:
         INT i, nCount = ListBox_GetCount(m_hLst1);
         for (i = 0; i < nCount; ++i)
         {
-            ListBox_GetText(m_hLst1, i, szText);
-            mstr_trim(szText);
-            m_list.push_back(szText);
+            MString str = GetListBoxText(m_hLst1, i);
+            mstr_trim(str);
+            m_list.push_back(str);
         }
 
         GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
@@ -187,12 +189,11 @@ public:
         if (iItem == LB_ERR)
             return;
 
-        TCHAR szPath1[MAX_PATH], szPath2[MAX_PATH];
-        ListBox_GetText(m_hLst1, iItem - 1, szPath1);
-        ListBox_GetText(m_hLst1, iItem, szPath2);
+        MString szPath1 = GetListBoxText(m_hLst1, iItem - 1);
+        MString szPath2 = GetListBoxText(m_hLst1, iItem);
 
-        SetItemText(m_hLst1, iItem - 1, szPath2);
-        SetItemText(m_hLst1, iItem, szPath1);
+        SetItemText(m_hLst1, iItem - 1, szPath2.c_str());
+        SetItemText(m_hLst1, iItem, szPath1.c_str());
 
         ListBox_SetCurSel(m_hLst1, iItem - 1);
         OnSelChange(hwnd);
@@ -208,12 +209,11 @@ public:
         if (iItem + 1 >= nCount)
             return;
 
-        TCHAR szPath1[MAX_PATH], szPath2[MAX_PATH];
-        ListBox_GetText(m_hLst1, iItem, szPath1);
-        ListBox_GetText(m_hLst1, iItem + 1, szPath2);
+        MString szPath1 = GetListBoxText(m_hLst1, iItem);
+        MString szPath2 = GetListBoxText(m_hLst1, iItem + 1);
 
-        SetItemText(m_hLst1, iItem, szPath2);
-        SetItemText(m_hLst1, iItem + 1, szPath1);
+        SetItemText(m_hLst1, iItem, szPath2.c_str());
+        SetItemText(m_hLst1, iItem + 1, szPath1.c_str());
 
         ListBox_SetCurSel(m_hLst1, iItem + 1);
         OnSelChange(hwnd);

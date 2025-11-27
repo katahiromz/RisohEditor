@@ -767,7 +767,6 @@ public:
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
-        TCHAR szText[64];
         switch (id)
         {
         case IDOK:
@@ -780,8 +779,7 @@ public:
             if (codeNotify == CBN_SELCHANGE)
             {
                 INT nIndex = ComboBox_GetCurSel(hCmb1);
-                ComboBox_GetLBText(hCmb1, nIndex, szText);
-                MString text = szText;
+                MString text = GetComboBoxLBText(hCmb1, nIndex);
                 mstr_trim(text);
                 UpdateClass(hwnd, hLst1, text);
             }
@@ -814,8 +812,7 @@ public:
             if (codeNotify == CBN_SELCHANGE)
             {
                 INT nIndex = ComboBox_GetCurSel(hCmb4);
-                ComboBox_GetLBText(hCmb4, nIndex, szText);
-                MString text = szText;
+                MString text = GetComboBoxLBText(hCmb4, nIndex);
                 mstr_trim(text);
                 UpdateClass(hwnd, hLst1, text);
             }

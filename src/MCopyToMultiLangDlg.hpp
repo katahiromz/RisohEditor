@@ -110,11 +110,12 @@ public:
             return;
         }
 
-        WCHAR szText[MAX_PATH];
         for (INT iItem = 0; iItem < nCount; ++iItem)
         {
-            ListBox_GetText(hLst1, iItem, szText);
-            WORD wLang = LangFromText(szText);
+            MStringW str = GetListBoxText(hLst1, iItem);
+            if (str.empty())
+                continue;
+            WORD wLang = LangFromText(&str[0]);
             m_langs.push_back(wLang);
         }
 
@@ -136,15 +137,20 @@ public:
 
     void OnAddItem(HWND hwnd)
     {
-        WCHAR szText[MAX_PATH];
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         INT iItem = ComboBox_GetCurSel(hCmb3);
+        MStringW str;
         if (iItem == CB_ERR)
+        {
+            WCHAR szText[MAX_PATH];
             GetDlgItemTextW(hwnd, cmb3, szText, _countof(szText));
+            str = szText;
+        }
         else
-            ComboBox_GetLBText(hCmb3, iItem, szText);
+        {
+            str = GetComboBoxLBText(hCmb3, iItem);
+        }
 
-        std::wstring str = szText;
         mstr_trim(str);
         if (str.empty())
         {
@@ -152,8 +158,7 @@ public:
             return;
         }
 
-        StringCchCopyW(szText, _countof(szText), str.c_str());
-        WORD wLang = LangFromText(szText);
+        WORD wLang = LangFromText(&str[0]);
         if (wLang != BAD_LANG)
         {
             HWND hLst1 = GetDlgItem(hwnd, lst1);
