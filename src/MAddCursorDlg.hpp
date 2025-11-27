@@ -208,10 +208,10 @@ public:
         SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
 
         // If name was empty, use file title
-        WCHAR szText[MAX_PATH];
-        ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
-        if (!szText[0])
+        MString strText = GetComboBoxText(GetDlgItem(hwnd, cmb2));
+        if (strText.empty())
         {
+            WCHAR szText[MAX_PATH];
             StringCchCopyW(szText, _countof(szText), szFile);
             PathRemoveExtensionW(szText);
             ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));

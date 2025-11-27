@@ -723,15 +723,15 @@ public:
         case ID_BASE10:
             {
                 m_nBase = 10;
-                ComboBox_GetText(m_hCmb1, szText, _countof(szText));
-                SetItems(szText);
+                MString strText = GetComboBoxText(m_hCmb1);
+                SetItems(strText.c_str());
             }
             break;
         case ID_BASE16:
             {
                 m_nBase = 16;
-                ComboBox_GetText(m_hCmb1, szText, _countof(szText));
-                SetItems(szText);
+                MString strText = GetComboBoxText(m_hCmb1);
+                SetItems(strText.c_str());
             }
             break;
         case ID_IDJUMP00:

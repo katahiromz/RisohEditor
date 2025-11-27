@@ -86,9 +86,7 @@ public:
         INT iItem = ComboBox_GetCurSel(hCmb1);
         if (iItem == CB_ERR)
         {
-            TCHAR szText[32];
-            ComboBox_GetText(hCmb1, szText, 32);
-            strText = szText;
+            strText = GetComboBoxText(hCmb1);
         }
         else
         {
