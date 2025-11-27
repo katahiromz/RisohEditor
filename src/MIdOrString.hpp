@@ -36,6 +36,22 @@
     #endif
 #endif
 
+// MAKEINTRESNAME: Like MAKEINTRESOURCE but handles ID 0 by returning a
+// non-NULL invalid pointer. This allows resource ID 0 to be distinguished
+// from "no resource" (NULL). The pointer value 0x10000 is used for ID 0
+// because it's outside the IS_INTRESOURCE range but still invalid memory.
+#define MAKEINTRESNAMEA(i) ((i) ? MAKEINTRESOURCEA(i) : (char *)0x10000)
+#define MAKEINTRESNAMEW(i) ((i) ? MAKEINTRESOURCEW(i) : (WCHAR *)0x10000)
+#ifdef UNICODE
+    #define MAKEINTRESNAME  MAKEINTRESNAMEW
+#else
+    #define MAKEINTRESNAME  MAKEINTRESNAMEA
+#endif
+
+// Check if a pointer represents resource ID 0 (the special 0x10000 value).
+// Use this to detect ID 0 when processing the result of ptr() or MAKEINTRESNAME.
+#define IS_INTRESID0(p) ((ULONG_PTR)(p) == 0x10000)
+
 #ifndef _countof
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
 #endif
@@ -98,11 +114,16 @@ struct MIdOrString
         }
     }
 
+    // Returns the resource identifier as a pointer.
+    // For string names, returns the string pointer.
+    // For integer IDs (including ID 0), returns MAKEINTRESNAME which produces
+    // a non-NULL pointer that can represent ID 0 distinctly from "no resource".
     const TCHAR *ptr() const
     {
-        if (m_id)
-            return MAKEINTRESOURCE(m_id);
-        return m_str.c_str();
+        if (!m_str.empty())
+            return m_str.c_str();
+        // Use MAKEINTRESNAME to handle ID 0 (returns 0x10000 instead of NULL)
+        return MAKEINTRESNAME(m_id);
     }
 
     bool is_zero() const
