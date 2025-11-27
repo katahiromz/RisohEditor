@@ -105,7 +105,6 @@ inline MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
 }
 
 BOOL CheckCommand(MString strCommand);
-BOOL CheckCommand(MString& strCommand);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
