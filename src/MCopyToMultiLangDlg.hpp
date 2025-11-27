@@ -113,6 +113,8 @@ public:
         for (INT iItem = 0; iItem < nCount; ++iItem)
         {
             MStringW str = GetListBoxText(hLst1, iItem);
+            if (str.empty())
+                continue;
             WORD wLang = LangFromText(&str[0]);
             m_langs.push_back(wLang);
         }
