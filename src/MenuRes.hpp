@@ -93,10 +93,10 @@ typedef struct MENUEX_TEMPLATE_ITEM_HEADER
 
 struct MENU_ENTRY
 {
-    WCHAR szCaption[128];
-    WCHAR szFlags[64];
-    WCHAR szCommandID[64];
-    WCHAR szHelpID[64];
+    MStringW szCaption;
+    MStringW szFlags;
+    MStringW szCommandID;
+    MStringW szHelpID;
     WORD wDepth;
 };
 

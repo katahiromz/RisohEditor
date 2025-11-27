@@ -66,7 +66,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
+        m_entry.sz0 = ::GetWindowTextW(hCmb1);
 
         std::wstring str = m_entry.sz0;
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
@@ -75,7 +75,7 @@ public:
             ErrorBoxDx(IDS_INVALIDKEY);
             return;
         }
-        lstrcpynW(m_entry.sz0, str.c_str(), _countof(m_entry.sz0));
+        m_entry.sz0 = str;
 
         WORD wFlags = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -89,10 +89,9 @@ public:
         if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
             wFlags |= FALT;
 
-        str = GetKeyFlags(wFlags);
-        lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
+        m_entry.sz1 = GetKeyFlags(wFlags);
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        m_entry.sz2 = ::GetDlgItemTextW(hwnd, cmb2);
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_entry.sz2))
@@ -168,11 +167,11 @@ public:
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitCtrlIDComboBox(hCmb2);
         SubclassChildDx(m_cmb2, cmb2);
-        SetDlgItemTextW(hwnd, cmb2, m_entry.sz2);
+        SetDlgItemTextW(hwnd, cmb2, m_entry.sz2.c_str());
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1);
-        SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
+        SetDlgItemTextW(hwnd, cmb1, m_entry.sz0.c_str());
         SubclassChildDx(m_cmb1, cmb1);
 
         WORD wFlags;
@@ -193,7 +192,7 @@ public:
             HWND hCmb1 = GetDlgItem(hwnd, cmb1);
             Cmb1_InitVirtualKeys(hCmb1);
 
-            INT i = ComboBox_FindStringExact(hCmb1, -1, m_entry.sz0);
+            INT i = ComboBox_FindStringExact(hCmb1, -1, m_entry.sz0.c_str());
             if (i != CB_ERR)
             {
                 ComboBox_SetCurSel(hCmb1, i);
@@ -207,7 +206,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
+        m_entry.sz0 = ::GetWindowTextW(hCmb1);
 
         std::wstring str = m_entry.sz0;
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
@@ -216,7 +215,7 @@ public:
             ErrorBoxDx(IDS_INVALIDKEY);
             return;
         }
-        lstrcpynW(m_entry.sz0, str.c_str(), _countof(m_entry.sz0));
+        m_entry.sz0 = str;
 
         WORD wFlags = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -230,10 +229,9 @@ public:
         if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
             wFlags |= FALT;
 
-        str = GetKeyFlags(wFlags);
-        lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
+        m_entry.sz1 = GetKeyFlags(wFlags);
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        m_entry.sz2 = ::GetDlgItemTextW(hwnd, cmb2);
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_entry.sz2))
@@ -332,19 +330,19 @@ public:
             return;
 
         ACCEL_ENTRY ae0, ae1;
-        ListView_GetItemText(m_hLst1, iItem - 1, 0, ae0.sz0, _countof(ae0.sz0));
-        ListView_GetItemText(m_hLst1, iItem - 1, 1, ae0.sz1, _countof(ae0.sz1));
-        ListView_GetItemText(m_hLst1, iItem - 1, 2, ae0.sz2, _countof(ae0.sz2));
-        ListView_GetItemText(m_hLst1, iItem, 0, ae1.sz0, _countof(ae1.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, ae1.sz1, _countof(ae1.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, ae1.sz2, _countof(ae1.sz2));
+        ae0.sz0 = GetListViewItemText(m_hLst1, iItem - 1, 0);
+        ae0.sz1 = GetListViewItemText(m_hLst1, iItem - 1, 1);
+        ae0.sz2 = GetListViewItemText(m_hLst1, iItem - 1, 2);
+        ae1.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        ae1.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        ae1.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
 
-        ListView_SetItemText(m_hLst1, iItem - 1, 0, ae1.sz0);
-        ListView_SetItemText(m_hLst1, iItem - 1, 1, ae1.sz1);
-        ListView_SetItemText(m_hLst1, iItem - 1, 2, ae1.sz2);
-        ListView_SetItemText(m_hLst1, iItem, 0, ae0.sz0);
-        ListView_SetItemText(m_hLst1, iItem, 1, ae0.sz1);
-        ListView_SetItemText(m_hLst1, iItem, 2, ae0.sz2);
+        ListView_SetItemText(m_hLst1, iItem - 1, 0, const_cast<LPWSTR>(ae1.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem - 1, 1, const_cast<LPWSTR>(ae1.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem - 1, 2, const_cast<LPWSTR>(ae1.sz2.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(ae0.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(ae0.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(ae0.sz2.c_str()));
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem - 1, state, state);
@@ -357,19 +355,19 @@ public:
             return;
 
         ACCEL_ENTRY ae0, ae1;
-        ListView_GetItemText(m_hLst1, iItem, 0, ae0.sz0, _countof(ae0.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, ae0.sz1, _countof(ae0.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, ae0.sz2, _countof(ae0.sz2));
-        ListView_GetItemText(m_hLst1, iItem + 1, 0, ae1.sz0, _countof(ae1.sz0));
-        ListView_GetItemText(m_hLst1, iItem + 1, 1, ae1.sz1, _countof(ae1.sz1));
-        ListView_GetItemText(m_hLst1, iItem + 1, 2, ae1.sz2, _countof(ae1.sz2));
+        ae0.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        ae0.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        ae0.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
+        ae1.sz0 = GetListViewItemText(m_hLst1, iItem + 1, 0);
+        ae1.sz1 = GetListViewItemText(m_hLst1, iItem + 1, 1);
+        ae1.sz2 = GetListViewItemText(m_hLst1, iItem + 1, 2);
 
-        ListView_SetItemText(m_hLst1, iItem, 0, ae1.sz0);
-        ListView_SetItemText(m_hLst1, iItem, 1, ae1.sz1);
-        ListView_SetItemText(m_hLst1, iItem, 2, ae1.sz2);
-        ListView_SetItemText(m_hLst1, iItem + 1, 0, ae0.sz0);
-        ListView_SetItemText(m_hLst1, iItem + 1, 1, ae0.sz1);
-        ListView_SetItemText(m_hLst1, iItem + 1, 2, ae0.sz2);
+        ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(ae1.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(ae1.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(ae1.sz2.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 0, const_cast<LPWSTR>(ae0.sz0.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 1, const_cast<LPWSTR>(ae0.sz1.c_str()));
+        ListView_SetItemText(m_hLst1, iItem + 1, 2, const_cast<LPWSTR>(ae0.sz2.c_str()));
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem + 1, state, state);
@@ -407,21 +405,21 @@ public:
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
-        item.pszText = entry.sz0;
+        item.pszText = const_cast<LPWSTR>(entry.sz0.c_str());
         ListView_InsertItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
-        item.pszText = entry.sz1;
+        item.pszText = const_cast<LPWSTR>(entry.sz1.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 2;
-        item.pszText = entry.sz2;
+        item.pszText = const_cast<LPWSTR>(entry.sz2.c_str());
         ListView_SetItem(m_hLst1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -438,16 +436,16 @@ public:
         }
 
         ACCEL_ENTRY a_entry;
-        ListView_GetItemText(m_hLst1, iItem, 0, a_entry.sz0, _countof(a_entry.sz0));
-        ListView_GetItemText(m_hLst1, iItem, 1, a_entry.sz1, _countof(a_entry.sz1));
-        ListView_GetItemText(m_hLst1, iItem, 2, a_entry.sz2, _countof(a_entry.sz2));
+        a_entry.sz0 = GetListViewItemText(m_hLst1, iItem, 0);
+        a_entry.sz1 = GetListViewItemText(m_hLst1, iItem, 1);
+        a_entry.sz2 = GetListViewItemText(m_hLst1, iItem, 2);
 
         MModifyKeyDlg dialog(a_entry);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
-            ListView_SetItemText(m_hLst1, iItem, 0, a_entry.sz0);
-            ListView_SetItemText(m_hLst1, iItem, 1, a_entry.sz1);
-            ListView_SetItemText(m_hLst1, iItem, 2, a_entry.sz2);
+            ListView_SetItemText(m_hLst1, iItem, 0, const_cast<LPWSTR>(a_entry.sz0.c_str()));
+            ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPWSTR>(a_entry.sz1.c_str()));
+            ListView_SetItemText(m_hLst1, iItem, 2, const_cast<LPWSTR>(a_entry.sz2.c_str()));
         }
     }
 
@@ -465,9 +463,9 @@ public:
         for (i = 0; i < nCount; ++i)
         {
             ACCEL_ENTRY a_entry;
-            ListView_GetItemText(m_hLst1, i, 0, a_entry.sz0, _countof(a_entry.sz0));
-            ListView_GetItemText(m_hLst1, i, 1, a_entry.sz1, _countof(a_entry.sz1));
-            ListView_GetItemText(m_hLst1, i, 2, a_entry.sz2, _countof(a_entry.sz2));
+            a_entry.sz0 = GetListViewItemText(m_hLst1, i, 0);
+            a_entry.sz1 = GetListViewItemText(m_hLst1, i, 1);
+            a_entry.sz2 = GetListViewItemText(m_hLst1, i, 2);
 
             WORD wFlags;
             SetKeyFlags(wFlags, a_entry.sz1);
@@ -488,7 +486,7 @@ public:
                 }
                 else
                 {
-                    entry.wAscii = (WORD)mstr_parse_int(a_entry.sz0);
+                    entry.wAscii = (WORD)mstr_parse_int(a_entry.sz0.c_str());
                 }
             }
             entry.wId = (WORD)g_db.GetResIDValue(a_entry.sz2);

@@ -64,24 +64,23 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        WCHAR szText[MAX_PATH];
-        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
-        ReplaceFullWithHalf(szText);
-        mstr_trim(szText);
+        MStringW str = ::GetDlgItemTextW(hwnd, cmb1);
+        ReplaceFullWithHalf(str);
+        mstr_trim(str);
 
-        if (szText[0] == L'-')
-            szText[0] = 0;
+        if (!str.empty() && str[0] == L'-')
+            str.clear();
 
-        if (szText[0] && !CheckCommand(szText))
+        if (!str.empty() && !CheckCommand(str))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
         }
 
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-            szText[0] = 0;
+            str.clear();
 
-        m_str = szText;
+        m_str = str;
         EndDialog(IDOK);
     }
 
@@ -110,16 +109,14 @@ public:
         if (iItem != CB_ERR)
             return;
 
-        WCHAR sz1[MAX_PATH];
-        sz1[0] = 0;
-        ::GetDlgItemTextW(hwnd, cmb1, sz1, _countof(sz1));
-        ReplaceFullWithHalf(sz1);
-        mstr_trim(sz1);
+        MStringW str = ::GetDlgItemTextW(hwnd, cmb1);
+        ReplaceFullWithHalf(str);
+        mstr_trim(str);
 
-        if (sz1[0])
+        if (!str.empty())
         {
             m_bUpdating = TRUE;
-            if (sz1[0] == L'-')
+            if (str[0] == L'-')
                 CheckDlgButton(hwnd, chx1, BST_CHECKED);
             else
                 CheckDlgButton(hwnd, chx1, BST_UNCHECKED);

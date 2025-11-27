@@ -34,8 +34,8 @@ class MMacrosDlg;
 
 struct MACRO_ENTRY
 {
-    TCHAR szKey[128];
-    TCHAR szValue[256];
+    MString szKey;
+    MString szValue;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -71,13 +71,13 @@ public:
 
         MACRO_ENTRY entry;
 
-        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        entry.szKey = MWindowBase::GetWindowText(hCmb1);
+        entry.szValue = MWindowBase::GetWindowText(hCmb2);
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        if (entry.szKey[0] == 0)
+        if (entry.szKey.empty())
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -155,8 +155,8 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
 
-        SetWindowText(m_cmb1, m_entry.szKey);
-        SetWindowText(m_cmb2, m_entry.szValue);
+        MWindowBase::SetWindowText(m_cmb1, m_entry.szKey.c_str());
+        MWindowBase::SetWindowText(m_cmb2, m_entry.szValue.c_str());
 
         CenterWindowDx();
         return TRUE;
@@ -169,13 +169,13 @@ public:
 
         MACRO_ENTRY entry;
 
-        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        entry.szKey = MWindowBase::GetWindowText(hCmb1);
+        entry.szValue = MWindowBase::GetWindowText(hCmb2);
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        if (entry.szKey[0] == 0)
+        if (entry.szKey.empty())
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);

@@ -32,9 +32,9 @@
 
 struct ACCEL_ENTRY
 {
-    WCHAR sz0[128];
-    WCHAR sz1[16];
-    WCHAR sz2[128];
+    MStringW sz0;
+    MStringW sz1;
+    MStringW sz2;
 };
 
 struct AccelTableEntry
