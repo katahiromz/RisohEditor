@@ -634,8 +634,7 @@ void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], (*entry).size());
     if (hbm)
     {
-        // Accept integer IDs (including ID 0) and non-empty string names
-        if (item.m_title.is_int() || !item.m_title.m_str.empty())
+        if (!item.m_title.empty())  // title is not empty
         {
             // delete the previous
             if (title_to_bitmap[item.m_title])
@@ -697,8 +696,7 @@ void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
     if (hIcon)
     {
-        // Accept integer IDs (including ID 0) and non-empty string names
-        if (item.m_title.is_int() || !item.m_title.m_str.empty())
+        if (!item.m_title.empty())  // the title was not empty
         {
             // delete the previous
             if (title_to_icon[item.m_title])
