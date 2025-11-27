@@ -147,23 +147,21 @@ public:
         if (type == RT_STRING)
         {
             // edt1 --> sz (trimmed)
-            WCHAR sz[16];
-            GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            MStringW sz = GetDlgItemText(edt1);
             mstr_trim(sz);
 
             // clear the name if sz is empty
-            if (sz[0] == 0)
+            if (sz.empty())
                 SetDlgItemTextW(hwnd, cmb2, NULL);
         }
         if (type == RT_MESSAGETABLE)
         {
             // edt1 --> sz (trimmed)
-            WCHAR sz[16];
-            GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            MStringW sz = GetDlgItemText(edt1);
             mstr_trim(sz);
 
             // clear the name if sz is empty
-            if (sz[0] == 0)
+            if (sz.empty())
                 SetDlgItemTextW(hwnd, cmb2, NULL);
         }
 

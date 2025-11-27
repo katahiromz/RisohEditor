@@ -145,18 +145,17 @@ public:
         g_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
         g_settings.bWordWrap = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
-        WCHAR szText[64];
-        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
-        mstr_trim(szText);
-        g_settings.strAtlAxWin = szText;
+        MStringW strAtlAxWin = GetDlgItemText(cmb1);
+        mstr_trim(strAtlAxWin);
+        g_settings.strAtlAxWin = strAtlAxWin;
 
         g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx10) == BST_CHECKED);
 
-        GetDlgItemTextW(hwnd, cmb2, szText, _countof(szText));
-        mstr_trim(szText);
-        g_settings.strBackupSuffix = szText;
+        MStringW strBackupSuffix = GetDlgItemText(cmb2);
+        mstr_trim(strBackupSuffix);
+        g_settings.strBackupSuffix = strBackupSuffix;
 
-        if (szText[0] == 0)
+        if (strBackupSuffix.empty())
             g_settings.bBackup = FALSE;
 
         EndDialog(IDOK);
