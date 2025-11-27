@@ -46,6 +46,7 @@ public:
 
     INT  GetLBText(INT nIndex, LPTSTR lpszText) const;
     BOOL GetLBText(INT nIndex, MString& rString) const;
+    MString GetLBText(INT nIndex) const;
     INT  GetLBTextLen(INT nIndex) const;
 
     INT GetItemHeight(INT nIndex) const;
@@ -311,6 +312,13 @@ inline BOOL MComboBox::GetLBText(INT nIndex, MString& rString) const
     if (cch == CB_ERR)
         rString.clear();
     return cch != CB_ERR;
+}
+
+inline MString MComboBox::GetLBText(INT nIndex) const
+{
+    MString rString;
+    GetLBText(nIndex, rString);
+    return rString;
 }
 
 ////////////////////////////////////////////////////////////////////////////
