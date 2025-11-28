@@ -174,6 +174,8 @@ struct MIdOrString
     }
     bool operator<(const MIdOrString& id_or_str) const
     {
+        if (is_zero() || id_or_str.is_zero())
+            return is_zero() > id_or_str.is_zero();
         if (id_or_str.m_id != 0)
         {
             if (m_id != 0)
