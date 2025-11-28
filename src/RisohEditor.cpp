@@ -8874,6 +8874,48 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         textinclude1_a.pop_back();
     MAnsiToWide textinclude1_w(CP_UTF8, textinclude1_a.c_str());
 
+    // Issue #301: Check if custom header file exists at destination, offer to copy if not
+    // Note: "< " prefix indicates a write-protected/read-only file (Visual C++ convention)
+    // We skip these as they are typically system headers that shouldn't be copied
+    if (!textinclude1_a.empty() && textinclude1_a != "resource.h" &&
+        textinclude1_a.find("< ") == std::string::npos)
+    {
+        // Build destination path for header file
+        WCHAR szDestDir[MAX_PATH];
+        StringCchCopyW(szDestDir, _countof(szDestDir), pszFileName);
+        PathRemoveFileSpecW(szDestDir);
+
+        WCHAR szDestHeaderPath[MAX_PATH];
+        PathCombineW(szDestHeaderPath, szDestDir, textinclude1_w.c_str());
+
+        // Check if destination header file exists
+        if (!PathFileExistsW(szDestHeaderPath))
+        {
+            // Try to find source header file from original RC file location
+            WCHAR szSrcDir[MAX_PATH];
+            StringCchCopyW(szSrcDir, _countof(szSrcDir), m_szFile);
+            PathRemoveFileSpecW(szSrcDir);
+
+            WCHAR szSrcHeaderPath[MAX_PATH];
+            PathCombineW(szSrcHeaderPath, szSrcDir, textinclude1_w.c_str());
+
+            // If source header exists but destination doesn't, ask to copy
+            if (PathFileExistsW(szSrcHeaderPath))
+            {
+                WCHAR szMsg[MAX_PATH * 2];
+                StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_COPYHEADERFILE), textinclude1_w.c_str());
+                if (MsgBoxDx(szMsg, MB_ICONQUESTION | MB_YESNO) == IDYES)
+                {
+                    if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
+                    {
+                        // Copy failed, show error to user
+                        ErrorBoxDx(IDS_CANNOTSAVE);
+                    }
+                }
+            }
+        }
+    }
+
     std::string textinclude2_a;
     if (p_textinclude2)
         textinclude2_a = p_textinclude2->to_string();
