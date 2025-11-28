@@ -1648,6 +1648,7 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Dihasilkan dari TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Berkas ini dilindungi dari penulisan oleh TEXTINCLUDE 1.\r\n\r\nApakah Anda masih ingin menulis ke berkas ini?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 berisi item sumber daya yang tidak dapat diedit.\r\n\r\nApakah Anda ingin menyertakan item dalam TEXTINCLUDE 3 sebagai item yang dapat diedit dan mengatur ulang TEXTINCLUDE 3?"
+    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

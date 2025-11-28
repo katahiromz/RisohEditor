@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Wygenerowano z TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Ten plik jest chroniony przed zapisem za pomocą TEXTINCLUDE 1.\r\n\r\nCzy nadal chcesz zapisać coś w pliku?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 zawiera elementy zasobów, których nie można edytować.\r\n\r\nCzy chcesz uwzględnić elementy w TEXTINCLUDE 3 jako elementy edytowalne i zresetować TEXTINCLUDE 3?"
+    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
