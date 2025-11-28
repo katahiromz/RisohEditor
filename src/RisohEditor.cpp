@@ -8913,7 +8913,13 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                     PathRemoveFileSpecW(szDestHeaderDir);
                     if (szDestHeaderDir[0] && !PathIsDirectoryW(szDestHeaderDir))
                     {
-                        SHCreateDirectoryExW(NULL, szDestHeaderDir, NULL);
+                        INT nResult = SHCreateDirectoryExW(NULL, szDestHeaderDir, NULL);
+                        if (nResult != ERROR_SUCCESS && nResult != ERROR_ALREADY_EXISTS)
+                        {
+                            // Directory creation failed, show error to user
+                            ErrorBoxDx(IDS_CANNOTSAVE);
+                            // Continue to try CopyFileW anyway, which will also fail
+                        }
                     }
 
                     if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
