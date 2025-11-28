@@ -3,6 +3,7 @@ add_library(libRisohEditor STATIC
     AccelRes.cpp
     DialogRes.cpp
     DlgInitRes.cpp
+    EgaBridge.cpp
     IconRes.cpp
     MenuRes.cpp
     MOleHost.cpp

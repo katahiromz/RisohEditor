@@ -23,13 +23,13 @@
 #include "MResizable.hpp"
 #include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
+#include "EgaBridge.hpp"
 
 using namespace EGA;
 
 class MEgaDlg;
 static HWND s_hwndEga = NULL;
 static BOOL s_bEnter = FALSE;
-static LONG s_nEgaRunning = 0;
 extern HWND g_hMainWnd;
 extern MIdOrString g_RES_select_type;
 extern MIdOrString g_RES_select_name;
@@ -89,16 +89,6 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     SendDlgItemMessageW(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
 }
 
-static inline DWORD WINAPI EgaThreadFunc(LPVOID args)
-{
-    if (InterlockedIncrement(&s_nEgaRunning) == 1)
-    {
-        EGA_interactive(NULL, true);
-        InterlockedDecrement(&s_nEgaRunning);
-    }
-    return 0;
-}
-
 void EGA_extension(void);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -115,15 +105,18 @@ public:
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
 
-        EGA_init();
-        EGA_set_input_fn(EGA_dialog_input);
-        EGA_set_print_fn(EGA_dialog_print);
+        // Initialize EGA via bridge and register dialog callbacks
+        EgaBridge::Initialize();
+        EgaBridge::SetInputFn(EGA_dialog_input);
+        EgaBridge::SetPrintFn(EGA_dialog_print);
+
         EGA_extension();
     }
 
     virtual ~MEgaDlg()
     {
-        EGA_uninit();
+        EgaBridge::Uninitialize();
+
         DeleteObject(m_hFont);
 
         DestroyIcon(m_hIcon);
@@ -164,11 +157,8 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        if (!s_nEgaRunning)
-        {
-            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
-            ::CloseHandle(hThread);
-        }
+        // Start the interactive loop now that dialog hwnd is set
+        EgaBridge::StartInteractive();
 
         if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
         {
@@ -229,10 +219,10 @@ public:
 
     void OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
     {
-        if (fShow && !s_nEgaRunning)
+        if (fShow)
         {
-            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
-            ::CloseHandle(hThread);
+            // Start the interactive loop if needed
+            EgaBridge::StartInteractive();
             ::SetFocus(::GetDlgItem(hwnd, edt2));
         }
     }
