@@ -173,7 +173,8 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         s_hwndEga = hwnd;
-        s_hEgaEvent = CreateEvent(NULL, TRUE, FALSE, NULL); // manual-reset event
+        // Create manual-reset event for input signaling; if NULL, EGA_dialog_input falls back to busy-wait
+        s_hEgaEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         m_resizable.OnParentCreate(hwnd);
 
         m_resizable.SetLayoutAnchor(grp1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);

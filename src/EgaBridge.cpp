@@ -56,7 +56,7 @@ static DWORD WINAPI EgaBridgeThreadProc(LPVOID args)
         }
         catch (...)
         {
-            // Ensure counter is decremented even if exception occurs
+            // Exception caught - continue to decrement counter below
         }
         InterlockedDecrement(&s_nRunning);
     }
