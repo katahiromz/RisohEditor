@@ -5,6 +5,7 @@ add_library(libRisohEditor STATIC
     DlgInitRes.cpp
     EgaBridge.cpp
     IconRes.cpp
+    MBitmapDx.cpp
     MenuRes.cpp
     MOleHost.cpp
     MSplitterWnd.cpp
