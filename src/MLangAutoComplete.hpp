@@ -109,6 +109,9 @@ public:
     // IEnumString interface
     STDMETHODIMP Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched)
     {
+        if (!rgelt)
+            return E_POINTER;
+
         if (!celt)
             celt = 1;
 
