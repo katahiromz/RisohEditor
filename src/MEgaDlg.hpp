@@ -23,11 +23,13 @@
 #include "MResizable.hpp"
 #include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
+#include "EgaBridge.hpp"
 
 using namespace EGA;
 
 class MEgaDlg;
 static HWND s_hwndEga = NULL;
+static HANDLE s_hEgaEvent = NULL; // event to signal input availability
 static BOOL s_bEnter = FALSE;
 static LONG s_nEgaRunning = 0;
 extern HWND g_hMainWnd;
@@ -43,11 +45,31 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
         return true;
     }
 
-    while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
+    if (s_hEgaEvent == NULL)
     {
-        Sleep(100);
+        // Fall back to original busy-wait if event wasn't created
+        while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
+        {
+            Sleep(100);
+        }
+        s_bEnter = FALSE;
     }
-    s_bEnter = FALSE;
+    else
+    {
+        // Wait until signaled (user pressed OK) or window hidden
+        while (!::IsWindowVisible(s_hwndEga))
+        {
+            // If dialog is hidden, wait a bit for it to reappear
+            Sleep(100);
+            if (!::IsWindow(s_hwndEga))
+                return false;
+        }
+
+        // Wait for the event signal
+        WaitForSingleObject(s_hEgaEvent, INFINITE);
+        // reset if manual-reset not used
+        ResetEvent(s_hEgaEvent);
+    }
 
     WCHAR szTextW[512];
     GetDlgItemTextW(s_hwndEga, edt2, szTextW, ARRAYSIZE(szTextW));
@@ -115,15 +137,24 @@ public:
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
 
-        EGA_init();
-        EGA_set_input_fn(EGA_dialog_input);
-        EGA_set_print_fn(EGA_dialog_print);
+        // Initialize EGA via bridge and register dialog callbacks
+        EgaBridge::Initialize();
+        EgaBridge::SetInputFn([](char* buf, size_t buflen)->bool { return EGA_dialog_input(buf, buflen); });
+        EgaBridge::SetPrintFn([](const char* fmt, va_list va){ EGA_dialog_print(fmt, va); });
+
         EGA_extension();
     }
 
     virtual ~MEgaDlg()
     {
-        EGA_uninit();
+        if (s_hEgaEvent)
+        {
+            CloseHandle(s_hEgaEvent);
+            s_hEgaEvent = NULL;
+        }
+
+        EgaBridge::Uninitialize();
+
         DeleteObject(m_hFont);
 
         DestroyIcon(m_hIcon);
@@ -146,6 +177,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         s_hwndEga = hwnd;
+        s_hEgaEvent = CreateEvent(NULL, TRUE, FALSE, NULL); // manual-reset event
         m_resizable.OnParentCreate(hwnd);
 
         m_resizable.SetLayoutAnchor(grp1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
@@ -164,11 +196,8 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        if (!s_nEgaRunning)
-        {
-            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
-            ::CloseHandle(hThread);
-        }
+        // Start the interactive loop now that dialog hwnd is set
+        EgaBridge::StartInteractive();
 
         if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
         {
@@ -203,7 +232,11 @@ public:
         g_RES_select_type = BAD_TYPE;
         g_RES_select_name = BAD_NAME;
         g_RES_select_lang = BAD_LANG;
-        s_bEnter = TRUE;
+        // Notify EGA input callback to read the text
+        if (s_hEgaEvent)
+            SetEvent(s_hEgaEvent);
+        else
+            s_bEnter = TRUE; // fallback to the legacy flag
         ::SetFocus(::GetDlgItem(hwnd, edt2));
     }
 
@@ -229,10 +262,10 @@ public:
 
     void OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
     {
-        if (fShow && !s_nEgaRunning)
+        if (fShow)
         {
-            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
-            ::CloseHandle(hThread);
+            // Start the interactive loop if needed
+            EgaBridge::StartInteractive();
             ::SetFocus(::GetDlgItem(hwnd, edt2));
         }
     }
