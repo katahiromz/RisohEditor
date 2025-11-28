@@ -8906,6 +8906,16 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_COPYHEADERFILE), textinclude1_w.c_str());
                 if (MsgBoxDx(szMsg, MB_ICONQUESTION | MB_YESNO) == IDYES)
                 {
+                    // Create parent directory if it doesn't exist
+                    // This handles paths like "include\resource.h" or "include/resource.h"
+                    WCHAR szDestHeaderDir[MAX_PATH];
+                    StringCchCopyW(szDestHeaderDir, _countof(szDestHeaderDir), szDestHeaderPath);
+                    PathRemoveFileSpecW(szDestHeaderDir);
+                    if (szDestHeaderDir[0] && !PathIsDirectoryW(szDestHeaderDir))
+                    {
+                        SHCreateDirectoryExW(NULL, szDestHeaderDir, NULL);
+                    }
+
                     if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
                     {
                         // Copy failed, show error to user
