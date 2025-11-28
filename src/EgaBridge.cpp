@@ -19,8 +19,6 @@
 
 #include "EgaBridge.hpp"
 #include <windows.h>
-#include <atomic>
-#include <thread>
 #include <utility>
 
 #include "../EGA/ega.hpp"
@@ -31,8 +29,8 @@ namespace
 {
     static EgaInputFn  s_inputFn;
     static EgaPrintFn  s_printFn;
-    static std::atomic<bool> s_threadRunning(false);
-    static std::thread s_thread;
+    static LONG s_nRunning = 0;
+    static HANDLE s_hThread = NULL;
 }
 
 static bool Ega_CInput(char* buf, size_t buflen)
@@ -46,6 +44,16 @@ static void Ega_CPrint(const char* fmt, va_list va)
 {
     if (s_printFn)
         s_printFn(fmt, va);
+}
+
+static DWORD WINAPI EgaBridgeThreadProc(LPVOID args)
+{
+    if (InterlockedIncrement(&s_nRunning) == 1)
+    {
+        EGA_interactive(NULL, true);
+        InterlockedDecrement(&s_nRunning);
+    }
+    return 0;
 }
 
 namespace EgaBridge
@@ -77,31 +85,25 @@ namespace EgaBridge
         s_printFn = std::move(fn);
     }
 
-    static void ThreadProc()
-    {
-        EGA_interactive(nullptr, true);
-        s_threadRunning.store(false);
-    }
-
     bool StartInteractive()
     {
-        bool expected = false;
-        if (!s_threadRunning.compare_exchange_strong(expected, true))
+        if (s_nRunning)
         {
             return true;
         }
 
-        s_thread = std::thread(ThreadProc);
+        s_hThread = ::CreateThread(NULL, 0, EgaBridgeThreadProc, NULL, 0, NULL);
+        if (s_hThread)
+        {
+            ::CloseHandle(s_hThread);
+            s_hThread = NULL;
+        }
         return true;
     }
 
     void StopInteractive()
     {
-        // If EGA exposes a finish API, call it here. Otherwise rely on EGA_interactive returning when input 'exit' is sent.
-        if (s_thread.joinable())
-        {
-            // Attempt to join; EGA_interactive should exit when signaled.
-            s_thread.join();
-        }
+        // EGA_interactive will return when input 'exit' is sent.
+        // The thread handle was already closed in StartInteractive.
     }
 }

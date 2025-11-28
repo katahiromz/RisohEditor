@@ -67,7 +67,7 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
 
         // Wait for the event signal
         WaitForSingleObject(s_hEgaEvent, INFINITE);
-        // reset if manual-reset not used
+        // Reset the manual-reset event for next iteration
         ResetEvent(s_hEgaEvent);
     }
 
@@ -139,8 +139,8 @@ public:
 
         // Initialize EGA via bridge and register dialog callbacks
         EgaBridge::Initialize();
-        EgaBridge::SetInputFn([](char* buf, size_t buflen)->bool { return EGA_dialog_input(buf, buflen); });
-        EgaBridge::SetPrintFn([](const char* fmt, va_list va){ EGA_dialog_print(fmt, va); });
+        EgaBridge::SetInputFn(EGA_dialog_input);
+        EgaBridge::SetPrintFn(EGA_dialog_print);
 
         EGA_extension();
     }
