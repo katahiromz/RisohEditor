@@ -29,7 +29,6 @@ using namespace EGA;
 
 class MEgaDlg;
 static HWND s_hwndEga = NULL;
-static HANDLE s_hEgaEvent = NULL; // event to signal input availability
 static BOOL s_bEnter = FALSE;
 extern HWND g_hMainWnd;
 extern MIdOrString g_RES_select_type;
@@ -44,38 +43,11 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
         return true;
     }
 
-    if (s_hEgaEvent == NULL)
+    while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
     {
-        // Fall back to original busy-wait if event wasn't created
-        while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
-        {
-            Sleep(100);
-        }
-        s_bEnter = FALSE;
+        Sleep(100);
     }
-    else
-    {
-        // Wait until signaled (user pressed OK) or window hidden
-        while (!::IsWindowVisible(s_hwndEga))
-        {
-            // If dialog is hidden, wait a bit for it to reappear
-            Sleep(100);
-            if (!::IsWindow(s_hwndEga))
-                return false;
-        }
-
-        // Wait for the event signal with timeout, checking window validity
-        for (;;)
-        {
-            DWORD dwResult = WaitForSingleObject(s_hEgaEvent, 100);
-            if (dwResult == WAIT_OBJECT_0)
-                break;
-            if (!::IsWindow(s_hwndEga))
-                return false;
-        }
-        // Reset the manual-reset event for next iteration
-        ResetEvent(s_hEgaEvent);
-    }
+    s_bEnter = FALSE;
 
     WCHAR szTextW[512];
     GetDlgItemTextW(s_hwndEga, edt2, szTextW, ARRAYSIZE(szTextW));
@@ -143,12 +115,6 @@ public:
 
     virtual ~MEgaDlg()
     {
-        if (s_hEgaEvent)
-        {
-            CloseHandle(s_hEgaEvent);
-            s_hEgaEvent = NULL;
-        }
-
         EgaBridge::Uninitialize();
 
         DeleteObject(m_hFont);
@@ -173,8 +139,6 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         s_hwndEga = hwnd;
-        // Create manual-reset event for input signaling; if NULL, EGA_dialog_input falls back to busy-wait
-        s_hEgaEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         m_resizable.OnParentCreate(hwnd);
 
         m_resizable.SetLayoutAnchor(grp1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
@@ -229,11 +193,7 @@ public:
         g_RES_select_type = BAD_TYPE;
         g_RES_select_name = BAD_NAME;
         g_RES_select_lang = BAD_LANG;
-        // Notify EGA input callback to read the text
-        if (s_hEgaEvent)
-            SetEvent(s_hEgaEvent);
-        else
-            s_bEnter = TRUE; // fallback to the legacy flag
+        s_bEnter = TRUE;
         ::SetFocus(::GetDlgItem(hwnd, edt2));
     }
 
