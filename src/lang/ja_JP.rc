@@ -1649,6 +1649,7 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "このファイルは TEXTINCLUDE 1 により書き込み禁止になっています。\r\n\r\nそれでもファイルに書き込みますか？"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 に編集できないリソース項目が含まれています。TEXTINCLUDE 3 の項目を編集可能な項目として取り込んで TEXTINCLUDE 3 をリセットしますか？"
+    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
