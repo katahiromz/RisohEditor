@@ -116,27 +116,36 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
     Destroy();
 
     Gdiplus::Bitmap *pBitmap = NULL;
-
-    m_hGlobal = GlobalAlloc(GMEM_MOVEABLE, dwSize);
-    if (m_hGlobal)
+    HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, dwSize);
+    if (hGlobal)
     {
-        LPVOID pv = GlobalLock(m_hGlobal);
+        LPVOID pv = GlobalLock(hGlobal);
         if (pv)
         {
             CopyMemory(pv, pvData, dwSize);
-            GlobalUnlock(m_hGlobal);
-        }
+            GlobalUnlock(hGlobal);
 
-        IStream *pStream = NULL;
-        if (CreateStreamOnHGlobal(m_hGlobal, FALSE, &pStream) == S_OK)
-        {
-            pBitmap = Gdiplus::Bitmap::FromStream(pStream);
-            pStream->Release();
+            IStream *pStream = NULL;
+            if (CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
+            {
+                pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+                pStream->Release();
+            }
         }
     }
 
-    m_pBitmap = pBitmap;
-    return m_pBitmap && CreateInternal();
+    if (pBitmap)
+    {
+        m_hGlobal = hGlobal;
+        m_pBitmap = pBitmap;
+        return CreateInternal();
+    }
+    else
+    {
+        if (hGlobal)
+            GlobalFree(hGlobal);
+        return FALSE;
+    }
 }
 
 void MBitmapDx::SetFrameIndex(UINT nFrameIndex)

@@ -109,30 +109,35 @@ public:
     // IEnumString interface
     STDMETHODIMP Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched)
     {
-        HRESULT hr = S_FALSE;
         if (!celt)
             celt = 1;
 
-        ULONG i;
-        for (i = 0; i < celt; i++)
+        ULONG fetched = 0;
+        for (ULONG i = 0; i < celt; i++)
         {
             if (m_nCurrentElement == m_list.size())
                 break;
 
             size_t cb = (m_list[m_nCurrentElement].size() + 1) * sizeof(WCHAR);
             rgelt[i] = reinterpret_cast<LPWSTR>(::CoTaskMemAlloc(cb));
+            if (!rgelt[i])
+            {
+                for (ULONG j = 0; j < fetched; j++)
+                    ::CoTaskMemFree(rgelt[j]);
+                if (pceltFetched)
+                    *pceltFetched = 0;
+                return E_OUTOFMEMORY;
+            }
             memcpy(rgelt[i], m_list[m_nCurrentElement].c_str(), cb);
 
-            if (pceltFetched)
-                *pceltFetched++;
-
+            fetched++;
             m_nCurrentElement++;
         }
 
-        if (i == celt)
-            hr = S_OK;
+        if (pceltFetched)
+            *pceltFetched = fetched;
 
-        return hr;
+        return (fetched == celt) ? S_OK : S_FALSE;
     }
     STDMETHODIMP Skip(ULONG celt)
     {
