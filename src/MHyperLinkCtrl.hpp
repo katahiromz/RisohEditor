@@ -22,7 +22,8 @@ public:
 
     virtual ~MHyperLinkCtrl()
     {
-        DestroyCursor(m_hHandCursor);
+        // NOTE: m_hHandCursor is a shared system cursor loaded with LoadCursor(NULL, ...)
+        // and should NOT be destroyed.
     }
 
     virtual void OnJump(HWND hwnd)

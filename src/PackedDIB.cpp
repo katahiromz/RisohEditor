@@ -322,6 +322,7 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
             {
                 ret = pBitmap->Save(FileName, &cls, NULL) == Gdiplus::Ok;
             }
+            delete pBitmap;
         }
         DeleteObject(hbm);
         return ret;
