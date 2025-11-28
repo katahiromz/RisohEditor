@@ -20,6 +20,7 @@
 #pragma once
 
 #include <cstdarg>
+#include <cstddef>
 
 // Function pointer types matching EGA API
 typedef bool (*EgaInputFn)(char* buf, size_t buflen);
