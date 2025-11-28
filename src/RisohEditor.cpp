@@ -7830,6 +7830,8 @@ static MStringW GetTextInclude1HeaderFile(const EntrySet& res, LPCWSTR szRCPath)
     }
 
     // If empty or contains write protect marker, return empty
+    // Note: "< " prefix indicates the file is read-only (e.g., "< resource.h\0")
+    // This is a Visual C++ convention for write-protecting RC files
     if (data.empty() || data.find("< ") != std::string::npos)
         return L"";
 
@@ -7951,11 +7953,14 @@ retry:
 
     // Load resource.h based on TEXTINCLUDE 1
     // Issue #301: Support TEXTINCLUDE 1
+    // TN035: TEXTINCLUDE 1 contains the resource symbol header file name
     UnloadResourceH(hwnd);
     if (g_settings.bAutoLoadNearbyResH)
     {
         // First, try to load the header file specified in TEXTINCLUDE 1
-        MStringW strHeaderFile = GetTextInclude1HeaderFile(res2.size() ? res2 : res1, szPath);
+        // Prefer res2 (loaded with APSTUDIO_INVOKED) as it contains TEXTINCLUDE resources
+        // Fall back to res1 if res2 is empty (e.g., when APSTUDIO_INVOKED loading failed)
+        MStringW strHeaderFile = GetTextInclude1HeaderFile(!res2.empty() ? res2 : res1, szPath);
         if (!strHeaderFile.empty())
         {
             // Load the header file from TEXTINCLUDE 1 value
