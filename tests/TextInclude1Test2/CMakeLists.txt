@@ -1,0 +1,6 @@
+add_executable(TextInclude1Test2 WIN32 TextInclude1Test2.cpp TextInclude1Test2_res.rc)
+target_link_libraries(TextInclude1Test2 comctl32)
+
+# do statically link
+set_target_properties(TextInclude1Test2 PROPERTIES LINK_SEARCH_START_STATIC 1)
+set_target_properties(TextInclude1Test2 PROPERTIES LINK_SEARCH_END_STATIC 1)
