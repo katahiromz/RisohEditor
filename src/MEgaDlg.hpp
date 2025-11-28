@@ -65,8 +65,15 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
                 return false;
         }
 
-        // Wait for the event signal
-        WaitForSingleObject(s_hEgaEvent, INFINITE);
+        // Wait for the event signal with timeout, checking window validity
+        for (;;)
+        {
+            DWORD dwResult = WaitForSingleObject(s_hEgaEvent, 100);
+            if (dwResult == WAIT_OBJECT_0)
+                break;
+            if (!::IsWindow(s_hwndEga))
+                return false;
+        }
         // Reset the manual-reset event for next iteration
         ResetEvent(s_hEgaEvent);
     }

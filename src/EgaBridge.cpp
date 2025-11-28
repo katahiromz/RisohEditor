@@ -50,7 +50,14 @@ static DWORD WINAPI EgaBridgeThreadProc(LPVOID args)
 {
     if (InterlockedIncrement(&s_nRunning) == 1)
     {
-        EGA_interactive(NULL, true);
+        try
+        {
+            EGA_interactive(NULL, true);
+        }
+        catch (...)
+        {
+            // Ensure counter is decremented even if exception occurs
+        }
         InterlockedDecrement(&s_nRunning);
     }
     return 0;
@@ -97,8 +104,9 @@ namespace EgaBridge
         {
             ::CloseHandle(s_hThread);
             s_hThread = NULL;
+            return true;
         }
-        return true;
+        return false;
     }
 
     void StopInteractive()
