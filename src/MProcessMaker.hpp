@@ -404,25 +404,28 @@ inline BOOL MProcessMaker::CreateProcessAsUserDx(
 {
     using namespace std;
     BOOL b;
-    LPTSTR pszCmdLine = _tcsdup(pszCommandLine);
+    // Avoid shadowing: use distinct name for the duplicated pointer
+    LPTSTR pszCmdLineDup = NULL;
+    if (pszCommandLine)
+        pszCmdLineDup = _tcsdup(pszCommandLine);
+
     LPCVOID pcEnv = reinterpret_cast<LPCVOID>(pszzEnvironment);
     LPVOID pEnv = const_cast<LPVOID>(pcEnv);
     DWORD dwCreationFlags = m_dwCreationFlags;
-    if (pszCmdLine)
+    if (pszCmdLineDup)
     {
-        LPTSTR pszCmdLine = const_cast<LPTSTR>(pszCommandLine);
         #ifdef UNICODE
             if (pEnv)
                 dwCreationFlags |= CREATE_UNICODE_ENVIRONMENT;
-            b = ::CreateProcessAsUser(hToken, pszAppName, pszCmdLine,
+            b = ::CreateProcessAsUser(hToken, pszAppName, pszCmdLineDup,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv, m_pszCurDir, &m_si, &m_pi);
         #else
-            b = ::CreateProcessAsUser(hToken, pszAppName, pszCmdLine,
+            b = ::CreateProcessAsUser(hToken, pszAppName, pszCmdLineDup,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv, m_pszCurDir, &m_si, &m_pi);
         #endif
-        free(pszCmdLine);
+        free(pszCmdLineDup);
     }
     else
     {
