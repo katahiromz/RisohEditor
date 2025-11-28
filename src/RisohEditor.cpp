@@ -7808,13 +7808,60 @@ BOOL InitLangListBox(HWND hwnd)
     return TRUE;
 }
 
+// Helper function to get header file path from TEXTINCLUDE 1 data
+static MStringW GetTextInclude1HeaderFile(const EntrySet& res, LPCWSTR szRCPath)
+{
+    // Find TEXTINCLUDE 1 entry
+    auto p_textinclude1 = res.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+    if (!p_textinclude1 || p_textinclude1->m_data.empty())
+        return L"";
+
+    // Extract the header file name from the data
+    std::string data(p_textinclude1->m_data.begin(), p_textinclude1->m_data.end());
+
+    // Remove trailing NUL characters
+    while (!data.empty() && data.back() == '\0')
+        data.pop_back();
+
+    // Remove surrounding quotes if present
+    if (data.size() >= 2 && data.front() == '"' && data.back() == '"')
+    {
+        data = data.substr(1, data.size() - 2);
+    }
+
+    // If empty or contains write protect marker, return empty
+    if (data.empty() || data.find("< ") != std::string::npos)
+        return L"";
+
+    // Convert to wide string
+    MAnsiToWide a2w(CP_UTF8, data.c_str());
+    MStringW strHeaderFile = a2w.c_str();
+
+    // If it's an absolute path, use it directly
+    if (PathIsRelativeW(strHeaderFile.c_str()) == FALSE)
+    {
+        if (PathFileExistsW(strHeaderFile.c_str()))
+            return strHeaderFile;
+        return L"";
+    }
+
+    // Build full path relative to RC file directory
+    WCHAR szDir[MAX_PATH];
+    StringCchCopyW(szDir, _countof(szDir), szRCPath);
+    PathRemoveFileSpecW(szDir);
+
+    WCHAR szFullPath[MAX_PATH];
+    PathCombineW(szFullPath, szDir, strHeaderFile.c_str());
+
+    // Check if the file exists
+    if (PathFileExistsW(szFullPath))
+        return szFullPath;
+
+    return L"";
+}
+
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 {
-    // reload the resource.h if necessary
-    UnloadResourceH(hwnd);
-    if (g_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, szPath);
-
     // load the RC file to the res1 variable
     EntrySet res1;
     if (!DoLoadRCEx(hwnd, szPath, res1, FALSE))
@@ -7900,6 +7947,25 @@ retry:
     {
         if (entry->m_type == L"TEXTINCLUDE")
             entry->m_lang = 0;
+    }
+
+    // Load resource.h based on TEXTINCLUDE 1
+    // Issue #301: Support TEXTINCLUDE 1
+    UnloadResourceH(hwnd);
+    if (g_settings.bAutoLoadNearbyResH)
+    {
+        // First, try to load the header file specified in TEXTINCLUDE 1
+        MStringW strHeaderFile = GetTextInclude1HeaderFile(res2.size() ? res2 : res1, szPath);
+        if (!strHeaderFile.empty())
+        {
+            // Load the header file from TEXTINCLUDE 1 value
+            DoLoadResH(hwnd, strHeaderFile.c_str());
+        }
+        else
+        {
+            // Fall back to searching for resource.h in standard locations
+            CheckResourceH(hwnd, szPath);
+        }
     }
 
     // TEXTINCLUDE 3 を取り込んだら、TEXTINCLUDE 3 をリセット。
@@ -8781,7 +8847,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     EntrySet textinclude;
     textinclude.add_default_TEXTINCLUDE();
 
-    p_textinclude1 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+    // Issue #301: Use TEXTINCLUDE 1 from the resource if available
+    p_textinclude1 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+    if (!p_textinclude1)
+        p_textinclude1 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
 
     auto p_textinclude2 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(2));
     if (!p_textinclude2)
@@ -8790,6 +8859,15 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     auto p_textinclude3 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(3));
     if (!p_textinclude3)
         p_textinclude3 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(3));
+
+    // Get header file name from TEXTINCLUDE 1
+    std::string textinclude1_a;
+    if (p_textinclude1)
+        textinclude1_a = p_textinclude1->to_string();
+    // Remove trailing NUL characters
+    while (!textinclude1_a.empty() && textinclude1_a.back() == '\0')
+        textinclude1_a.pop_back();
+    MAnsiToWide textinclude1_w(CP_UTF8, textinclude1_a.c_str());
 
     std::string textinclude2_a;
     if (p_textinclude2)
@@ -8817,9 +8895,20 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             file.WriteSzW(L"\r\n");
         }
 
+        // Issue #301: Use header file name from TEXTINCLUDE 1
         if (pszResH && pszResH[0])
         {
-            file.WriteSzW(L"#include \"resource.h\"\r\n");
+            if (!textinclude1_a.empty())
+            {
+                // Use header file name from TEXTINCLUDE 1
+                file.WriteSzW(L"#include \"");
+                file.WriteSzW(textinclude1_w.c_str());
+                file.WriteSzW(L"\"\r\n");
+            }
+            else
+            {
+                file.WriteSzW(L"#include \"resource.h\"\r\n");
+            }
         }
 
         if (g_settings.bRedundantComments)
@@ -8865,9 +8954,20 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             file.WriteSzA("\r\n");
         }
 
+        // Issue #301: Use header file name from TEXTINCLUDE 1
         if (pszResH && pszResH[0])
         {
-            file.WriteSzA("#include \"resource.h\"\r\n");
+            if (!textinclude1_a.empty())
+            {
+                // Use header file name from TEXTINCLUDE 1
+                file.WriteSzA("#include \"");
+                file.WriteSzA(textinclude1_a.c_str());
+                file.WriteSzA("\"\r\n");
+            }
+            else
+            {
+                file.WriteSzA("#include \"resource.h\"\r\n");
+            }
         }
 
         if (g_settings.bRedundantComments)
