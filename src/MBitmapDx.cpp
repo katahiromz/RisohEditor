@@ -124,13 +124,13 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
         {
             CopyMemory(pv, pvData, dwSize);
             GlobalUnlock(hGlobal);
-        }
 
-        IStream *pStream = NULL;
-        if (CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
-        {
-            pBitmap = Gdiplus::Bitmap::FromStream(pStream);
-            pStream->Release();
+            IStream *pStream = NULL;
+            if (CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
+            {
+                pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+                pStream->Release();
+            }
         }
     }
 

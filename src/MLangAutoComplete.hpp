@@ -120,6 +120,8 @@ public:
 
             size_t cb = (m_list[m_nCurrentElement].size() + 1) * sizeof(WCHAR);
             rgelt[i] = reinterpret_cast<LPWSTR>(::CoTaskMemAlloc(cb));
+            if (!rgelt[i])
+                break;
             memcpy(rgelt[i], m_list[m_nCurrentElement].c_str(), cb);
 
             fetched++;
