@@ -9446,6 +9446,17 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         return FALSE;
     }
 
+    // Create parent directory if it doesn't exist
+    // This handles paths like "include\resource.h" or "include/resource.h"
+    WCHAR szDir[MAX_PATH];
+    StringCchCopyW(szDir, _countof(szDir), pszResH);
+    PathRemoveFileSpecW(szDir);
+    if (szDir[0] && !PathIsDirectoryW(szDir))
+    {
+        // Create the directory (handles nested paths as well)
+        SHCreateDirectoryExW(NULL, szDir, NULL);
+    }
+
     // do backup the resource.h file
     if (g_settings.bBackup)
         DoBackupFile(pszResH);
