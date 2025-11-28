@@ -31,7 +31,6 @@ class MEgaDlg;
 static HWND s_hwndEga = NULL;
 static HANDLE s_hEgaEvent = NULL; // event to signal input availability
 static BOOL s_bEnter = FALSE;
-static LONG s_nEgaRunning = 0;
 extern HWND g_hMainWnd;
 extern MIdOrString g_RES_select_type;
 extern MIdOrString g_RES_select_name;
@@ -116,16 +115,6 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     SendDlgItemMessageW(s_hwndEga, edt1, EM_SETSEL, cch, cch);
     SendDlgItemMessageW(s_hwndEga, edt1, EM_REPLACESEL, FALSE, (LPARAM)wide.c_str());
     SendDlgItemMessageW(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
-}
-
-static inline DWORD WINAPI EgaThreadFunc(LPVOID args)
-{
-    if (InterlockedIncrement(&s_nEgaRunning) == 1)
-    {
-        EGA_interactive(NULL, true);
-        InterlockedDecrement(&s_nEgaRunning);
-    }
-    return 0;
 }
 
 void EGA_extension(void);

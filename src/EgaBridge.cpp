@@ -30,7 +30,7 @@ namespace
     static EgaInputFn  s_inputFn;
     static EgaPrintFn  s_printFn;
     static LONG s_nRunning = 0;
-    static HANDLE s_hThread = NULL;
+    static bool s_bInitialized = false;
 }
 
 static bool Ega_CInput(char* buf, size_t buflen)
@@ -67,19 +67,27 @@ namespace EgaBridge
 {
     bool Initialize()
     {
+        if (s_bInitialized)
+            return true;
+
         if (!EGA_init())
             return false;
 
         EGA_set_input_fn(Ega_CInput);
         EGA_set_print_fn(Ega_CPrint);
 
+        s_bInitialized = true;
         return true;
     }
 
     void Uninitialize()
     {
+        if (!s_bInitialized)
+            return;
+
         StopInteractive();
         EGA_uninit();
+        s_bInitialized = false;
     }
 
     void SetInputFn(EgaInputFn fn)
@@ -99,11 +107,12 @@ namespace EgaBridge
             return true;
         }
 
-        s_hThread = ::CreateThread(NULL, 0, EgaBridgeThreadProc, NULL, 0, NULL);
-        if (s_hThread)
+        HANDLE hThread = ::CreateThread(NULL, 0, EgaBridgeThreadProc, NULL, 0, NULL);
+        if (hThread)
         {
-            ::CloseHandle(s_hThread);
-            s_hThread = NULL;
+            // Close handle immediately; the thread runs independently.
+            // The s_nRunning counter tracks if the thread is active.
+            ::CloseHandle(hThread);
             return true;
         }
         return false;
@@ -112,6 +121,6 @@ namespace EgaBridge
     void StopInteractive()
     {
         // EGA_interactive will return when input 'exit' is sent.
-        // The thread handle was already closed in StartInteractive.
+        // The thread handle was already closed; s_nRunning tracks completion.
     }
 }
