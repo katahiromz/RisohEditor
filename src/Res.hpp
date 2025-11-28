@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -430,7 +430,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     // search by pattern matching
-    bool search(self_type& found, EntryType et, const MIdOrString& type = BAD_TYPE, 
+    bool search(self_type& found, EntryType et, const MIdOrString& type = BAD_TYPE,
                 const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         for (auto entry : *this)
@@ -482,7 +482,7 @@ struct EntrySet : protected EntrySetBase
         return add_lang_entry(type, name, lang, data);
     }
     EntryBase *
-    add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
+    add_lang_entry(const MIdOrString& type, const MIdOrString& name,
                    WORD lang, const EntryBase::data_type& data);
 
     // delete an entry (and related entries)
@@ -552,12 +552,12 @@ struct EntrySet : protected EntrySetBase
 
     // add a group icon
     EntryBase *
-    add_group_icon(const MIdOrString& name, WORD lang, 
+    add_group_icon(const MIdOrString& name, WORD lang,
                    const MStringW& file_name);
 
     // add a group cursor
     EntryBase *
-    add_group_cursor(const MIdOrString& name, WORD lang, 
+    add_group_cursor(const MIdOrString& name, WORD lang,
                      const MStringW& file_name);
 
     // add a string entry
@@ -658,7 +658,7 @@ struct EntrySet : protected EntrySetBase
 
     // callback to insert the resource in the executable
     static BOOL CALLBACK
-    EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName, 
+    EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
     {
         auto ers = (EnumResStruct *)lParam;

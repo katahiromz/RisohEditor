@@ -111,9 +111,9 @@ public:
     BOOL InsertButton(INT nIndex, CONST TBBUTTON *lpButton);
     BOOL DeleteButton(INT nIndex);
     UINT CommandToIndex(UINT nCommandID) const;
-    VOID SaveState(HKEY hKeyRoot, LPCTSTR lpszSubKey, 
+    VOID SaveState(HKEY hKeyRoot, LPCTSTR lpszSubKey,
         LPCTSTR lpszValueName);
-    VOID RestoreState(HKEY hKeyRoot, LPCTSTR lpszSubKey, 
+    VOID RestoreState(HKEY hKeyRoot, LPCTSTR lpszSubKey,
         LPCTSTR lpszValueName);
 
     #if (_WIN32_IE >= 0x0300)

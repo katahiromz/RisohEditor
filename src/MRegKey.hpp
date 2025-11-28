@@ -137,7 +137,7 @@ public:
     LONG RegQueryMultipleValues(PVALENT val_list, DWORD num_vals,
                                 LPTSTR lpValueBuf, LPDWORD lpdwTotsize);
     LONG RegSetKeySecurity(SECURITY_INFORMATION si, PSECURITY_DESCRIPTOR psd);
-    
+
     static LONG RegLoadKey(HKEY hKey, LPCTSTR pszSubKey, LPCTSTR pszFile);
     static LONG RegUnLoadKey(HKEY hKey, LPCTSTR pszSubKey);
     static LONG RegSaveKey(HKEY hKey, LPCTSTR pszFile,

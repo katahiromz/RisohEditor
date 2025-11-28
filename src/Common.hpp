@@ -78,7 +78,7 @@ inline MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
     // First try with a reasonable initial buffer size
     MStringW str;
     INT cchBuffer = 256;
-    
+
     for (;;)
     {
         str.resize(cchBuffer);

@@ -4648,7 +4648,7 @@ void MMainWnd::search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog)
 
     if (m_search.bIgnoreCases)
         CharUpperW(&m_search.strText[0]);
- 
+
     // initialize
     m_search.bCancelled = FALSE;
     m_search.pFound = NULL;
@@ -8178,9 +8178,9 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
     case LFI_RES:
         return DoLoadRES(hwnd, szPath);
-    case LFI_RC: 
+    case LFI_RC:
         return DoLoadRC(hwnd, szPath);
-    default: 
+    default:
         return DoLoadEXE(hwnd, szPath, bForceDecompress);
     }
 }
@@ -8530,7 +8530,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
         old_type = type;
         type = entry->m_type;
 
-        // ignore the string or message tables or font dir 
+        // ignore the string or message tables or font dir
         if (type == RT_STRING || type == RT_FONTDIR)
             continue;
         if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
@@ -10962,7 +10962,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
     if (macros.empty())
     {
-        // no macros to 
+        // no macros to
         return TRUE;
     }
 
@@ -17483,7 +17483,7 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
     {
         LPWSTR arg = targv[iarg];
         if (lstrcmpiW(arg, L"-help") == 0 ||
-            lstrcmpiW(arg, L"--help") == 0 || 
+            lstrcmpiW(arg, L"--help") == 0 ||
             lstrcmpiW(arg, L"/?") == 0)
         {
             MessageBoxW(NULL, LoadStringDx(IDS_USAGE), LoadStringDx(IDS_APPNAME), MB_ICONINFORMATION);

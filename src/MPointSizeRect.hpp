@@ -321,7 +321,7 @@ inline VOID operator*=(SIZE & s, Number n)
     { s = s * n; }
 
 template <class Number>
-inline MSize operator/(SIZE s, Number n) 
+inline MSize operator/(SIZE s, Number n)
     { return MSize((INT)(s.cx / n), (INT)(s.cy / n)); }
 
 template <class Number>
@@ -464,9 +464,9 @@ inline MRect MRect::operator|(const RECT& rc2) const
 inline MRect MRect::MulDiv(INT nMultiplier, INT nDivisor) const
 {
     return MRect(
-        ::MulDiv(left, nMultiplier, nDivisor), 
-        ::MulDiv(top, nMultiplier, nDivisor), 
-        ::MulDiv(right, nMultiplier, nDivisor), 
+        ::MulDiv(left, nMultiplier, nDivisor),
+        ::MulDiv(top, nMultiplier, nDivisor),
+        ::MulDiv(right, nMultiplier, nDivisor),
         ::MulDiv(bottom, nMultiplier, nDivisor));
 }
 

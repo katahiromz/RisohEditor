@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -53,15 +53,15 @@ typedef struct POPUPMENUITEMHEAD
 } POPUPMENUITEMHEAD;
 
 // You can use the following flags for fItemFlags:
-//     MF_GRAYED        0x0001   // 'GRAYED' keyword 
-//     MF_INACTIVE      0x0002   // 'INACTIVE' keyword 
-//     MF_BITMAP        0x0004   // 'BITMAP' keyword 
-//     MF_OWNERDRAW     0x0100   // 'OWNERDRAW' keyword 
-//     MF_CHECKED       0x0008   // 'CHECKED' keyword 
-//     MF_POPUP         0x0010   // Used internally 
-//     MF_MENUBARBREAK  0x0020   // 'MENUBARBREAK' keyword 
-//     MF_MENUBREAK     0x0040   // 'MENUBREAK' keyword 
-//     MF_END           0x0080   // Used internally 
+//     MF_GRAYED        0x0001   // 'GRAYED' keyword
+//     MF_INACTIVE      0x0002   // 'INACTIVE' keyword
+//     MF_BITMAP        0x0004   // 'BITMAP' keyword
+//     MF_OWNERDRAW     0x0100   // 'OWNERDRAW' keyword
+//     MF_CHECKED       0x0008   // 'CHECKED' keyword
+//     MF_POPUP         0x0010   // Used internally
+//     MF_MENUBARBREAK  0x0020   // 'MENUBARBREAK' keyword
+//     MF_MENUBREAK     0x0040   // 'MENUBREAK' keyword
+//     MF_END           0x0080   // Used internally
 
 #ifndef MF_INACTIVE
     #define MF_INACTIVE     MF_DISABLED

@@ -159,7 +159,7 @@ inline UINT GetMouseScrollLinesDx(VOID)
         return s_uCachedScrollLines;
 
 #if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
-    s_bGot = ::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, 
+    s_bGot = ::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0,
         &s_uCachedScrollLines, 0);
     if (s_bGot)
         return s_uCachedScrollLines;
@@ -176,14 +176,14 @@ inline UINT GetMouseScrollLinesDx(VOID)
 
     s_uCachedScrollLines = 3; // reasonable default
     HKEY hKey;
-    if (::RegOpenKeyEx(HKEY_CURRENT_USER,  TEXT("Control Panel\\Desktop"), 
+    if (::RegOpenKeyEx(HKEY_CURRENT_USER,  TEXT("Control Panel\\Desktop"),
                        0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
         TCHAR szData[128];
         DWORD dwKeyDataType;
         DWORD dwDataBufSize = sizeof(szData);
 
-        if (::RegQueryValueEx(hKey, TEXT("WheelScrollLines"), NULL, 
+        if (::RegQueryValueEx(hKey, TEXT("WheelScrollLines"), NULL,
             &dwKeyDataType, (LPBYTE)&szData, &dwDataBufSize) == ERROR_SUCCESS)
         {
             s_uCachedScrollLines = (UINT) _ttoi(szData);

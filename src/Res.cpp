@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ MStringW EntryBase::get_name_label() const
         return mstr_dec_word(id);   // returns numeric text
     }
 
-    // got the label 
+    // got the label
     if (!mchr_is_digit(label[0]))   // first character is not digit
     {
         // add a parenthesis pair and numeric text
@@ -433,7 +433,7 @@ bool EntrySet::intersect(const EntrySet& another) const
 }
 
 EntryBase *
-EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
+EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
                          WORD lang, const EntryBase::data_type& data)
 {
     if (m_hwndTV)   // it has the treeview handle
@@ -788,7 +788,7 @@ bool EntrySet::extract_group_cursor(const EntryBase& group, const wchar_t *file_
 
     // group --> GroupEntries
     std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
-    memcpy(&GroupEntries[0], &group[sizeof(dir)], 
+    memcpy(&GroupEntries[0], &group[sizeof(dir)],
            SizeOfCursorEntries);
 
     // set the current offset
@@ -1066,7 +1066,7 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, WORD lang, const MStrin
 }
 
 EntryBase *
-EntrySet::add_group_icon(const MIdOrString& name, WORD lang, 
+EntrySet::add_group_icon(const MIdOrString& name, WORD lang,
                          const MStringW& file_name)
 {
     // load the data from an *.ico file
@@ -1091,7 +1091,7 @@ EntrySet::add_group_icon(const MIdOrString& name, WORD lang,
 }
 
 EntryBase *
-EntrySet::add_group_cursor(const MIdOrString& name, WORD lang, 
+EntrySet::add_group_cursor(const MIdOrString& name, WORD lang,
                            const MStringW& file_name)
 {
     // load the data from an *.cur file

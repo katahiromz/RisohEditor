@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -472,7 +472,7 @@ public:
         MString szText = GetComboBoxLBText(lpDrawItem->hwndItem, lpDrawItem->itemID);
 
         InflateRect(&rc, -2, -2);
-        DrawText(lpDrawItem->hDC, szText.c_str(), -1, &rc, 
+        DrawText(lpDrawItem->hDC, szText.c_str(), -1, &rc,
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
         InflateRect(&rc, 2, 2);
 
@@ -792,7 +792,7 @@ public:
             for (size_t i = 0; i < vecItems.size() && i < max_count; ++i)
             {
                 INT k = ID_IDJUMP00 + INT(i);
-                InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED, 
+                InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED,
                     k, vecItems[i].c_str());
             }
 
@@ -803,7 +803,7 @@ public:
             // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
             SetForegroundWindow(hwnd);
 
-            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
                 pt.x, pt.y, 0, hwnd, NULL);
 
             // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
@@ -842,12 +842,12 @@ public:
     {
         if (m_nBase == 10)
         {
-            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, 
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
                 ID_BASE10, MF_BYCOMMAND);
         }
         else if (m_nBase == 16)
         {
-            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, 
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
                 ID_BASE16, MF_BYCOMMAND);
         }
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);

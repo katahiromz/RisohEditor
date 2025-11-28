@@ -43,8 +43,8 @@ public:
 
     LONG RegCloseKey();
 
-    LONG RegQueryValueEx(LPCTSTR pszValueName = NULL, 
-                         LPDWORD lpReserved = NULL, LPDWORD lpType = NULL, 
+    LONG RegQueryValueEx(LPCTSTR pszValueName = NULL,
+                         LPDWORD lpReserved = NULL, LPDWORD lpType = NULL,
                          LPBYTE lpData = NULL, LPDWORD lpcbData = NULL);
 
     LONG QueryBinary(LPCTSTR pszValueName, LPVOID pvValue, DWORD cb);
@@ -64,7 +64,7 @@ public:
     template <typename T_STRING>
     LONG QueryExpandSz(LPCTSTR pszValueName, T_STRING& strValue);
 
-    LONG RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved, 
+    LONG RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved,
         DWORD dwType, CONST BYTE *lpData, DWORD cbData);
 
     LONG SetBinary(LPCTSTR pszValueName, LPCVOID pvValue, DWORD cb);
@@ -143,7 +143,7 @@ LONG MRegKeyPortable::QuerySz(LPCTSTR pszValueName, T_STRING& strValue)
     assert(psz);
     if (psz)
     {
-        result = RegQueryValueEx(pszValueName, NULL, NULL, 
+        result = RegQueryValueEx(pszValueName, NULL, NULL,
                                  reinterpret_cast<LPBYTE>(psz), &cbData);
         if (result != ERROR_SUCCESS)
         {
@@ -169,7 +169,7 @@ LONG MRegKeyPortable::QueryExpandSz(LPCTSTR pszValueName, T_STRING& strValue)
     assert(psz);
     if (psz)
     {
-        result = RegQueryValueEx(pszValueName, NULL, NULL, 
+        result = RegQueryValueEx(pszValueName, NULL, NULL,
                                  reinterpret_cast<LPBYTE>(psz), &cbData);
         if (result != ERROR_SUCCESS)
         {
@@ -190,8 +190,8 @@ inline LONG MRegKeyPortable::RegCloseKey()
     return MRegKeyPortable::RegFlushKey();
 }
 
-inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/, 
-    LPDWORD lpReserved/* = NULL*/, LPDWORD lpType/* = NULL*/, 
+inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
+    LPDWORD lpReserved/* = NULL*/, LPDWORD lpType/* = NULL*/,
     LPBYTE lpData/* = NULL*/, LPDWORD lpcbData/* = NULL*/)
 {
     if (pszValueName == NULL)
@@ -250,29 +250,29 @@ inline LONG MRegKeyPortable::QueryBinary(
     LPCTSTR pszValueName, LPVOID pvValue, DWORD cb)
 {
     DWORD cbData = cb;
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
-                           reinterpret_cast<LPBYTE>(pvValue), 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
+                           reinterpret_cast<LPBYTE>(pvValue),
                            &cbData);
 }
 
 inline LONG MRegKeyPortable::QueryDword(LPCTSTR pszValueName, DWORD& dw)
 {
     DWORD cbData = sizeof(DWORD);
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(&dw), &cbData);
 }
 
 inline LONG MRegKeyPortable::QueryDwordLE(LPCTSTR pszValueName, DWORD& dw)
 {
     DWORD cbData = sizeof(DWORD);
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(&dw), &cbData);
 }
 
 inline LONG MRegKeyPortable::QueryDwordBE(LPCTSTR pszValueName, DWORD& dw)
 {
     DWORD cbData = sizeof(DWORD);
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(&dw), &cbData);
 }
 
@@ -280,7 +280,7 @@ inline LONG
 MRegKeyPortable::QuerySz(LPCTSTR pszValueName, LPTSTR pszValue, DWORD cchValue)
 {
     DWORD cbData = cchValue * sizeof(TCHAR);
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(pszValue), &cbData);
 }
 
@@ -288,11 +288,11 @@ inline LONG MRegKeyPortable::QueryExpandSz(
     LPCTSTR pszValueName, LPTSTR pszValue, DWORD cchValue)
 {
     DWORD cbData = cchValue * sizeof(TCHAR);
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(pszValue), &cbData);
 }
 
-inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved, 
+inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved,
     DWORD dwType, CONST BYTE *lpData, DWORD cbData)
 {
     static TCHAR s_szText[1024];
@@ -321,42 +321,42 @@ inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserve
 
 inline LONG MRegKeyPortable::SetBinary(LPCTSTR pszValueName, LPCVOID pvValue, DWORD cb)
 {
-    return RegSetValueEx(pszValueName, 0, REG_BINARY, 
+    return RegSetValueEx(pszValueName, 0, REG_BINARY,
         reinterpret_cast<const BYTE *>(pvValue), cb);
 }
 
 inline LONG MRegKeyPortable::SetDword(LPCTSTR pszValueName, DWORD dw)
 {
     DWORD dwValue = dw;
-    return RegSetValueEx(pszValueName, 0, REG_DWORD, 
+    return RegSetValueEx(pszValueName, 0, REG_DWORD,
         reinterpret_cast<const BYTE *>(&dwValue), sizeof(DWORD));
 }
 
 inline LONG MRegKeyPortable::SetDwordLE(LPCTSTR pszValueName, DWORD dw)
 {
     DWORD dwValue = dw;
-    return RegSetValueEx(pszValueName, 0, REG_DWORD_LITTLE_ENDIAN, 
+    return RegSetValueEx(pszValueName, 0, REG_DWORD_LITTLE_ENDIAN,
         reinterpret_cast<const BYTE *>(&dwValue), sizeof(DWORD));
 }
 
 inline LONG MRegKeyPortable::SetDwordBE(LPCTSTR pszValueName, DWORD dw)
 {
     DWORD dwValue = dw;
-    return RegSetValueEx(pszValueName, 0, REG_DWORD_BIG_ENDIAN, 
+    return RegSetValueEx(pszValueName, 0, REG_DWORD_BIG_ENDIAN,
         reinterpret_cast<const BYTE *>(&dwValue), sizeof(DWORD));
 }
 
 inline LONG
 MRegKeyPortable::SetSz(LPCTSTR pszValueName, LPCTSTR pszValue, DWORD cchValue)
 {
-    return RegSetValueEx(pszValueName, 0, REG_SZ, 
+    return RegSetValueEx(pszValueName, 0, REG_SZ,
         reinterpret_cast<const BYTE *>(pszValue), cchValue * sizeof(TCHAR));
 }
 
 inline LONG
 MRegKeyPortable::SetExpandSz(LPCTSTR pszValueName, LPCTSTR pszValue, DWORD cchValue)
 {
-    return RegSetValueEx(pszValueName, 0, REG_EXPAND_SZ, 
+    return RegSetValueEx(pszValueName, 0, REG_EXPAND_SZ,
         reinterpret_cast<const BYTE *>(pszValue), cchValue * sizeof(TCHAR));
 }
 
@@ -448,15 +448,15 @@ inline LONG MRegKeyPortable::QueryMultiSz(
     LPCTSTR pszValueName, LPTSTR pszzValues, DWORD cchValues)
 {
     DWORD cbData = sizeof(TCHAR) * cchValues;
-    return RegQueryValueEx(pszValueName, NULL, NULL, 
+    return RegQueryValueEx(pszValueName, NULL, NULL,
                            reinterpret_cast<LPBYTE>(pszzValues), &cbData);
 }
 
 inline LONG
 MRegKeyPortable::SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues)
 {
-    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ, 
-        reinterpret_cast<const BYTE *>(pszzValues), 
+    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ,
+        reinterpret_cast<const BYTE *>(pszzValues),
         MRegKeyPortable::MultiSzSizeDx(pszzValues));
 }
 
@@ -464,7 +464,7 @@ inline LONG
 MRegKeyPortable::SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues, DWORD cchValues)
 {
     DWORD cb = static_cast<DWORD>(sizeof(TCHAR) * cchValues);
-    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ, 
+    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ,
         reinterpret_cast<const BYTE *>(pszzValues), cb);
 }
 

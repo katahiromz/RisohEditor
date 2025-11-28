@@ -28,8 +28,8 @@ public:
 
     MSplitterWnd();
 
-    BOOL CreateDx(HWND hwndParent, INT nPaneCount = 2, 
-                  DWORD dwStyle = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN, 
+    BOOL CreateDx(HWND hwndParent, INT nPaneCount = 2,
+                  DWORD dwStyle = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN,
                   DWORD dwExStyle = 0);
     BOOL IsHorizontal() const;
     BOOL IsVertical() const;

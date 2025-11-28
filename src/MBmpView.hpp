@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -85,13 +85,13 @@ public:
         m_mci.SubclassDx(m_mci_window);
 
         style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
-        m_hStatic = CreateWindowEx(0, TEXT("STATIC"), NULL, 
+        m_hStatic = CreateWindowEx(0, TEXT("STATIC"), NULL,
             style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
         if (m_hStatic == NULL)
             return FALSE;
 
         style = WS_CHILD | BS_PUSHBUTTON | BS_CENTER | BS_ICON;
-        m_hPlayButton = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Play"), 
+        m_hPlayButton = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Play"),
             style, 0, 0, 64, 65, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
         if (m_hPlayButton == NULL)
             return FALSE;

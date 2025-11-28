@@ -148,8 +148,8 @@ inline VOID MEditCtrl::SetHandle(HLOCAL hBuffer)
 
 inline VOID MEditCtrl::SetMargins(UINT nLeft, UINT nRight)
 {
-    SendMessageDx(EM_SETMARGINS, 
-        EC_LEFTMARGIN | EC_RIGHTMARGIN | EC_USEFONTINFO, 
+    SendMessageDx(EM_SETMARGINS,
+        EC_LEFTMARGIN | EC_RIGHTMARGIN | EC_USEFONTINFO,
         MAKELPARAM(nLeft, nRight));
 }
 
@@ -367,7 +367,7 @@ inline /*static*/ void MEditCtrl::SetCtrlAHookDx(BOOL bHook)
     {
         assert(OldHookProc() == NULL);
         OldHookProc() = ::SetWindowsHookEx(
-            WH_MSGFILTER, MEditCtrl::CtrlAMsgProcDx, NULL, 
+            WH_MSGFILTER, MEditCtrl::CtrlAMsgProcDx, NULL,
             GetCurrentThreadId());
     }
     else

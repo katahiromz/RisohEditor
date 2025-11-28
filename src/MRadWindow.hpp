@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -2038,7 +2038,7 @@ public:
         {
             // report the selection change to the owner window
             DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
-        
+
             // clear the status
             DoSendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
 
@@ -2062,7 +2062,7 @@ public:
         {
             // report the position and size of the index
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
-            DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
+            DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
@@ -2477,7 +2477,7 @@ public:
     {
         auto set = MRadCtrl::GetTargets();
         if (set.size() < 2)
-            return;     
+            return;
 
         RECT rc;
 

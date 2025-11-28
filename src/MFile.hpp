@@ -553,14 +553,14 @@ inline BOOL MFile::UnlockFileEx(DWORD dwReserved, DWORDLONG dwlNumberOfBytesToUn
         HILONG(dwlNumberOfBytesToUnlock), lpOverlapped);
 }
 
-inline BOOL MFile::ReadFileEx(LPVOID pBuffer, DWORD cbToRead, 
+inline BOOL MFile::ReadFileEx(LPVOID pBuffer, DWORD cbToRead,
     LPOVERLAPPED pOverlapped, LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine)
 {
     assert(m_hFile != NULL && m_hFile != INVALID_HANDLE_VALUE);
     return ::ReadFileEx(m_hFile, pBuffer, cbToRead, pOverlapped, lpCompletionRoutine);
 }
 
-inline BOOL MFile::WriteFileEx(LPCVOID pBuffer, DWORD cbToWrite, 
+inline BOOL MFile::WriteFileEx(LPCVOID pBuffer, DWORD cbToWrite,
     LPOVERLAPPED pOverlapped, LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine)
 {
     assert(m_hFile != NULL && m_hFile != INVALID_HANDLE_VALUE);

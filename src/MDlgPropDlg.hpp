@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public:
         table = g_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
-            m_exstyle_table.insert(m_exstyle_table.end(), 
+            m_exstyle_table.insert(m_exstyle_table.end(),
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
@@ -115,7 +115,7 @@ public:
         m_bUpdating = FALSE;
     }
 
-    void ApplySelection(HWND hLst, ConstantsDB::TableType& table, 
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
                         std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
@@ -393,7 +393,7 @@ public:
         GetStyleSelect(hLst1, m_style_selection);
 
         DWORD dwOldStyle = m_dwStyle;
-        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table, 
+        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
                                      old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
@@ -450,7 +450,7 @@ public:
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table, 
+        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table,
                                        old_exstyle_selection, m_exstyle_selection);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 

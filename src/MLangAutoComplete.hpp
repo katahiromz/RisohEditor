@@ -150,7 +150,7 @@ public:
     {
         if (!ppenum)
             return E_POINTER;
-        
+
         MLangAutoComplete *cloned = new MLangAutoComplete();
 
         cloned->AddRef();

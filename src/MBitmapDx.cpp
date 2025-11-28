@@ -166,7 +166,7 @@ HBITMAP MBitmapDx::GetHBITMAP(LONG& cx, LONG& cy)
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = 24;
     LPVOID pvBits;
-    HBITMAP hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits, 
+    HBITMAP hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits,
                                    NULL, 0);
     if (hbm == NULL)
         return NULL;

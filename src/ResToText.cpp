@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -1412,7 +1412,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        ret += LoadStringPrintfDx(IDS_ICONINFO, 
+        ret += LoadStringPrintfDx(IDS_ICONINFO,
             i, Width, Height, pEntries[i].wBitCount, nID);
     }
 
@@ -1467,7 +1467,7 @@ DumpGroupCursorInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        ret += LoadStringPrintfDx(IDS_CURSORINFO, 
+        ret += LoadStringPrintfDx(IDS_CURSORINFO,
             i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
     }
 
@@ -1493,7 +1493,7 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const EntryBase& entry, BITMAP& bm)
         BITMAP bm;
         hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
         assert(hIcon);
-        hbmIcon = CreateBitmapFromIconDx(hIcon, 
+        hbmIcon = CreateBitmapFromIconDx(hIcon,
                                          bm.bmWidth, bm.bmHeight, FALSE);
         DestroyIcon(hIcon);
     }
@@ -1525,12 +1525,12 @@ DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
             bf.BlendFlags = 0;
             bf.SourceConstantAlpha = 0xFF;
             bf.AlphaFormat = AC_SRC_ALPHA;
-            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight, 
+            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
                        hDC2, 0, 0, bmSrc.bmWidth, bmSrc.bmHeight, bf);
         }
         else
         {
-            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight, 
+            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
                    hDC2, 0, 0, SRCCOPY);
         }
         SelectObject(hDC, hbm2Old);

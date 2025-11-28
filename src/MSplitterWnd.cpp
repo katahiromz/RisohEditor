@@ -14,8 +14,8 @@ BOOL MSplitterWnd::CreateDx(HWND hwndParent, INT nPaneCount, DWORD dwStyle, DWOR
     RECT rc;
     GetClientRect(hwndParent, &rc);
 
-    if (!CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle, 
-                        rc.left, rc.top, 
+    if (!CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle,
+                        rc.left, rc.top,
                         rc.right - rc.left, rc.bottom - rc.top))
     {
         return FALSE;
@@ -213,8 +213,8 @@ void MSplitterWnd::UpdatePanes()
             continue;
 
         GetPaneRect(i, &rc);
-        hDWP = DeferWindowPos(hDWP, hwndPane, NULL, 
-            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 
+        hDWP = DeferWindowPos(hDWP, hwndPane, NULL,
+            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
             SWP_NOZORDER | SWP_NOACTIVATE);
     }
     EndDeferWindowPos(hDWP);
@@ -350,7 +350,7 @@ void MSplitterWnd::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
 typedef struct tagBITMAPINFO1BPP
 {
-   BITMAPINFOHEADER bmiHeader; 
+   BITMAPINFOHEADER bmiHeader;
    RGBQUAD          bmiColors[2];
 } BITMAPINFO1BPP, *PBITMAPINFO1BPP;
 

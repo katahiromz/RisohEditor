@@ -366,11 +366,11 @@ inline BOOL MProcessMaker::CreateProcessDx(
         #ifdef UNICODE
             if (pEnv)
                 dwCreationFlags |= CREATE_UNICODE_ENVIRONMENT;
-            b = ::CreateProcess(pszAppName, pszCmdLine, 
+            b = ::CreateProcess(pszAppName, pszCmdLine,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv, m_pszCurDir, &m_si, &m_pi);
         #else
-            b = ::CreateProcess(pszAppName, pszCmdLine, 
+            b = ::CreateProcess(pszAppName, pszCmdLine,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv,
                 m_pszCurDir, &m_si, &m_pi);
@@ -429,11 +429,11 @@ inline BOOL MProcessMaker::CreateProcessAsUserDx(
         #ifdef UNICODE
             if (pEnv)
                 dwCreationFlags |= CREATE_UNICODE_ENVIRONMENT;
-            b = ::CreateProcessAsUser(hToken, pszAppName, NULL, 
+            b = ::CreateProcessAsUser(hToken, pszAppName, NULL,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv, m_pszCurDir, &m_si, &m_pi);
         #else
-            b = ::CreateProcessAsUser(hToken, pszAppName, NULL, 
+            b = ::CreateProcessAsUser(hToken, pszAppName, NULL,
                 lpProcessAttributes, lpThreadAttributes,
                 bInherit, dwCreationFlags, pEnv, m_pszCurDir, &m_si, &m_pi);
         #endif

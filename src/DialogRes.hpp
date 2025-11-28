@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -139,9 +139,9 @@ struct DialogItem
 
     MStringW DumpControl(MStringW& cls) const;
 
-    MStringW _do_CONTROL(bool bNeedsText, 
-                         const MStringW& ctrl, 
-                         const MStringW& cls, 
+    MStringW _do_CONTROL(bool bNeedsText,
+                         const MStringW& ctrl,
+                         const MStringW& cls,
                          DWORD DefStyle) const;
 
     MStringW _do_BUTTON(const MStringW& ctrl, DWORD DefStyle) const
@@ -210,7 +210,7 @@ struct DialogItem
     MStringW _do_EDITTEXT() const
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, L"EDITTEXT", L"EDIT", 
+        return _do_CONTROL(false, L"EDITTEXT", L"EDIT",
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_COMBOBOX() const
@@ -225,7 +225,7 @@ struct DialogItem
     MStringW _do_LISTBOX() const
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, L"LISTBOX", L"LISTBOX", 
+        return _do_CONTROL(false, L"LISTBOX", L"LISTBOX",
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_SCROLLBAR() const

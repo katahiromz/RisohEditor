@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -40,19 +40,19 @@ class MCtrlPropDlg : public MDialogBase
 public:
     enum Flags
     {
-        F_NONE = 0, 
-        F_HELP = 0x0001, 
-        F_STYLE = 0x0002, 
-        F_EXSTYLE = 0x0004, 
-        F_X = 0x0008, 
-        F_Y = 0x0010, 
-        F_CX = 0x0020, 
-        F_CY = 0x0040, 
-        F_ID = 0x0080, 
-        F_CLASS = 0x0100, 
-        F_TITLE = 0x0200, 
-        F_EXTRA = 0x0400, 
-        F_SLIST = 0x0800, 
+        F_NONE = 0,
+        F_HELP = 0x0001,
+        F_STYLE = 0x0002,
+        F_EXSTYLE = 0x0004,
+        F_X = 0x0008,
+        F_Y = 0x0010,
+        F_CX = 0x0020,
+        F_CY = 0x0040,
+        F_ID = 0x0080,
+        F_CLASS = 0x0100,
+        F_TITLE = 0x0200,
+        F_EXTRA = 0x0400,
+        F_SLIST = 0x0800,
         F_ALL = 0x0FFF
     };
     DialogRes&          m_dialog_res;
@@ -76,7 +76,7 @@ public:
     MComboBoxAutoComplete m_cmb5;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::unordered_set<INT>& indeces)
-        : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res), 
+        : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
           m_bUpdating(FALSE), m_indeces(indeces)
     {
         m_himlControls = NULL;
@@ -335,14 +335,14 @@ public:
             auto table = g_db.GetTable(pszClass);
             if (table.size())
             {
-                m_style_table.insert(m_style_table.end(), 
+                m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
         auto table = g_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
-            m_style_table.insert(m_style_table.end(), 
+            m_style_table.insert(m_style_table.end(),
                 table.begin(), table.end());
         }
         m_style_selection.resize(m_style_table.size());
@@ -351,7 +351,7 @@ public:
         table = g_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
-            m_exstyle_table.insert(m_exstyle_table.end(), 
+            m_exstyle_table.insert(m_exstyle_table.end(),
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
@@ -369,7 +369,7 @@ public:
         m_bUpdating = FALSE;
     }
 
-    void ApplySelection(HWND hLst, ConstantsDB::TableType& table, 
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
                         std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
@@ -398,7 +398,7 @@ public:
             m_himlControls = NULL;
         }
         m_himlControls = ImageList_LoadBitmap(
-            GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CONTROLS), 
+            GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CONTROLS),
             16, 0, RGB(255, 0, 255));
         m_hTB.SetImageList(m_himlControls);
 
@@ -605,7 +605,7 @@ public:
         std::vector<BYTE> old_style_selection = m_style_selection;
         GetStyleSelect(hLst1, m_style_selection);
 
-        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table, 
+        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
                                      old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
@@ -626,7 +626,7 @@ public:
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table, 
+        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table,
                                        old_exstyle_selection, m_exstyle_selection);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
