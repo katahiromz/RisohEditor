@@ -34,6 +34,8 @@ class MVersionInfoDlg : public MDialogBase
 public:
     MVersionInfoDlg() : MDialogBase(IDD_VERSIONINFO)
     {
+        m_visited = FALSE;
+        m_old_tick = 0;
     }
 
     virtual ~MVersionInfoDlg()
@@ -49,8 +51,16 @@ public:
         return TRUE;
     }
 
+    // STN_CLICKED
     void OnStc2(HWND hwnd)
     {
+        // STN_CLICKED is generated twice (WM_LBUTTONDOWN and WM_LBUTTONUP)
+        bool double_generated = m_visited && (GetTickCount() - m_old_tick < 500);
+        m_old_tick = GetTickCount();
+        m_visited = TRUE;
+        if (double_generated)
+            return;
+
         MString url = GetDlgItemText(stc2);
         ShellExecute(hwnd, NULL, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
     }
@@ -67,10 +77,8 @@ public:
             break;
         case stc2:
             if (codeNotify == STN_CLICKED)
-            {
                 OnStc2(hwnd);
-                break;
-            }
+            break;
         }
     }
 
@@ -87,5 +95,7 @@ public:
     }
 
 protected:
+    BOOL m_visited;
+    DWORD m_old_tick;
     MHyperLinkCtrl m_hyperlink;
 };
