@@ -8788,6 +8788,38 @@ std::wstring generated_from(INT n)
     return szText;
 }
 
+bool create_directories_recursive_win32(const std::wstring& path) {
+    DWORD attr = GetFileAttributesW(path.c_str());
+    if (attr != INVALID_FILE_ATTRIBUTES) {
+        if (attr & FILE_ATTRIBUTE_DIRECTORY) {
+            return true;
+        }
+        SetLastError(ERROR_FILE_EXISTS);
+        return false;
+    }
+
+    std::wstring parent_path = path;
+
+    if (parent_path.back() == L'\\' || parent_path.back() == L'/') {
+        parent_path.pop_back();
+    }
+
+    size_t last_separator = parent_path.find_last_of(L"\\/");
+    if (last_separator != std::wstring::npos) {
+        std::wstring parent_dir = parent_path.substr(0, last_separator);
+        if (!create_directories_recursive_win32(parent_dir)) {
+            return false;
+        }
+    }
+
+    if (!CreateDirectoryW(path.c_str(), NULL)) {
+        DWORD error = GetLastError();
+        return (error == ERROR_ALREADY_EXISTS);
+    }
+
+    return true;
+}
+
 // write a RC file
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found)
 {
@@ -8888,6 +8920,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         WCHAR szDestHeaderPath[MAX_PATH];
         PathCombineW(szDestHeaderPath, szDestDir, textinclude1_w.c_str());
 
+        for (auto& ch : szDestHeaderPath) {
+            if (ch == L'/') ch = L'\\';
+        }
+
         // Check if destination header file exists
         if (!PathFileExistsW(szDestHeaderPath))
         {
@@ -8899,12 +8935,15 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             WCHAR szSrcHeaderPath[MAX_PATH];
             PathCombineW(szSrcHeaderPath, szSrcDir, textinclude1_w.c_str());
 
+            for (auto& ch : szSrcHeaderPath) {
+                if (ch == L'/') ch = L'\\';
+            }
+
             // If source header exists but destination doesn't, ask to copy
-            if (PathFileExistsW(szSrcHeaderPath))
-            {
+            if (PathFileExistsW(szSrcHeaderPath)) {
                 WCHAR szMsg[MAX_PATH * 2];
                 StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_COPYHEADERFILE), textinclude1_w.c_str());
-                if (MsgBoxDx(szMsg, MB_ICONQUESTION | MB_YESNO) == IDYES)
+                if (MsgBoxDx(szMsg, MB_ICONQUESTION | MB_YESNO) == IDYES) 
                 {
                     // Create parent directory if it doesn't exist
                     // This handles paths like "include\resource.h" or "include/resource.h"
@@ -8912,12 +8951,16 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                     StringCchCopyW(szDestHeaderDir, _countof(szDestHeaderDir), szDestHeaderPath);
                     PathRemoveFileSpecW(szDestHeaderDir);
                     if (szDestHeaderDir[0] && !PathIsDirectoryW(szDestHeaderDir))
-                    {
-                        SHCreateDirectoryExW(NULL, szDestHeaderDir, NULL);
+                        create_directories_recursive_win32(szDestHeaderDir);
+
+                    for (auto& ch : szSrcHeaderPath) {
+                        if (ch == L'/') ch = L'\\';
+                    }
+                    for (auto& ch : szDestHeaderPath) {
+                        if (ch == L'/') ch = L'\\';
                     }
 
-                    if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
-                    {
+                    if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) {
                         // Copy failed, show error to user
                         ErrorBoxDx(IDS_CANNOTSAVE);
                     }
@@ -8949,6 +8992,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         if (g_settings.bRedundantComments)
         {
             file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(generated_from(1).c_str());
             file.WriteSzW(L"\r\n");
         }
 
@@ -9008,6 +9052,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         if (g_settings.bRedundantComments)
         {
             file.WriteSzA(utf8CommentSep.c_str());
+            MWideToAnsi utf8GeneratedFrom1(CP_UTF8, generated_from(1));
+            file.WriteSzA(utf8GeneratedFrom1);
             file.WriteSzA("\r\n");
         }
 
