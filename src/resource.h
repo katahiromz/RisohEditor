@@ -354,7 +354,6 @@
 #define IDS_GENERATEDFROMTEXTINCLUDE        351
 #define IDS_TEXTINCLUDEREADONLY             352
 #define IDS_INCLUDETEXTINCLUDE3             353
-#define IDS_COPYHEADERFILE                  354
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

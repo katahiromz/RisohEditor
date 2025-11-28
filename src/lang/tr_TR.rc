@@ -1645,7 +1645,6 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// TEXTINCLUDE %u'dan oluşturuldu\r\n"
     IDS_TEXTINCLUDEREADONLY, "Bu dosya TEXTINCLUDE 1 tarafından yazmaya karşı korumalıdır.\r\n\r\nDosyaya hala yazmak istiyor musunuz?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 düzenlenemeyen kaynak öğeleri içeriyor.\r\n\r\nTEXTINCLUDE 3'teki öğeleri düzenlenebilir öğeler olarak eklemek ve TEXTINCLUDE 3'ü sıfırlamak istiyor musunuz?"
-    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

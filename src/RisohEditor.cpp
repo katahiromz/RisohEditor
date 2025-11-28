@@ -8924,47 +8924,38 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             if (ch == L'/') ch = L'\\';
         }
 
-        // Check if destination header file exists
-        if (!PathFileExistsW(szDestHeaderPath))
-        {
-            // Try to find source header file from original RC file location
-            WCHAR szSrcDir[MAX_PATH];
-            StringCchCopyW(szSrcDir, _countof(szSrcDir), m_szFile);
-            PathRemoveFileSpecW(szSrcDir);
+        // Try to find source header file from original RC file location
+        WCHAR szSrcDir[MAX_PATH];
+        StringCchCopyW(szSrcDir, _countof(szSrcDir), m_szFile);
+        PathRemoveFileSpecW(szSrcDir);
 
-            WCHAR szSrcHeaderPath[MAX_PATH];
-            PathCombineW(szSrcHeaderPath, szSrcDir, textinclude1_w.c_str());
+        WCHAR szSrcHeaderPath[MAX_PATH];
+        PathCombineW(szSrcHeaderPath, szSrcDir, textinclude1_w.c_str());
+
+        for (auto& ch : szSrcHeaderPath) {
+            if (ch == L'/') ch = L'\\';
+        }
+
+        // If source header exists but destination doesn't, ask to copy
+        if (PathFileExistsW(szSrcHeaderPath)) {
+            // Create parent directory if it doesn't exist
+            // This handles paths like "include\resource.h" or "include/resource.h"
+            WCHAR szDestHeaderDir[MAX_PATH];
+            StringCchCopyW(szDestHeaderDir, _countof(szDestHeaderDir), szDestHeaderPath);
+            PathRemoveFileSpecW(szDestHeaderDir);
+            if (szDestHeaderDir[0] && !PathIsDirectoryW(szDestHeaderDir))
+                create_directories_recursive_win32(szDestHeaderDir);
 
             for (auto& ch : szSrcHeaderPath) {
                 if (ch == L'/') ch = L'\\';
             }
+            for (auto& ch : szDestHeaderPath) {
+                if (ch == L'/') ch = L'\\';
+            }
 
-            // If source header exists but destination doesn't, ask to copy
-            if (PathFileExistsW(szSrcHeaderPath)) {
-                WCHAR szMsg[MAX_PATH * 2];
-                StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_COPYHEADERFILE), textinclude1_w.c_str());
-                if (MsgBoxDx(szMsg, MB_ICONQUESTION | MB_YESNO) == IDYES) 
-                {
-                    // Create parent directory if it doesn't exist
-                    // This handles paths like "include\resource.h" or "include/resource.h"
-                    WCHAR szDestHeaderDir[MAX_PATH];
-                    StringCchCopyW(szDestHeaderDir, _countof(szDestHeaderDir), szDestHeaderPath);
-                    PathRemoveFileSpecW(szDestHeaderDir);
-                    if (szDestHeaderDir[0] && !PathIsDirectoryW(szDestHeaderDir))
-                        create_directories_recursive_win32(szDestHeaderDir);
-
-                    for (auto& ch : szSrcHeaderPath) {
-                        if (ch == L'/') ch = L'\\';
-                    }
-                    for (auto& ch : szDestHeaderPath) {
-                        if (ch == L'/') ch = L'\\';
-                    }
-
-                    if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) {
-                        // Copy failed, show error to user
-                        ErrorBoxDx(IDS_CANNOTSAVE);
-                    }
-                }
+            if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) {
+                // Copy failed, show error to user
+                ErrorBoxDx(IDS_CANNOTSAVE);
             }
         }
     }
