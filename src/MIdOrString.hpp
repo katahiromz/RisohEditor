@@ -100,6 +100,9 @@ struct MIdOrString
 
     const TCHAR *ptr() const
     {
+        // NOTE: MAKEINTRESOURCE(0) is just a null pointer. This function returns an empty string
+        //       to avoid the function returning NULL for (WORD)0 of the resource name. Obviously,
+        //       the resource name is not an empty string.
         if (m_id)
             return MAKEINTRESOURCE(m_id);
         return m_str.c_str();
