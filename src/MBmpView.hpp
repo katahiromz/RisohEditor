@@ -27,8 +27,27 @@
 #ifndef _INC_VFW
     #include <vfw.h>
 #endif
+#include <mmsystem.h>  // for mciGetErrorString
 
 class MBmpView;
+
+// Helper to log MCI errors for debugging purposes
+inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
+{
+    TCHAR szError[256];
+    if (mciGetErrorString(dwError, szError, _countof(szError)))
+    {
+        TCHAR szMsg[512];
+        wsprintf(szMsg, TEXT("MCI Error in %s: %s (code %lu)\n"), pszContext, szError, dwError);
+        OutputDebugString(szMsg);
+    }
+    else
+    {
+        TCHAR szMsg[128];
+        wsprintf(szMsg, TEXT("MCI Error in %s: code %lu\n"), pszContext, dwError);
+        OutputDebugString(szMsg);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -179,6 +198,23 @@ public:
         TCHAR szTempPath[MAX_PATH];
         GetTempPath(MAX_PATH, szTempPath);
         GetTempFileName(szTempPath, TEXT("avi"), 0, m_szTempFile);
+
+        // MCI relies on file extension to determine media type; rename .tmp to .avi
+        // so that compressed AVI files are properly recognized on some systems.
+        LPTSTR pszDot = _tcsrchr(m_szTempFile, TEXT('.'));
+        if (pszDot != NULL)
+        {
+            // Ensure buffer has room for ".avi" (4 chars + null terminator)
+            if (pszDot + 5 <= m_szTempFile + _countof(m_szTempFile))
+            {
+                TCHAR szOldPath[MAX_PATH];
+                _tcscpy_s(szOldPath, m_szTempFile);
+                _tcscpy_s(pszDot, _countof(m_szTempFile) - (pszDot - m_szTempFile), TEXT(".avi"));
+                // Rename the temp file created by GetTempFileName
+                MoveFile(szOldPath, m_szTempFile);
+            }
+        }
+
         ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
 
         MByteStreamEx stream;
@@ -186,8 +222,19 @@ public:
         if (stream.SaveToFile(m_szTempFile))
         {
             ShowWindow(m_mci_window, SW_SHOWNOACTIVATE);
-            MCIWndOpen(m_mci_window, m_szTempFile, 0);
-            MCIWndPlay(m_mci_window);
+            DWORD dwError = (DWORD)MCIWndOpen(m_mci_window, m_szTempFile, 0);
+            if (dwError != 0)
+            {
+                LogMCIError(dwError, TEXT("MCIWndOpen"));
+                ShowWindow(m_mci_window, SW_HIDE);
+                return;
+            }
+            dwError = (DWORD)MCIWndPlay(m_mci_window);
+            if (dwError != 0)
+            {
+                LogMCIError(dwError, TEXT("MCIWndPlay"));
+                ShowWindow(m_mci_window, SW_HIDE);
+            }
         }
     }
 
