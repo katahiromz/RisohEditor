@@ -19,7 +19,6 @@
 
 #include "EgaBridge.hpp"
 #include <windows.h>
-#include <utility>
 
 #include "../EGA/ega.hpp"
 
@@ -27,23 +26,8 @@ using namespace EGA;
 
 namespace
 {
-    static EgaInputFn  s_inputFn;
-    static EgaPrintFn  s_printFn;
     static LONG s_nRunning = 0;
     static bool s_bInitialized = false;
-}
-
-static bool Ega_CInput(char* buf, size_t buflen)
-{
-    if (s_inputFn)
-        return s_inputFn(buf, buflen);
-    return false;
-}
-
-static void Ega_CPrint(const char* fmt, va_list va)
-{
-    if (s_printFn)
-        s_printFn(fmt, va);
 }
 
 static DWORD WINAPI EgaBridgeThreadProc(LPVOID args)
@@ -73,9 +57,6 @@ namespace EgaBridge
         if (!EGA_init())
             return false;
 
-        EGA_set_input_fn(Ega_CInput);
-        EGA_set_print_fn(Ega_CPrint);
-
         s_bInitialized = true;
         return true;
     }
@@ -92,12 +73,12 @@ namespace EgaBridge
 
     void SetInputFn(EgaInputFn fn)
     {
-        s_inputFn = std::move(fn);
+        EGA_set_input_fn(fn);
     }
 
     void SetPrintFn(EgaPrintFn fn)
     {
-        s_printFn = std::move(fn);
+        EGA_set_print_fn(fn);
     }
 
     bool StartInteractive()

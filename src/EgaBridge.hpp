@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include <functional>
 #include <cstdarg>
 
-using EgaInputFn  = std::function<bool(char* buf, size_t buflen)>;
-using EgaPrintFn  = std::function<void(const char* fmt, va_list va)>;
+// Function pointer types matching EGA API
+typedef bool (*EgaInputFn)(char* buf, size_t buflen);
+typedef void (*EgaPrintFn)(const char* fmt, va_list va);
 
 namespace EgaBridge
 {
