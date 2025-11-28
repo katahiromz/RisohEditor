@@ -202,16 +202,16 @@ public:
         // MCI relies on file extension to determine media type; rename .tmp to .avi
         // so that compressed AVI files are properly recognized on some systems.
         LPTSTR pszDot = _tcsrchr(m_szTempFile, TEXT('.'));
-        if (pszDot != NULL)
+        if (pszDot != NULL && pszDot + 5 <= m_szTempFile + _countof(m_szTempFile))
         {
-            // Ensure buffer has room for ".avi" (4 chars + null terminator)
-            if (pszDot + 5 <= m_szTempFile + _countof(m_szTempFile))
+            TCHAR szOldPath[MAX_PATH];
+            _tcscpy_s(szOldPath, m_szTempFile);
+            _tcscpy_s(pszDot, 5, TEXT(".avi"));  // ".avi" + null = 5 chars
+            // Rename the temp file created by GetTempFileName
+            if (!MoveFile(szOldPath, m_szTempFile))
             {
-                TCHAR szOldPath[MAX_PATH];
-                _tcscpy_s(szOldPath, m_szTempFile);
-                _tcscpy_s(pszDot, _countof(m_szTempFile) - (pszDot - m_szTempFile), TEXT(".avi"));
-                // Rename the temp file created by GetTempFileName
-                MoveFile(szOldPath, m_szTempFile);
+                // Rename failed; revert to original path
+                _tcscpy_s(m_szTempFile, szOldPath);
             }
         }
 
