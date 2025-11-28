@@ -1344,7 +1344,7 @@ CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
         DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
     }
     SelectObject(hDC, hbmOld);
-    DeleteObject(hbr);
+    // NOTE: hbr is a stock brush obtained via GetStockBrush, so it should NOT be deleted.
     DeleteDC(hDC);
 
     return hbm;
