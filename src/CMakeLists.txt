@@ -14,6 +14,7 @@ add_library(libRisohEditor STATIC
     ResToText.cpp
     StringRes.cpp
     ToolbarRes.cpp
+    Utils.cpp
     VersionRes.cpp)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
