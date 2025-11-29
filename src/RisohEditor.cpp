@@ -315,10 +315,10 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 	using namespace std;
 
 	FILE *fp = _wfopen(filename, L"wb");        // open
+	if (!fp)
+		return FALSE;
 
 	int n = (int)fwrite(pv, size, 1, fp);   // write
-
-	fflush(fp);
 	fclose(fp);     // close the files
 
 	return n == 1;  // success or not
