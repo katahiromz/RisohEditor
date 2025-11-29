@@ -1646,7 +1646,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "Bu dosya TEXTINCLUDE 1 tarafından yazmaya karşı korumalıdır.\r\n\r\nDosyaya hala yazmak istiyor musunuz?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 düzenlenemeyen kaynak öğeleri içeriyor.\r\n\r\nTEXTINCLUDE 3'teki öğeleri düzenlenebilir öğeler olarak eklemek ve TEXTINCLUDE 3'ü sıfırlamak istiyor musunuz?"
     IDS_MP3RESBINFILTER, "MP3 Sesi (*.mp3)|*.mp3|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
-    IDS_MP3SOUND, "(MP3 Sesi)"
+    IDS_MP3SOUND, "(MP3 Sesi)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
