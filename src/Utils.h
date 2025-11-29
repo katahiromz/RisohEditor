@@ -76,6 +76,8 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file);
 MStringW GetKeyID(UINT wId);
 void Cmb1_InitVirtualKeys(HWND hCmb1);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str);
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
+void DoSetFileModified(BOOL bModified);
 
 extern std::vector<LANG_ENTRY> g_langs;
 

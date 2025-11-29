@@ -501,3 +501,8 @@ protected:
 	std::wstring GetRisohEditorVersion() const;
 	std::wstring ParseVersionFile(LPCWSTR pszFile, std::wstring& url) const;
 };
+
+extern MMainWnd *s_pMainWnd;
+extern INT g_bNoGuiMode;
+
+void EGA_extension(void);
