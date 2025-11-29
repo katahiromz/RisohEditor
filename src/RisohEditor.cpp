@@ -8962,6 +8962,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             {
                 // Copy failed, show error to user
                 ErrorBoxDx(IDS_CANNOTSAVE);
+                return FALSE;
             }
         }
     }
