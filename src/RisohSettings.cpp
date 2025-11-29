@@ -6,17 +6,12 @@
 
 #include "RisohEditor.hpp"
 #include "MMainWnd.hpp"
-#define LINENUMEDIT_IMPL
-#include "LineNumEdit.hpp"
-#include "MChooseLangDlg.hpp"
-#include "ToolbarRes.hpp"
 #include "Utils.h"
 #ifdef PORTABLE
 	#include "MRegKeyPortable.hpp"
 #else
 	#include "MRegKey.hpp"
 #endif
-#include <thread>
 
 #define TV_WIDTH        250     // default m_hwndTV width
 #define BV_WIDTH        160     // default m_hBmpView width

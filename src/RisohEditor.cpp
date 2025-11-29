@@ -19,7 +19,6 @@ bool g_wrap_enabled = false;
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
-#define BE_HEIGHT       90      // default m_hHexViewer height
 #define CX_STATUS_PART  80      // status bar part width
 #define ERROR_LINE_COLOR RGB(255, 191, 191)
 
