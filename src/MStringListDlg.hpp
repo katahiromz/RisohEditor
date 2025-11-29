@@ -28,75 +28,75 @@
 class MStringListDlg : public MDialogBase
 {
 public:
-    std::vector<MStringA>& m_str_list;
+	std::vector<MStringA>& m_str_list;
 
-    MStringListDlg(std::vector<MStringA>& str_list) :
-        MDialogBase(IDD_STRINGLIST), m_str_list(str_list)
-    {
-    }
+	MStringListDlg(std::vector<MStringA>& str_list) :
+		MDialogBase(IDD_STRINGLIST), m_str_list(str_list)
+	{
+	}
 
-    virtual ~MStringListDlg()
-    {
-    }
+	virtual ~MStringListDlg()
+	{
+	}
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        MStringA text = mstr_join(m_str_list, "\r\n");
-        SetDlgItemTextA(hwnd, edt1, text.c_str());
+	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+	{
+		MStringA text = mstr_join(m_str_list, "\r\n");
+		SetDlgItemTextA(hwnd, edt1, text.c_str());
 
-        MString str = LoadStringDx(IDS_DLGINIT1);
-        str += LoadStringDx(IDS_DLGINIT2);
-        str += LoadStringDx(IDS_DLGINIT3);
-        SetDlgItemText(hwnd, stc1, str.c_str());
+		MString str = LoadStringDx(IDS_DLGINIT1);
+		str += LoadStringDx(IDS_DLGINIT2);
+		str += LoadStringDx(IDS_DLGINIT3);
+		SetDlgItemText(hwnd, stc1, str.c_str());
 
-        return TRUE;
-    }
+		return TRUE;
+	}
 
-    void OnOK(HWND hwnd)
-    {
-        MString str = GetDlgItemText(hwnd, edt1);
-        mstr_trim(str);
+	void OnOK(HWND hwnd)
+	{
+		MString str = GetDlgItemText(hwnd, edt1);
+		mstr_trim(str);
 
-        if (str.empty())
-        {
-            m_str_list.clear();
-            EndDialog(IDOK);
-            return;
-        }
+		if (str.empty())
+		{
+			m_str_list.clear();
+			EndDialog(IDOK);
+			return;
+		}
 
-        MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
-        mstr_trim(strA);
+		MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
+		mstr_trim(strA);
 
-        std::vector<MStringA> lines;
-        mstr_replace_all(strA, "\r", "");
-        mstr_split(lines, strA, "\n");
-        m_str_list = lines;
+		std::vector<MStringA> lines;
+		mstr_replace_all(strA, "\r", "");
+		mstr_split(lines, strA, "\n");
+		m_str_list = lines;
 
-        EndDialog(IDOK);
-    }
+		EndDialog(IDOK);
+	}
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK:
-            OnOK(hwnd);
-            break;
-        case IDCANCEL:
-            EndDialog(IDCANCEL);
-            break;
-        }
-    }
+	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+	{
+		switch (id)
+		{
+		case IDOK:
+			OnOK(hwnd);
+			break;
+		case IDCANCEL:
+			EndDialog(IDCANCEL);
+			break;
+		}
+	}
 
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        default:
-            return DefaultProcDx();
-        }
-    }
+	virtual INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+		HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		default:
+			return DefaultProcDx();
+		}
+	}
 };

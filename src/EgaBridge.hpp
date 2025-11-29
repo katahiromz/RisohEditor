@@ -28,10 +28,10 @@ typedef void (*EgaPrintFn)(const char* fmt, va_list va);
 
 namespace EgaBridge
 {
-    bool Initialize();
-    void Uninitialize();
-    void SetInputFn(EgaInputFn fn);
-    void SetPrintFn(EgaPrintFn fn);
-    bool StartInteractive();
-    void StopInteractive();
+	bool Initialize();
+	void Uninitialize();
+	void SetInputFn(EgaInputFn fn);
+	void SetPrintFn(EgaPrintFn fn);
+	bool StartInteractive();
+	void StopInteractive();
 }

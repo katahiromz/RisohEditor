@@ -26,37 +26,37 @@
 class MTestMenuDlg : public MDialogBase
 {
 public:
-    HMENU m_hMenu;
+	HMENU m_hMenu;
 
-    MTestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)
-    {
-    }
+	MTestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)
+	{
+	}
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        SetMenu(hwnd, m_hMenu);
-        CenterWindowDx();
-        return TRUE;
-    }
+	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+	{
+		SetMenu(hwnd, m_hMenu);
+		CenterWindowDx();
+		return TRUE;
+	}
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK: case IDCANCEL:
-            EndDialog(id);
-            break;
-        }
-    }
+	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+	{
+		switch (id)
+		{
+		case IDOK: case IDCANCEL:
+			EndDialog(id);
+			break;
+		}
+	}
 
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        }
-        return DefaultProcDx();
-    }
+	virtual INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		}
+		return DefaultProcDx();
+	}
 };

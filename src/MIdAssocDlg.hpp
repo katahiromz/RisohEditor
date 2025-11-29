@@ -28,191 +28,191 @@
 class MIdAssocDlg : public MDialogBase
 {
 public:
-    typedef std::map<MString, MString> map_type;
-    HWND m_hLst1;
+	typedef std::map<MString, MString> map_type;
+	HWND m_hLst1;
 
-    MIdAssocDlg() : MDialogBase(IDD_IDASSOC)
-    {
-    }
+	MIdAssocDlg() : MDialogBase(IDD_IDASSOC)
+	{
+	}
 
-    void Lst1_Init(HWND hLst1)
-    {
-        ListView_DeleteAllItems(hLst1);
+	void Lst1_Init(HWND hLst1)
+	{
+		ListView_DeleteAllItems(hLst1);
 
-        LV_ITEM item;
+		LV_ITEM item;
 
-        INT iItem = 0;
-        for (auto& pair : g_settings.assoc_map)
-        {
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 0;
-            item.pszText = const_cast<LPTSTR>(pair.first.c_str());
-            ListView_InsertItem(m_hLst1, &item);
+		INT iItem = 0;
+		for (auto& pair : g_settings.assoc_map)
+		{
+			ZeroMemory(&item, sizeof(item));
+			item.iItem = iItem;
+			item.mask = LVIF_TEXT;
+			item.iSubItem = 0;
+			item.pszText = const_cast<LPTSTR>(pair.first.c_str());
+			ListView_InsertItem(m_hLst1, &item);
 
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 1;
-            item.pszText = const_cast<LPTSTR>(pair.second.c_str());
-            ListView_SetItem(m_hLst1, &item);
+			ZeroMemory(&item, sizeof(item));
+			item.iItem = iItem;
+			item.mask = LVIF_TEXT;
+			item.iSubItem = 1;
+			item.pszText = const_cast<LPTSTR>(pair.second.c_str());
+			ListView_SetItem(m_hLst1, &item);
 
-            ++iItem;
-        }
+			++iItem;
+		}
 
-        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(m_hLst1, 0, state, state);
-    }
+		UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+		ListView_SetItemState(m_hLst1, 0, state, state);
+	}
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        m_hLst1 = GetDlgItem(hwnd, lst1);
-        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
+	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+	{
+		m_hLst1 = GetDlgItem(hwnd, lst1);
+		ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
 
-        LV_COLUMN column;
-        ZeroMemory(&column, sizeof(column));
+		LV_COLUMN column;
+		ZeroMemory(&column, sizeof(column));
 
-        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-        column.fmt = LVCFMT_LEFT;
-        column.cx = 155;
-        column.pszText = LoadStringDx(IDS_IDTYPE);
-        column.iSubItem = 0;
-        ListView_InsertColumn(m_hLst1, 0, &column);
+		column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		column.fmt = LVCFMT_LEFT;
+		column.cx = 155;
+		column.pszText = LoadStringDx(IDS_IDTYPE);
+		column.iSubItem = 0;
+		ListView_InsertColumn(m_hLst1, 0, &column);
 
-        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-        column.fmt = LVCFMT_LEFT;
-        column.cx = 150;
-        column.pszText = LoadStringDx(IDS_IDPREFIX);
-        column.iSubItem = 1;
-        ListView_InsertColumn(m_hLst1, 1, &column);
+		column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		column.fmt = LVCFMT_LEFT;
+		column.cx = 150;
+		column.pszText = LoadStringDx(IDS_IDPREFIX);
+		column.iSubItem = 1;
+		ListView_InsertColumn(m_hLst1, 1, &column);
 
-        Lst1_Init(m_hLst1);
+		Lst1_Init(m_hLst1);
 
-        CenterWindowDx();
-        return TRUE;
-    }
+		CenterWindowDx();
+		return TRUE;
+	}
 
-    void OnPsh2(HWND hwnd)
-    {
-        g_settings.ResetAssoc();
-        Lst1_Init(m_hLst1);
-    }
+	void OnPsh2(HWND hwnd)
+	{
+		g_settings.ResetAssoc();
+		Lst1_Init(m_hLst1);
+	}
 
-    void OnPsh1(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem == -1)
-            return;
+	void OnPsh1(HWND hwnd)
+	{
+		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+		if (iItem == -1)
+			return;
 
-        TCHAR szText[64];
-        MString str1, str2;
+		TCHAR szText[64];
+		MString str1, str2;
 
-        ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
-        str1 = szText;
+		ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+		str1 = szText;
 
-        ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
-        str2 = szText;
+		ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+		str2 = szText;
 
-        MModifyAssocDlg dialog(str1, str2);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPTSTR>(str2.c_str()));
-        }
-    }
+		MModifyAssocDlg dialog(str1, str2);
+		if (dialog.DialogBoxDx(hwnd) == IDOK)
+		{
+			ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPTSTR>(str2.c_str()));
+		}
+	}
 
-    void OnOK(HWND hwnd)
-    {
-        TCHAR szText[64];
-        MString str1, str2;
+	void OnOK(HWND hwnd)
+	{
+		TCHAR szText[64];
+		MString str1, str2;
 
-        INT iItem, nCount = ListView_GetItemCount(m_hLst1);
-        for (iItem = 0; iItem < nCount; ++iItem)
-        {
-            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
-            str1 = szText;
+		INT iItem, nCount = ListView_GetItemCount(m_hLst1);
+		for (iItem = 0; iItem < nCount; ++iItem)
+		{
+			ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+			str1 = szText;
 
-            ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
-            str2 = szText;
+			ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+			str2 = szText;
 
-            g_settings.assoc_map[str1] = str2;
-        }
+			g_settings.assoc_map[str1] = str2;
+		}
 
-        EndDialog(IDOK);
-    }
+		EndDialog(IDOK);
+	}
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK:
-            OnOK(hwnd);
-            break;
-        case IDCANCEL:
-            EndDialog(IDCANCEL);
-            break;
-        case psh1:
-            OnPsh1(hwnd);
-            break;
-        case psh2:
-            OnPsh2(hwnd);
-            break;
-        case ID_MODIFYASSOC:
-            OnPsh1(hwnd);
-            break;
-        }
-    }
+	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+	{
+		switch (id)
+		{
+		case IDOK:
+			OnOK(hwnd);
+			break;
+		case IDCANCEL:
+			EndDialog(IDCANCEL);
+			break;
+		case psh1:
+			OnPsh1(hwnd);
+			break;
+		case psh2:
+			OnPsh2(hwnd);
+			break;
+		case ID_MODIFYASSOC:
+			OnPsh1(hwnd);
+			break;
+		}
+	}
 
-    void OnItemChanged(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem == -1)
-        {
-            EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
-        }
-        else
-        {
-            EnableWindow(GetDlgItem(hwnd, psh1), TRUE);
-        }
-    }
+	void OnItemChanged(HWND hwnd)
+	{
+		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+		if (iItem == -1)
+		{
+			EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
+		}
+		else
+		{
+			EnableWindow(GetDlgItem(hwnd, psh1), TRUE);
+		}
+	}
 
-    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
-    {
-        if (pnmhdr->idFrom == lst1)
-        {
-            switch (pnmhdr->code)
-            {
-            case NM_DBLCLK:
-                OnPsh1(hwnd);
-                return 1;
+	LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+	{
+		if (pnmhdr->idFrom == lst1)
+		{
+			switch (pnmhdr->code)
+			{
+			case NM_DBLCLK:
+				OnPsh1(hwnd);
+				return 1;
 
-            case LVN_ITEMCHANGED:
-                OnItemChanged(hwnd);
-                break;
-            }
-        }
-        return 0;
-    }
+			case LVN_ITEMCHANGED:
+				OnItemChanged(hwnd);
+				break;
+			}
+		}
+		return 0;
+	}
 
-    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
-    {
-        if (hwndContext == m_hLst1)
-        {
-            PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 2, xPos, yPos);
-        }
-    }
+	void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+	{
+		if (hwndContext == m_hLst1)
+		{
+			PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 2, xPos, yPos);
+		}
+	}
 
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
-        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
-        default:
-            return DefaultProcDx();
-        }
-    }
+	virtual INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+		HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+		HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+		default:
+			return DefaultProcDx();
+		}
+	}
 };

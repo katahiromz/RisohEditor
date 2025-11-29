@@ -20,7 +20,7 @@
 #pragma once
 
 #ifndef _INC_WINDOWS
-    #include <windows.h>
+	#include <windows.h>
 #endif
 #include <cassert>
 #include "MByteStreamEx.hpp"
@@ -30,50 +30,50 @@
 // the common header of RT_CURSOR, RT_ICON, icon/cursor files
 typedef struct ICONDIR
 {
-    WORD           idReserved;  // Reserved (must be 0)
-    WORD           idType;      // RES_ICON or RES_CURSOR
-    WORD           idCount;     // How many images?
+	WORD           idReserved;  // Reserved (must be 0)
+	WORD           idType;      // RES_ICON or RES_CURSOR
+	WORD           idCount;     // How many images?
 } ICONDIR, *LPICONDIR;
 
 // the header of RT_CURSOR
 typedef struct LOCALHEADER {
-    WORD xHotSpot;
-    WORD yHotSpot;
+	WORD xHotSpot;
+	WORD yHotSpot;
 } LOCALHEADER;
 
 // the entry of icon/cursor files (after ICONDIR)
 typedef struct ICONDIRENTRY
 {
-    BYTE        bWidth;         // Width, in pixels, of the image
-    BYTE        bHeight;        // Height, in pixels, of the image
-    BYTE        bColorCount;    // Number of colors in image (0 if >= 8bpp)
-    BYTE        bReserved;      // Reserved (must be 0)
-    union
-    {
-        WORD    xHotSpot;       // Hot Spot X
-        WORD    wPlanes;        // Color Planes
-    };
-    union
-    {
-        WORD    yHotSpot;       // Hot Spot Y
-        WORD    wBitCount;      // Bits per pixel
-    };
-    DWORD       dwBytesInRes;   // How many bytes in this resource?
-    DWORD       dwImageOffset;  // Where in the file is this image?
+	BYTE        bWidth;         // Width, in pixels, of the image
+	BYTE        bHeight;        // Height, in pixels, of the image
+	BYTE        bColorCount;    // Number of colors in image (0 if >= 8bpp)
+	BYTE        bReserved;      // Reserved (must be 0)
+	union
+	{
+		WORD    xHotSpot;       // Hot Spot X
+		WORD    wPlanes;        // Color Planes
+	};
+	union
+	{
+		WORD    yHotSpot;       // Hot Spot Y
+		WORD    wBitCount;      // Bits per pixel
+	};
+	DWORD       dwBytesInRes;   // How many bytes in this resource?
+	DWORD       dwImageOffset;  // Where in the file is this image?
 } ICONDIRENTRY, *LPICONDIRENTRY;
 
 // the entry of group icon resource (RT_GROUP_ICON)
 #include <pshpack2.h>
 typedef struct GRPICONDIRENTRY
 {
-    BYTE   bWidth;              // Width, in pixels, of the image
-    BYTE   bHeight;             // Height, in pixels, of the image
-    BYTE   bColorCount;         // Number of colors in image (0 if >=8bpp)
-    BYTE   bReserved;           // Reserved
-    WORD   wPlanes;             // Color Planes
-    WORD   wBitCount;           // Bits per pixel
-    DWORD  dwBytesInRes;        // how many bytes in this resource?
-    WORD   nID;                 // the ID
+	BYTE   bWidth;              // Width, in pixels, of the image
+	BYTE   bHeight;             // Height, in pixels, of the image
+	BYTE   bColorCount;         // Number of colors in image (0 if >=8bpp)
+	BYTE   bReserved;           // Reserved
+	WORD   wPlanes;             // Color Planes
+	WORD   wBitCount;           // Bits per pixel
+	DWORD  dwBytesInRes;        // how many bytes in this resource?
+	WORD   nID;                 // the ID
 } GRPICONDIRENTRY, *LPGRPICONDIRENTRY;
 #include <poppack.h>
 
@@ -81,12 +81,12 @@ typedef struct GRPICONDIRENTRY
 #include <pshpack2.h>
 typedef struct GRPCURSORDIRENTRY
 {
-    WORD    wWidth;             // Width, in pixels, of the image
-    WORD    wHeight;            // Height, in pixels, of the image
-    WORD    wPlanes;            // Must be 1
-    WORD    wBitCount;          // Bits per pixel
-    DWORD   dwBytesInRes;       // how many bytes in this resource?
-    WORD    nID;                // the ID
+	WORD    wWidth;             // Width, in pixels, of the image
+	WORD    wHeight;            // Height, in pixels, of the image
+	WORD    wPlanes;            // Must be 1
+	WORD    wBitCount;          // Bits per pixel
+	DWORD   dwBytesInRes;       // how many bytes in this resource?
+	WORD    nID;                // the ID
 } GRPCURSORDIRENTRY, *LPGRPCURSORDIRENTRY;
 #include <poppack.h>
 
@@ -95,97 +95,97 @@ typedef struct GRPCURSORDIRENTRY
 class IconFile
 {
 public:
-    typedef ICONDIRENTRY            EntryType;
-    typedef std::vector<EntryType>  EntryListType;
-    typedef std::vector<BYTE>       DataType;
-    typedef std::vector<DataType>   DataListType;
-    typedef GRPICONDIRENTRY         ResourceEntryType;
+	typedef ICONDIRENTRY            EntryType;
+	typedef std::vector<EntryType>  EntryListType;
+	typedef std::vector<BYTE>       DataType;
+	typedef std::vector<DataType>   DataListType;
+	typedef GRPICONDIRENTRY         ResourceEntryType;
 
-    IconFile()
-    {
-        memset(&m_dir, 0, sizeof(m_dir));
-    }
+	IconFile()
+	{
+		memset(&m_dir, 0, sizeof(m_dir));
+	}
 
-    void clear()
-    {
-        memset(&m_dir, 0, sizeof(m_dir));
-        m_entries.clear();
-        m_images.clear();
-    }
+	void clear()
+	{
+		memset(&m_dir, 0, sizeof(m_dir));
+		m_entries.clear();
+		m_images.clear();
+	}
 
-    bool IsIconDirOK() const
-    {
-        return m_dir.idReserved == 0 && m_dir.idType == RES_ICON &&
-               m_dir.idCount > 0;
-    }
+	bool IsIconDirOK() const
+	{
+		return m_dir.idReserved == 0 && m_dir.idType == RES_ICON &&
+			   m_dir.idCount > 0;
+	}
 
-    WORD type() const
-    {
-        return m_dir.idType;
-    }
+	WORD type() const
+	{
+		return m_dir.idType;
+	}
 
-    int SizeOfIconGroup() const
-    {
-        return sizeof(ICONDIR) + sizeof(ResourceEntryType) * GetImageCount();
-    }
+	int SizeOfIconGroup() const
+	{
+		return sizeof(ICONDIR) + sizeof(ResourceEntryType) * GetImageCount();
+	}
 
-    WORD GetImageCount() const
-    {
-        return m_dir.idCount;
-    }
+	WORD GetImageCount() const
+	{
+		return m_dir.idCount;
+	}
 
-    DataType& GetImage(int index)
-    {
-        assert(0 <= index && index < GetImageCount());
-        return m_images[index];
-    }
-    const DataType& GetImage(int index) const
-    {
-        assert(0 <= index && index < GetImageCount());
-        return m_images[index];
-    }
+	DataType& GetImage(int index)
+	{
+		assert(0 <= index && index < GetImageCount());
+		return m_images[index];
+	}
+	const DataType& GetImage(int index) const
+	{
+		assert(0 <= index && index < GetImageCount());
+		return m_images[index];
+	}
 
-    BYTE *GetImagePtr(int index)
-    {
-        return &(GetImage(index)[0]);
-    }
-    const BYTE *GetImagePtr(int index) const
-    {
-        return &(GetImage(index)[0]);
-    }
+	BYTE *GetImagePtr(int index)
+	{
+		return &(GetImage(index)[0]);
+	}
+	const BYTE *GetImagePtr(int index) const
+	{
+		return &(GetImage(index)[0]);
+	}
 
-    DWORD GetImageSize(int index) const
-    {
-        return DWORD(m_images[index].size());
-    }
+	DWORD GetImageSize(int index) const
+	{
+		return DWORD(m_images[index].size());
+	}
 
-    bool LoadFromStream(const MByteStreamEx& stream);
+	bool LoadFromStream(const MByteStreamEx& stream);
 
-    bool LoadFromFile(LPCTSTR pszFileName)
-    {
-        MByteStreamEx stream;
-        if (!stream.LoadFromFile(pszFileName))
-            return false;
+	bool LoadFromFile(LPCTSTR pszFileName)
+	{
+		MByteStreamEx stream;
+		if (!stream.LoadFromFile(pszFileName))
+			return false;
 
-        return LoadFromStream(stream);
-    }
+		return LoadFromStream(stream);
+	}
 
-    bool SaveToStream(MByteStreamEx& stream);
+	bool SaveToStream(MByteStreamEx& stream);
 
-    bool SaveToFile(LPCTSTR pszFileName)
-    {
-        MByteStreamEx stream;
-        if (!SaveToStream(stream))
-            return false;
-        return stream.SaveToFile(pszFileName);
-    }
+	bool SaveToFile(LPCTSTR pszFileName)
+	{
+		MByteStreamEx stream;
+		if (!SaveToStream(stream))
+			return false;
+		return stream.SaveToFile(pszFileName);
+	}
 
-    DataType GetIconGroup(int nBaseID) const;
+	DataType GetIconGroup(int nBaseID) const;
 
 protected:
-    ICONDIR                     m_dir;
-    EntryListType               m_entries;
-    DataListType                m_images;
+	ICONDIR                     m_dir;
+	EntryListType               m_entries;
+	DataListType                m_images;
 }; // class IconFile
 
 //////////////////////////////////////////////////////////////////////////////
@@ -193,95 +193,95 @@ protected:
 class CursorFile
 {
 public:
-    typedef ICONDIRENTRY            EntryType;
-    typedef std::vector<EntryType>  EntryListType;
-    typedef std::vector<BYTE>       DataType;
-    typedef std::vector<DataType>   DataListType;
-    typedef GRPCURSORDIRENTRY       ResourceEntryType;
+	typedef ICONDIRENTRY            EntryType;
+	typedef std::vector<EntryType>  EntryListType;
+	typedef std::vector<BYTE>       DataType;
+	typedef std::vector<DataType>   DataListType;
+	typedef GRPCURSORDIRENTRY       ResourceEntryType;
 
-    CursorFile()
-    {
-        memset(&m_dir, 0, sizeof(m_dir));
-    }
+	CursorFile()
+	{
+		memset(&m_dir, 0, sizeof(m_dir));
+	}
 
-    void clear()
-    {
-        memset(&m_dir, 0, sizeof(m_dir));
-        m_entries.clear();
-        m_images.clear();
-    }
+	void clear()
+	{
+		memset(&m_dir, 0, sizeof(m_dir));
+		m_entries.clear();
+		m_images.clear();
+	}
 
-    bool IsIconDirOK() const
-    {
-        return m_dir.idReserved == 0 && m_dir.idType == RES_CURSOR &&
-               m_dir.idCount > 0;
-    }
+	bool IsIconDirOK() const
+	{
+		return m_dir.idReserved == 0 && m_dir.idType == RES_CURSOR &&
+			   m_dir.idCount > 0;
+	}
 
-    WORD type() const
-    {
-        return m_dir.idType;
-    }
+	WORD type() const
+	{
+		return m_dir.idType;
+	}
 
-    int SizeOfCursorGroup() const
-    {
-        return sizeof(ICONDIR) + sizeof(ResourceEntryType) * GetImageCount();
-    }
+	int SizeOfCursorGroup() const
+	{
+		return sizeof(ICONDIR) + sizeof(ResourceEntryType) * GetImageCount();
+	}
 
-    WORD GetImageCount() const
-    {
-        return m_dir.idCount;
-    }
+	WORD GetImageCount() const
+	{
+		return m_dir.idCount;
+	}
 
-    DataType& GetImage(int index)
-    {
-        assert(0 <= index && index < GetImageCount());
-        return m_images[index];
-    }
-    const DataType& GetImage(int index) const
-    {
-        assert(0 <= index && index < GetImageCount());
-        return m_images[index];
-    }
+	DataType& GetImage(int index)
+	{
+		assert(0 <= index && index < GetImageCount());
+		return m_images[index];
+	}
+	const DataType& GetImage(int index) const
+	{
+		assert(0 <= index && index < GetImageCount());
+		return m_images[index];
+	}
 
-    BYTE *GetImagePtr(int index)
-    {
-        return &(GetImage(index)[0]);
-    }
-    const BYTE *GetImagePtr(int index) const
-    {
-        return &(GetImage(index)[0]);
-    }
+	BYTE *GetImagePtr(int index)
+	{
+		return &(GetImage(index)[0]);
+	}
+	const BYTE *GetImagePtr(int index) const
+	{
+		return &(GetImage(index)[0]);
+	}
 
-    DWORD GetImageSize(int index) const
-    {
-        return DWORD(m_images[index].size());
-    }
+	DWORD GetImageSize(int index) const
+	{
+		return DWORD(m_images[index].size());
+	}
 
-    bool LoadFromStream(const MByteStreamEx& stream);
+	bool LoadFromStream(const MByteStreamEx& stream);
 
-    bool LoadFromFile(LPCTSTR pszFileName)
-    {
-        MByteStreamEx stream;
-        if (!stream.LoadFromFile(pszFileName))
-            return false;
+	bool LoadFromFile(LPCTSTR pszFileName)
+	{
+		MByteStreamEx stream;
+		if (!stream.LoadFromFile(pszFileName))
+			return false;
 
-        return LoadFromStream(stream);
-    }
+		return LoadFromStream(stream);
+	}
 
-    bool SaveToStream(MByteStreamEx& stream);
+	bool SaveToStream(MByteStreamEx& stream);
 
-    bool SaveToFile(LPCTSTR pszFileName)
-    {
-        MByteStreamEx stream;
-        if (!SaveToStream(stream))
-            return false;
-        return stream.SaveToFile(pszFileName);
-    }
+	bool SaveToFile(LPCTSTR pszFileName)
+	{
+		MByteStreamEx stream;
+		if (!SaveToStream(stream))
+			return false;
+		return stream.SaveToFile(pszFileName);
+	}
 
-    DataType GetCursorGroup(int nBaseID) const;
+	DataType GetCursorGroup(int nBaseID) const;
 
 protected:
-    ICONDIR                     m_dir;
-    EntryListType               m_entries;
-    DataListType                m_images;
+	ICONDIR                     m_dir;
+	EntryListType               m_entries;
+	DataListType                m_images;
 }; // class CursorFile

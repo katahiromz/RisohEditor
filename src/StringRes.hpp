@@ -27,63 +27,63 @@
 
 struct STRING_ENTRY
 {
-    WCHAR StringID[128];
-    WCHAR StringValue[512];
+	WCHAR StringID[128];
+	WCHAR StringValue[512];
 };
 
 class StringRes
 {
 public:
-    typedef MStringW string_type;
-    typedef std::map<WORD, string_type> map_type;
-    WORD        m_wName;
-    map_type    m_map;
+	typedef MStringW string_type;
+	typedef std::map<WORD, string_type> map_type;
+	WORD        m_wName;
+	map_type    m_map;
 
-    StringRes() = default;
+	StringRes() = default;
 
-    bool LoadFromStream(const MByteStreamEx& stream, WORD wName);
-    bool SaveToStream(MByteStreamEx& stream, WORD wName);
+	bool LoadFromStream(const MByteStreamEx& stream, WORD wName);
+	bool SaveToStream(MByteStreamEx& stream, WORD wName);
 
-    string_type Dump(WORD wName);
-    string_type Dump();
+	string_type Dump(WORD wName);
+	string_type Dump();
 
-    map_type& map()
-    {
-        return m_map;
-    }
-    const map_type& map() const
-    {
-        return m_map;
-    }
+	map_type& map()
+	{
+		return m_map;
+	}
+	const map_type& map() const
+	{
+		return m_map;
+	}
 
-    void IdRangeFromName(WORD name, WORD& first, WORD& last) const
-    {
-        first = (name - 1) * 16;
-        last = first + 16 - 1;
-    }
+	void IdRangeFromName(WORD name, WORD& first, WORD& last) const
+	{
+		first = (name - 1) * 16;
+		last = first + 16 - 1;
+	}
 
-    WORD NameFromId(WORD id) const
-    {
-        return (id / 16) + 1;
-    }
+	WORD NameFromId(WORD id) const
+	{
+		return (id / 16) + 1;
+	}
 
-    bool HasAnyValues() const
-    {
-        for (auto& pair : m_map)
-        {
-            if (pair.second.size())
-                return true;
-        }
-        return false;
-    }
+	bool HasAnyValues() const
+	{
+		for (auto& pair : m_map)
+		{
+			if (pair.second.size())
+				return true;
+		}
+		return false;
+	}
 
-    bool HasAnyValues(WORD name) const
-    {
-        for (auto& pair : m_map)
-        {
-            if (NameFromId(pair.first) == name && pair.second.size())
-                return true;
-        }
-        return false;
-    }
+	bool HasAnyValues(WORD name) const
+	{
+		for (auto& pair : m_map)
+		{
+			if (NameFromId(pair.first) == name && pair.second.size())
+				return true;
+		}
+		return false;
+	}
 };

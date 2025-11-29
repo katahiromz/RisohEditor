@@ -20,7 +20,7 @@
 #pragma once
 
 #ifndef _INC_WINDOWS
-    #include <windows.h>
+	#include <windows.h>
 #endif
 #include <cassert>
 #include <vector>
@@ -34,18 +34,18 @@
 
 typedef struct VarInfoHead
 {
-    WORD    wLength;
-    WORD    wValueLength;
-    WORD    wType;
+	WORD    wLength;
+	WORD    wValueLength;
+	WORD    wType;
 } VarInfoHead;
 
 struct Var
 {
-    VarInfoHead             head;
-    MStringW                key;
-    std::vector<BYTE>       value;
-    std::vector<BYTE>       children;
-    std::vector<Var>        vars;
+	VarInfoHead             head;
+	MStringW                key;
+	std::vector<BYTE>       value;
+	std::vector<BYTE>       children;
+	std::vector<Var>        vars;
 };
 typedef std::vector<Var> Vars;
 
@@ -54,16 +54,16 @@ typedef std::vector<Var> Vars;
 class VersionRes
 {
 public:
-    VersionRes() = default;
+	VersionRes() = default;
 
-    bool VarsFromStream(Vars& vars, const MByteStreamEx& stream);
-    bool LoadFromData(const std::vector<BYTE>& data);
-    MStringW Dump(const MIdOrString& name) const;
+	bool VarsFromStream(Vars& vars, const MByteStreamEx& stream);
+	bool LoadFromData(const std::vector<BYTE>& data);
+	MStringW Dump(const MIdOrString& name) const;
 
 protected:
-    std::vector<Var>        m_vars;
-    VS_FIXEDFILEINFO        m_fixed;
+	std::vector<Var>        m_vars;
+	VS_FIXEDFILEINFO        m_fixed;
 
-    MStringW DumpValue(WORD wType, const Var& value, int depth = 0) const;
-    MStringW DumpBlock(const Var& var, int depth = 0) const;
+	MStringW DumpValue(WORD wType, const Var& value, int depth = 0) const;
+	MStringW DumpBlock(const Var& var, int depth = 0) const;
 };

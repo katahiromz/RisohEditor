@@ -14,7 +14,7 @@
 #include "MString.hpp"
 
 #ifndef RT_DLGINIT
-    #define RT_DLGINIT  MAKEINTRESOURCE(240)
+	#define RT_DLGINIT  MAKEINTRESOURCE(240)
 #endif
 
 // Win16 messages
@@ -27,82 +27,82 @@
 inline const UNALIGNED WORD *
 ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
 {
-    DWORD cb = 4 * sizeof(WORD);
-    if (cbData <= cb)
-        return NULL;
-    cbData -= cb;
+	DWORD cb = 4 * sizeof(WORD);
+	if (cbData <= cb)
+		return NULL;
+	cbData -= cb;
 
-    // get data
-    WORD ctrl = *pw++;
-    WORD msg = *pw++;
-    WORD w0 = *pw++;
-    WORD w1 = *pw++;
-    DWORD dwLen = MAKELONG(w0, w1);
+	// get data
+	WORD ctrl = *pw++;
+	WORD msg = *pw++;
+	WORD w0 = *pw++;
+	WORD w1 = *pw++;
+	DWORD dwLen = MAKELONG(w0, w1);
 
-    cb = dwLen;
-    if (cbData <= cb)
-        return NULL;
-    cbData -= cb;
+	cb = dwLen;
+	if (cbData <= cb)
+		return NULL;
+	cbData -= cb;
 
-    // convert Win16 messages
-    switch (msg)
-    {
-    case AFX_CB_ADDSTRING: msg = CBEM_INSERTITEM; break;
-    case WIN16_LB_ADDSTRING: msg = LB_ADDSTRING; break;
-    case WIN16_CB_ADDSTRING: msg = CB_ADDSTRING; break;
-    }
+	// convert Win16 messages
+	switch (msg)
+	{
+	case AFX_CB_ADDSTRING: msg = CBEM_INSERTITEM; break;
+	case WIN16_LB_ADDSTRING: msg = LB_ADDSTRING; break;
+	case WIN16_CB_ADDSTRING: msg = CB_ADDSTRING; break;
+	}
 
-    // NOTE: We don't support OCC.
-    assert(msg == LB_ADDSTRING || msg == CB_ADDSTRING ||
-           msg == CBEM_INSERTITEM);
+	// NOTE: We don't support OCC.
+	assert(msg == LB_ADDSTRING || msg == CB_ADDSTRING ||
+		   msg == CBEM_INSERTITEM);
 
 #ifndef NDEBUG
-    const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
-    assert(pb[dwLen - 1] == 0);
+	const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
+	assert(pb[dwLen - 1] == 0);
 #endif
 
-    // send the message
-    if (msg == CBEM_INSERTITEM)
-    {
-        MString text = MAnsiToText(CP_ACP, LPSTR(pw)).c_str();
+	// send the message
+	if (msg == CBEM_INSERTITEM)
+	{
+		MString text = MAnsiToText(CP_ACP, LPSTR(pw)).c_str();
 
-        COMBOBOXEXITEM item;
-        item.mask = CBEIF_TEXT;
-        item.iItem = -1;
-        item.pszText = &text[0];
+		COMBOBOXEXITEM item;
+		item.mask = CBEIF_TEXT;
+		item.iItem = -1;
+		item.pszText = &text[0];
 
-        if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(&item)) == -1)
-            return NULL;
-    }
-    else if (msg == LB_ADDSTRING || msg == CB_ADDSTRING)
-    {
-        if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(pw)) == -1)
-            return NULL;
-    }
+		if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(&item)) == -1)
+			return NULL;
+	}
+	else if (msg == LB_ADDSTRING || msg == CB_ADDSTRING)
+	{
+		if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(pw)) == -1)
+			return NULL;
+	}
 
-    // go to next entry
-    return reinterpret_cast<const UNALIGNED WORD *>(
-        reinterpret_cast<const BYTE *>(pw) + dwLen);
+	// go to next entry
+	return reinterpret_cast<const UNALIGNED WORD *>(
+		reinterpret_cast<const BYTE *>(pw) + dwLen);
 }
 
 inline BOOL
 ExecuteDlgInitDataDx(HWND hwnd, const void *pData, SIZE_T& cbData)
 {
 #ifndef NDEBUG
-    DWORD i = 0;
+	DWORD i = 0;
 #endif
-    const UNALIGNED WORD *pw;
-    pw = reinterpret_cast<const UNALIGNED WORD *>(pData);
-    while (pw && *pw)
-    {
-        pw = ExecuteDlgInitEntryDx(hwnd, pw, cbData);
+	const UNALIGNED WORD *pw;
+	pw = reinterpret_cast<const UNALIGNED WORD *>(pData);
+	while (pw && *pw)
+	{
+		pw = ExecuteDlgInitEntryDx(hwnd, pw, cbData);
 #ifndef NDEBUG
-        ++i;
+		++i;
 #endif
-    }
+	}
 
-    // NOTE: We don't send WM_INITIALUPDATE messages.
-    return pw != NULL;
+	// NOTE: We don't send WM_INITIALUPDATE messages.
+	return pw != NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -110,30 +110,30 @@ ExecuteDlgInitDataDx(HWND hwnd, const void *pData, SIZE_T& cbData)
 inline BOOL
 ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name)
 {
-    BOOL bSuccess = FALSE;
-    HGLOBAL hGlobal = NULL;
-    void *pData = NULL;
-    SIZE_T cbData = 0;
+	BOOL bSuccess = FALSE;
+	HGLOBAL hGlobal = NULL;
+	void *pData = NULL;
+	SIZE_T cbData = 0;
 
-    // load from resource
-    if (HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT))
-    {
-        hGlobal = LoadResource(module, hRsrc);
-        cbData = SizeofResource(module, hRsrc);
-        pData = LockResource(hGlobal);
-    }
+	// load from resource
+	if (HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT))
+	{
+		hGlobal = LoadResource(module, hRsrc);
+		cbData = SizeofResource(module, hRsrc);
+		pData = LockResource(hGlobal);
+	}
 
-    // execute
-    if (pData && cbData)
-    {
-        bSuccess = ExecuteDlgInitDataDx(hwnd, pData, cbData);
-    }
+	// execute
+	if (pData && cbData)
+	{
+		bSuccess = ExecuteDlgInitDataDx(hwnd, pData, cbData);
+	}
 
-    // clean up
-    UnlockResource(hGlobal);
-    FreeResource(hGlobal);
+	// clean up
+	UnlockResource(hGlobal);
+	FreeResource(hGlobal);
 
-    return bSuccess;
+	return bSuccess;
 }
 
 //////////////////////////////////////////////////////////////////////////////

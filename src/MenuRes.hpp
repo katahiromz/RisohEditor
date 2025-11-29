@@ -20,7 +20,7 @@
 #pragma once
 
 #ifndef _INC_WINDOWS
-    #include <windows.h>
+	#include <windows.h>
 #endif
 #include <vector>
 #include "MByteStreamEx.hpp"
@@ -35,21 +35,21 @@ void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const MStringW& str);
 // header of RT_MENU
 typedef struct MENUHEADER
 {
-    WORD    wVersion;       // zero
-    WORD    cbHeaderSize;   // zero
+	WORD    wVersion;       // zero
+	WORD    cbHeaderSize;   // zero
 } MENUHEADER;
 
 typedef struct NORMALMENUITEMHEAD
 {
-    WORD   fItemFlags;      // MF_
-    WORD   wMenuID;
-    //WCHAR  szItemText[];
+	WORD   fItemFlags;      // MF_
+	WORD   wMenuID;
+	//WCHAR  szItemText[];
 } NORMALMENUITEMHEAD;
 
 typedef struct POPUPMENUITEMHEAD
 {
-    WORD    fItemFlags;     // MF_
-    //WCHAR  szItemText[];
+	WORD    fItemFlags;     // MF_
+	//WCHAR  szItemText[];
 } POPUPMENUITEMHEAD;
 
 // You can use the following flags for fItemFlags:
@@ -64,40 +64,40 @@ typedef struct POPUPMENUITEMHEAD
 //     MF_END           0x0080   // Used internally
 
 #ifndef MF_INACTIVE
-    #define MF_INACTIVE     MF_DISABLED
+	#define MF_INACTIVE     MF_DISABLED
 #endif
 #ifndef MF_END
-    #define MF_END          0x0080
+	#define MF_END          0x0080
 #endif
 
 // header of RT_MENU (MENUEX)
 typedef struct MENUEX_TEMPLATE_HEADER
 {
-    WORD    wVersion;       // one
-    WORD    wOffset;        // offset to items from this structure
-    DWORD   dwHelpId;
+	WORD    wVersion;       // one
+	WORD    wOffset;        // offset to items from this structure
+	DWORD   dwHelpId;
 } MENUEX_TEMPLATE_HEADER;
 
 // item of MENUEX resource
 #include <pshpack1.h>
 typedef struct MENUEX_TEMPLATE_ITEM_HEADER
 {
-    DWORD   dwType;         // MFT_
-    DWORD   dwState;        // MFS_
-    DWORD   menuId;
-    WORD    bResInfo;       // 0x80: is it last?, 0x01: popup
-    //WCHAR szText[];
-    //DWORD dwHelpId;       // only if popup
+	DWORD   dwType;         // MFT_
+	DWORD   dwState;        // MFS_
+	DWORD   menuId;
+	WORD    bResInfo;       // 0x80: is it last?, 0x01: popup
+	//WCHAR szText[];
+	//DWORD dwHelpId;       // only if popup
 } MENUEX_TEMPLATE_ITEM_HEADER;
 #include <poppack.h>
 
 struct MENU_ENTRY
 {
-    MStringW szCaption;
-    MStringW szFlags;
-    MStringW szCommandID;
-    MStringW szHelpID;
-    WORD wDepth;
+	MStringW szCaption;
+	MStringW szFlags;
+	MStringW szCommandID;
+	MStringW szHelpID;
+	WORD wDepth;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -105,80 +105,80 @@ struct MENU_ENTRY
 class MenuRes
 {
 public:
-    typedef MStringW    string_type;
-    struct MenuItem
-    {
-        WORD            fItemFlags;
-        WORD            wMenuID;
-        WORD            wDepth;
-        string_type     text;
-    };
-    typedef std::vector<MenuItem>  MenuItemsType;
-    struct ExMenuItem
-    {
-        DWORD           dwType;     // MFT_
-        DWORD           dwState;    // MFS_
-        UINT            menuId;
-        WORD            bResInfo;
-        string_type     text;
-        DWORD           dwHelpId;
-        WORD            wDepth;
-    };
-    typedef std::vector<ExMenuItem>  ExMenuItemsType;
+	typedef MStringW    string_type;
+	struct MenuItem
+	{
+		WORD            fItemFlags;
+		WORD            wMenuID;
+		WORD            wDepth;
+		string_type     text;
+	};
+	typedef std::vector<MenuItem>  MenuItemsType;
+	struct ExMenuItem
+	{
+		DWORD           dwType;     // MFT_
+		DWORD           dwState;    // MFS_
+		UINT            menuId;
+		WORD            bResInfo;
+		string_type     text;
+		DWORD           dwHelpId;
+		WORD            wDepth;
+	};
+	typedef std::vector<ExMenuItem>  ExMenuItemsType;
 
-    MenuRes()
-    {
-        ZeroMemory(&m_header, sizeof(m_header));
-    }
+	MenuRes()
+	{
+		ZeroMemory(&m_header, sizeof(m_header));
+	}
 
-    bool IsExtended() const
-    {
-        return (m_header.wVersion == 1);
-    }
+	bool IsExtended() const
+	{
+		return (m_header.wVersion == 1);
+	}
 
-    bool LoadFromStream(const MByteStreamEx& stream);
-    bool LoadFromStreamEx(const MByteStreamEx& stream);
-    bool SaveToStream(MByteStreamEx& stream) const;
-    bool SaveToStreamEx(MByteStreamEx& stream) const;
-    string_type Dump(const MIdOrString& name) const;
-    string_type DumpEx(const MIdOrString& name) const;
-    std::vector<BYTE> data() const;
+	bool LoadFromStream(const MByteStreamEx& stream);
+	bool LoadFromStreamEx(const MByteStreamEx& stream);
+	bool SaveToStream(MByteStreamEx& stream) const;
+	bool SaveToStreamEx(MByteStreamEx& stream) const;
+	string_type Dump(const MIdOrString& name) const;
+	string_type DumpEx(const MIdOrString& name) const;
+	std::vector<BYTE> data() const;
 
-    void Update();
+	void Update();
 
-    MENUEX_TEMPLATE_HEADER& header()
-    {
-        return m_header;
-    }
-    const MENUEX_TEMPLATE_HEADER& header() const
-    {
-        return m_header;
-    }
+	MENUEX_TEMPLATE_HEADER& header()
+	{
+		return m_header;
+	}
+	const MENUEX_TEMPLATE_HEADER& header() const
+	{
+		return m_header;
+	}
 
-    MenuItemsType& items()
-    {
-        return m_items;
-    }
-    const MenuItemsType& items() const
-    {
-        return m_items;
-    }
+	MenuItemsType& items()
+	{
+		return m_items;
+	}
+	const MenuItemsType& items() const
+	{
+		return m_items;
+	}
 
-    ExMenuItemsType& exitems()
-    {
-        return m_exitems;
-    }
-    const ExMenuItemsType& exitems() const
-    {
-        return m_exitems;
-    }
+	ExMenuItemsType& exitems()
+	{
+		return m_exitems;
+	}
+	const ExMenuItemsType& exitems() const
+	{
+		return m_exitems;
+	}
 
 protected:
-    MENUEX_TEMPLATE_HEADER  m_header;
-    MenuItemsType           m_items;
-    ExMenuItemsType         m_exitems;
+	MENUEX_TEMPLATE_HEADER  m_header;
+	MenuItemsType           m_items;
+	ExMenuItemsType         m_exitems;
 
-    bool IsParent(size_t iItem) const;
-    bool IsLastItem(size_t iItem) const;
-    string_type DumpFlags(WORD fItemFlags) const;
+	bool IsParent(size_t iItem) const;
+	bool IsLastItem(size_t iItem) const;
+	string_type DumpFlags(WORD fItemFlags) const;
 };

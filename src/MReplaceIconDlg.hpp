@@ -31,176 +31,176 @@
 class MReplaceIconDlg : public MDialogBase
 {
 protected:
-    HICON   m_hIcon;
+	HICON   m_hIcon;
 public:
-    EntryBase *m_entry;
-    MIdOrString m_type;
-    MIdOrString m_name;
-    WORD m_lang;
+	EntryBase *m_entry;
+	MIdOrString m_type;
+	MIdOrString m_name;
+	WORD m_lang;
 
-    MReplaceIconDlg(EntryBase *entry)
-        : MDialogBase(IDD_REPLACEICON), m_entry(entry),
-          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
-    {
-        m_hIcon = NULL;
-    }
+	MReplaceIconDlg(EntryBase *entry)
+		: MDialogBase(IDD_REPLACEICON), m_entry(entry),
+		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+	{
+		m_hIcon = NULL;
+	}
 
-    ~MReplaceIconDlg()
-    {
-        DestroyIcon(m_hIcon);
-    }
+	~MReplaceIconDlg()
+	{
+		DestroyIcon(m_hIcon);
+	}
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        DragAcceptFiles(hwnd, TRUE);
+	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+	{
+		DragAcceptFiles(hwnd, TRUE);
 
-        // for name
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_entry->m_name, IDTYPE_ICON);
+		// for name
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		InitResNameComboBox(hCmb2, m_entry->m_name, IDTYPE_ICON);
 
-        // for Langs
-        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry->m_lang);
+		// for Langs
+		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+		InitLangComboBox(hCmb3, m_entry->m_lang);
 
-        FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
+		FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
 
-        CenterWindowDx();
-        return TRUE;
-    }
+		CenterWindowDx();
+		return TRUE;
+	}
 
-    void OnOK(HWND hwnd)
-    {
-        MIdOrString type = m_entry->m_type;
+	void OnOK(HWND hwnd)
+	{
+		MIdOrString type = m_entry->m_type;
 
-        MIdOrString name;
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(hCmb2, name))
-            return;
+		MIdOrString name;
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		if (!CheckNameComboBox(hCmb2, name))
+			return;
 
-        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD lang;
-        if (!CheckLangComboBox(hCmb3, lang))
-            return;
+		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+		WORD lang;
+		if (!CheckLangComboBox(hCmb3, lang))
+			return;
 
-        std::wstring file;
-        HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Edt1_CheckFile(hEdt1, file))
-        {
-            Edit_SetSel(hEdt1, 0, -1);  // select all
-            SetFocus(hEdt1);    // set focus
-            ErrorBoxDx(IDS_FILENOTFOUND);
-            return;
-        }
+		std::wstring file;
+		HWND hEdt1 = GetDlgItem(hwnd, edt1);
+		if (!Edt1_CheckFile(hEdt1, file))
+		{
+			Edit_SetSel(hEdt1, 0, -1);  // select all
+			SetFocus(hEdt1);    // set focus
+			ErrorBoxDx(IDS_FILENOTFOUND);
+			return;
+		}
 
-        BOOL bAni = FALSE;
-        size_t ich = file.find(L'.');
-        if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
-            bAni = TRUE;
+		BOOL bAni = FALSE;
+		size_t ich = file.find(L'.');
+		if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
+			bAni = TRUE;
 
-        if (bAni)       // animation icon (*.ani)
-        {
-            MByteStream bs;
-            if (!bs.LoadFromFile(file.c_str()) ||
-                !g_res.add_lang_entry(RT_ANIICON, name, lang, bs.data()))
-            {
-                ErrorBoxDx(IDS_CANTREPLACEICO);
-                return;
-            }
-        }
-        else            // normal icon (*.ico)
-        {
-            if (auto entry = g_res.find(ET_LANG, m_type, m_name, m_lang))
-                g_res.delete_entry(entry);
+		if (bAni)       // animation icon (*.ani)
+		{
+			MByteStream bs;
+			if (!bs.LoadFromFile(file.c_str()) ||
+				!g_res.add_lang_entry(RT_ANIICON, name, lang, bs.data()))
+			{
+				ErrorBoxDx(IDS_CANTREPLACEICO);
+				return;
+			}
+		}
+		else            // normal icon (*.ico)
+		{
+			if (auto entry = g_res.find(ET_LANG, m_type, m_name, m_lang))
+				g_res.delete_entry(entry);
 
-            if (!g_res.add_group_icon(name, lang, file))
-            {
-                ErrorBoxDx(IDS_CANTREPLACEICO);
-                return;
-            }
-        }
+			if (!g_res.add_group_icon(name, lang, file))
+			{
+				ErrorBoxDx(IDS_CANTREPLACEICO);
+				return;
+			}
+		}
 
-        m_type = type;
-        m_name = name;
-        m_lang = lang;
+		m_type = type;
+		m_name = name;
+		m_lang = lang;
 
-        EndDialog(IDOK);
-    }
+		EndDialog(IDOK);
+	}
 
-    void OnPsh1(HWND hwnd)
-    {
-        MStringW strFile = GetDlgItemText(edt1);
-        mstr_trim(strFile);
+	void OnPsh1(HWND hwnd)
+	{
+		MStringW strFile = GetDlgItemText(edt1);
+		mstr_trim(strFile);
 
-        WCHAR szFile[MAX_PATH];
-        lstrcpynW(szFile, strFile.c_str(), _countof(szFile));
+		WCHAR szFile[MAX_PATH];
+		lstrcpynW(szFile, strFile.c_str(), _countof(szFile));
 
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
-        ofn.lpstrFile = szFile;
-        ofn.nMaxFile = _countof(szFile);
-        ofn.lpstrTitle = LoadStringDx(IDS_REPLACEICO);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        if (m_entry->m_type == RT_ANIICON)
-        {
-            ofn.nFilterIndex = 2;
-            ofn.lpstrDefExt = L"ani";
-        }
-        else
-        {
-            ofn.nFilterIndex = 1;
-            ofn.lpstrDefExt = L"ico";
-        }
-        if (GetOpenFileNameW(&ofn))
-        {
-            SetDlgItemTextW(hwnd, edt1, szFile);
-            if (m_hIcon)
-                DestroyIcon(m_hIcon);
-            m_hIcon = ExtractIcon(GetModuleHandle(NULL), szFile, 0);
-            Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
-        }
-    }
+		OPENFILENAMEW ofn;
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+		ofn.hwndOwner = hwnd;
+		ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = _countof(szFile);
+		ofn.lpstrTitle = LoadStringDx(IDS_REPLACEICO);
+		ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+			OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+		if (m_entry->m_type == RT_ANIICON)
+		{
+			ofn.nFilterIndex = 2;
+			ofn.lpstrDefExt = L"ani";
+		}
+		else
+		{
+			ofn.nFilterIndex = 1;
+			ofn.lpstrDefExt = L"ico";
+		}
+		if (GetOpenFileNameW(&ofn))
+		{
+			SetDlgItemTextW(hwnd, edt1, szFile);
+			if (m_hIcon)
+				DestroyIcon(m_hIcon);
+			m_hIcon = ExtractIcon(GetModuleHandle(NULL), szFile, 0);
+			Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
+		}
+	}
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK:
-            OnOK(hwnd);
-            break;
-        case IDCANCEL:
-            EndDialog(IDCANCEL);
-            break;
-        case psh1:
-            OnPsh1(hwnd);
-            break;
-        }
-    }
+	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+	{
+		switch (id)
+		{
+		case IDOK:
+			OnOK(hwnd);
+			break;
+		case IDCANCEL:
+			EndDialog(IDCANCEL);
+			break;
+		case psh1:
+			OnPsh1(hwnd);
+			break;
+		}
+	}
 
-    void OnDropFiles(HWND hwnd, HDROP hdrop)
-    {
-        WCHAR file[MAX_PATH];
-        DragQueryFileW(hdrop, 0, file, _countof(file));
-        SetDlgItemTextW(hwnd, edt1, file);
+	void OnDropFiles(HWND hwnd, HDROP hdrop)
+	{
+		WCHAR file[MAX_PATH];
+		DragQueryFileW(hdrop, 0, file, _countof(file));
+		SetDlgItemTextW(hwnd, edt1, file);
 
-        if (m_hIcon)
-            DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
-        Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
-    }
+		if (m_hIcon)
+			DestroyIcon(m_hIcon);
+		m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
+		Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
+	}
 
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        }
-        return DefaultProcDx();
-    }
+	virtual INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+			HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		}
+		return DefaultProcDx();
+	}
 };

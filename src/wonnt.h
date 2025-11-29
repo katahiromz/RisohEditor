@@ -6,28 +6,28 @@
 
 #ifndef _INC_WINDOWS
 #if defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)
-    #include <windows.h>
+	#include <windows.h>
 #else
 
 /**************************************************************************/
 
 #ifndef WINAPI
-    #define WINAPI      /*empty*/
-    #define WINAPIV     /*empty*/
+	#define WINAPI      /*empty*/
+	#define WINAPIV     /*empty*/
 #endif
 
 #ifndef NTAPI
-    #define NTAPI       /*empty*/
+	#define NTAPI       /*empty*/
 #endif
 
 /**************************************************************************/
 
 #if __cplusplus >= 201103L
-    #include <cstdint>
+	#include <cstdint>
 #elif __STDC_VERSION__ >= 199901L
-    #include <stdint.h>
+	#include <stdint.h>
 #else
-    #include "pstdint.h"
+	#include "pstdint.h"
 #endif
 
 typedef char CHAR;
@@ -45,16 +45,16 @@ typedef void *HANDLE;
 
 // WCHAR
 #ifndef __WCHAR_DEFINED
-    #define __WCHAR_DEFINED
-    #ifdef _WIN32
-        typedef wchar_t WCHAR;
-    #else
-        #if __cplusplus >= 201103L
-            typedef char16_t WCHAR;
-        #else
-            typedef uint16_t WCHAR;
-        #endif
-    #endif
+	#define __WCHAR_DEFINED
+	#ifdef _WIN32
+		typedef wchar_t WCHAR;
+	#else
+		#if __cplusplus >= 201103L
+			typedef char16_t WCHAR;
+		#else
+			typedef uint16_t WCHAR;
+		#endif
+	#endif
 #endif
 
 typedef intptr_t INT_PTR, LONG_PTR;
@@ -63,26 +63,26 @@ typedef uintptr_t UINT_PTR, ULONG_PTR, DWORD_PTR;
 typedef BYTE BOOLEAN;
 
 #ifdef UNICODE
-    typedef WCHAR TCHAR;
+	typedef WCHAR TCHAR;
 #else
-    typedef char TCHAR;
+	typedef char TCHAR;
 #endif
 
 typedef INT HFILE;
 
 #ifndef _HRESULT_DEFINED
-    #define _HRESULT_DEFINED
-    typedef LONG HRESULT;
+	#define _HRESULT_DEFINED
+	typedef LONG HRESULT;
 #endif
 
 #ifndef _LCID_DEFINED
-    #define _LCID_DEFINED
-    typedef DWORD LCID;
+	#define _LCID_DEFINED
+	typedef DWORD LCID;
 #endif
 
 #ifndef _LANGID_DEFINED
-    #define _LANGID_DEFINED
-    typedef WORD LANGID;
+	#define _LANGID_DEFINED
+	typedef WORD LANGID;
 #endif
 
 #define C_ASSERT(x)  typedef char WONNT_STATIC_ASSERT_##__LINE__[(x) ? 1 : -1]
@@ -128,138 +128,138 @@ C_ASSERT(sizeof(DWORD_PTR) == sizeof(void *));
 /**************************************************************************/
 
 #ifndef S_OK
-    #define S_OK ((HRESULT)0x00000000)
-    #define S_FALSE ((HRESULT)0x00000001)
-    #define E_FAIL ((HRESULT)0x80004005)
+	#define S_OK ((HRESULT)0x00000000)
+	#define S_FALSE ((HRESULT)0x00000001)
+	#define E_FAIL ((HRESULT)0x80004005)
 #endif
 
 /**************************************************************************/
 
 #define IMAGE_DOS_SIGNATURE 0x5A4D
 typedef struct {
-    WORD e_magic;
-    WORD e_cblp;
-    WORD e_cp;
-    WORD e_crlc;
-    WORD e_cparhdr;
-    WORD e_minalloc;
-    WORD e_maxalloc;
-    WORD e_ss;
-    WORD e_sp;
-    WORD e_csum;
-    WORD e_ip;
-    WORD e_cs;
-    WORD e_lfarlc;
-    WORD e_ovno;
-    WORD e_res[4];
-    WORD e_oemid;
-    WORD e_oeminfo;
-    WORD e_res2[10];
-    LONG e_lfanew;
+	WORD e_magic;
+	WORD e_cblp;
+	WORD e_cp;
+	WORD e_crlc;
+	WORD e_cparhdr;
+	WORD e_minalloc;
+	WORD e_maxalloc;
+	WORD e_ss;
+	WORD e_sp;
+	WORD e_csum;
+	WORD e_ip;
+	WORD e_cs;
+	WORD e_lfarlc;
+	WORD e_ovno;
+	WORD e_res[4];
+	WORD e_oemid;
+	WORD e_oeminfo;
+	WORD e_res2[10];
+	LONG e_lfanew;
 } IMAGE_DOS_HEADER;
 
 typedef struct {
-    WORD Machine;
-    WORD NumberOfSections;
-    DWORD TimeDateStamp;
-    DWORD PointerToSymbolTable;
-    DWORD NumberOfSymbols;
-    WORD SizeOfOptionalHeader;
-    WORD Characteristics;
+	WORD Machine;
+	WORD NumberOfSections;
+	DWORD TimeDateStamp;
+	DWORD PointerToSymbolTable;
+	DWORD NumberOfSymbols;
+	WORD SizeOfOptionalHeader;
+	WORD Characteristics;
 } IMAGE_FILE_HEADER;
 
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
 typedef struct {
-    DWORD VirtualAddress;
-    DWORD Size;
+	DWORD VirtualAddress;
+	DWORD Size;
 } IMAGE_DATA_DIRECTORY;
 
 typedef struct {
-    WORD Magic;
-    BYTE MajorLinkerVersion;
-    BYTE MinorLinkerVersion;
-    DWORD SizeOfCode;
-    DWORD SizeOfInitializedData;
-    DWORD SizeOfUninitializedData;
-    DWORD AddressOfEntryPoint;
-    DWORD BaseOfCode;
-    DWORD BaseOfData;
-    DWORD ImageBase;
-    DWORD SectionAlignment;
-    DWORD FileAlignment;
-    WORD MajorOperatingSystemVersion;
-    WORD MinorOperatingSystemVersion;
-    WORD MajorImageVersion;
-    WORD MinorImageVersion;
-    WORD MajorSubsystemVersion;
-    WORD MinorSubsystemVersion;
-    DWORD Win32VersionValue;
-    DWORD SizeOfImage;
-    DWORD SizeOfHeaders;
-    DWORD CheckSum;
-    WORD Subsystem;
-    WORD DllCharacteristics;
-    DWORD SizeOfStackReserve;
-    DWORD SizeOfStackCommit;
-    DWORD SizeOfHeapReserve;
-    DWORD SizeOfHeapCommit;
-    DWORD LoaderFlags;
-    DWORD NumberOfRvaAndSizes;
-    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+	WORD Magic;
+	BYTE MajorLinkerVersion;
+	BYTE MinorLinkerVersion;
+	DWORD SizeOfCode;
+	DWORD SizeOfInitializedData;
+	DWORD SizeOfUninitializedData;
+	DWORD AddressOfEntryPoint;
+	DWORD BaseOfCode;
+	DWORD BaseOfData;
+	DWORD ImageBase;
+	DWORD SectionAlignment;
+	DWORD FileAlignment;
+	WORD MajorOperatingSystemVersion;
+	WORD MinorOperatingSystemVersion;
+	WORD MajorImageVersion;
+	WORD MinorImageVersion;
+	WORD MajorSubsystemVersion;
+	WORD MinorSubsystemVersion;
+	DWORD Win32VersionValue;
+	DWORD SizeOfImage;
+	DWORD SizeOfHeaders;
+	DWORD CheckSum;
+	WORD Subsystem;
+	WORD DllCharacteristics;
+	DWORD SizeOfStackReserve;
+	DWORD SizeOfStackCommit;
+	DWORD SizeOfHeapReserve;
+	DWORD SizeOfHeapCommit;
+	DWORD LoaderFlags;
+	DWORD NumberOfRvaAndSizes;
+	IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER32;
 
 typedef struct {
-    WORD Magic;
-    BYTE MajorLinkerVersion;
-    BYTE MinorLinkerVersion;
-    DWORD SizeOfCode;
-    DWORD SizeOfInitializedData;
-    DWORD SizeOfUninitializedData;
-    DWORD AddressOfEntryPoint;
-    DWORD BaseOfCode;
-    ULONGLONG ImageBase;
-    DWORD SectionAlignment;
-    DWORD FileAlignment;
-    WORD MajorOperatingSystemVersion;
-    WORD MinorOperatingSystemVersion;
-    WORD MajorImageVersion;
-    WORD MinorImageVersion;
-    WORD MajorSubsystemVersion;
-    WORD MinorSubsystemVersion;
-    DWORD Win32VersionValue;
-    DWORD SizeOfImage;
-    DWORD SizeOfHeaders;
-    DWORD CheckSum;
-    WORD Subsystem;
-    WORD DllCharacteristics;
-    ULONGLONG SizeOfStackReserve;
-    ULONGLONG SizeOfStackCommit;
-    ULONGLONG SizeOfHeapReserve;
-    ULONGLONG SizeOfHeapCommit;
-    DWORD LoaderFlags;
-    DWORD NumberOfRvaAndSizes;
-    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+	WORD Magic;
+	BYTE MajorLinkerVersion;
+	BYTE MinorLinkerVersion;
+	DWORD SizeOfCode;
+	DWORD SizeOfInitializedData;
+	DWORD SizeOfUninitializedData;
+	DWORD AddressOfEntryPoint;
+	DWORD BaseOfCode;
+	ULONGLONG ImageBase;
+	DWORD SectionAlignment;
+	DWORD FileAlignment;
+	WORD MajorOperatingSystemVersion;
+	WORD MinorOperatingSystemVersion;
+	WORD MajorImageVersion;
+	WORD MinorImageVersion;
+	WORD MajorSubsystemVersion;
+	WORD MinorSubsystemVersion;
+	DWORD Win32VersionValue;
+	DWORD SizeOfImage;
+	DWORD SizeOfHeaders;
+	DWORD CheckSum;
+	WORD Subsystem;
+	WORD DllCharacteristics;
+	ULONGLONG SizeOfStackReserve;
+	ULONGLONG SizeOfStackCommit;
+	ULONGLONG SizeOfHeapReserve;
+	ULONGLONG SizeOfHeapCommit;
+	DWORD LoaderFlags;
+	DWORD NumberOfRvaAndSizes;
+	IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER64;
 
 #define IMAGE_NT_SIGNATURE 0x00004550
 typedef struct {
-    DWORD Signature;
-    IMAGE_FILE_HEADER FileHeader;
-    IMAGE_OPTIONAL_HEADER32 OptionalHeader;
+	DWORD Signature;
+	IMAGE_FILE_HEADER FileHeader;
+	IMAGE_OPTIONAL_HEADER32 OptionalHeader;
 } IMAGE_NT_HEADERS32;
 typedef struct {
-    DWORD Signature;
-    IMAGE_FILE_HEADER FileHeader;
-    IMAGE_OPTIONAL_HEADER64 OptionalHeader;
+	DWORD Signature;
+	IMAGE_FILE_HEADER FileHeader;
+	IMAGE_OPTIONAL_HEADER64 OptionalHeader;
 } IMAGE_NT_HEADERS64;
 
 #ifdef _WIN64
-    typedef IMAGE_OPTIONAL_HEADER64 IMAGE_OPTIONAL_HEADER;
-    typedef IMAGE_NT_HEADERS64 IMAGE_NT_HEADERS;
+	typedef IMAGE_OPTIONAL_HEADER64 IMAGE_OPTIONAL_HEADER;
+	typedef IMAGE_NT_HEADERS64 IMAGE_NT_HEADERS;
 #else
-    typedef IMAGE_OPTIONAL_HEADER32 IMAGE_OPTIONAL_HEADER;
-    typedef IMAGE_NT_HEADERS32 IMAGE_NT_HEADERS;
+	typedef IMAGE_OPTIONAL_HEADER32 IMAGE_OPTIONAL_HEADER;
+	typedef IMAGE_NT_HEADERS32 IMAGE_NT_HEADERS;
 #endif
 
 #define IMAGE_DIRECTORY_ENTRY_EXPORT 0
@@ -279,47 +279,47 @@ typedef struct {
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14
 
 typedef struct {
-    union {
-        DWORD Characteristics;
-        DWORD OriginalFirstThunk;
-    };
-    DWORD TimeDateStamp;
+	union {
+		DWORD Characteristics;
+		DWORD OriginalFirstThunk;
+	};
+	DWORD TimeDateStamp;
 
-    DWORD ForwarderChain;
-    DWORD Name;
-    DWORD FirstThunk;
+	DWORD ForwarderChain;
+	DWORD Name;
+	DWORD FirstThunk;
 } IMAGE_IMPORT_DESCRIPTOR;
 
 typedef struct {
-    DWORD Characteristics;
-    DWORD TimeDateStamp;
-    WORD MajorVersion;
-    WORD MinorVersion;
-    DWORD Name;
-    DWORD Base;
-    DWORD NumberOfFunctions;
-    DWORD NumberOfNames;
-    DWORD AddressOfFunctions;
-    DWORD AddressOfNames;
-    DWORD AddressOfNameOrdinals;
+	DWORD Characteristics;
+	DWORD TimeDateStamp;
+	WORD MajorVersion;
+	WORD MinorVersion;
+	DWORD Name;
+	DWORD Base;
+	DWORD NumberOfFunctions;
+	DWORD NumberOfNames;
+	DWORD AddressOfFunctions;
+	DWORD AddressOfNames;
+	DWORD AddressOfNameOrdinals;
 } IMAGE_EXPORT_DIRECTORY;
 
 #define IMAGE_SIZEOF_SHORT_NAME 8
 
 typedef struct {
-    BYTE Name[IMAGE_SIZEOF_SHORT_NAME];
-    union {
-        DWORD PhysicalAddress;
-        DWORD VirtualSize;
-    } Misc;
-    DWORD VirtualAddress;
-    DWORD SizeOfRawData;
-    DWORD PointerToRawData;
-    DWORD PointerToRelocations;
-    DWORD PointerToLinenumbers;
-    WORD NumberOfRelocations;
-    WORD NumberOfLinenumbers;
-    DWORD Characteristics;
+	BYTE Name[IMAGE_SIZEOF_SHORT_NAME];
+	union {
+		DWORD PhysicalAddress;
+		DWORD VirtualSize;
+	} Misc;
+	DWORD VirtualAddress;
+	DWORD SizeOfRawData;
+	DWORD PointerToRawData;
+	DWORD PointerToRelocations;
+	DWORD PointerToLinenumbers;
+	WORD NumberOfRelocations;
+	WORD NumberOfLinenumbers;
+	DWORD Characteristics;
 } IMAGE_SECTION_HEADER;
 
 #define IMAGE_ORDINAL_FLAG64 0x8000000000000000ull
@@ -330,61 +330,61 @@ typedef struct {
 #define IMAGE_SNAP_BY_ORDINAL32(Ordinal) ((Ordinal & IMAGE_ORDINAL_FLAG32)!=0)
 
 typedef struct {
-    WORD Hint;
-    BYTE Name[1];
+	WORD Hint;
+	BYTE Name[1];
 } IMAGE_IMPORT_BY_NAME;
 
 #define IMAGE_RESOURCE_NAME_IS_STRING        0x80000000
 #define IMAGE_RESOURCE_DATA_IS_DIRECTORY     0x80000000
 
 typedef struct {
-    DWORD   Characteristics;
-    DWORD   TimeDateStamp;
-    WORD    MajorVersion;
-    WORD    MinorVersion;
-    WORD    NumberOfNamedEntries;
-    WORD    NumberOfIdEntries;
+	DWORD   Characteristics;
+	DWORD   TimeDateStamp;
+	WORD    MajorVersion;
+	WORD    MinorVersion;
+	WORD    NumberOfNamedEntries;
+	WORD    NumberOfIdEntries;
 } IMAGE_RESOURCE_DIRECTORY;
 
 typedef struct {
-    union {
-        struct {
-            DWORD NameOffset:31;
-            DWORD NameIsString:1;
-        };
-        DWORD   Name;
-        WORD    Id;
-    };
-    union {
-        DWORD   OffsetToData;
-        struct {
-            DWORD   OffsetToDirectory:31;
-            DWORD   DataIsDirectory:1;
-        };
-    };
+	union {
+		struct {
+			DWORD NameOffset:31;
+			DWORD NameIsString:1;
+		};
+		DWORD   Name;
+		WORD    Id;
+	};
+	union {
+		DWORD   OffsetToData;
+		struct {
+			DWORD   OffsetToDirectory:31;
+			DWORD   DataIsDirectory:1;
+		};
+	};
 } IMAGE_RESOURCE_DIRECTORY_ENTRY;
 
 /**************************************************************************/
 
 #ifndef FIELD_OFFSET
-    #define FIELD_OFFSET(type, field) \
-        ((LONG)(LONG_PTR)&(((type *)0)->field))
+	#define FIELD_OFFSET(type, field) \
+		((LONG)(LONG_PTR)&(((type *)0)->field))
 #endif
 
 #ifndef RTL_FIELD_SIZE
-    #define RTL_FIELD_SIZE(type, field) \
-        (sizeof(((type *)0)->field))
+	#define RTL_FIELD_SIZE(type, field) \
+		(sizeof(((type *)0)->field))
 #endif
 
 #ifndef RTL_SIZEOF_THROUGH_FIELD
-    #define RTL_SIZEOF_THROUGH_FIELD(type, field) \
-        (FIELD_OFFSET(type, field) + RTL_FIELD_SIZE(type, field))
+	#define RTL_SIZEOF_THROUGH_FIELD(type, field) \
+		(FIELD_OFFSET(type, field) + RTL_FIELD_SIZE(type, field))
 #endif
 
 #ifndef IMAGE_FIRST_SECTION
-    #define IMAGE_FIRST_SECTION(nt) ((IMAGE_SECTION_HEADER *)             \
-        ((ULONG_PTR)nt + FIELD_OFFSET(IMAGE_NT_HEADERS, OptionalHeader) + \
-         ((IMAGE_NT_HEADERS *)(nt))->FileHeader.SizeOfOptionalHeader))
+	#define IMAGE_FIRST_SECTION(nt) ((IMAGE_SECTION_HEADER *)             \
+		((ULONG_PTR)nt + FIELD_OFFSET(IMAGE_NT_HEADERS, OptionalHeader) + \
+		 ((IMAGE_NT_HEADERS *)(nt))->FileHeader.SizeOfOptionalHeader))
 #endif
 
 /**************************************************************************/

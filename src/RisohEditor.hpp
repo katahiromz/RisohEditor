@@ -23,7 +23,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #ifdef __GNUC__ // Workaround
-    #define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
+	#define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
 #endif
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -38,9 +38,9 @@
 #include <urlmon.h>
 #include <wininet.h>
 #ifdef ATL_SUPPORT
-    #include <cguid.h>
-    #include <atlbase.h>
-    #include <atlhost.h>
+	#include <cguid.h>
+	#include <atlbase.h>
+	#include <atlhost.h>
 #endif
 
 #include <algorithm>    // for std::sort
@@ -124,14 +124,14 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 // structure for language information
 struct LANG_ENTRY
 {
-    WORD LangID;    // language ID
-    MStringW str;   // string
+	WORD LangID;    // language ID
+	MStringW str;   // string
 
-    // for sorting
-    bool operator<(const LANG_ENTRY& ent) const
-    {
-        return str < ent.str;
-    }
+	// for sorting
+	bool operator<(const LANG_ENTRY& ent) const
+	{
+		return str < ent.str;
+	}
 };
 extern std::vector<LANG_ENTRY> g_langs;
 

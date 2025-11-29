@@ -31,110 +31,110 @@
 class MCloneInNewNameDlg : public MDialogBase
 {
 public:
-    EntryBase *m_entry;
-    MIdOrString m_type;
-    MIdOrString m_name;
-    WORD m_lang;
-    MComboBoxAutoComplete m_cmb2;
+	EntryBase *m_entry;
+	MIdOrString m_type;
+	MIdOrString m_name;
+	WORD m_lang;
+	MComboBoxAutoComplete m_cmb2;
 
-    MCloneInNewNameDlg(EntryBase *entry)
-        : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry),
-          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
-    {
-    }
+	MCloneInNewNameDlg(EntryBase *entry)
+		: MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry),
+		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+	{
+	}
 
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        }
-        return DefaultProcDx(hwnd, uMsg, wParam, lParam);
-    }
+	virtual INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		}
+		return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+	}
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        // for Types
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitResTypeComboBox(hCmb1, m_type);
+	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+	{
+		// for Types
+		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+		InitResTypeComboBox(hCmb1, m_type);
 
-        // for Names
-        IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_name, nIDTYPE_);
-        SubclassChildDx(m_cmb2, cmb2);
+		// for Names
+		IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		InitResNameComboBox(hCmb2, m_name, nIDTYPE_);
+		SubclassChildDx(m_cmb2, cmb2);
 
-        CenterWindowDx();
-        return TRUE;
-    }
+		CenterWindowDx();
+		return TRUE;
+	}
 
-    void OnOK(HWND hwnd)
-    {
-        MIdOrString type;
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
-        INT iType = ComboBox_GetCurSel(hCmb1);
-        if (iType != CB_ERR && iType < INT(table.size()))
-        {
-            type = WORD(table[iType].value);
-        }
-        else
-        {
-            if (!CheckTypeComboBox(hCmb1, type))
-                return;
-        }
+	void OnOK(HWND hwnd)
+	{
+		MIdOrString type;
+		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+		const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
+		INT iType = ComboBox_GetCurSel(hCmb1);
+		if (iType != CB_ERR && iType < INT(table.size()))
+		{
+			type = WORD(table[iType].value);
+		}
+		else
+		{
+			if (!CheckTypeComboBox(hCmb1, type))
+				return;
+		}
 
-        // for Names
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString name;
-        if (!CheckNameComboBox(hCmb2, name))
-            return;
+		// for Names
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		MIdOrString name;
+		if (!CheckNameComboBox(hCmb2, name))
+			return;
 
-        if (m_name == name)
-        {
-            ErrorBoxDx(IDS_SAMENAME);
-            return;
-        }
+		if (m_name == name)
+		{
+			ErrorBoxDx(IDS_SAMENAME);
+			return;
+		}
 
-        if (g_res.find(ET_NAME, m_type, name, m_lang))
-        {
-            if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
-            {
-                return;
-            }
-        }
+		if (g_res.find(ET_NAME, m_type, name, m_lang))
+		{
+			if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
+			{
+				return;
+			}
+		}
 
-        m_name = name;
+		m_name = name;
 
-        EndDialog(IDOK);
-    }
+		EndDialog(IDOK);
+	}
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK:
-            OnOK(hwnd);
-            break;
-        case IDCANCEL:
-            EndDialog(IDCANCEL);
-            break;
-        case psh1:
-            OnPsh1(hwnd);
-            break;
-        case cmb2:
-            if (codeNotify == CBN_EDITCHANGE)
-            {
-                m_cmb2.OnEditChange();
-            }
-            break;
-        }
-    }
+	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+	{
+		switch (id)
+		{
+		case IDOK:
+			OnOK(hwnd);
+			break;
+		case IDCANCEL:
+			EndDialog(IDCANCEL);
+			break;
+		case psh1:
+			OnPsh1(hwnd);
+			break;
+		case cmb2:
+			if (codeNotify == CBN_EDITCHANGE)
+			{
+				m_cmb2.OnEditChange();
+			}
+			break;
+		}
+	}
 
-    void OnPsh1(HWND hwnd)
-    {
-        SendMessage(GetParent(hwnd), WM_COMMAND, ID_IDLIST, 0);
-    }
+	void OnPsh1(HWND hwnd)
+	{
+		SendMessage(GetParent(hwnd), WM_COMMAND, ID_IDLIST, 0);
+	}
 };

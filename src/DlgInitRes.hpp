@@ -20,7 +20,7 @@
 #pragma once
 
 #ifndef _INC_WINDOWS
-    #include <windows.h>
+	#include <windows.h>
 #endif
 #include <cassert>
 #include <vector>
@@ -33,23 +33,23 @@
 
 struct DLGINIT_ENTRY
 {
-    MStringW sz0;
-    MStringW sz1;
-    MStringW sz2;
+	MStringW sz0;
+	MStringW sz1;
+	MStringW sz2;
 };
 
 struct DlgInitEntry
 {
-    WORD        wCtrl;
-    WORD        wMsg;
-    MStringA    strText;
+	WORD        wCtrl;
+	WORD        wMsg;
+	MStringA    strText;
 
-    DlgInitEntry() = default;
+	DlgInitEntry() = default;
 
-    DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str)
-        : wCtrl(ctrl), wMsg(msg), strText(str)
-    {
-    }
+	DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str)
+		: wCtrl(ctrl), wMsg(msg), strText(str)
+	{
+	}
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -57,52 +57,52 @@ struct DlgInitEntry
 class DlgInitRes
 {
 public:
-    typedef DlgInitEntry                entry_type;
-    typedef std::vector<entry_type>     entries_type;
+	typedef DlgInitEntry                entry_type;
+	typedef std::vector<entry_type>     entries_type;
 
 protected:
-    entries_type    m_entries;
+	entries_type    m_entries;
 
 public:
-    DlgInitRes() = default;
+	DlgInitRes() = default;
 
-    bool LoadFromStream(const MByteStreamEx& stream);
-    bool SaveToStream(MByteStreamEx& stream) const;
-    MStringW Dump(const MIdOrString& id_or_str) const;
+	bool LoadFromStream(const MByteStreamEx& stream);
+	bool SaveToStream(MByteStreamEx& stream) const;
+	MStringW Dump(const MIdOrString& id_or_str) const;
 
-    entries_type& entries()
-    {
-        return m_entries;
-    }
-    const entries_type& entries() const
-    {
-        return m_entries;
-    }
+	entries_type& entries()
+	{
+		return m_entries;
+	}
+	const entries_type& entries() const
+	{
+		return m_entries;
+	}
 
-    bool empty() const
-    {
-        return size() == 0;
-    }
-    size_t size() const
-    {
-        return m_entries.size();
-    }
-    entry_type& operator[](size_t i)
-    {
-        return m_entries[i];
-    }
-    const entry_type& operator[](size_t i) const
-    {
-        return m_entries[i];
-    }
-    void push_back(const DlgInitEntry& entry)
-    {
-        m_entries.push_back(entry);
-    }
-    void clear()
-    {
-        m_entries.clear();
-    }
+	bool empty() const
+	{
+		return size() == 0;
+	}
+	size_t size() const
+	{
+		return m_entries.size();
+	}
+	entry_type& operator[](size_t i)
+	{
+		return m_entries[i];
+	}
+	const entry_type& operator[](size_t i) const
+	{
+		return m_entries[i];
+	}
+	void push_back(const DlgInitEntry& entry)
+	{
+		m_entries.push_back(entry);
+	}
+	void clear()
+	{
+		m_entries.clear();
+	}
 
-    std::vector<BYTE> data() const;
+	std::vector<BYTE> data() const;
 };
