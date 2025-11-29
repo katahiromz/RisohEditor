@@ -63,7 +63,7 @@ IDR_MAINMENU MENU
             MENUITEM "Reemplazar &Bitmap...", ID_REPLACEBITMAP
             MENUITEM "Reemplazar un elemento de &Recurso binario...", ID_REPLACEBIN
         }
-        POPUP "&Extrer"
+        POPUP "&Extraer"
         {
             MENUITEM "Extraer &Icono...", ID_EXTRACTICON
             MENUITEM "Extraer &Cursor...", ID_EXTRACTCURSOR
@@ -134,9 +134,9 @@ IDR_MAINMENU MENU
     POPUP "&Ayuda"
     {
         MENUITEM "Abrir &README.txt (English)", ID_OPENREADME
-        MENUITEM "Abrir &README-ES.txt (Española)", ID_OPENREADMEES
+        MENUITEM "Abrir &README-ES.txt (Español)", ID_OPENREADMEES
         MENUITEM "Abrir HISTORY.txt", ID_OPENHISTORY
-        MENUITEM "Abrir HISTORY-ES.txt (Española)", ID_OPENHISTORYES
+        MENUITEM "Abrir HISTORY-ES.txt (Español)", ID_OPENHISTORYES
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Una &guía de RisohEditor", ID_GUIDE
@@ -1649,7 +1649,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "Este archivo está protegido contra escritura mediante TEXTINCLUDE 1.\r\n\r\n¿Aún desea escribir en el archivo?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contiene elementos de recursos que no se pueden editar.\r\n\r\n¿Desea incluir los elementos en TEXTINCLUDE 3 como elementos editables y restablecer TEXTINCLUDE 3?"
     IDS_MP3RESBINFILTER, "Audio MP3 (*.mp3)|*.mp3|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
-	IDS_MP3SOUND, "(Audio MP3)\r\n"
+    IDS_MP3SOUND, "(Audio MP3)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
