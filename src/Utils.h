@@ -28,3 +28,37 @@ struct AutoDeleteFileW
 	AutoDeleteFileW(const std::wstring& file) : m_file(file) { }
 	~AutoDeleteFileW() { ::DeleteFileW(m_file.c_str()); }
 };
+
+WORD GetMachineOfBinary(LPCWSTR pszExeFile);
+BOOL IsFileLockedDx(LPCTSTR pszFileName);
+BOOL DeleteDirectoryDx(LPCTSTR pszDir);
+BOOL IsEmptyDirectoryDx(LPCTSTR pszPath);
+BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
+INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
+HRESULT FileSystemAutoComplete(HWND hwnd);
+void MyChangeNotify(LPCWSTR pszFileName);
+DWORD GetDefaultResLanguage(VOID);
+void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
+void GetStyleSelect(std::vector<BYTE>& sel, const ConstantsDB::TableType& table, DWORD dwValue);
+DWORD AnalyseStyleDiff(
+	DWORD dwValue, ConstantsDB::TableType& table,
+	std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
+void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
+void InitFontComboBox(HWND hCmb);
+void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
+BYTE GetCharSetFromComboBox(HWND hCmb);
+void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
+void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
+void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
+void InitCtrlIDComboBox(HWND hCmb);
+void Res_ReplaceResTypeString(MString& str, bool bRevert = false);
+MIdOrString ResourceTypeFromIDType(INT nIDTYPE_);
+MString GetAssoc(const MString& name);
+void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);	
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2);
+BOOL CheckCommand(MString strCommand);
+void InitConstantComboBox(HWND hCmb);
+void InitStringComboBox(HWND hCmb, const MString& strString);
+void InitMessageComboBox(HWND hCmb, const MString& strString);
