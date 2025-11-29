@@ -12081,7 +12081,10 @@ RisohEditor_Main(
 	OleUninitialize();
 	FreeWCLib();
 
-    DeleteFile(g_szMP3TempFile);
+    if (g_szMP3TempFile[0]) {
+        mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+        DeleteFile(g_szMP3TempFile);
+    }
 
 	// check object counts
 	assert(MacroParser::BaseAst::alive_count() == 0);
