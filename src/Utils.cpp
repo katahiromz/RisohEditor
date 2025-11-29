@@ -42,10 +42,15 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 
 TCHAR g_szMP3TempFile[MAX_PATH] = TEXT("");
 
+void StopMP3(void) {
+	if (g_szMP3TempFile[0]) {
+		mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+		DeleteFile(g_szMP3TempFile);
+	}
+}
+
 BOOL PlayMP3(LPCVOID ptr, size_t size) {
-    mciSendString(TEXT("close myaudio"), NULL, 0, 0);
-    if (g_szMP3TempFile[0])
-        DeleteFile(g_szMP3TempFile);
+	StopMP3();
 
 	TCHAR szCommand[MAX_PATH + 64];
 	{
@@ -63,7 +68,7 @@ BOOL PlayMP3(LPCVOID ptr, size_t size) {
 	}
 
 	mciSendString(szCommand, NULL, 0, 0);
-	mciSendString(TEXT("play myaudio"), NULL, 0, 0);
+	mciSendString(TEXT("play myaudio"), NULL, 0, 0); // Async (No wait)
 	return TRUE;
 }
 

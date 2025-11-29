@@ -1589,7 +1589,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Этот файл был автоматически создан RisohEditor 5.9.3.\r\n"
     IDS_DAGGER, "// † <-- Этот крестик помогает определять UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Файлы импорта |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manifest|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Файлы импорта |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|Аудиофайлы MP3 (*.mp3)|*.mp3|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manifest|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Невозможно записать файл, так как заблокирован следующий файл:\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Юникод"

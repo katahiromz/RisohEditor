@@ -1592,7 +1592,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Este arquivo é gerado automaticamente por RisohEditor 5.9.3.\r\n"
     IDS_DAGGER, "// † <-- Esta adaga ajuda na detecção de UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Arquivos Importados|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Arquivos RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos Binários (*.res)|*.res|Arquivos de Imagem |*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Arquivos de Cursor (*.cur;*.ani)|*.cur;*.ani|Arquivos de Ícone (*.ico)|*.ico|Arquivos de Som WAVE (*.wav)|*.wav|Arquivos HTML (*.html;*.htm)|*.html;*.htm|Arquivos de Manifest (*.manifest)|*.manifest|Arquivos DFM do Delphi (*.dfm)|*.dfm|Arquivos TYPELIB (*.tlb)|*.tlb|Todos os Arquivos (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Arquivos Importados|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Arquivos RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos Binários (*.res)|*.res|Arquivos de Imagem |*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Arquivos de Cursor (*.cur;*.ani)|*.cur;*.ani|Arquivos de Ícone (*.ico)|*.ico|Arquivos de Som WAVE (*.wav)|*.wav|Som MP3 (*.mp3)|*.mp3|Arquivos HTML (*.html;*.htm)|*.html;*.htm|Arquivos de Manifest (*.manifest)|*.manifest|Arquivos DFM do Delphi (*.dfm)|*.dfm|Arquivos TYPELIB (*.tlb)|*.tlb|Todos os Arquivos (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Não é possível escrever o arquivo porque o arquivo a seguir está bloqueado.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"

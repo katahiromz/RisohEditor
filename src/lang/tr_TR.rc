@@ -1589,7 +1589,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Bu dosya RisohEditor 5.9.3 tarafından otomatik olarak oluşturulmuştur.\r\n"
     IDS_DAGGER, "// † <-- Bu haç işareti UTF-8 tespiti için yardımcı olur.\r\n"
-    IDS_IMPORTFILTER, "İçe Aktarılabilir Dosyalar|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC Dosyaları (*.rc;*.rc2)|*.rc;*.rc2|İkili Kaynaklar (*.res)|*.res|Görsel Dosyalar|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|İmleç Dosyaları (*.cur;*.ani)|*.cur;*.ani|Simge Dosyaları (*.ico)|*.ico|WAVE Ses Dosyaları (*.wav)|*.wav|HTML Dosyaları (*.html;*.htm)|*.html;*.htm|Manifest Dosyaları (*.manifest)|*.manifest|Delphi DFM Dosyaları (*.dfm)|*.dfm|TYPELIB Dosyaları (*.tlb)|*.tlb|Tüm Dosyalar (*.*)|*.*|"
+    IDS_IMPORTFILTER, "İçe Aktarılabilir Dosyalar|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC Dosyaları (*.rc;*.rc2)|*.rc;*.rc2|İkili Kaynaklar (*.res)|*.res|Görsel Dosyalar|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|İmleç Dosyaları (*.cur;*.ani)|*.cur;*.ani|Simge Dosyaları (*.ico)|*.ico|WAVE Ses Dosyaları (*.wav)|*.wav|MP3 Sesi (*.mp3)|*.mp3|HTML Dosyaları (*.html;*.htm)|*.html;*.htm|Manifest Dosyaları (*.manifest)|*.manifest|Delphi DFM Dosyaları (*.dfm)|*.dfm|TYPELIB Dosyaları (*.tlb)|*.tlb|Tüm Dosyalar (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Dosya yazılamıyor çünkü aşağıdaki dosya kilitli:\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"

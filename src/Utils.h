@@ -86,6 +86,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang);
 BOOL PlayMP3(LPCVOID ptr, size_t size);
+void StopMP3(void);
 
 extern std::vector<LANG_ENTRY> g_langs;
 extern TCHAR g_szMP3TempFile[MAX_PATH];

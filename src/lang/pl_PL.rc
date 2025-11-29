@@ -1589,7 +1589,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Ten plik jest automatycznie generowany przez RisohEditor 5.9.3.\r\n"
     IDS_DAGGER, "// † <-- Ten sztylet (dagger), pomaga w wykrywaniu UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Pliki importowane |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Pliki RC (*.rc;*.rc2)|*.rc;*.rc2|Zasoby binarne (*.res)|*.res|Pliki obrazów|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Pliki kursorów (*.cur;*.ani)|*.cur;*.ani|Pliki ikon (*.ico)|*.ico|Pliki dźwiękowe WAVE (*.wav)|*.wav|Pliki HTML (*.html;*.htm)|*.html;*.htm|Pliki Manifest (*.manifest)|*.manifest|Pliki Delphi DFM (*.dfm)|*.dfm|Pliki TYPELIB (*.tlb)|*.tlb|Wszystkie pliki (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Pliki importowane |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Pliki RC (*.rc;*.rc2)|*.rc;*.rc2|Zasoby binarne (*.res)|*.res|Pliki obrazów|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Pliki kursorów (*.cur;*.ani)|*.cur;*.ani|Pliki ikon (*.ico)|*.ico|Pliki dźwiękowe WAVE (*.wav)|*.wav|Dźwięk typu MP3 (*.mp3)|*.mp3|Pliki HTML (*.html;*.htm)|*.html;*.htm|Pliki Manifest (*.manifest)|*.manifest|Pliki Delphi DFM (*.dfm)|*.dfm|Pliki TYPELIB (*.tlb)|*.tlb|Wszystkie pliki (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Nie można zapisać pliku, ponieważ następujący plik jest zablokowany.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"

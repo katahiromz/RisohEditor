@@ -1592,7 +1592,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Berkas ini secara otomatis dibuat oleh RisohEditor 5.9.3.\r\n"
     IDS_DAGGER, "// † <-- Salib ini membantu mendeteksi UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Berkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Manifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Berkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Suara MP3 (*.mp3)|*.mp3|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Manifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Tidak bisa menulis berkas karena berkas tersebut terkunci.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unikode"

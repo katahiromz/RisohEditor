@@ -7817,6 +7817,9 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+	// Stop MP3 sound
+	StopMP3();
+
 	// Try to cancel searching
 	m_search.bCancelled = FALSE;
 	::Sleep(100);
@@ -12080,11 +12083,6 @@ RisohEditor_Main(
 	FreeLibrary(hinstUXTheme);
 	OleUninitialize();
 	FreeWCLib();
-
-    if (g_szMP3TempFile[0]) {
-        mciSendString(TEXT("close myaudio"), NULL, 0, 0);
-        DeleteFile(g_szMP3TempFile);
-    }
 
 	// check object counts
 	assert(MacroParser::BaseAst::alive_count() == 0);
