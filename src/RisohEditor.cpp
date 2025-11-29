@@ -12586,57 +12586,6 @@ INT_PTR MMainWnd::RunDx()
 	return INT(msg.wParam);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
-// get the RISOHTEMPLATE text
-MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang)
-{
-	// get this application module
-	HINSTANCE hInst = GetModuleHandle(NULL);
-
-	if (type.empty())
-	{
-		return L"";    // failure
-	}
-
-	MIdOrString name0 = type;
-	if (type == L"TEXTINCLUDE")
-		name0 = (L"TEXTINCLUDE" + name.str()).c_str();
-
-	// try to find the RISOHTEMPLATE resource
-	WORD LangID = PRIMARYLANGID(wLang);
-	HRSRC hRsrc = NULL;
-	if (hRsrc == NULL)
-		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), wLang);
-	if (hRsrc == NULL)
-		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
-	if (hRsrc == NULL)
-		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-	if (hRsrc == NULL)        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
-	if (hRsrc == NULL)
-		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
-	if (hRsrc == NULL)
-		return L"";
-
-	// get the pointer and byte size
-	HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
-	DWORD cb = SizeofResource(hInst, hRsrc);
-	const BYTE *pb = (const BYTE *)LockResource(hGlobal);
-
-	// ignore the BOM if any
-	if (memcmp(pb, "\xEF\xBB\xBF", 3) == 0)
-	{
-		pb += 3;
-		cb -= 3;
-	}
-
-	// convert the UTF-8 text to the UTF-16 text (wide)
-	MStringA utf8((LPCSTR)(pb), (LPCSTR)(pb) + cb);
-	MAnsiToWide wide(CP_UTF8, utf8);
-
-	return wide.c_str();    // return the wide
-}
-
 ////////////////////////////////////////////////////////////////////////////
 
 #ifdef _MSC_VER

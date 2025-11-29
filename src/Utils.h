@@ -84,6 +84,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
+MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang);
 
 extern std::vector<LANG_ENTRY> g_langs;
 
