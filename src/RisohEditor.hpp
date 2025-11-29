@@ -2,20 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//////////////////////////////////////////////////////////////////////////////
+// License: GPL-3 or later
 
 #pragma once
 
@@ -23,7 +10,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #ifdef __GNUC__ // Workaround
-    #define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
+	#define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
 #endif
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -38,9 +25,9 @@
 #include <urlmon.h>
 #include <wininet.h>
 #ifdef ATL_SUPPORT
-    #include <cguid.h>
-    #include <atlbase.h>
-    #include <atlhost.h>
+	#include <cguid.h>
+	#include <atlbase.h>
+	#include <atlhost.h>
 #endif
 
 #include <algorithm>    // for std::sort
@@ -124,14 +111,14 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 // structure for language information
 struct LANG_ENTRY
 {
-    WORD LangID;    // language ID
-    MStringW str;   // string
+	WORD LangID;    // language ID
+	MStringW str;   // string
 
-    // for sorting
-    bool operator<(const LANG_ENTRY& ent) const
-    {
-        return str < ent.str;
-    }
+	// for sorting
+	bool operator<(const LANG_ENTRY& ent) const
+	{
+		return str < ent.str;
+	}
 };
 extern std::vector<LANG_ENTRY> g_langs;
 

@@ -1592,7 +1592,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// 이 파일은 RisohEditor 5.9.3 에 의해 자동으로 생성됩니다.\r\n"
     IDS_DAGGER, "// † <-- 이 단검은 UTF-8 감지에 도움이 됩니다.\r\n"
-    IDS_IMPORTFILTER, "가져올 수 있는 파일|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC 파일 (*.rc;*.rc2)|*.rc;*.rc2|바이너리 리소스 (*.res)|*.res|이미지 파일|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|커서 파일 (*.cur;*.ani)|*.cur;*.ani|아이콘 파일 (*.ico)|*.ico|WAVE 사운드 파일 (*.wav)|*.wav|HTML 파일 (*.html;*.htm)|*.html;*.htm|Manifest 파일 (*.manifest)|*.manifest|델파이 DFM 파일 (*.dfm)|*.dfm|TYPELIB 파일 (*.tlb)|*.tlb|모든 파일 (*.*)|*.*|"
+    IDS_IMPORTFILTER, "가져올 수 있는 파일|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC 파일 (*.rc;*.rc2)|*.rc;*.rc2|바이너리 리소스 (*.res)|*.res|이미지 파일|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|커서 파일 (*.cur;*.ani)|*.cur;*.ani|아이콘 파일 (*.ico)|*.ico|WAVE 사운드 파일 (*.wav)|*.wav|MP3 사운드 (*.mp3)|*.mp3|HTML 파일 (*.html;*.htm)|*.html;*.htm|Manifest 파일 (*.manifest)|*.manifest|델파이 DFM 파일 (*.dfm)|*.dfm|TYPELIB 파일 (*.tlb)|*.tlb|모든 파일 (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "다음 파일이 잠겨있기 때문에 파일을 쓸 수 없습니다.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "유니코드"
@@ -1648,7 +1648,8 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// TEXTINCLUDE %u 에서 생성됨\r\n"
     IDS_TEXTINCLUDEREADONLY, "이 파일은 TEXTINCLUDE 1 로 쓰기 보호되어 있습니다.\r\n\r\n그래도 파일에 쓰시겠습니까?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3에는 편집할 수 없는 리소스 항목이 포함되어 있습니다.\r\n\r\nTEXTINCLUDE 3의 항목을 편집 가능한 항목으로 포함하고 TEXTINCLUDE 3을 재설정하시겠습니까?"
-    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
+    IDS_MP3RESBINFILTER, "MP3 사운드 (*.mp3)|*.mp3|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
+	IDS_MP3SOUND, "(MP3 사운드)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

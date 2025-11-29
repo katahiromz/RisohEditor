@@ -361,3 +361,6 @@
 - v.5.9.3 (20XX-YY-ZZ)
     - Risolto problema completamento automatico senza distinzione tra maiuscole e minuscole.
     - Risolto problema gestione nome risorsa zero.
+    - Implemented TEXTINCLUDE 1.
+    - Fixed many memory leaks.
+    - Supported MP3 sounds.

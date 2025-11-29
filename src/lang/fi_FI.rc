@@ -1589,7 +1589,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// RisohEditor 5.9.3 on luonut tämän tiedoston automaattisesti.\r\n"
     IDS_DAGGER, "// † <-- Tämä daggeri auttaa UTF-8-tunnistuksessa.\r\n"
-    IDS_IMPORTFILTER, "Tuotavat tiedostot|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC tiedostot (*.rc;*.rc2)|*.rc;*.rc2|Binaariset resurssit (*.res)|*.res|Kuvatiedostot|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Kursoritiedostot (*.cur;*.ani)|*.cur;*.ani|Kuvaketiedostot (*.ico)|*.ico|WAVE äänitiedostot (*.wav)|*.wav|HTML tiedostot (*.html;*.htm)|*.html;*.htm|Manifest tiedostot (*.manifest)|*.manifest|Delphi DFM tiedostot (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Kaikki tiedostot (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Tuotavat tiedostot|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC tiedostot (*.rc;*.rc2)|*.rc;*.rc2|Binaariset resurssit (*.res)|*.res|Kuvatiedostot|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Kursoritiedostot (*.cur;*.ani)|*.cur;*.ani|Kuvaketiedostot (*.ico)|*.ico|WAVE äänitiedostot (*.wav)|*.wav|MP3 ääni (*.mp3)|*.mp3|HTML tiedostot (*.html;*.htm)|*.html;*.htm|Manifest tiedostot (*.manifest)|*.manifest|Delphi DFM tiedostot (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Kaikki tiedostot (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Tiedostoa ei voi kirjoittaa, koska seuraava tiedosto on lukittu.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
@@ -1645,7 +1645,8 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Luotu tekstistä TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Tämä tiedosto on kirjoitussuojattu tekstillä TEXTINCLUDE 1.\r\n\r\nHaluatko silti kirjoittaa tiedostoon?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 sisältää resurssikohteita, joita ei voi muokata.\r\n\r\nHaluatko sisällyttää TEXTINCLUDE 3:n kohteet muokattaviksi kohteiksi ja nollata TEXTINCLUDE 3:n?"
-    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
+    IDS_MP3RESBINFILTER, "MP3 ääni (*.mp3)|*.mp3|Binaariset resurssit (*.res)|*.res|Binaariset tiedostot (*.bin)|*.bin|Kaikki tiedostot (*.*)|*.*|"
+	IDS_MP3SOUND, "(MP3 ääni)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

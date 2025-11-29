@@ -2,106 +2,106 @@
 
 enum LANG_TYPE
 {
-    LANG_TYPE_0,
-    LANG_TYPE_1,
-    LANG_TYPE_2
+	LANG_TYPE_0,
+	LANG_TYPE_1,
+	LANG_TYPE_2
 };
 
 // Helper function to get ComboBox edit text without buffer size limitations
 inline MStringW GetComboBoxText(HWND hwndCombo)
 {
-    INT cch = ComboBox_GetTextLength(hwndCombo);
-    if (cch <= 0)
-        return MStringW();
+	INT cch = ComboBox_GetTextLength(hwndCombo);
+	if (cch <= 0)
+		return MStringW();
 
-    MStringW str;
-    str.resize(cch + 1);
-    ComboBox_GetText(hwndCombo, &str[0], cch + 1);
-    str.resize(cch);  // Remove null terminator from string length
-    return str;
+	MStringW str;
+	str.resize(cch + 1);
+	ComboBox_GetText(hwndCombo, &str[0], cch + 1);
+	str.resize(cch);  // Remove null terminator from string length
+	return str;
 }
 
 // Helper function to get ComboBox listbox text without buffer size limitations
 inline MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex)
 {
-    INT cch = ComboBox_GetLBTextLen(hwndCombo, nIndex);
-    if (cch == CB_ERR)
-        return MStringW();
+	INT cch = ComboBox_GetLBTextLen(hwndCombo, nIndex);
+	if (cch == CB_ERR)
+		return MStringW();
 
-    MStringW str;
-    str.resize(cch);
-    cch = ComboBox_GetLBText(hwndCombo, nIndex, &str[0]);
-    if (cch == CB_ERR)
-        return MStringW();
+	MStringW str;
+	str.resize(cch);
+	cch = ComboBox_GetLBText(hwndCombo, nIndex, &str[0]);
+	if (cch == CB_ERR)
+		return MStringW();
 
-    return str;
+	return str;
 }
 
 // Helper function to get ListBox text without buffer size limitations
 inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
 {
-    INT cch = ListBox_GetTextLen(hwndListBox, nIndex);
-    if (cch == LB_ERR)
-        return MStringW();
+	INT cch = ListBox_GetTextLen(hwndListBox, nIndex);
+	if (cch == LB_ERR)
+		return MStringW();
 
-    MStringW str;
-    str.resize(cch);
-    cch = ListBox_GetText(hwndListBox, nIndex, &str[0]);
-    if (cch == LB_ERR)
-        return MStringW();
+	MStringW str;
+	str.resize(cch);
+	cch = ListBox_GetText(hwndListBox, nIndex, &str[0]);
+	if (cch == LB_ERR)
+		return MStringW();
 
-    return str;
+	return str;
 }
 
 // Helper function to get window text without buffer size limitations
 inline MStringW GetWindowTextW(HWND hwnd)
 {
-    INT cch = ::GetWindowTextLengthW(hwnd);
-    if (cch <= 0)
-        return MStringW();
+	INT cch = ::GetWindowTextLengthW(hwnd);
+	if (cch <= 0)
+		return MStringW();
 
-    MStringW str;
-    str.resize(cch);
-    ::GetWindowTextW(hwnd, &str[0], cch + 1);
-    return str;
+	MStringW str;
+	str.resize(cch);
+	::GetWindowTextW(hwnd, &str[0], cch + 1);
+	return str;
 }
 
 // Helper function to get dialog item text without buffer size limitations
 inline MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID)
 {
-    return GetWindowTextW(::GetDlgItem(hwnd, nCtrlID));
+	return GetWindowTextW(::GetDlgItem(hwnd, nCtrlID));
 }
 
 // Helper function to get ListView item text without buffer size limitations
 inline MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
 {
-    // First try with a reasonable initial buffer size
-    MStringW str;
-    INT cchBuffer = 256;
+	// First try with a reasonable initial buffer size
+	MStringW str;
+	INT cchBuffer = 256;
 
-    for (;;)
-    {
-        str.resize(cchBuffer);
-        LVITEMW lvi;
-        ZeroMemory(&lvi, sizeof(lvi));
-        lvi.iSubItem = iSubItem;
-        lvi.pszText = &str[0];
-        lvi.cchTextMax = cchBuffer;
-        INT cch = (INT)SendMessageW(hwndListView, LVM_GETITEMTEXTW, iItem, (LPARAM)&lvi);
-        if (cch < cchBuffer - 1)
-        {
-            str.resize(cch);
-            break;
-        }
-        // Buffer was too small, double it and try again
-        cchBuffer *= 2;
-        if (cchBuffer > 65536)  // Safety limit
-        {
-            str.resize(cch);
-            break;
-        }
-    }
-    return str;
+	for (;;)
+	{
+		str.resize(cchBuffer);
+		LVITEMW lvi;
+		ZeroMemory(&lvi, sizeof(lvi));
+		lvi.iSubItem = iSubItem;
+		lvi.pszText = &str[0];
+		lvi.cchTextMax = cchBuffer;
+		INT cch = (INT)SendMessageW(hwndListView, LVM_GETITEMTEXTW, iItem, (LPARAM)&lvi);
+		if (cch < cchBuffer - 1)
+		{
+			str.resize(cch);
+			break;
+		}
+		// Buffer was too small, double it and try again
+		cchBuffer *= 2;
+		if (cchBuffer > 65536)  // Safety limit
+		{
+			str.resize(cch);
+			break;
+		}
+	}
+	return str;
 }
 
 BOOL CheckCommand(MString strCommand);

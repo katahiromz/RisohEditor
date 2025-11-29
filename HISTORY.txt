@@ -361,3 +361,6 @@
 - v.5.9.3 (20XX-YY-ZZ)
     - Fixed AutoComplete case-insensitiveness problem.
     - Fixed handling of resource name zero.
+    - Implemented TEXTINCLUDE 1.
+    - Fixed many memory leaks.
+    - Supported MP3 sounds.

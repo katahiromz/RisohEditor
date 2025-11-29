@@ -1,0 +1,57 @@
+// TextInclude1Test2_res.rc
+// Test case for TEXTINCLUDE 1 support (Issue #301)
+// This file uses a custom header file name in TEXTINCLUDE 1.
+// † <-- This dagger helps UTF-8 detection.
+
+#include "include/custom_resource.h"
+
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#pragma code_page(65001) // UTF-8
+
+//////////////////////////////////////////////////////////////////////////////
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+//////////////////////////////////////////////////////////////////////////////
+// RT_DIALOG
+
+IDD_MAIN DIALOG 0, 0, 215, 100
+CAPTION "TextInclude1Test2"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "Arial"
+{
+    DEFPUSHBUTTON "OK", IDC_BTN_OK, 35, 80, 60, 14
+    PUSHBUTTON "Cancel", IDC_BTN_CANCEL, 115, 80, 60, 14
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE
+
+#ifdef APSTUDIO_INVOKED
+
+1 TEXTINCLUDE
+BEGIN
+    "include/custom_resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include <windows.h>\r\n"
+    "#include <commctrl.h>\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+//////////////////////////////////////////////////////////////////////////////

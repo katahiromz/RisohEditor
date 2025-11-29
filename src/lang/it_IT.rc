@@ -1590,7 +1590,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor 5.9.3.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
-    IDS_IMPORTFILTER, "File importabile|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File RC (*.rc;*.rc2)|*.rc;*.rc2|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|File TYPELIB (*.tlb)|*.tlb|Tutti i file (*.*)|*.*|"
+    IDS_IMPORTFILTER, "File importabile|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File RC (*.rc;*.rc2)|*.rc;*.rc2|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File audio MP3 (*.mp3)|*.mp3|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|File TYPELIB (*.tlb)|*.tlb|Tutti i file (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poiché il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
@@ -1646,7 +1646,8 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generato da TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Questo file è protetto da scrittura da TEXTINCLUDE 1.\r\n\r\nVuoi ancora scrivere nel file?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contiene elementi risorse che non possono essere modificati.\r\n\r\nVuoi includere gli elementi in TEXTINCLUDE 3 come elementi modificabili e reimpostare TEXTINCLUDE 3?"
-    IDS_COPYHEADERFILE, "The header file '%s' does not exist at the destination.\r\n\r\nDo you want to copy it?"
+    IDS_MP3RESBINFILTER, "File audio MP3 (*.mp3)|*.mp3|File risorse binarie (*.res)|*.res|File binario (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+	IDS_MP3SOUND, "(File audio MP3)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -15,150 +15,150 @@ class MComboBoxAutoComplete;
 class MComboBoxEditAutoComplete : public MEditCtrl
 {
 public:
-    MComboBoxEditAutoComplete() : m_bAutoComplete(FALSE)
-    {
-    }
+	MComboBoxEditAutoComplete() : m_bAutoComplete(FALSE)
+	{
+	}
 
-    void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
-    {
-        if (vk == VK_DELETE || vk == VK_BACK)
-            m_bAutoComplete = FALSE;
-        else
-            m_bAutoComplete = TRUE;
+	void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
+	{
+		if (vk == VK_DELETE || vk == VK_BACK)
+			m_bAutoComplete = FALSE;
+		else
+			m_bAutoComplete = TRUE;
 
-        if (fDown)
-        {
-            FORWARD_WM_KEYDOWN(hwnd, vk, cRepeat, flags, DefaultProcDx);
-        }
-        else
-        {
-            FORWARD_WM_KEYUP(hwnd, vk, cRepeat, flags, DefaultProcDx);
-        }
-    }
+		if (fDown)
+		{
+			FORWARD_WM_KEYDOWN(hwnd, vk, cRepeat, flags, DefaultProcDx);
+		}
+		else
+		{
+			FORWARD_WM_KEYUP(hwnd, vk, cRepeat, flags, DefaultProcDx);
+		}
+	}
 
-    virtual LRESULT CALLBACK
-    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MSG(hwnd, WM_KEYUP, OnKey);
-        }
-        return DefaultProcDx();
-    }
+	virtual LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+			HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+			HANDLE_MSG(hwnd, WM_KEYUP, OnKey);
+		}
+		return DefaultProcDx();
+	}
 
 public:
-    BOOL m_bAutoComplete;
+	BOOL m_bAutoComplete;
 };
 
 class MComboBoxAutoComplete : public MComboBox
 {
 public:
-    BOOL m_bAcceptSpace;
-    BOOL m_bIgnoreCase;
+	BOOL m_bAcceptSpace;
+	BOOL m_bIgnoreCase;
 
-    MComboBoxAutoComplete() : m_bAcceptSpace(FALSE), m_bIgnoreCase(FALSE)
-    {
-    }
+	MComboBoxAutoComplete() : m_bAcceptSpace(FALSE), m_bIgnoreCase(FALSE)
+	{
+	}
 
-    virtual void PostSubclassDx(HWND hwnd)
-    {
-        HWND hEdit = FindWindowEx(hwnd, NULL, TEXT("EDIT"), NULL);
-        m_edit.SubclassDx(hEdit);
-    }
+	virtual void PostSubclassDx(HWND hwnd)
+	{
+		HWND hEdit = FindWindowEx(hwnd, NULL, TEXT("EDIT"), NULL);
+		m_edit.SubclassDx(hEdit);
+	}
 
-    void OnEditChange()
-    {
-        DWORD dwPos;
-        OnEditChange(dwPos);
-    }
+	void OnEditChange()
+	{
+		DWORD dwPos;
+		OnEditChange(dwPos);
+	}
 
-    void OnEditChange(DWORD& dwPos)
-    {
-        if (!m_edit.m_bAutoComplete)
-        {
-            return;
-        }
+	void OnEditChange(DWORD& dwPos)
+	{
+		if (!m_edit.m_bAutoComplete)
+		{
+			return;
+		}
 
-        MString strInput = GetWindowText();
+		MString strInput = GetWindowText();
 
-        dwPos = GetEditSel();
-        MString strRight = strInput.substr(HIWORD(dwPos));
+		dwPos = GetEditSel();
+		MString strRight = strInput.substr(HIWORD(dwPos));
 
-        if (!m_bAcceptSpace)
-            mstr_trim(strRight);
+		if (!m_bAcceptSpace)
+			mstr_trim(strRight);
 
-        if (!strRight.empty())
-            return;
+		if (!strRight.empty())
+			return;
 
-        if (!m_bAcceptSpace)
-            mstr_trim(strInput);
+		if (!m_bAcceptSpace)
+			mstr_trim(strInput);
 
-        INT iItem = CB_ERR;
-        INT nCount = GetCount();
+		INT iItem = CB_ERR;
+		INT nCount = GetCount();
 
-        if (m_bIgnoreCase)
-        {
-            // Case-insensitive search for matching item
-            MString strInputUpper = strInput;
-            CharUpperW(&strInputUpper[0]);
+		if (m_bIgnoreCase)
+		{
+			// Case-insensitive search for matching item
+			MString strInputUpper = strInput;
+			CharUpperW(&strInputUpper[0]);
 
-            iItem = FindString(-1, strInput.c_str());
-            if (iItem == CB_ERR)
-                return;
+			iItem = FindString(-1, strInput.c_str());
+			if (iItem == CB_ERR)
+				return;
 
-            MString strCandidate = GetLBText(iItem);
+			MString strCandidate = GetLBText(iItem);
 
-            for (INT i = iItem + 1; i < nCount; ++i)
-            {
-                MString strText = GetLBText(i);
-                CharUpperW(&strText[0]);
-                if (strText.find(strInputUpper) == 0)
-                {
-                    return;
-                }
-            }
+			for (INT i = iItem + 1; i < nCount; ++i)
+			{
+				MString strText = GetLBText(i);
+				CharUpperW(&strText[0]);
+				if (strText.find(strInputUpper) == 0)
+				{
+					return;
+				}
+			}
 
-            m_edit.m_bAutoComplete = FALSE;
-            SetWindowText(strCandidate.c_str());
-            SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
-            dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
-        }
-        else
-        {
-            // Case-sensitive search for matching item
-            for (INT i = 0; i < nCount; ++i)
-            {
-                MString strText = GetLBText(i);
-                if (strText.find(strInput) == 0)
-                {
-                    iItem = i;
-                    break;
-                }
-            }
-            if (iItem == CB_ERR)
-                return;
+			m_edit.m_bAutoComplete = FALSE;
+			SetWindowText(strCandidate.c_str());
+			SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
+			dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
+		}
+		else
+		{
+			// Case-sensitive search for matching item
+			for (INT i = 0; i < nCount; ++i)
+			{
+				MString strText = GetLBText(i);
+				if (strText.find(strInput) == 0)
+				{
+					iItem = i;
+					break;
+				}
+			}
+			if (iItem == CB_ERR)
+				return;
 
-            MString strCandidate = GetLBText(iItem);
+			MString strCandidate = GetLBText(iItem);
 
-            for (INT i = iItem + 1; i < nCount; ++i)
-            {
-                MString strText = GetLBText(i);
-                if (strText.find(strInput) == 0)
-                {
-                    return;
-                }
-            }
+			for (INT i = iItem + 1; i < nCount; ++i)
+			{
+				MString strText = GetLBText(i);
+				if (strText.find(strInput) == 0)
+				{
+					return;
+				}
+			}
 
-            m_edit.m_bAutoComplete = FALSE;
-            SetWindowText(strCandidate.c_str());
-            SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
-            dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
-        }
-    }
+			m_edit.m_bAutoComplete = FALSE;
+			SetWindowText(strCandidate.c_str());
+			SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
+			dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
+		}
+	}
 
 public:
-    MComboBoxEditAutoComplete m_edit;
+	MComboBoxEditAutoComplete m_edit;
 };
 
 ////////////////////////////////////////////////////////////////////////////

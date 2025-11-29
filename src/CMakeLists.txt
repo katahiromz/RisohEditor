@@ -7,6 +7,8 @@ add_library(libRisohEditor STATIC
     IconRes.cpp
     MBitmapDx.cpp
     MenuRes.cpp
+    MMainWnd_Preview.cpp
+    MMainWnd_EGA.cpp
     MOleHost.cpp
     MSplitterWnd.cpp
     PackedDIB.cpp
@@ -14,11 +16,13 @@ add_library(libRisohEditor STATIC
     ResToText.cpp
     StringRes.cpp
     ToolbarRes.cpp
+    Utils.cpp
     VersionRes.cpp)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
+    RisohSettings.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
@@ -33,6 +37,7 @@ endif()
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
+    RisohSettings.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)

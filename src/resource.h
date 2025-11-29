@@ -354,7 +354,8 @@
 #define IDS_GENERATEDFROMTEXTINCLUDE        351
 #define IDS_TEXTINCLUDEREADONLY             352
 #define IDS_INCLUDETEXTINCLUDE3             353
-#define IDS_COPYHEADERFILE                  354
+#define IDS_MP3RESBINFILTER                 354
+#define IDS_MP3SOUND                        355
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -539,11 +540,11 @@
 #define UNKNOWNRESID1                       999
 
 #ifdef APSTUDIO_INVOKED
-    #ifndef APSTUDIO_READONLY_SYMBOLS
-        #define _APS_NO_MFC                 1
-        #define _APS_NEXT_RESOURCE_VALUE    111
-        #define _APS_NEXT_COMMAND_VALUE     282
-        #define _APS_NEXT_CONTROL_VALUE     1002
-        #define _APS_NEXT_SYMED_VALUE       300
-    #endif
+	#ifndef APSTUDIO_READONLY_SYMBOLS
+		#define _APS_NO_MFC                 1
+		#define _APS_NEXT_RESOURCE_VALUE    111
+		#define _APS_NEXT_COMMAND_VALUE     282
+		#define _APS_NEXT_CONTROL_VALUE     1002
+		#define _APS_NEXT_SYMED_VALUE       300
+	#endif
 #endif
