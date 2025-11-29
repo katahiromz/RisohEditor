@@ -6,9 +6,12 @@
 
 #pragma once
 
-// This header is included by RisohEditor.cpp.
+// This header documents the code organization for MMainWnd preview functions.
+//
+// The MMainWnd class is defined in RisohEditor.cpp.
 // The preview function implementations are in MMainWnd_Preview.cpp.
-// The function declarations are part of the MMainWnd class definition in RisohEditor.cpp.
-
-// No additional declarations needed here - the class and its member function
-// declarations are in RisohEditor.cpp, and the implementations are in MMainWnd_Preview.cpp.
+// MMainWnd_Preview.cpp is #include'd from RisohEditor.cpp after the class definition.
+//
+// This approach is used because the MMainWnd class is defined in the .cpp file,
+// not in a header, so MMainWnd_Preview.cpp cannot be compiled as a separate
+// translation unit.

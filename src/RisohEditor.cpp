@@ -5,7 +5,6 @@
 // License: GPL-3 or later
 
 #include "RisohEditor.hpp"
-#include "MMainWnd_Preview.h"
 #define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
 #include "MLangAutoComplete.hpp"
@@ -5702,7 +5701,8 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 	}
 }
 
-// Preview function implementations are in MMainWnd_Preview.cpp
+// Include the preview function implementations from MMainWnd_Preview.cpp
+#include "MMainWnd_Preview.cpp"
 
 // create the toolbar
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools)
