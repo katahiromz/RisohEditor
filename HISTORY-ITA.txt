@@ -362,3 +362,4 @@
     - Risolto problema completamento automatico senza distinzione tra maiuscole e minuscole.
     - Risolto problema gestione nome risorsa zero.
     - Implemented TEXTINCLUDE 1.
+    - Fixed many memory leaks.

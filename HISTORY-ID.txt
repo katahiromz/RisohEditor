@@ -362,3 +362,4 @@
     - Fixed AutoComplete case-insensitiveness problem.
     - Fixed handling of resource name zero.
     - Implemented TEXTINCLUDE 1.
+    - Fixed many memory leaks.
