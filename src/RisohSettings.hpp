@@ -27,6 +27,7 @@ typedef std::vector<MString>            captions_type;      // captions type
 
 struct RisohSettings
 {
+    DWORD       ui_lang;                // UI Language
 	BOOL        bShowBinEdit;           // show the binary EDIT control?
 	BOOL        bAlwaysControl;         // always show CONTROL statements?
 	BOOL        bShowStatusBar;         // show the status bar?

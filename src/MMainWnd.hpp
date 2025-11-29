@@ -506,3 +506,4 @@ extern MMainWnd *s_pMainWnd;
 extern INT g_bNoGuiMode;
 
 void EGA_extension(void);
+LANGID GetUILang(void);

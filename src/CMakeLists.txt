@@ -22,6 +22,7 @@ set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
+    RisohSettings.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
@@ -36,6 +37,7 @@ endif()
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
+    RisohSettings.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)

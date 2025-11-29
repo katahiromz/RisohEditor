@@ -24,6 +24,8 @@ MIdOrString g_RES_select_type = BAD_TYPE;
 MIdOrString g_RES_select_name = BAD_NAME;
 WORD g_RES_select_lang = BAD_LANG;
 
+IMPLEMENT_DYNAMIC(MEgaDlg)
+
 ////////////////////////////////////////////////////////////////////////////
 
 bool MMainWnd::DoResLoad(const MStringW& filename, const MStringW& options)
