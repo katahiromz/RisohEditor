@@ -35,8 +35,6 @@ IMPLEMENT_DYNAMIC(MEgaDlg)
 #define MYWM_UPDATELANGARROW (WM_USER + 114)
 #define MYWM_GETDLGHEADLINES (WM_USER + 250)
 
-MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
-
 // the maximum number of captions to remember
 static const DWORD s_nMaxCaptions = 10;
 
@@ -177,128 +175,6 @@ TBBUTTON g_buttons4[] =
 	{ 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
-// store the toolbar strings
-VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
-{
-	for (INT i = 0; i < nCount; ++i)
-	{
-		if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
-			continue;   // ignore separators
-
-		// replace the resource string ID with a toolbar string ID
-		INT_PTR id = pButtons[i].iString;
-		LPWSTR psz = LoadStringDx(INT(id));
-		id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
-		pButtons[i].iString = id;
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// STRING_ENTRY
-
-// helper function for MAddStrDlg and MModifyStrDlg
-BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
-{
-	// get the text from combobox
-	// replace the fullwidth characters with halfwidth characters
-	MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
-	ReplaceFullWithHalf(str);
-
-	if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
-	{
-		// numeric
-		LONG n = mstr_parse_int(str.c_str());
-		str = mstr_dec_word(WORD(n));
-	}
-	else if (!g_db.HasResID(str))
-	{
-		// non-numeric and not resource ID. invalid
-		return FALSE;   // failure
-	}
-
-	// store the string to entry.StringID
-	StringCchCopyW(entry.StringID, _countof(entry.StringID), str.c_str());
-
-	// get the text from EDIT control
-	str = MWindowBase::GetDlgItemText(hwnd, edt1);
-	//mstr_trim(str);     // trim it
-
-	// unquote if quoted
-	if (str[0] == L'"')
-	{
-		mstr_unquote(str);
-	}
-
-	// store the text to entry.StringValue
-	StringCchCopyW(entry.StringValue, _countof(entry.StringValue), str.c_str());
-
-	return TRUE;    // success
-}
-
-// helper function for MAddStrDlg and MModifyStrDlg
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
-{
-	// store entry.StringID to combobox
-	SetDlgItemTextW(hwnd, cmb1, entry.StringID);
-
-	// store the quoted entry.StringValue to the EDIT control
-	MStringW str = entry.StringValue;
-	str = mstr_quote(str);
-	SetDlgItemTextW(hwnd, edt1, str.c_str());
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// MESSAGE_ENTRY
-
-// helper function for MAddMsgDlg and MModifyMsgDlg
-BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
-{
-	// get the text from combobox
-	// replace the fullwidth characters with halfwidth characters
-	MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
-	ReplaceFullWithHalf(str);
-
-	if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
-	{
-		// numeric
-		LONG n = mstr_parse_int(str.c_str());
-		str = mstr_hex(n);      // make it hexidemical
-	}
-	else if (!g_db.HasResID(str))
-	{
-		// non-numeric and not resource ID. invalid
-		return FALSE;   // failure
-	}
-
-	// store the string to entry.MessageID
-	StringCchCopyW(entry.MessageID, _countof(entry.MessageID), str.c_str());
-
-	// get the text from EDIT control
-	str = MWindowBase::GetDlgItemText(hwnd, edt1);
-
-	// unquote if quoted
-	if (str[0] == L'"')
-	{
-		mstr_unquote(str);
-	}
-
-	// store the text to entry.MessageValue
-	StringCchCopyW(entry.MessageValue, _countof(entry.MessageValue), str.c_str());
-
-	return TRUE;    // success
-}
-
-// helper function for MAddMsgDlg and MModifyMsgDlg
-void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
-{
-	// get the text from combobox
-	SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
-
-	// set the quoted entry.MessageValue to the EDIT control
-	MStringW str = entry.MessageValue;
-	str = mstr_quote(str);
-	SetDlgItemTextW(hwnd, edt1, str.c_str());
-}
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd out-of-line functions
 

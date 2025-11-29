@@ -78,6 +78,12 @@ void Cmb1_InitVirtualKeys(HWND hCmb1);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str);
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 void DoSetFileModified(BOOL bModified);
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
+VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons);
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
+BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
+void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 
 extern std::vector<LANG_ENTRY> g_langs;
 
