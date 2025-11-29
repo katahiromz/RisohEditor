@@ -134,6 +134,21 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 	SetShowMode(SHOW_CODEANDBMP);
 }
 
+// preview the MP3 resource
+void MMainWnd::PreviewMP3(HWND hwnd, const EntryBase& entry)
+{
+	// dump the text to m_hCodeEditor
+	ResToText res2text;
+	MString str = res2text.DumpEntry(entry);
+	SetWindowTextW(m_hCodeEditor, str.c_str());
+
+	// make it playable
+	m_hBmpView.SetPlay();
+
+	// show
+	SetShowMode(SHOW_CODEANDBMP);
+}
+
 // preview the AVI resource
 void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 {
@@ -564,6 +579,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 		else if (entry->m_type == L"WAVE")
 		{
 			PreviewWAVE(hwnd, *entry);
+		}
+		else if (entry->m_type == L"MP3")
+		{
+			PreviewMP3(hwnd, *entry);
 		}
 		else if (entry->m_type == L"AVI")
 		{

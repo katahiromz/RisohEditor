@@ -641,6 +641,11 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WAVERESBINFILTER));
 			ofn.lpstrDefExt = L"wav";
 		}
+		else if (e->m_type == L"MP3")
+		{
+			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_MP3RESBINFILTER));
+			ofn.lpstrDefExt = L"mp3";
+		}
 		else
 		{
 			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
@@ -2176,6 +2181,13 @@ void MMainWnd::OnPlay(HWND hwnd)
 		// play the sound
 		PlaySound(reinterpret_cast<LPCTSTR>(&(*entry)[0]), NULL,
 				  SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
+		return;
+	}
+	// Is it an MP3 sound?
+	if (entry && entry->m_type == L"MP3")
+	{
+		PlayMP3(&(*entry)[0], entry->size());
+		return;
 	}
 }
 
@@ -6737,6 +6749,10 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 		{
 			return g_res.extract_bin(filename.c_str(), entry);
 		}
+		if (entry->m_type == L"MP3")
+		{
+			return g_res.extract_bin(filename.c_str(), entry);
+		}
 		if (entry->m_type == L"IMAGE")
 		{
 			return g_res.extract_bin(filename.c_str(), entry);
@@ -7441,6 +7457,23 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		// show the dialog
 		MAddResDlg dialog;
 		dialog.m_type = L"WAVE";
+		dialog.m_file = pszFile;
+		if (dialog.DialogBoxDx(hwnd) == IDOK)
+		{
+			// add a resource item
+			DoAddRes(hwnd, dialog);
+
+			DoSetFileModified(TRUE);
+
+			return IMPORTED;
+		}
+		return IMPORT_CANCELLED;
+	}
+	else if (lstrcmpiW(pchDotExt, L".mp3") == 0)
+	{
+		// show the dialog
+		MAddResDlg dialog;
+		dialog.m_type = L"MP3";
 		dialog.m_file = pszFile;
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
@@ -12047,6 +12080,8 @@ RisohEditor_Main(
 	FreeLibrary(hinstUXTheme);
 	OleUninitialize();
 	FreeWCLib();
+
+    DeleteFile(g_szMP3TempFile);
 
 	// check object counts
 	assert(MacroParser::BaseAst::alive_count() == 0);

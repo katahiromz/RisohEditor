@@ -1646,6 +1646,8 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "This file is write protected by TEXTINCLUDE 1.\r\n\r\nDo you still want to write to the file?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contains resource items that cannot be edited.\r\n\r\nDo you want to include the items in TEXTINCLUDE 3 as editable items and reset TEXTINCLUDE 3?"
+    IDS_MP3RESBINFILTER, "MP3 Sound (*.mp3)|*.mp3|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+	IDS_MP3SOUND, "(MP3 Sound)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

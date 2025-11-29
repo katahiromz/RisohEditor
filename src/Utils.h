@@ -85,8 +85,10 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang);
+BOOL PlayMP3(LPCVOID ptr, size_t size);
 
 extern std::vector<LANG_ENTRY> g_langs;
+extern TCHAR g_szMP3TempFile[MAX_PATH];
 
 BOOL CALLBACK
 EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LPARAM lParam);

@@ -348,6 +348,7 @@ protected:
 	void PreviewBitmap(HWND hwnd, const EntryBase& entry);
 	void PreviewImage(HWND hwnd, const EntryBase& entry);
 	void PreviewWAVE(HWND hwnd, const EntryBase& entry);
+	void PreviewMP3(HWND hwnd, const EntryBase& entry);
 	void PreviewAVI(HWND hwnd, const EntryBase& entry);
 	void PreviewAccel(HWND hwnd, const EntryBase& entry);
 	void PreviewMessage(HWND hwnd, const EntryBase& entry);

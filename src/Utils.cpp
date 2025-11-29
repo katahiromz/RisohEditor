@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#include <mmsystem.h>
 #include "RisohEditor.hpp"
 #include "MString.hpp"
 #include "MIdOrString.hpp"
@@ -37,6 +38,33 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 	{
 		return ::MessageBoxW(hwnd, text, title, uType);
 	}
+}
+
+TCHAR g_szMP3TempFile[MAX_PATH] = TEXT("");
+
+BOOL PlayMP3(LPCVOID ptr, size_t size) {
+    mciSendString(TEXT("close myaudio"), NULL, 0, 0);
+    if (g_szMP3TempFile[0])
+        DeleteFile(g_szMP3TempFile);
+
+	TCHAR szCommand[MAX_PATH + 64];
+	{
+		TCHAR szTempPath[MAX_PATH];
+		GetTempPath(_countof(szTempPath), szTempPath);
+		GetTempFileName(szTempPath, TEXT("MJB"), 0, g_szMP3TempFile);
+
+		FILE *fout = _tfopen(g_szMP3TempFile, TEXT("wb"));
+		if (!fout)
+			return FALSE;
+		fwrite(ptr, size, 1, fout);
+		fclose(fout);
+
+		wnsprintf(szCommand, _countof(szCommand), TEXT("open \"%s\" type mpegvideo alias myaudio"), g_szMP3TempFile);
+	}
+
+	mciSendString(szCommand, NULL, 0, 0);
+	mciSendString(TEXT("play myaudio"), NULL, 0, 0);
+	return TRUE;
 }
 
 // replace some fullwidth characters with halfwidth characters

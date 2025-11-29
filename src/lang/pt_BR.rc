@@ -1648,6 +1648,8 @@ STRINGTABLE
     IDS_GENERATEDFROMTEXTINCLUDE, "// Gerado a partir de TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Este ficheiro está protegido contra a escrita pelo TEXTINCLUDE 1. \r\n\r\nAinda pretende escrever no ficheiro?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contém itens de recursos que não podem ser editados.\r\n\r\nVocê deseja incluir os itens no TEXTINCLUDE 3 como itens editáveis ​​e redefinir o TEXTINCLUDE 3?"
+    IDS_MP3RESBINFILTER, "Som MP3 (*.mp3)|*.mp3|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
+	IDS_MP3SOUND, "(Som MP3)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

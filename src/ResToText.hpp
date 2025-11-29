@@ -84,6 +84,7 @@ public:
 	MString DoImage(const EntryBase& entry);
 	MString DoMessage(const EntryBase& entry);
 	MString DoWave(const EntryBase& entry);
+	MString DoMP3(const EntryBase& entry);
 	MString DoAVI(const EntryBase& entry);
 	MString DoTypeLib(const EntryBase& entry);
 	MString DoDlgInit(const EntryBase& entry);

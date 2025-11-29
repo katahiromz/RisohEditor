@@ -364,3 +364,4 @@
     - 리소스 이름 0 처리 문제가 수정되었습니다.
     - Implemented TEXTINCLUDE 1.
     - Fixed many memory leaks.
+    - Supported MP3 sounds.

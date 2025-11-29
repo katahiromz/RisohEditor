@@ -363,3 +363,4 @@
     - Risolto problema gestione nome risorsa zero.
     - Implemented TEXTINCLUDE 1.
     - Fixed many memory leaks.
+    - Supported MP3 sounds.

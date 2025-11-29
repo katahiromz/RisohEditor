@@ -285,6 +285,12 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 			ret += DumpEscapedName(entry.m_name);
 			ret += L".wav";
 		}
+		else if (entry.m_type == L"MP3")
+		{
+			ret += L"MP3_";
+			ret += DumpEscapedName(entry.m_name);
+			ret += L".mp3";
+		}
 		else if (entry.m_type == L"TYPELIB")
 		{
 			ret += L"TYPELIB_";
@@ -933,6 +939,10 @@ ResToText::DumpEntry(const EntryBase& entry)
 		{
 			return DoWave(entry);
 		}
+		else if (type == L"MP3")
+		{
+			return DoMP3(entry);
+		}
 		else if (entry.m_type == L"AVI")
 		{
 			return DoAVI(entry);
@@ -999,6 +1009,27 @@ MString ResToText::DoWave(const EntryBase& entry)
 
 	str += DumpName(entry.m_type, entry.m_name);
 	str += L" WAVE \"";
+	str += GetEntryFileName(entry);
+	str += L"\"\r\n\r\n";
+
+	return str;
+}
+
+MString ResToText::DoMP3(const EntryBase& entry)
+{
+	MString str;
+
+	if (m_bHumanReadable)
+	{
+		str += LoadStringDx(IDS_MP3SOUND);
+		str += L"\r\n";
+	}
+
+	// LANGUAGE ..., ...
+	str += GetLanguageStatement(entry.m_lang);
+
+	str += DumpName(entry.m_type, entry.m_name);
+	str += L" MP3 \"";
 	str += GetEntryFileName(entry);
 	str += L"\"\r\n\r\n";
 
