@@ -7918,6 +7918,8 @@ retry:
                     }
                     else if (id == IDCANCEL)
                     {
+                        res1.delete_all();
+                        res2.delete_all();
                         return FALSE;
                     }
                 }
@@ -7925,7 +7927,7 @@ retry:
                 // 取り込まない場合は、該当項目を削除してやり直し。
                 if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
                 {
-                    res1.erase(entry1);
+                    res1.delete_entry(entry1);
                     goto retry;
                 }
             }
@@ -7945,6 +7947,8 @@ retry:
         }
         res1.merge(found);
     }
+
+    res2.delete_all();
 
     // TEXTINCLUDE should be MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
     for (auto& entry : res1)
