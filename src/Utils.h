@@ -62,3 +62,24 @@ BOOL CheckCommand(MString strCommand);
 void InitConstantComboBox(HWND hCmb);
 void InitStringComboBox(HWND hCmb, const MString& strString);
 void InitMessageComboBox(HWND hCmb, const MString& strString);
+BOOL IsValidUILang(LANGID langid);
+void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage);
+void InitLangComboBox(HWND hCmb3, DWORD langid);
+void InitLangListView(HWND hLst1, LPCTSTR pszText);
+WORD LangFromText(LPWSTR pszLang);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+MStringW TextFromLang(WORD lang);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
+BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file);
+MStringW GetKeyID(UINT wId);
+void Cmb1_InitVirtualKeys(HWND hCmb1);
+BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str);
+
+extern std::vector<LANG_ENTRY> g_langs;
+
+BOOL CALLBACK
+EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LPARAM lParam);
+BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString);
+BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString);
