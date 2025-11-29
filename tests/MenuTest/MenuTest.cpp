@@ -28,11 +28,9 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
 	switch (id)
 	{
-	case IDC_BTN_OK:
 	case IDOK:
 		EndDialog(hwnd, IDOK);
 		break;
-	case IDC_BTN_CANCEL:
 	case IDCANCEL:
 		EndDialog(hwnd, IDCANCEL);
 		break;
