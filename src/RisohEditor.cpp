@@ -8965,6 +8965,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 !CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
             {
                 // Copy failed, show error to user
+                textinclude.delete_all();
                 ErrorBoxDx(IDS_CANNOTSAVE);
                 return FALSE;
             }
@@ -9144,8 +9145,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         // dump neutral
         if (langs.count(0) > 0)
         {
-            if (!DoWriteRCLang(file, res2text, 0, found))
+            if (!DoWriteRCLang(file, res2text, 0, found)) {
+                textinclude.delete_all();
                 return FALSE;
+            }
         }
 
         // create "lang" directory path
@@ -9156,8 +9159,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         WCHAR *pch = wcsrchr(szLangDir, L'\\');
         if (pch == NULL)
             pch = mstrrchr(szLangDir, L'/');
-        if (pch == NULL)
+        if (pch == NULL) {
+            textinclude.delete_all();
             return FALSE;
+        }
 
         // build the lang directory path
         *pch = 0;
@@ -9224,10 +9229,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 lang_file.WriteSzA("\r\n");
                 lang_file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             }
-            if (!lang_file)
+            if (!lang_file) {
+                textinclude.delete_all();
                 return FALSE;
-            if (!DoWriteRCLang(lang_file, res2text, lang, found))
+            }
+            if (!DoWriteRCLang(lang_file, res2text, lang, found)) {
+                textinclude.delete_all();
                 return FALSE;
+            }
 
             if (g_settings.bRedundantComments)
             {
@@ -9249,8 +9258,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         {
             auto lang = lang_pair.first;
             // write it for each language
-            if (!DoWriteRCLang(file, res2text, lang, found))
+            if (!DoWriteRCLang(file, res2text, lang, found)) {
+                textinclude.delete_all();
                 return FALSE;
+            }
         }
     }
 
@@ -9478,6 +9489,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         }
     }
 
+    textinclude.delete_all();
     return TRUE;
 }
 
