@@ -8958,7 +8958,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             }
 
             if (lstrcmpiW(szSrcHeaderPath, szDestHeaderPath) != 0 &&
-                !CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) 
+                !CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE))
             {
                 // Copy failed, show error to user
                 ErrorBoxDx(IDS_CANNOTSAVE);
