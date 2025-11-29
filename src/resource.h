@@ -226,8 +226,6 @@
 #define IDS_EXPORT                          223
 #define IDS_CANTEXPORT                      224
 #define IDS_MUSTBEEMPTYDIR                  225
-#define IDS_FULLWIDTH                       226
-#define IDS_HALFWIDTH                       227
 #define IDS_MACRONAME                       228
 #define IDS_MACROVALUE                      229
 #define IDS_OPTIONAL                        230

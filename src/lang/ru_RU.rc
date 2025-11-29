@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Экспорт"
     IDS_CANTEXPORT, "Ошибка экспорта."
     IDS_MUSTBEEMPTYDIR, "Если есть внешний файл, экспорт должен выполняться в пустую папку."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Имя макроса"
     IDS_MACROVALUE, "Значение макроса"
     IDS_OPTIONAL, "(необязательно)"

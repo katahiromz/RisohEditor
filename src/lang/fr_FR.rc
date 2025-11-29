@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Exportation"
     IDS_CANTEXPORT, "L'exportation a échoué."
     IDS_MUSTBEEMPTYDIR, "S'il existe un fichier externe, la destination d'exportation doit être un dossier vide."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Nom de la macro"
     IDS_MACROVALUE, "Valeur macro"
     IDS_OPTIONAL, "(Optionnel)"

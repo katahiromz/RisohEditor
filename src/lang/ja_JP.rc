@@ -1521,8 +1521,6 @@ STRINGTABLE
     IDS_EXPORT, "エクスポート"
     IDS_CANTEXPORT, "エクスポートできませんでした。"
     IDS_MUSTBEEMPTYDIR, "外部ファイルがあるのなら、エクスポート先は空フォルダでなければなりません。"
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "マクロ名"
     IDS_MACROVALUE, "マクロ値"
     IDS_OPTIONAL, "(オプションです)"

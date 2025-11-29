@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Export"
     IDS_CANTEXPORT, "Export fehlgeschlagen."
     IDS_MUSTBEEMPTYDIR, "Wenn eine externe Datei vorhanden ist, muss das Exportziel ein leerer Ordner sein."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Makroname"
     IDS_MACROVALUE, "Makrowert"
     IDS_OPTIONAL, "(Optional)"

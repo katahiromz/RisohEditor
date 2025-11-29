@@ -1520,8 +1520,6 @@ STRINGTABLE
     IDS_EXPORT, "Ekspor"
     IDS_CANTEXPORT, "Ekspor gagal."
     IDS_MUSTBEEMPTYDIR, "Jika terdapat beberapa file eksternal, maka tujuan ekspor harus berupa folder kosong."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Nama Makro"
     IDS_MACROVALUE, "Nilai Makro"
     IDS_OPTIONAL, "(Opsional)"

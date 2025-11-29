@@ -1520,8 +1520,6 @@ STRINGTABLE
     IDS_EXPORT, "내보내기"
     IDS_CANTEXPORT, "내보내기에 실패했습니다."
     IDS_MUSTBEEMPTYDIR, "외부 파일이 있는 경우 내보내기 대상은 빈 폴더여야 합니다."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "매크로 이름"
     IDS_MACROVALUE, "매크로 값"
     IDS_OPTIONAL, "(옵션)"

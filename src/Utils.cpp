@@ -75,8 +75,8 @@ BOOL PlayMP3(LPCVOID ptr, size_t size) {
 // replace some fullwidth characters with halfwidth characters
 void ReplaceFullWithHalf(LPWSTR pszText)
 {
-	MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
-	MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+	MStringW strFullWidth = L"０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　";
+	MStringW strHalfWidth = L"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). ";
 
 	for (DWORD i = 0; pszText[i]; ++i)
 	{

@@ -1515,8 +1515,6 @@ STRINGTABLE
     IDS_EXPORT, "導出"
     IDS_CANTEXPORT, "導出失敗。"
     IDS_MUSTBEEMPTYDIR, "如果有任何外部文件，則導出目標必須是空文件夾。"
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "宏名稱"
     IDS_MACROVALUE, "宏值"
     IDS_OPTIONAL, "(可選的)"

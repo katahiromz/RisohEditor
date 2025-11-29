@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Vie"
     IDS_CANTEXPORT, "Vienti epäonnistui."
     IDS_MUSTBEEMPTYDIR, "Jos on olemassa ulkoinen tiedosto, vientikohteen on oltava tyhjä kansio."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Makron nimi"
     IDS_MACROVALUE, "Makron arvo"
     IDS_OPTIONAL, "(Valinnainen)"
