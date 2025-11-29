@@ -7829,11 +7829,13 @@ static MStringW GetTextInclude1HeaderFile(const EntrySet& res, LPCWSTR szRCPath)
         data = data.substr(1, data.size() - 2);
     }
 
-    // If empty or contains write protect marker, return empty
-    // Note: "< " prefix indicates the file is read-only (e.g., "< resource.h\0")
-    // This is a Visual C++ convention for write-protecting RC files
-    if (data.empty() || data.find("< ") != std::string::npos)
+    // If empty, return empty
+    if (data.empty())
         return L"";
+
+    // Remove read-only marker
+    if (data.find("< ") == 0)
+        data = data.substr(2);
 
     // Convert to wide string
     MAnsiToWide a2w(CP_UTF8, data.c_str());
@@ -8909,16 +8911,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     // Issue #301: Check if custom header file exists at destination, offer to copy if not
     // Note: "< " prefix indicates a write-protected/read-only file (Visual C++ convention)
     // We skip these as they are typically system headers that shouldn't be copied
-    if (!textinclude1_a.empty() && textinclude1_a != "resource.h" &&
-        textinclude1_a.find("< ") == std::string::npos)
-    {
+    if (!textinclude1_a.empty() && textinclude1_a != "resource.h") {
+        bool write_protected = (textinclude1_a.find("< ") == 0);
+        std::wstring include_path = write_protected ? &textinclude1_w.c_str()[2] : textinclude1_w;
+        mstr_trim(include_path);
+
         // Build destination path for header file
         WCHAR szDestDir[MAX_PATH];
         StringCchCopyW(szDestDir, _countof(szDestDir), pszFileName);
         PathRemoveFileSpecW(szDestDir);
 
         WCHAR szDestHeaderPath[MAX_PATH];
-        PathCombineW(szDestHeaderPath, szDestDir, textinclude1_w.c_str());
+        PathCombineW(szDestHeaderPath, szDestDir, include_path.c_str());
 
         for (auto& ch : szDestHeaderPath) {
             if (ch == L'/') ch = L'\\';
@@ -8930,7 +8934,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         PathRemoveFileSpecW(szSrcDir);
 
         WCHAR szSrcHeaderPath[MAX_PATH];
-        PathCombineW(szSrcHeaderPath, szSrcDir, textinclude1_w.c_str());
+        PathCombineW(szSrcHeaderPath, szSrcDir, include_path.c_str());
 
         for (auto& ch : szSrcHeaderPath) {
             if (ch == L'/') ch = L'\\';
@@ -8953,7 +8957,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 if (ch == L'/') ch = L'\\';
             }
 
-            if (!CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) {
+            if (lstrcmpiW(szSrcHeaderPath, szDestHeaderPath) != 0 &&
+                !CopyFileW(szSrcHeaderPath, szDestHeaderPath, FALSE)) 
+            {
                 // Copy failed, show error to user
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -8992,9 +8998,13 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         {
             if (!textinclude1_a.empty())
             {
+                std::wstring path = textinclude1_w;
+                if (path.find(L"< ") == 0)
+                    path = path.substr(2);
+
                 // Use header file name from TEXTINCLUDE 1
                 file.WriteSzW(L"#include \"");
-                file.WriteSzW(textinclude1_w.c_str());
+                file.WriteSzW(path.c_str());
                 file.WriteSzW(L"\"\r\n");
             }
             else
@@ -9053,9 +9063,11 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         {
             if (!textinclude1_a.empty())
             {
+                std::string path = textinclude1_a;
+                if (path.find("< ") == 0) path = path.substr(2);
                 // Use header file name from TEXTINCLUDE 1
                 file.WriteSzA("#include \"");
-                file.WriteSzA(textinclude1_a.c_str());
+                file.WriteSzA(path.c_str());
                 file.WriteSzA("\"\r\n");
             }
             else

@@ -34,7 +34,7 @@ FONT 9, "Arial"
 
 1 TEXTINCLUDE
 BEGIN
-    "include/include/custom_resource.h\0"
+    "< include/include/custom_resource.h\0"
 END
 
 2 TEXTINCLUDE
