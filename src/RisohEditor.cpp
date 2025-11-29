@@ -8940,7 +8940,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             if (ch == L'/') ch = L'\\';
         }
 
-        // If source header exists but destination doesn't, ask to copy
+        // Source header exists?
         if (PathFileExistsW(szSrcHeaderPath)) {
             // Create parent directory if it doesn't exist
             // This handles paths like "include\resource.h" or "include/resource.h"
