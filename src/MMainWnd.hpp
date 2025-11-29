@@ -21,6 +21,15 @@ enum FileType
 	FT_RES
 };
 
+// the import result
+enum IMPORT_RESULT
+{
+	IMPORTED,
+	IMPORT_CANCELLED,
+	IMPORT_FAILED,
+	NOT_IMPORTABLE
+};
+
 class MMainWnd : public MWindowBase
 {
 protected:

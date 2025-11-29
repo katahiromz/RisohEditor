@@ -103,14 +103,6 @@ void DoSetFileModified(BOOL bModified)
 HWND g_hMainWnd = NULL;
 static INT s_ret = 0;
 
-enum IMPORT_RESULT
-{
-	IMPORTED,
-	IMPORT_CANCELLED,
-	IMPORT_FAILED,
-	NOT_IMPORTABLE
-};
-
 MIdOrString g_RES_select_type = BAD_TYPE;
 MIdOrString g_RES_select_name = BAD_NAME;
 WORD g_RES_select_lang = BAD_LANG;

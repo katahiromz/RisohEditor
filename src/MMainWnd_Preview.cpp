@@ -6,6 +6,8 @@
 
 #include "MMainWnd.hpp"
 #include "ToolbarRes.hpp"
+#include "LineNumEdit.hpp"
+#include "Utils.h"
 
 // preview the icon resource
 void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
