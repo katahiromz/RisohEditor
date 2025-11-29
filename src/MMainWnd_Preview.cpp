@@ -4,8 +4,8 @@
 // Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
-// NOTE: This file is included from RisohEditor.cpp after the MMainWnd class definition.
-// Do not compile this file separately - the MMainWnd class is defined in RisohEditor.cpp.
+#include "MMainWnd.hpp"
+#include "ToolbarRes.hpp"
 
 // preview the icon resource
 void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
