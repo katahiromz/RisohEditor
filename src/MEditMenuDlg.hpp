@@ -90,7 +90,8 @@ public:
 			dwType |= MFT_RIGHTJUSTIFY;
 
 		std::wstring str = GetMenuTypeAndState(dwType, dwState);
-		if (m_entry.szCaption.empty() ||
+		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
+		if (wMenuID == 0 ||
 			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0)
 		{
 			m_entry.szCaption.clear();
@@ -194,8 +195,10 @@ public:
 		dwType = dwState = 0;
 		SetMenuTypeAndState(dwType, dwState, m_entry.szFlags);
 
-		if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
-			m_entry.szCaption.empty() || (dwType & MFT_SEPARATOR))
+		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
+		if (wMenuID == 0 ||
+			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+			(dwType & MFT_SEPARATOR))
 		{
 			dwType |= MFT_SEPARATOR;
 			SetDlgItemTextW(hwnd, cmb1, NULL);
@@ -273,8 +276,10 @@ public:
 		if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
 			dwType |= MFT_RIGHTJUSTIFY;
 
-		if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
-			m_entry.szCaption.empty() || (dwType & MFT_SEPARATOR))
+		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
+		if (wMenuID == 0 ||
+			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+			(dwType & MFT_SEPARATOR))
 		{
 			m_entry.szCaption.clear();
 			dwType |= MFT_SEPARATOR;
@@ -416,7 +421,7 @@ public:
 			for (auto& element : exitems)
 			{
 				str = mstr_repeat(LoadStringDx(IDS_INDENT), element.wDepth);
-				if (element.text.empty() && element.menuId == 0)
+				if (element.dwType & MFT_SEPARATOR)
 				{
 					str += LoadStringDx(IDS_SEPARATOR);
 					element.dwType |= MFT_SEPARATOR;
@@ -470,7 +475,7 @@ public:
 			for (auto& element : items)
 			{
 				str = mstr_repeat(LoadStringDx(IDS_INDENT), element.wDepth);
-				if (element.text.empty() && element.wMenuID == 0)
+				if (element.wMenuID == 0)
 				{
 					str += LoadStringDx(IDS_SEPARATOR);
 				}
@@ -559,7 +564,7 @@ public:
 
 		MStringW str, strIndent = LoadStringDx(IDS_INDENT);
 		str = mstr_quote(m_entry.szCaption);
-		if (str.empty() || m_entry.szFlags.find(L"S ") != MStringW::npos)
+		if (m_entry.szFlags.find(L"S ") != MStringW::npos)
 			str = LoadStringDx(IDS_SEPARATOR);
 		str = mstr_repeat(strIndent, m_entry.wDepth) + str;
 
@@ -613,7 +618,7 @@ public:
 		{
 			mstr_unquote(str);
 		}
-		if (str.empty() || str == LoadStringDx(IDS_SEPARATOR))
+		if (str == LoadStringDx(IDS_SEPARATOR))
 		{
 			str.clear();
 		}
@@ -631,7 +636,8 @@ public:
 		MStringW str, strIndent = LoadStringDx(IDS_INDENT);
 		str = mstr_repeat(strIndent, entry.wDepth);
 
-		if (entry.szCaption.empty() || entry.szFlags.find(L"S ") != MStringW::npos)
+		UINT wMenuID = (WORD)g_db.GetResIDValue(entry.szCommandID);
+		if (wMenuID == 0 || entry.szFlags.find(L"S ") != MStringW::npos)
 			str += LoadStringDx(IDS_SEPARATOR);
 		else
 			str += mstr_quote(entry.szCaption);

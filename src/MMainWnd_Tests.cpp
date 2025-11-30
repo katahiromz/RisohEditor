@@ -56,7 +56,7 @@ void TEST_MenuTest() {
 	if (ptr) {
 		MByteStreamEx stream(ptr, size);
 		MenuRes menu_res;
-		assert(menu_res.LoadFromStreamEx(stream));
+		assert(menu_res.LoadFromStream(stream));
 		MString str = menu_res.DumpEx(name2);
 		MTRACE(TEXT("%s\n"), str.c_str());
 	}
