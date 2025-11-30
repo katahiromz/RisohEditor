@@ -142,7 +142,8 @@ END
 
 ## COMMENTS
 
-The resource file and "resource.h" file should use C++ comments rather than C comments.
+- The resource file and "resource.h" file should use C++ comments rather than C comments.
+- `MAKEINTRESOURCE(0)` results in a null pointer, which is why you should not use zero as a resource name.
 
 ## SEE ALSO
 
