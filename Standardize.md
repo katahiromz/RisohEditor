@@ -163,7 +163,7 @@ You can specify system headers to load in addition to `<windows.h>` and `<commct
 ### TEXTINCLUDE 3
 
 TEXTINCLUDE 3 specifies the code to embed read-only resource data in this resource file.
-With RisohEditor, you can choose whether or not to import TEXTINCLUDE 3 when loading from the app.
+With RisohEditor, you can choose whether or not to import the data specified by TEXTINCLUDE 3 when loading from the app.
 
 ## NOTE
 

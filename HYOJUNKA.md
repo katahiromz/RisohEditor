@@ -165,7 +165,7 @@ TEXTINCLUDE 2は、このリソースファイルがインクルードするシ�
 ### TEXTINCLUDE 3
 
 TEXTINCLUDE 3は、このリソースファイルで読み込み専用のリソースデータを埋め込むためのコードを指定します。
-RisohEditorでは、TEXTINCLUDE 3の取り込みの有無をアプリから読み込み時に選ぶことができます。
+RisohEditorでは、TEXTINCLUDE 3が指定するデータの取り込みの有無をアプリから読み込み時に選ぶことができます。
 
 ## 注記
 
