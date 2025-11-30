@@ -35,10 +35,10 @@ void TEST_MenuTest() {
 	assert(hinstMenuTest);
 
 	DWORD size;
-    LPVOID ptr;
-    
-    auto name1 = MAKEINTRESOURCE(1);
-    ptr = load_resource(hinstMenuTest, RT_MENU, name1, &size);
+	LPVOID ptr;
+	
+	auto name1 = MAKEINTRESOURCE(1);
+	ptr = load_resource(hinstMenuTest, RT_MENU, name1, &size);
 	assert(ptr);
 	assert(size);
 	if (ptr) {
@@ -49,17 +49,17 @@ void TEST_MenuTest() {
 		MTRACE(TEXT("%s\n"), str.c_str());
 	}
 
-    auto name2 = MAKEINTRESOURCE(2);
-    ptr = load_resource(hinstMenuTest, RT_MENU, name2, &size);
-    assert(ptr);
-    assert(size);
-    if (ptr) {
-        MByteStreamEx stream(ptr, size);
-        MenuRes menu_res;
-        assert(menu_res.LoadFromStreamEx(stream));
-        MString str = menu_res.DumpEx(name2);
-        MTRACE(TEXT("%s\n"), str.c_str());
-    }
+	auto name2 = MAKEINTRESOURCE(2);
+	ptr = load_resource(hinstMenuTest, RT_MENU, name2, &size);
+	assert(ptr);
+	assert(size);
+	if (ptr) {
+		MByteStreamEx stream(ptr, size);
+		MenuRes menu_res;
+		assert(menu_res.LoadFromStreamEx(stream));
+		MString str = menu_res.DumpEx(name2);
+		MTRACE(TEXT("%s\n"), str.c_str());
+	}
 
 	FreeLibrary(hinstMenuTest);
 }
