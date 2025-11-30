@@ -146,4 +146,4 @@ The resource file and "resource.h" file should use C++ comments rather than C co
 
 ## SEE ALSO
 
-[https://msdn.microsoft.com/en-us/library/t2zechd4.aspx](https://msdn.microsoft.com/en-us/library/t2zechd4.aspx)
+[https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions](https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions)
