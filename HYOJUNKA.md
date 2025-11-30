@@ -162,7 +162,7 @@ RisohEditorは読み込み専用のリソースファイルに上書きしよう
 TEXTINCLUDE 2は、このリソースファイルがインクルードするシステム ヘッダー群を指定します。
 `<windows.h>`、`<commctrl.h>`以外に読み込むシステム ヘッダー群を指定できます。
 
-しかし、現状では、RisohEditorにないマクロを使用するには、RisohEditorへのシステム ヘッダーの追加と `Constants.txt` へのマクロ定義の追加が必要です。
+ただし、現在、RisohEditor にない定数群を使用するには、RisohEditor にシステム ヘッダーを追加し、定数群を `Constants.txt` に追加する必要があります。
 
 ### TEXTINCLUDE 3
 
