@@ -127,8 +127,6 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	err = mciSendStringW(L"play myavi repeat", NULL, 0, NULL);
 	if (err) { LogMCIError(err, L"PlayAvi - Play"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
 
-	InvalidateRect(hwnd, NULL, TRUE);
-
 	return TRUE;
 }
 
