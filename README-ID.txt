@@ -33,7 +33,8 @@ Pertanyaan 4. Mengapa saya mendapat karakter acak ketika menyusun dengan Visual 
 
      Jawaban. rc.exe dengan benar mendukung UTF-16, tetapi sebelum Visual Studio 2022,
               memuat file UTF-8 akan mengakibatkan sampah dalam data keluaran.
-              Gunakan UTF-16 (tetapi, UTF-16 tidak didukung dalam GNU windres).
+
+              Silakan gunakan Visual Studio 2022 atau yang lebih baru.
 
 Pertanyaan 5. Apa perbedaan dari versi "no installer" dan portabel?
 

@@ -33,7 +33,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
     대답. rc.exe는 UTF-16을 올바르게 지원하지만 Visual Studio 2022 이전 버전에서는 UTF-8
          파일을 로드하면 출력 데이터에 가비지가 포함됩니다.
-         UTF-16을 사용합니다 (그러나 UTF-16은 GNU windres에서 지원되지 않습니다).
+
+         Visual Studio 2022 이상을 사용합니다.
 
 질문 5. 설치 프로그램 없음과 휴대용 버전의 차이점은 무엇입니까?
 
