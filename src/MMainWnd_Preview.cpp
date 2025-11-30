@@ -158,7 +158,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 	SetWindowTextW(m_hCodeEditor, str.c_str());
 
 	// set the AVI
-	m_hBmpView.SetMedia(&entry[0], entry.size());
+	m_hBmpView.SetMedia(&entry[0], entry.size(), L"avi");
 
 	// show movie
 	SetShowMode(SHOW_MOVIE);

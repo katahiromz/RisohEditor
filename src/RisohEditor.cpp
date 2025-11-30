@@ -7817,8 +7817,8 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
-	// Stop MP3 sound
 	StopMP3();
+	StopAvi();
 
 	// Try to cancel searching
 	m_search.bCancelled = FALSE;

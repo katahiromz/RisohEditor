@@ -18,6 +18,11 @@
 
 class MBmpView;
 
+BOOL PlayMP3(LPCVOID ptr, size_t size);
+void StopMP3(void);
+BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size);
+void StopAvi(void);
+
 // Helper to log MCI errors for debugging purposes
 inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
 {
@@ -38,21 +43,6 @@ inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MMciSubclassed : public MWindowBase
-{
-public:
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-	{
-		switch (uMsg)
-		{
-		case WM_ERASEBKGND:
-			return (LRESULT)GetStockBrush(LTGRAY_BRUSH);
-		}
-		return DefaultProcDx();
-	}
-};
-
 class MBmpView : public MWindowBase
 {
 public:
@@ -62,8 +52,6 @@ public:
 	HWND        m_hStatic;
 	HWND        m_hPlayButton;
 	MBitmapDx   m_bitmap;
-	HWND        m_mci_window;
-	MMciSubclassed  m_mci;
 	TCHAR       m_szTempFile[MAX_PATH];
 	enum { TIMER_ID = 999 };
 
@@ -81,16 +69,7 @@ public:
 
 	BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	{
-		DWORD style = WS_CHILD | WS_BORDER | MCIWNDF_NOMENU | MCIWNDF_NOPLAYBAR |
-					  MCIWNDF_NOAUTOSIZEWINDOW | MCIWNDF_NOAUTOSIZEMOVIE |
-					  MCIWNDF_NOTIFYALL;
-		m_mci_window = MCIWndCreate(hwnd, GetModuleHandle(NULL), style, NULL);
-		if (m_mci_window == NULL)
-			return FALSE;
-
-		m_mci.SubclassDx(m_mci_window);
-
-		style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
+		DWORD style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE | WS_CLIPCHILDREN;
 		m_hStatic = CreateWindowEx(0, TEXT("STATIC"), NULL,
 			style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
 		if (m_hStatic == NULL)
@@ -111,9 +90,6 @@ public:
 	void OnDestroy(HWND hwnd)
 	{
 		DestroyView();
-
-		DestroyWindow(m_mci_window);
-		m_mci_window = NULL;
 
 		DestroyWindow(m_hStatic);
 		m_hStatic = NULL;
@@ -141,7 +117,6 @@ public:
 		m_hBitmap = hbm;
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
-		ShowWindow(m_mci_window, SW_HIDE);
 		UpdateScrollInfo(m_hwnd);
 		DeleteTempFile();
 	}
@@ -153,7 +128,6 @@ public:
 		SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
 		ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
-		ShowWindow(m_mci_window, SW_HIDE);
 		UpdateScrollInfo(m_hwnd);
 		DeleteTempFile();
 	}
@@ -163,7 +137,6 @@ public:
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
-		ShowWindow(m_mci_window, SW_HIDE);
 		if (m_bitmap.CreateFromMemory(ptr, size))
 		{
 			LONG cx, cy;
@@ -174,54 +147,17 @@ public:
 		DeleteTempFile();
 	}
 
-	void SetMedia(const void *ptr, DWORD size)
+	void SetMedia(const void *ptr, DWORD size, std::wstring media)
 	{
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
-		ShowWindow(m_mci_window, SW_HIDE);
 		DeleteTempFile();
 
-		TCHAR szTempPath[MAX_PATH];
-		GetTempPath(MAX_PATH, szTempPath);
-		GetTempFileName(szTempPath, TEXT("avi"), 0, m_szTempFile);
-
-		// MCI relies on file extension to determine media type; rename .tmp to .avi
-		// so that compressed AVI files are properly recognized on some systems.
-		LPTSTR pszDot = _tcsrchr(m_szTempFile, TEXT('.'));
-		if (pszDot != NULL && pszDot + 5 <= m_szTempFile + _countof(m_szTempFile))
-		{
-			TCHAR szOldPath[MAX_PATH];
-			_tcscpy_s(szOldPath, m_szTempFile);
-			_tcscpy_s(pszDot, 5, TEXT(".avi"));  // ".avi" + null = 5 chars
-			// Rename the temp file created by GetTempFileName
-			if (!MoveFile(szOldPath, m_szTempFile))
-			{
-				// Rename failed; revert to original path
-				_tcscpy_s(m_szTempFile, szOldPath);
-			}
-		}
-
-		ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
-
-		MByteStreamEx stream;
-		stream.WriteData(ptr, size);
-		if (stream.SaveToFile(m_szTempFile))
-		{
-			ShowWindow(m_mci_window, SW_SHOWNOACTIVATE);
-			DWORD dwError = (DWORD)MCIWndOpen(m_mci_window, m_szTempFile, 0);
-			if (dwError != 0)
-			{
-				LogMCIError(dwError, TEXT("MCIWndOpen"));
-				ShowWindow(m_mci_window, SW_HIDE);
-				return;
-			}
-			dwError = (DWORD)MCIWndPlay(m_mci_window);
-			if (dwError != 0)
-			{
-				LogMCIError(dwError, TEXT("MCIWndPlay"));
-				ShowWindow(m_mci_window, SW_HIDE);
-			}
+		if (media == L"avi") {
+			ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
+			PlayAvi(m_hwnd, ptr, size);
+			return;
 		}
 	}
 
@@ -230,7 +166,6 @@ public:
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_SHOWNOACTIVATE);
-		ShowWindow(m_mci_window, SW_HIDE);
 		DeleteTempFile();
 	}
 
@@ -248,10 +183,10 @@ public:
 
 	void DestroyView()
 	{
+		StopAvi();
+		StopMP3();
+
 		KillTimer(m_hwnd, TIMER_ID);
-		ShowWindow(m_mci_window, SW_HIDE);
-		MCIWndStop(m_mci_window);
-		MCIWndClose(m_mci_window);
 		if (m_hBitmap)
 		{
 			DeleteObject(m_hBitmap);
@@ -442,7 +377,6 @@ public:
 	void OnSize(HWND hwnd, UINT state, int cx, int cy)
 	{
 		UpdateScrollInfo(hwnd);
-		MoveWindow(m_mci_window, 0, 0, cx, cy, TRUE);
 		FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
 	}
 
@@ -512,14 +446,6 @@ public:
 			HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
 			HANDLE_MSG(hwnd, WM_MOUSEWHEEL, OnMouseWheel);
 		default:
-			if (uMsg == MCIWNDM_NOTIFYMODE)
-			{
-				if (lParam == MCI_MODE_STOP)
-				{
-					MCIWndPlayFrom(m_mci_window, 0);
-					break;
-				}
-			}
 			return DefaultProcDx();
 		}
 		return 0;

@@ -72,6 +72,66 @@ BOOL PlayMP3(LPCVOID ptr, size_t size) {
 	return TRUE;
 }
 
+TCHAR g_szAviTempFile[MAX_PATH] = TEXT("");
+
+void StopAvi(void) {
+	if (g_szAviTempFile[0]) {
+		mciSendStringW(L"close myavi", NULL, 0, NULL);
+		DeleteFile(g_szAviTempFile);
+	}
+}
+
+BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
+	StopAvi();
+
+	// Create temporary file
+	TCHAR szTempPath[MAX_PATH], szTempFile[MAX_PATH];
+	GetTempPath(_countof(szTempPath), szTempPath);
+	GetTempFileName(szTempPath, TEXT("AVI"), 0, szTempFile);
+	GetLongPathName(szTempFile, szTempFile, _countof(szTempFile));
+	DeleteFile(szTempFile);
+	PathRemoveExtension(szTempFile);
+	PathAddExtension(szTempFile, TEXT(".avi"));
+	lstrcpyn(g_szAviTempFile, szTempFile, _countof(g_szAviTempFile));
+
+	FILE *fout = _tfopen(g_szAviTempFile, TEXT("wb"));
+	if (!fout)
+		return FALSE;
+	fwrite(ptr, size, 1, fout);
+	fclose(fout);
+
+	TCHAR command[512];
+	MCIERROR err;
+
+	// 1. Open AVI file
+	wsprintfW(command, L"open \"%s\" type AVIVideo alias myavi", g_szAviTempFile);
+	err = mciSendStringW(command, NULL, 0, NULL);
+	if (err) { LogMCIError(err, L"PlayAvi - Open"); return FALSE; }
+
+	// 2. Set the window handle (and style child)
+	wsprintfW(command, L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
+	err = mciSendStringW(command, NULL, 0, NULL);
+	if (err) { LogMCIError(err, L"PlayAvi - Window Handle"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
+	err = mciSendStringW(L"window myavi style child", NULL, 0, NULL);
+
+	// 3. Set the display area
+	RECT rc;
+	GetClientRect(hwnd, &rc);
+	wsprintfW(command, L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
+	mciSendStringW(command, NULL, 0, NULL);
+
+	// 4. Show
+	mciSendStringW(L"window myavi state show", NULL, 0, NULL);
+	
+	// 5. Play with repeat
+	err = mciSendStringW(L"play myavi repeat", NULL, 0, NULL);
+	if (err) { LogMCIError(err, L"PlayAvi - Play"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
+
+	InvalidateRect(hwnd, NULL, TRUE);
+
+	return TRUE;
+}
+
 // replace some fullwidth characters with halfwidth characters
 void ReplaceFullWithHalf(LPWSTR pszText)
 {
@@ -211,7 +271,7 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 				ret += L' ';
 
 			// add 3 characters
-			DWORD offset = addr + i;    // the address to output
+			DWORD offset = addr + i;	// the address to output
 			if (offset < size)
 			{
 				StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
@@ -230,19 +290,19 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 		// add the characters
 		for (DWORD i = 0; i < 16; ++i)
 		{
-			DWORD offset = addr + i;    // the address to output
+			DWORD offset = addr + i;	// the address to output
 			if (offset < size)
 			{
 				if (data[offset] == 0)
-					ret += L' ';        // the NUL character
+					ret += L' ';		// the NUL character
 				else if (data[offset] < 0x20 || data[offset] > 0x7F)
-					ret += L'.';        // invisible character
+					ret += L'.';		// invisible character
 				else
-					ret += WCHAR(data[offset]);     // otherwise
+					ret += WCHAR(data[offset]);	 // otherwise
 			}
 			else
 			{
-				ret += L' ';            // out of range
+				ret += L' ';			// out of range
 				ending_flag = true;
 			}
 		}
@@ -251,7 +311,7 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 		ret += L"\r\n";
 	}
 
-	return ret;     // the result
+	return ret;	 // the result
 }
 
 // dump a file
@@ -259,12 +319,12 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
 	using namespace std;
 
-	FILE *fp = _wfopen(filename, L"wb");        // open
+	FILE *fp = _wfopen(filename, L"wb");		// open
 	if (!fp)
 		return FALSE;
 
 	int n = (int)fwrite(pv, size, 1, fp);   // write
-	fclose(fp);     // close the files
+	fclose(fp);	 // close the files
 
 	return n == 1;  // success or not
 }
@@ -386,11 +446,11 @@ BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
 // get the path of a shortcut file
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 {
-	BOOL                bRes = FALSE;
-	WIN32_FIND_DATAW    find;
-	IShellLinkW*        pShellLink;
-	IPersistFile*       pPersistFile;
-	HRESULT             hRes;
+	BOOL				bRes = FALSE;
+	WIN32_FIND_DATAW	find;
+	IShellLinkW*		pShellLink;
+	IPersistFile*	   pPersistFile;
+	HRESULT			 hRes;
 
 	// NOTE: CoInitialize/CoInitializeEx call required before this
 	pszPath[0] = 0;
@@ -531,19 +591,19 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_AZERBAIJANI: strPrim = TEXT("LANG_AZERBAIJANI"); // same as LANG_AZERI
-	//    SWITCH_SUBLANG()
-	//    {
-	//        case SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN: strSub = TEXT("SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN"); break;
-	//        case SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC: strSub = TEXT("SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//		case SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN: strSub = TEXT("SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN"); break;
+	//		case SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC: strSub = TEXT("SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC"); break;
+	//	}
+	//	break;
 	//case LANG_BANGLA: strPrim = TEXT("LANG_BANGLA"); // same as LANG_BENGALI
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_BANGLA_INDIA: strSub = TEXT("SUBLANG_BANGLA_INDIA"); break;
-	//    case SUBLANG_BANGLA_BANGLADESH: strSub = TEXT("SUBLANG_BANGLA_BANGLADESH"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_BANGLA_INDIA: strSub = TEXT("SUBLANG_BANGLA_INDIA"); break;
+	//	case SUBLANG_BANGLA_BANGLADESH: strSub = TEXT("SUBLANG_BANGLA_BANGLADESH"); break;
+	//	}
+	//	break;
 	case LANG_BASHKIR: strPrim = TEXT("LANG_BASHKIR");
 		SWITCH_SUBLANG()
 		{
@@ -628,15 +688,15 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_CHINESE_SIMPLIFIED: strPrim = TEXT("LANG_CHINESE_SIMPLIFIED"); // same as LANG_CHINESE
-	//    SWITCH_SUBLANG()
-	//    {
-	//        case SUBLANG_CHINESE_TRADITIONAL: strSub = TEXT("SUBLANG_CHINESE_TRADITIONAL"); break;
-	//        case SUBLANG_CHINESE_SIMPLIFIED: strSub = TEXT("SUBLANG_CHINESE_SIMPLIFIED"); break;
-	//        case SUBLANG_CHINESE_HONGKONG: strSub = TEXT("SUBLANG_CHINESE_HONGKONG"); break;
-	//        case SUBLANG_CHINESE_SINGAPORE: strSub = TEXT("SUBLANG_CHINESE_SINGAPORE"); break;
-	//        case SUBLANG_CHINESE_MACAU: strSub = TEXT("SUBLANG_CHINESE_MACAU"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//		case SUBLANG_CHINESE_TRADITIONAL: strSub = TEXT("SUBLANG_CHINESE_TRADITIONAL"); break;
+	//		case SUBLANG_CHINESE_SIMPLIFIED: strSub = TEXT("SUBLANG_CHINESE_SIMPLIFIED"); break;
+	//		case SUBLANG_CHINESE_HONGKONG: strSub = TEXT("SUBLANG_CHINESE_HONGKONG"); break;
+	//		case SUBLANG_CHINESE_SINGAPORE: strSub = TEXT("SUBLANG_CHINESE_SINGAPORE"); break;
+	//		case SUBLANG_CHINESE_MACAU: strSub = TEXT("SUBLANG_CHINESE_MACAU"); break;
+	//	}
+	//	break;
 	case LANG_CHINESE_TRADITIONAL: strPrim = TEXT("LANG_CHINESE_TRADITIONAL");
 		SWITCH_SUBLANG()
 		{
@@ -654,12 +714,12 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_CROATIAN: strPrim = TEXT("LANG_CROATIAN"); // same as LANG_BOSNIAN
-	//    SWITCH_SUBLANG()
-	//    {
-	//        case SUBLANG_CROATIAN_CROATIA: strSub = TEXT("SUBLANG_CROATIAN_CROATIA"); break;
-	//        case SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN: strSub = TEXT("SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//		case SUBLANG_CROATIAN_CROATIA: strSub = TEXT("SUBLANG_CROATIAN_CROATIA"); break;
+	//		case SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN: strSub = TEXT("SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN"); break;
+	//	}
+	//	break;
 	case LANG_CZECH: strPrim = TEXT("LANG_CZECH");
 		SWITCH_SUBLANG()
 		{
@@ -726,7 +786,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_FARSI: strPrim = TEXT("LANG_FARSI"); // same as LANG_PERSIAN
-	//    break;
+	//	break;
 	case LANG_FILIPINO: strPrim = TEXT("LANG_FILIPINO");
 		SWITCH_SUBLANG()
 		{
@@ -757,11 +817,11 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_FULAH: strPrim = TEXT("LANG_FULAH"); // same as LANG_PULAR
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_FULAH_SENEGAL: strSub = TEXT("SUBLANG_FULAH_SENEGAL"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_FULAH_SENEGAL: strSub = TEXT("SUBLANG_FULAH_SENEGAL"); break;
+	//	}
+	//	break;
 	case LANG_GALICIAN: strPrim = TEXT("LANG_GALICIAN");
 		SWITCH_SUBLANG()
 		{
@@ -946,11 +1006,11 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 #endif
 		break;
 	//case LANG_LOWER_SORBIAN: strPrim = TEXT("LANG_LOWER_SORBIAN"); // same as LANG_UPPER_SORBIAN
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_LOWER_SORBIAN_GERMANY: strSub = TEXT("SUBLANG_LOWER_SORBIAN_GERMANY"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_LOWER_SORBIAN_GERMANY: strSub = TEXT("SUBLANG_LOWER_SORBIAN_GERMANY"); break;
+	//	}
+	//	break;
 	case LANG_LUXEMBOURGISH: strPrim = TEXT("LANG_LUXEMBOURGISH");
 		SWITCH_SUBLANG()
 		{
@@ -1036,7 +1096,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_ODIA: strPrim = TEXT("LANG_ODIA");  // same as LANG_ORIYA
-	//    break;
+	//	break;
 	case LANG_ORIYA: strPrim = TEXT("LANG_ORIYA");
 		SWITCH_SUBLANG()
 		{
@@ -1152,18 +1212,18 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		break;
 #endif
 	//case LANG_SERBIAN: strPrim = TEXT("LANG_SERBIAN"); // same as LANG_BOSNIAN
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_SERBIAN_LATIN: strSub = TEXT("SUBLANG_SERBIAN_LATIN"); break;
-	//    case SUBLANG_SERBIAN_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_CYRILLIC"); break;
-	//    case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN"); break;
-	//    case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC"); break;
-	//    case SUBLANG_SERBIAN_MONTENEGRO_LATIN: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_LATIN"); break;
-	//    case SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC"); break;
-	//    case SUBLANG_SERBIAN_SERBIA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_LATIN"); break;
-	//    case SUBLANG_SERBIAN_SERBIA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_CYRILLIC"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_SERBIAN_LATIN: strSub = TEXT("SUBLANG_SERBIAN_LATIN"); break;
+	//	case SUBLANG_SERBIAN_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_CYRILLIC"); break;
+	//	case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN"); break;
+	//	case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC"); break;
+	//	case SUBLANG_SERBIAN_MONTENEGRO_LATIN: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_LATIN"); break;
+	//	case SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC"); break;
+	//	case SUBLANG_SERBIAN_SERBIA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_LATIN"); break;
+	//	case SUBLANG_SERBIAN_SERBIA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_CYRILLIC"); break;
+	//	}
+	//	break;
 	case LANG_SERBIAN_NEUTRAL: strPrim = TEXT("LANG_SERBIAN_NEUTRAL");
 		SWITCH_SUBLANG()
 		{
@@ -1319,12 +1379,12 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_TIGRINYA: strPrim = TEXT("LANG_TIGRINYA"); // same as LANG_TIGRIGNA
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_TIGRINYA_ERITREA: strSub = TEXT("SUBLANG_TIGRINYA_ERITREA"); break;
-	//    case SUBLANG_TIGRINYA_ETHIOPIA: strSub = TEXT("SUBLANG_TIGRINYA_ETHIOPIA"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_TIGRINYA_ERITREA: strSub = TEXT("SUBLANG_TIGRINYA_ERITREA"); break;
+	//	case SUBLANG_TIGRINYA_ETHIOPIA: strSub = TEXT("SUBLANG_TIGRINYA_ETHIOPIA"); break;
+	//	}
+	//	break;
 	case LANG_TSWANA: strPrim = TEXT("LANG_TSWANA");
 		SWITCH_SUBLANG()
 		{
@@ -1379,11 +1439,11 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_VALENCIAN: strPrim = TEXT("LANG_VALENCIAN"); // same as LANG_CATALAN
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_VALENCIAN_VALENCIA: strSub = TEXT("SUBLANG_VALENCIAN_VALENCIA"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_VALENCIAN_VALENCIA: strSub = TEXT("SUBLANG_VALENCIAN_VALENCIA"); break;
+	//	}
+	//	break;
 	case LANG_VIETNAMESE: strPrim = TEXT("LANG_VIETNAMESE");
 		SWITCH_SUBLANG()
 		{
@@ -1409,11 +1469,11 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		}
 		break;
 	//case LANG_YAKUT: strPrim = TEXT("LANG_YAKUT"); // same as LANG_SAKHA
-	//    SWITCH_SUBLANG()
-	//    {
-	//    case SUBLANG_YAKUT_RUSSIA: strSub = TEXT("SUBLANG_YAKUT_RUSSIA"); break;
-	//    }
-	//    break;
+	//	SWITCH_SUBLANG()
+	//	{
+	//	case SUBLANG_YAKUT_RUSSIA: strSub = TEXT("SUBLANG_YAKUT_RUSSIA"); break;
+	//	}
+	//	break;
 	case LANG_YI: strPrim = TEXT("LANG_YI");
 		SWITCH_SUBLANG()
 		{
@@ -1566,7 +1626,7 @@ EnumFontFamProc(ENUMLOGFONT *lpelf,
 	if (lpelf->elfLogFont.lfFaceName[0] != TEXT('@'))
 		ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
 
-	return TRUE;    // continue
+	return TRUE;	// continue
 }
 
 // initialize the font combobox
@@ -1648,13 +1708,13 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
 {
 	// get current selection of combobox
 	INT i = ComboBox_GetCurSel(hCmb);
-	if (i == CB_ERR)    // not selected
-		return DEFAULT_CHARSET;     // return the default value
+	if (i == CB_ERR)	// not selected
+		return DEFAULT_CHARSET;	 // return the default value
 
 	if (i < INT(_countof(s_charset_entries)))
-		return s_charset_entries[i].CharSet;    // return the charset value
+		return s_charset_entries[i].CharSet;	// return the charset value
 
-	return DEFAULT_CHARSET;     // return the default value
+	return DEFAULT_CHARSET;	 // return the default value
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1832,17 +1892,17 @@ MIdOrString ResourceTypeFromIDType(INT nIDTYPE_)
 	MIdOrString type;
 	switch (nIDTYPE_)
 	{
-	case IDTYPE_CURSOR:     type = RT_GROUP_CURSOR; break;
-	case IDTYPE_BITMAP:     type = RT_BITMAP; break;
-	case IDTYPE_MENU:       type = RT_MENU; break;
-	case IDTYPE_DIALOG:     type = RT_DIALOG; break;
-	case IDTYPE_ACCEL:      type = RT_ACCELERATOR; break;
-	case IDTYPE_ICON:       type = RT_GROUP_ICON; break;
+	case IDTYPE_CURSOR:	 type = RT_GROUP_CURSOR; break;
+	case IDTYPE_BITMAP:	 type = RT_BITMAP; break;
+	case IDTYPE_MENU:	   type = RT_MENU; break;
+	case IDTYPE_DIALOG:	 type = RT_DIALOG; break;
+	case IDTYPE_ACCEL:	  type = RT_ACCELERATOR; break;
+	case IDTYPE_ICON:	   type = RT_GROUP_ICON; break;
 	case IDTYPE_ANICURSOR:  type = RT_ANICURSOR; break;
-	case IDTYPE_ANIICON:    type = RT_ANIICON; break;
-	case IDTYPE_HTML:       type = RT_HTML; break;
+	case IDTYPE_ANIICON:	type = RT_ANIICON; break;
+	case IDTYPE_HTML:	   type = RT_HTML; break;
 	case IDTYPE_RESOURCE:   type.clear(); break;
-	case IDTYPE_RCDATA:     type = RT_RCDATA; break;
+	case IDTYPE_RCDATA:	 type = RT_RCDATA; break;
 	default: break;
 	}
 	return type;
@@ -1881,7 +1941,7 @@ MString GetAssoc(const MString& name)
 
 		if (found.size() && g_db.IsEntityIDType(nIDTYPE_))
 		{
-			for (auto e : found)    // enumerate the found entries
+			for (auto e : found)	// enumerate the found entries
 			{
 				MString res_type;
 				if (e->m_type.is_int()) // it's an integral name
@@ -1890,7 +1950,7 @@ MString GetAssoc(const MString& name)
 					res_type = g_db.GetName(L"RESOURCE", e->m_type.m_id);
 					if (res_type.empty())   // no name
 					{
-						res_type = mstr_dec(e->m_type.m_id);    // store numeric
+						res_type = mstr_dec(e->m_type.m_id);	// store numeric
 					}
 
 					// convert the resource type
@@ -2002,9 +2062,9 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 	SetWindowTextW(hCmb, id2.c_str());
 
 	if (g_settings.bHideID)
-		return;     // don't use macro IDs
+		return;	 // don't use macro IDs
 
-	INT k = -1;     // not matched yet
+	INT k = -1;	 // not matched yet
 	MStringW prefix;
 	if (nIDTYPE_ != IDTYPE_UNKNOWN)
 	{
@@ -2012,7 +2072,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 		auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 		prefix = table[nIDTYPE_].name;
 		if (prefix.empty())
-			return;     // unable to get
+			return;	 // unable to get
 
 		// get the resource IDs by the prefix
 		table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
@@ -2023,7 +2083,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 			if (table_entry.value == id2.m_id)   // matched
 			{
 				k = i;  // matched index is k
-				ComboBox_SetCurSel(hCmb, i);    // select its
+				ComboBox_SetCurSel(hCmb, i);	// select its
 				SetWindowTextW(hCmb, table_entry.name.c_str()); // set the text
 			}
 		}
@@ -2046,7 +2106,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 			INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
 			if (table_entry.value == id2.m_id)   // matched
 			{
-				ComboBox_SetCurSel(hCmb, i);    // selected
+				ComboBox_SetCurSel(hCmb, i);	// selected
 				SetWindowTextW(hCmb, table_entry.name.c_str());  // set the text
 			}
 		}
@@ -2065,7 +2125,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
 	SetWindowTextW(hCmb, id2.c_str());
 
 	if (g_settings.bHideID)
-		return;     // don't use the macro IDs
+		return;	 // don't use the macro IDs
 
 	INT k = -1; // not found yet
 	MStringW prefix;
@@ -2161,7 +2221,7 @@ BOOL CheckCommand(MString strCommand)
 		strCommand[0] == '-' || strCommand[0] == '+')
 	{
 		// a numeric command ID
-		return TRUE;    // OK
+		return TRUE;	// OK
 	}
 
 	return g_db.HasResID(strCommand);   // is it resource ID name?
@@ -2195,7 +2255,7 @@ void InitStringComboBox(HWND hCmb, const MString& strString)
 	SetWindowText(hCmb, strString.c_str());
 
 	if (g_settings.bHideID)
-		return;     // don't use macro IDs
+		return;	 // don't use macro IDs
 
 	// get the prefix from IDTYPE_STRING
 	auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -2245,7 +2305,7 @@ void InitMessageComboBox(HWND hCmb, const MString& strString)
 	SetWindowText(hCmb, strString.c_str());
 
 	if (g_settings.bHideID)
-		return;     // don't use macro IDs
+		return;	 // don't use macro IDs
 
 	// get the prefix from IDTYPE_MESSAGE
 	auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -2263,7 +2323,7 @@ void InitMessageComboBox(HWND hCmb, const MString& strString)
 		INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
 		if (table_entry.name == strString)  // matched
 		{
-			ComboBox_SetCurSel(hCmb, i);    // select it
+			ComboBox_SetCurSel(hCmb, i);	// select it
 		}
 	}
 }
@@ -2331,7 +2391,7 @@ void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage)
 
 		// add the text as a new item to combobox
 		INT k = ComboBox_AddString(hCmb3, sz);
-		if (langid == entry.LangID)     // matched
+		if (langid == entry.LangID)	 // matched
 		{
 			ComboBox_SetCurSel(hCmb3, k);   // select it
 		}
@@ -2381,7 +2441,7 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 	WCHAR sz1[64], sz2[64];
 	LV_ITEM item;
 	INT iItem = 0;
-	for (auto& entry : g_langs)     // for all the items of g_langs
+	for (auto& entry : g_langs)	 // for all the items of g_langs
 	{
 		// build two texts of an entry
 		StringCchPrintfW(sz1, _countof(sz1), L"%s", entry.str.c_str());
@@ -2419,7 +2479,7 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 		item.pszText = sz2;
 		ListView_SetItem(hLst1, &item);
 
-		++iItem;    // next item index
+		++iItem;	// next item index
 	}
 
 	auto table = g_db.GetTable(L"LANGUAGES");
@@ -2459,14 +2519,14 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 		item.pszText = sz2;
 		ListView_SetItem(hLst1, &item);
 
-		++iItem;    // next item index
+		++iItem;	// next item index
 	}
 }
 
 // get the language ID from a text
 WORD LangFromText(LPWSTR pszLang)
 {
-	WORD lang = BAD_LANG;     // not found yet
+	WORD lang = BAD_LANG;	 // not found yet
 
 	// replace the fullwidth characters with halfwidth characters
 	ReplaceFullWithHalf(pszLang);
@@ -2580,7 +2640,7 @@ WORD LangFromText(LPWSTR pszLang)
 		// maybe en_US, or jp_JP etc.
 		if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang))
 		{
-			lang = (WORD)nValue;    // found
+			lang = (WORD)nValue;	// found
 			break;
 		}
 
@@ -2596,7 +2656,7 @@ WORD LangFromText(LPWSTR pszLang)
 			// maybe en_US, or jp_JP etc.
 			if (INT nValue = g_db.GetValueI(L"LANGUAGES", str))
 			{
-				lang = (WORD)nValue;    // found
+				lang = (WORD)nValue;	// found
 				break;
 			}
 		}
@@ -2612,7 +2672,7 @@ WORD LangFromText(LPWSTR pszLang)
 			lang = WORD(nValue);
 		}
 
-		if (lang == BAD_LANG)     // not found yet?
+		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// whole match
 			for (auto& entry : g_langs)
@@ -2625,7 +2685,7 @@ WORD LangFromText(LPWSTR pszLang)
 			}
 		}
 
-		if (lang == BAD_LANG)     // not found yet?
+		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// numeric after parenthesis
 			if (WCHAR *pch = wcsrchr(pszLang, L'('))
@@ -2642,7 +2702,7 @@ WORD LangFromText(LPWSTR pszLang)
 			}
 		}
 
-		if (lang == BAD_LANG)     // not found yet?
+		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// partial match
 			for (auto& entry : g_langs)
@@ -2655,7 +2715,7 @@ WORD LangFromText(LPWSTR pszLang)
 			}
 		}
 
-		if (lang == BAD_LANG)     // not found yet?
+		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// ignore case, partial match
 			CharUpperW(&strLang[0]);
@@ -2685,7 +2745,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type)
 	// get the language ID from texts
 	lang = LangFromText(&strLang[0]);
 	if ((type != LANG_TYPE_1 || IsValidUILang(lang)) && lang != BAD_LANG)
-		return TRUE;    // success
+		return TRUE;	// success
 
 	if (type != LANG_TYPE_2)
 	{
@@ -2712,21 +2772,21 @@ BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString)
 	LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
 
 	LANG_ENTRY entry;
-	entry.LangID = LANGIDFROMLCID(lcid);    // store the language ID
+	entry.LangID = LANGIDFROMLCID(lcid);	// store the language ID
 
 	// get the localized language and country
 	WCHAR sz[128] = L"";
 	if (lcid == 0)
-		return TRUE;    // continue
+		return TRUE;	// continue
 	if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
-		return TRUE;    // continue
+		return TRUE;	// continue
 
-	entry.str = sz;     // store the text
+	entry.str = sz;	 // store the text
 
 	// add it
 	g_langs.push_back(entry);
 
-	return TRUE;    // continue
+	return TRUE;	// continue
 }
 
 // callback function for MMainWnd::DoLoadLangInfo
@@ -2736,16 +2796,16 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 	LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
 
 	LANG_ENTRY entry;
-	entry.LangID = LANGIDFROMLCID(lcid);    // store the language ID
+	entry.LangID = LANGIDFROMLCID(lcid);	// store the language ID
 
 	// get the language and country in English
 	WCHAR sz1[128] = L"", sz2[128] = L"";
 	if (lcid == 0)
-		return TRUE;    // continue
+		return TRUE;	// continue
 	if (!GetLocaleInfoW(lcid, LOCALE_SENGLANGUAGE, sz1, _countof(sz1)))
-		return TRUE;    // continue
+		return TRUE;	// continue
 	if (!GetLocaleInfoW(lcid, LOCALE_SENGCOUNTRY, sz2, _countof(sz2)))
-		return TRUE;    // continue
+		return TRUE;	// continue
 
 	// join them and store it
 	entry.str = sz1;
@@ -2756,7 +2816,7 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 	// add it
 	g_langs.push_back(entry);
 
-	return TRUE;    // continue
+	return TRUE;	// continue
 }
 
 // get the text from a language ID
@@ -2805,7 +2865,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 	if (str.empty())  // an empty string
 	{
 		ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-		SetFocus(hCmb1);    // set focus
+		SetFocus(hCmb1);	// set focus
 		// show error message
 		LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
 					   NULL, MB_ICONERROR);
@@ -2818,7 +2878,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 		if (type == (WORD)0)
 		{
 			ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-			SetFocus(hCmb1);    // set focus
+			SetFocus(hCmb1);	// set focus
 			// show error message
 			LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
 						   NULL, MB_ICONERROR);
@@ -2848,7 +2908,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 		}
 	}
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 // verify the resource name combobox
@@ -2866,7 +2926,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 	if (str.empty()) // an empty string
 	{
 		ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
-		SetFocus(hCmb2);    // set focus
+		SetFocus(hCmb2);	// set focus
 		// show error message
 		LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
 					   NULL, MB_ICONERROR);
@@ -2881,12 +2941,12 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 	{
 		// a non-numeric name
 		if (g_db.HasResID(str))
-			name = (WORD)g_db.GetResIDValue(str);    // a valued name
+			name = (WORD)g_db.GetResIDValue(str);	// a valued name
 		else
 			name = str.c_str();  // a string name
 	}
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 // verify the file textbox
@@ -2898,13 +2958,13 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 	// trim
 	mstr_trim(str);
 
-	if (!PathFileExistsW(str.c_str()))    // not exists
+	if (!PathFileExistsW(str.c_str()))	// not exists
 		return FALSE;   // failure
 
 	// store
 	file = str;
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 // get the text from a command ID
@@ -2973,7 +3033,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 		}
 	}
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -3004,7 +3064,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 
 	// get the text from EDIT control
 	str = MWindowBase::GetDlgItemText(hwnd, edt1);
-	//mstr_trim(str);     // trim it
+	//mstr_trim(str);	 // trim it
 
 	// unquote if quoted
 	if (str[0] == L'"')
@@ -3015,7 +3075,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 	// store the text to entry.StringValue
 	StringCchCopyW(entry.StringValue, _countof(entry.StringValue), str.c_str());
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 // helper function for MAddStrDlg and MModifyStrDlg
@@ -3045,7 +3105,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 	{
 		// numeric
 		LONG n = mstr_parse_int(str.c_str());
-		str = mstr_hex(n);      // make it hexidemical
+		str = mstr_hex(n);	  // make it hexidemical
 	}
 	else if (!g_db.HasResID(str))
 	{
@@ -3068,7 +3128,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 	// store the text to entry.MessageValue
 	StringCchCopyW(entry.MessageValue, _countof(entry.MessageValue), str.c_str());
 
-	return TRUE;    // success
+	return TRUE;	// success
 }
 
 // helper function for MAddMsgDlg and MModifyMsgDlg
@@ -3093,7 +3153,7 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD
 
 	if (type.empty())
 	{
-		return L"";    // failure
+		return L"";	// failure
 	}
 
 	MIdOrString name0 = type;
@@ -3109,7 +3169,7 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD
 		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
 	if (hRsrc == NULL)
 		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-	if (hRsrc == NULL)        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
+	if (hRsrc == NULL)		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
 	if (hRsrc == NULL)
 		hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (hRsrc == NULL)
@@ -3131,5 +3191,5 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD
 	MStringA utf8((LPCSTR)(pb), (LPCSTR)(pb) + cb);
 	MAnsiToWide wide(CP_UTF8, utf8);
 
-	return wide.c_str();    // return the wide
+	return wide.c_str();	// return the wide
 }
