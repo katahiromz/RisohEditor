@@ -151,7 +151,7 @@ Please specify that `resource.h` is to be included from the custom resource head
 It is recommended that you use forward slashes (`/`), not backslashes (`\`), to separate paths.
 
 When you add `"< "` as a prefix to TEXTINCLUDE 1, the resource file will be considered read-only.
-RisohEditor will warn you and ask you to confirm the write if you try to write to a read-only resource file.
+RisohEditor will warn you and ask you to confirm the write if you try to overwrite to a read-only resource file.
 
 If you write the RC file to a different location, the custom resource header will be copied to the destination.
 
