@@ -90,9 +90,7 @@ public:
 			dwType |= MFT_RIGHTJUSTIFY;
 
 		std::wstring str = GetMenuTypeAndState(dwType, dwState);
-		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
-		if (wMenuID == 0 ||
-			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0)
+		if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0)
 		{
 			m_entry.szCaption.clear();
 			dwType |= MFT_SEPARATOR;
@@ -195,9 +193,7 @@ public:
 		dwType = dwState = 0;
 		SetMenuTypeAndState(dwType, dwState, m_entry.szFlags);
 
-		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
-		if (wMenuID == 0 ||
-			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+		if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
 			(dwType & MFT_SEPARATOR))
 		{
 			dwType |= MFT_SEPARATOR;
@@ -276,9 +272,7 @@ public:
 		if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
 			dwType |= MFT_RIGHTJUSTIFY;
 
-		UINT wMenuID = (WORD)g_db.GetResIDValue(m_entry.szCommandID);
-		if (wMenuID == 0 ||
-			lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
+		if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
 			(dwType & MFT_SEPARATOR))
 		{
 			m_entry.szCaption.clear();
@@ -475,7 +469,7 @@ public:
 			for (auto& element : items)
 			{
 				str = mstr_repeat(LoadStringDx(IDS_INDENT), element.wDepth);
-				if (element.wMenuID == 0)
+				if (element.wMenuID == 0 && !(element.fItemFlags & MF_POPUP))
 				{
 					str += LoadStringDx(IDS_SEPARATOR);
 				}
@@ -636,8 +630,7 @@ public:
 		MStringW str, strIndent = LoadStringDx(IDS_INDENT);
 		str = mstr_repeat(strIndent, entry.wDepth);
 
-		UINT wMenuID = (WORD)g_db.GetResIDValue(entry.szCommandID);
-		if (wMenuID == 0 || entry.szFlags.find(L"S ") != MStringW::npos)
+		if (entry.szFlags.find(L"S ") != MStringW::npos)
 			str += LoadStringDx(IDS_SEPARATOR);
 		else
 			str += mstr_quote(entry.szCaption);
