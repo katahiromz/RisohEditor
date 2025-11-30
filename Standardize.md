@@ -184,4 +184,5 @@ However, users should take the following into consideration:
 
 ## SEE ALSO
 
-[https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions](https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions)
+- [https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions](https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions)
+- [https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding](https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding)
