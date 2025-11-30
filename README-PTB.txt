@@ -31,9 +31,9 @@ Pergunta 3. O que é mcdx?
 
 Pergunta 4. Por que recebi caracteres distorcidos ao compilar com o Visual Studio?
 
-  Resposta. O compilador de recursos do MSVC tem um bug no tratamento de
-            Arquivos de recursos UTF-8.
-
+  Resposta. O rc.exe suporta corretamente UTF-16, mas em versões anteriores ao
+            Visual Studio 2022, carregar um arquivo UTF-8 resultará em dados de
+            saída corrompidos.
             Use UTF-16 (mas UTF-16 não é suportado em GNU windres).
 
 Pergunta 5. Qual é a diferença entre instalador e versão portátil?

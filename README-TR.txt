@@ -32,9 +32,8 @@ Soru 3. mcdx nedir?
 
 Soru 4. Visual studio ile derlediğim zaman neden anlamsız karakterler görüyorum/alıyorum?
 
-    Cevap.  MSVC' nin kaynak(resource) derleyicisinin UTF-8 içeren 
- 	    kaynak(resource) dosyalarını işleme konusunda bir hatası var. 
-
+    Cevap.  rc.exe UTF-16'yı doğru şekilde destekler, ancak Visual Studio 2022'den önce,
+            bir UTF-8 dosyasının yüklenmesi çıktı verilerinde çöp oluşmasına neden olurdu.
             UTF-16 kullanın (fakat UTF-16 GNU windres tarafından desteklenmez).
 
 Soru 5. Kurulumsuz(no installer) ve taşınabilir(portable) versiyon arasındaki fark nedir?

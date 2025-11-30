@@ -31,9 +31,8 @@ Pertanyaan 3. Apa itu mcdx?
 
 Pertanyaan 4. Mengapa saya mendapat karakter acak ketika menyusun dengan Visual Studio?
 
-     Jawaban. Penyusun Sumber daya pada MSVC memiliki bug dalam menangani
-              berkas sumber daya UTF-8.
-
+     Jawaban. rc.exe dengan benar mendukung UTF-16, tetapi sebelum Visual Studio 2022,
+              memuat file UTF-8 akan mengakibatkan sampah dalam data keluaran.
               Gunakan UTF-16 (tetapi, UTF-16 tidak didukung dalam GNU windres).
 
 Pertanyaan 5. Apa perbedaan dari versi "no installer" dan portabel?
