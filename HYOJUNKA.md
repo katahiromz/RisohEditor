@@ -94,17 +94,17 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 
 | IDタイプ               | 束縛範囲      | 好ましい範囲  |
 |------------------------|---------------|---------------|
-| String ID              | 1～0x7FFF     | 100～0x7FFF   |
+| String ID              | 0～0x7FFF     | 100～0x7FFF   |
 | Message ID             | 0～0xFFFFFFFF | 1～0x7FFFFFFF |
-| Command ID             | 1～0x7FFF     | 100～0x7FFF   |
-| Command ID (Old Type)  | 1～0x7FFF     | 100～0x7FFF   |
+| Command ID             | 0～0x7FFF     | 100～0x7FFF   |
+| Command ID (Old Type)  | 0～0x7FFF     | 100～0x7FFF   |
 | Control ID             | 8～0xDFFF     | 1000～0x7FFF  |
-| Cursor ID              | 1～0x7FFF     | 100～999      |
-| Icon ID                | 1～0x7FFF     | 100～999      |
-| Dialog ID              | 1～0x7FFF     | 100～0x7FFF   |
-| Bitmap ID              | 1～0x7FFF     | 100～0x7FFF   |
-| その他のエンティティID | 1～0x7FFF     | 100～0x7FFF   |
-| Window ID              | 1～0x7FFF     | 1～0x7FFF     |
+| Cursor ID              | 0～0x7FFF     | 100～999      |
+| Icon ID                | 0～0x7FFF     | 100～999      |
+| Dialog ID              | 0～0x7FFF     | 100～0x7FFF   |
+| Bitmap ID              | 0～0x7FFF     | 100～0x7FFF   |
+| その他のエンティティID | 0～0x7FFF     | 100～0x7FFF   |
+| Window ID              | 0～0x7FFF     | 1～0x7FFF     |
 | Help ID                | 0～0xFFFFFFFF | 1～0x7FFFFFFF |
 
 同じIDプレフィックスの２つの異なるリソースIDは、互いに違う値を持つべきです。
