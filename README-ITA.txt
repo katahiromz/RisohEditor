@@ -34,7 +34,7 @@ Domanda 4. Perché ottengo caratteri confusi quando compilo con Visual Studio?
     Risposta. rc.exe supporta correttamente UTF-16, ma prima di Visual Studio 2022,
               il caricamento di un file UTF-8 generava dati di output non necessari.
 
-              Utilizzare Visual Studio 2022 o versione successiva.
+              Usa Visual Studio 2022 o versione successiva.
 
 Domanda 5. Qual è la differenza tra nessuna versione di installazione e portatile?
 

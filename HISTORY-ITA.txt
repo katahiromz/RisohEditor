@@ -364,4 +364,4 @@
     - Implementato TEXTINCLUDE 1.
     - Risolti problemi legati alla memoria.
     - Supportati audio MP3.
-    - Fixed menu empty quotes problem.
+    - Risolto il problema delle virgolette vuote del menu.
