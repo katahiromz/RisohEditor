@@ -146,7 +146,7 @@ TEXTINCLUDE 1 specifies the local header (custom resource header) to be included
 
 However, RisohEditor writes resource IDs on `resource.h` even if you specify a custom resource header.
 Please specify that `resource.h` is to be included from the custom resource header.
-If you write the RC file to a different location, the custom resource header will be copied to the destination.
+If you write the RC file by RisohEditor, to a different location, the custom resource header will be copied to the destination.
 
 When you add `"< "` as a prefix to TEXTINCLUDE 1, the resource file will be considered read-only.
 RisohEditor will warn you and ask you to confirm the write if you try to overwrite a read-only resource file.
