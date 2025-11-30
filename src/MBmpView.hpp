@@ -30,13 +30,13 @@ inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
 	if (mciGetErrorString(dwError, szError, _countof(szError)))
 	{
 		TCHAR szMsg[512];
-		wsprintf(szMsg, TEXT("MCI Error in %s: %s (code %lu)\n"), pszContext, szError, dwError);
+		wnsprintf(szMsg, _countof(szMsg), TEXT("MCI Error in %s: %s (code %lu)\n"), pszContext, szError, dwError);
 		OutputDebugString(szMsg);
 	}
 	else
 	{
 		TCHAR szMsg[128];
-		wsprintf(szMsg, TEXT("MCI Error in %s: code %lu\n"), pszContext, dwError);
+		wnsprintf(szMsg, _countof(szMsg), TEXT("MCI Error in %s: code %lu\n"), pszContext, dwError);
 		OutputDebugString(szMsg);
 	}
 }

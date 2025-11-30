@@ -58,7 +58,7 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
 // RisohEditor.cpp
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
-BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
+BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 ////////////////////////////////////////////////////////////////////////////

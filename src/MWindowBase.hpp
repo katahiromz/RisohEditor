@@ -782,7 +782,7 @@ inline VOID MZCAPIV DebugPrintDxA(const char* file, int line, const char *format
 		va_list va;
 		va_start(va, format);
 #ifdef NO_STRSAFE
-		int n = wsprintfA(szBuff, "%hs (%d): ", file, line);
+		int n = wnsprintfA(szBuff, _countof(szBuff), "%hs (%d): ", file, line);
 		wvsprintfA(&szBuff[n], format, va);
 #else
 		StringCchPrintfA(szBuff, _countof(szBuff), "%hs (%d): ", file, line);
@@ -801,7 +801,7 @@ inline VOID MZCAPIV DebugPrintDxW(const char* file, int line, const WCHAR *forma
 		va_list va;
 		va_start(va, format);
 #ifdef NO_STRSAFE
-		int n = wsprintfW(szBuff, L"%hs (%d): ", file, line);
+		int n = wnsprintfW(szBuff, _countof(szBuff), L"%hs (%d): ", file, line);
 		wvsprintfW(&szBuff[n], format, va);
 #else
 		StringCchPrintfW(szBuff, _countof(szBuff), L"%hs (%d): ", file, line);

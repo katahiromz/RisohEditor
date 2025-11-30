@@ -58,11 +58,8 @@ BOOL PlayMP3(LPCVOID ptr, size_t size) {
 		GetTempPath(_countof(szTempPath), szTempPath);
 		GetTempFileName(szTempPath, TEXT("MJB"), 0, g_szMP3TempFile);
 
-		FILE *fout = _tfopen(g_szMP3TempFile, TEXT("wb"));
-		if (!fout)
+		if (!WriteBinaryFileDx(g_szMP3TempFile, ptr, size))
 			return FALSE;
-		fwrite(ptr, size, 1, fout);
-		fclose(fout);
 
 		wnsprintf(szCommand, _countof(szCommand), TEXT("open \"%s\" type mpegvideo alias myaudio"), g_szMP3TempFile);
 	}
@@ -94,22 +91,19 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	PathAddExtension(szTempFile, TEXT(".avi"));
 	lstrcpyn(g_szAviTempFile, szTempFile, _countof(g_szAviTempFile));
 
-	FILE *fout = _tfopen(g_szAviTempFile, TEXT("wb"));
-	if (!fout)
+	if (!WriteBinaryFileDx(g_szAviTempFile, ptr, size))
 		return FALSE;
-	fwrite(ptr, size, 1, fout);
-	fclose(fout);
 
 	TCHAR command[512];
 	MCIERROR err;
 
 	// 1. Open AVI file
-	wsprintfW(command, L"open \"%s\" type AVIVideo alias myavi", g_szAviTempFile);
+	wnsprintf(command, _countof(command), L"open \"%s\" type AVIVideo alias myavi", g_szAviTempFile);
 	err = mciSendStringW(command, NULL, 0, NULL);
 	if (err) { LogMCIError(err, L"PlayAvi - Open"); return FALSE; }
 
 	// 2. Set the window handle (and style child)
-	wsprintfW(command, L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
+	wnsprintf(command, _countof(command), L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
 	err = mciSendStringW(command, NULL, 0, NULL);
 	if (err) { LogMCIError(err, L"PlayAvi - Window Handle"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
 	err = mciSendStringW(L"window myavi style child", NULL, 0, NULL);
@@ -117,7 +111,7 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	// 3. Set the display area
 	RECT rc;
 	GetClientRect(hwnd, &rc);
-	wsprintfW(command, L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
+	wnsprintf(command, _countof(command), L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
 	mciSendStringW(command, NULL, 0, NULL);
 
 	// 4. Show
@@ -313,7 +307,7 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 }
 
 // dump a file
-BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
+BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
 	using namespace std;
 
