@@ -167,6 +167,16 @@ However, currently, to use constants that are not in RisohEditor, you need to ad
 TEXTINCLUDE 3 specifies the code to embed read-only resource data in this resource file.
 With RisohEditor, you can choose whether or not to import the data specified by TEXTINCLUDE 3 when loading from the app.
 
+## Differences Between Resource Compilers
+
+There are two major resource compilers available for Windows: Visual Studio's `rc.exe` and GNU's `windres.exe`.
+RisohEditor is designed with compatibility in mind, allowing it to read and write resource data with both resource compilers.
+However, users should take the following into consideration:
+
+- `rc.exe` supports UTF-16, but loading a UTF-8 resource file will result in garbage being mixed into the output data.
+- `windres.exe` does not currently support UTF-16 directly; a special C preprocessor that supports UTF-16 is required.
+   Currently, the GNU C preprocessor (version 15.1.0) does not support UTF-16.
+
 ## NOTE
 
 - The resource file and "resource.h" file should use C++ comments rather than C comments.
