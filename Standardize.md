@@ -160,6 +160,8 @@ It is recommended that you use forward slashes (`/`), not backslashes (`\`), to 
 TEXTINCLUDE 2 specifies the system headers to be included by this resource file.
 You can specify system headers to load in addition to `<windows.h>` and `<commctrl.h>`.
 
+However, currently, to use macros that are not in RisohEditor, you need to add a system header to RisohEditor and add the macro definitions to `Constants.txt`.
+
 ### TEXTINCLUDE 3
 
 TEXTINCLUDE 3 specifies the code to embed read-only resource data in this resource file.
