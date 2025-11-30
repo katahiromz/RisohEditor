@@ -173,7 +173,7 @@ There are two major resource compilers available for Windows: Visual Studio's `r
 RisohEditor is designed with compatibility in mind, allowing it to read and write resource data with both resource compilers.
 However, users should take the following into consideration:
 
-- `rc.exe` supports UTF-16 correctly, but loading a UTF-8 resource file will result in garbage being mixed into the output data.
+- `rc.exe` correctly supports UTF-16, but prior to Visual Studio 2022, loading a UTF-8 file will result in garbage in the output data.
 - `windres.exe` does not currently support UTF-16 directly; a special C preprocessor that supports UTF-16 is required.
    Currently, the GNU C preprocessor (version 15.1.0) does not support UTF-16.
 
