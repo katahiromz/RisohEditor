@@ -501,6 +501,7 @@ protected:
 
 	std::wstring GetRisohEditorVersion() const;
 	std::wstring ParseVersionFile(LPCWSTR pszFile, std::wstring& url) const;
+	void OnInternalTest(HWND hwnd);
 };
 
 extern MMainWnd *s_pMainWnd;

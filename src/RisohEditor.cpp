@@ -9475,6 +9475,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		}
 		PostUpdateLangArrow(hwnd);
 		break;
+	case ID_INTERNALTEST:
+		OnInternalTest(hwnd);
+		break;
 	default:
 		bUpdateStatus = FALSE;
 		break;

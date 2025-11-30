@@ -9,6 +9,7 @@ add_library(libRisohEditor STATIC
     MenuRes.cpp
     MMainWnd_Preview.cpp
     MMainWnd_EGA.cpp
+    MMainWnd_Tests.cpp
     MOleHost.cpp
     MSplitterWnd.cpp
     PackedDIB.cpp

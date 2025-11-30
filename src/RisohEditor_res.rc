@@ -81,6 +81,7 @@ IDR_MAINACCEL ACCELERATORS
     VK_F6, ID_NEXTPANE, VIRTKEY
     VK_F6, ID_PREVPANE, SHIFT, VIRTKEY
     VK_RETURN, ID_CONFIG, ALT, VIRTKEY
+    "Q", ID_INTERNALTEST, CONTROL, VIRTKEY
 }
 
 //////////////////////////////////////////////////////////////////////////////

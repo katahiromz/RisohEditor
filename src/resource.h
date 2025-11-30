@@ -531,6 +531,7 @@
 #define ID_EGAFINISH                        279
 #define ID_OPENREADMEES                     280
 #define ID_OPENHISTORYES                    281
+#define ID_INTERNALTEST                     282
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -541,7 +542,7 @@
 	#ifndef APSTUDIO_READONLY_SYMBOLS
 		#define _APS_NO_MFC                 1
 		#define _APS_NEXT_RESOURCE_VALUE    111
-		#define _APS_NEXT_COMMAND_VALUE     282
+		#define _APS_NEXT_COMMAND_VALUE     284
 		#define _APS_NEXT_CONTROL_VALUE     1002
 		#define _APS_NEXT_SYMED_VALUE       300
 	#endif
