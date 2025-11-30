@@ -151,6 +151,8 @@ If you write the RC file by RisohEditor, to a different location, the custom res
 When you add `"< "` as a prefix to TEXTINCLUDE 1, the resource file will be considered read-only.
 RisohEditor will warn you and ask you to confirm the write if you try to overwrite a read-only resource file.
 
+Specifying TEXTINCLUDE 1 other than `"resource.h"` and `"> resource.h"` is not recommended.
+
 It is recommended that you use forward slashes (`/`), not backslashes (`\`), to separate paths.
 
 ### TEXTINCLUDE 2
