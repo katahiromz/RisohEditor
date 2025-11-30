@@ -1647,7 +1647,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "이 파일은 TEXTINCLUDE 1 로 쓰기 보호되어 있습니다.\r\n\r\n그래도 파일에 쓰시겠습니까?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3에는 편집할 수 없는 리소스 항목이 포함되어 있습니다.\r\n\r\nTEXTINCLUDE 3의 항목을 편집 가능한 항목으로 포함하고 TEXTINCLUDE 3을 재설정하시겠습니까?"
     IDS_MP3RESBINFILTER, "MP3 사운드 (*.mp3)|*.mp3|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
-	IDS_MP3SOUND, "(MP3 사운드)\r\n"
+    IDS_MP3SOUND, "(MP3 사운드)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

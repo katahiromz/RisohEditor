@@ -1647,7 +1647,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "Berkas ini dilindungi dari penulisan oleh TEXTINCLUDE 1.\r\n\r\nApakah Anda masih ingin menulis ke berkas ini?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 berisi item sumber daya yang tidak dapat diedit.\r\n\r\nApakah Anda ingin menyertakan item dalam TEXTINCLUDE 3 sebagai item yang dapat diedit dan mengatur ulang TEXTINCLUDE 3?"
     IDS_MP3RESBINFILTER, "Suara MP3 (*.mp3)|*.mp3|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-	IDS_MP3SOUND, "(Suara MP3)\r\n"
+    IDS_MP3SOUND, "(Suara MP3)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
