@@ -52,18 +52,15 @@ public:
 	HWND        m_hStatic;
 	HWND        m_hPlayButton;
 	MBitmapDx   m_bitmap;
-	TCHAR       m_szTempFile[MAX_PATH];
 	enum { TIMER_ID = 999 };
 
 	MBmpView()
 	{
 		ZeroMemory(&m_bm, sizeof(m_bm));
-		m_szTempFile[0] = 0;
 	}
 
 	~MBmpView()
 	{
-		DeleteTempFile();
 		DestroyView();
 	}
 
@@ -118,7 +115,6 @@ public:
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
 		UpdateScrollInfo(m_hwnd);
-		DeleteTempFile();
 	}
 
 	void SetIcon(HICON hIcon, BOOL bIcon)
@@ -129,7 +125,6 @@ public:
 		ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
 		UpdateScrollInfo(m_hwnd);
-		DeleteTempFile();
 	}
 
 	void SetImage(const void *ptr, DWORD size)
@@ -144,17 +139,15 @@ public:
 			UpdateScrollInfo(m_hwnd);
 			SetTimer(m_hwnd, TIMER_ID, 0, NULL);
 		}
-		DeleteTempFile();
 	}
 
-	void SetMedia(const void *ptr, DWORD size, std::wstring media)
+	void SetMedia(const void *ptr, DWORD size, std::wstring type)
 	{
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_HIDE);
-		DeleteTempFile();
 
-		if (media == L"avi") {
+		if (type == L"avi") {
 			ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
 			PlayAvi(m_hwnd, ptr, size);
 			return;
@@ -166,19 +159,6 @@ public:
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
 		ShowWindow(m_hPlayButton, SW_SHOWNOACTIVATE);
-		DeleteTempFile();
-	}
-
-	void DeleteTempFile()
-	{
-		if (m_szTempFile[0])
-		{
-			if (DeleteFile(m_szTempFile) ||
-				GetFileAttributes(m_szTempFile) == 0xFFFFFFFF)
-			{
-				m_szTempFile[0] = 0;
-			}
-		}
 	}
 
 	void DestroyView()

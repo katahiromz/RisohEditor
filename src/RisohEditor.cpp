@@ -3537,7 +3537,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	case ET_STRING:
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		if (stv != STV_DONTRESET)
 		{
@@ -3555,7 +3554,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	case ET_MESSAGE:
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		if (stv != STV_DONTRESET)
 		{
@@ -3574,7 +3572,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		// otherwise
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		// hide the binary EDIT control
 		SetWindowTextW(m_hHexViewer, NULL);
