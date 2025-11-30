@@ -6,9 +6,11 @@ add_library(libRisohEditor STATIC
     EgaBridge.cpp
     IconRes.cpp
     MBitmapDx.cpp
+    MEditMenuDlg.cpp
     MenuRes.cpp
     MMainWnd_Preview.cpp
     MMainWnd_EGA.cpp
+    MMainWnd_Tests.cpp
     MOleHost.cpp
     MSplitterWnd.cpp
     PackedDIB.cpp

@@ -3537,7 +3537,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	case ET_STRING:
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		if (stv != STV_DONTRESET)
 		{
@@ -3555,7 +3554,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	case ET_MESSAGE:
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		if (stv != STV_DONTRESET)
 		{
@@ -3574,7 +3572,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		// otherwise
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
-		m_hBmpView.DeleteTempFile();
 
 		// hide the binary EDIT control
 		SetWindowTextW(m_hHexViewer, NULL);
@@ -7817,8 +7814,8 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
-	// Stop MP3 sound
 	StopMP3();
+	StopAvi();
 
 	// Try to cancel searching
 	m_search.bCancelled = FALSE;
@@ -9474,6 +9471,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 			g_RES_select_lang = BAD_LANG;
 		}
 		PostUpdateLangArrow(hwnd);
+		break;
+	case ID_INTERNALTEST:
+		OnInternalTest(hwnd);
 		break;
 	default:
 		bUpdateStatus = FALSE;

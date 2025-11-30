@@ -20,7 +20,7 @@ BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout = 15000);
 bool create_directories_recursive_win32(const std::wstring& path);
 
 std::wstring DumpBinaryAsText(const std::vector<BYTE>& data);
-BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
+BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 
 struct AutoDeleteFileW
 {
@@ -87,6 +87,8 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang);
 BOOL PlayMP3(LPCVOID ptr, size_t size);
 void StopMP3(void);
+BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size);
+void StopAvi(void);
 
 extern std::vector<LANG_ENTRY> g_langs;
 extern TCHAR g_szMP3TempFile[MAX_PATH];

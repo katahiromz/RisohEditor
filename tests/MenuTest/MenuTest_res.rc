@@ -1,0 +1,97 @@
+// TextInclude1Test3_res.rc
+// Test case for TEXTINCLUDE 1 support (Issue #301)
+// This file uses a custom header file name in TEXTINCLUDE 1.
+// † <-- This dagger helps UTF-8 detection.
+
+#include "resource.h"
+
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#pragma code_page(65001) // UTF-8
+
+//////////////////////////////////////////////////////////////////////////////
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+//////////////////////////////////////////////////////////////////////////////
+// RT_DIALOG
+
+IDD_MAIN DIALOG 0, 0, 215, 100
+CAPTION "MenuTest"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+MENU 1
+FONT 9, "Arial"
+{
+    DEFPUSHBUTTON "OK", IDC_BTN_OK, 35, 80, 60, 14
+    PUSHBUTTON "Cancel", IDC_BTN_CANCEL, 115, 80, 60, 14
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// RT_MENU
+
+1 MENU
+{
+    MENUITEM "What", 100
+    POPUP "Popup"
+    {
+        MENUITEM "What", 100
+        MENUITEM SEPARATOR
+        MENUITEM "", 101
+    }
+    POPUP ""
+    {
+        MENUITEM "What", 100
+        MENUITEM SEPARATOR
+        MENUITEM "", 101
+    }
+}
+
+2 MENUEX
+{
+    MENUITEM "What", 100
+    POPUP "Popup", 104, 0, 0, 1001
+    {
+        MENUITEM "What", 100
+        MENUITEM "", 101, MFT_SEPARATOR
+        MENUITEM "", 102
+        MENUITEM "", 103, 0, MFS_CHECKED
+    }
+    POPUP ""
+    {
+        MENUITEM "What", 200
+        MENUITEM "", 201, MFT_SEPARATOR
+        MENUITEM "", 202
+        MENUITEM "", 203, 0, MFS_CHECKED
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE
+
+#ifdef APSTUDIO_INVOKED
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include <windows.h>\r\n"
+    "#include <commctrl.h>\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+//////////////////////////////////////////////////////////////////////////////

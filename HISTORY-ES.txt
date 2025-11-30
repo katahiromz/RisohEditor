@@ -305,7 +305,7 @@
     - Se ocupa del escaneo de seguridad al generar archivos EXE.
 - v.5.8.1 (04/03/2024)
     - Mejoras en los cuadros de diálogo IDD_ADDCTRL y IDD_CTRLPROP.
-- v.5.8.2 (2024-07-20)
+- v.5.8.2 (20-07-2024)
     - Se agregó el estilo ES_AUTOHSCROLL a algunos cuadros de texto.
     - Se solucionó el error de carga de BITMAP 214 de ieframe.dll de Win2k3.
     - Centrado de la ventana "Editar cuadro de diálogo".
@@ -321,46 +321,47 @@
 - v.5.8.5 (21/08/2024)
     - Se mejoró la usabilidad de la consola EGA.
     - Función de entrada EGA abolida.
-- v.5.8.6 (2025-02-04)
-    - Added Spanish translation.
-    - Fixed RES_save function for saving *.dll.
-    - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
-- v.5.8.7 (2025-04-04)
-    - Reduced memory leaks and handle leaks.
-    - Improved main icon.
-    - Improved adding icon/cursor/bitmap/resource UI/UX.
-- v.5.8.8 (2025-06-03)
-    - Added digital signature to EXE files.
-    - Added Turkish translation.
-    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
-    - Fixed MRadWindow crash.
-    - Updated installers.
-- v.5.8.9 (2025-07-01)
-    - Notified icon change on saving EXE file by SHChangeNotify.
-    - Added English "Neutral" entry to the language list.
-    - Fixed initial language list box selection.
-    - Correctly retrieving info of RLE Bitmap.
-    - Reduced flickering when moving the splitter.
-    - Disabled WoW filesystem redirection.
-    - Enabled filesystem auto-completion.
-- v.5.9.0 (2025-09-01)
-    - Supported rc2 filename extension.
-    - Notified icon change on extracting file by SHChangeNotify.
-    - Enabled wrapping of excessively long string literals.
-    - It is now possible to add a Byte Order Mark (BOM) when outputting an RC file.
-- v.5.9.1 (2025-10-23)
-    - Now, the maximum length of a non-wrapped string literal is 400.
-    - Wrap string literals only in UTF-16 RC.
-    - Fixed Search (Ctrl+F).
-    - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
-    - Improved Search UI/UX.
-    - Added "(bom)" option to EGA RES_save function.
-    - Added High DPI support.
-- v.5.9.2 (2025-10-23)
-    - Fixed double signature problem.
+- v.5.8.6 (04-02-2025)
+    - Se agregó traducción al español.
+    - Se corrigió la función RES_save para guardar archivos *.dll.
+    - Ya no se usan SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED ni SUBLANG_UI_CUSTOM_DEFAULT para mantener la compatibilidad con versiones anteriores.
+- v.5.8.7 (04-04-2025)
+    - Reducción de fugas de memoria y de manejadores.
+    - Se mejoró el icono principal.
+    - Mejoras en la interfaz de usuario (UI/UX) para agregar icono/cursor/bitmap/recurso.
+- v.5.8.8 (03-06-2025)
+    - Se agregó firma digital a los archivos EXE.
+    - Se agregó traducción al turco.
+    - Compatibilidad con TEXTINCLUDE 2 y TEXTINCLUDE 3.
+    - Se solucionó el fallo de MRadWindow.
+    - Instaladores actualizados.
+- v.5.8.9 (01-07-2025)
+    - Se notifica el cambio de icono al guardar un archivo EXE mediante SHChangeNotify.
+    - Se agregó la entrada English "Neutral" en inglés a la lista de idioma.
+    - Se corrigió la selección del cuadro de lista de idioma inicial.
+    - Recuperación correcta de información de mapa de bits RLE.
+    - Reducción del parpadeo al mover el divisor.
+    - Redirección del sistema de archivos WoW deshabilitada.
+    - Se habilitó el autocompletado del sistema de archivos.
+- v.5.9.0 (01-09-2025)
+    - Compatibilidad con la extensión de archivo .rc2.
+    - Se notifica el cambio de icono al extraer archivo mediante SHChangeNotify.
+    - Se habilitó el ajuste de cadenas literales excesivamente largas.
+    - Ahora es posible añadir una marca de orden de bytes (BOM) al generar un archivo RC.
+- v.5.9.1 (23-10-2025)
+    - Ahora, la longitud máxima de una cadena literal sin división de línea es 400.
+    - Ajuste (división) de cadenas literales solo en RC UTF-16.
+    - Se corrigió la función de búsqueda (Ctrl+F).
+    - Las palabras clave ANICURSOR y ANIICON no están disponibles en entornos antiguos. Use valores numéricos en su lugar.
+    - Mejoras en la interfaz de usuario (UI/UX) de Buscar.
+    - Se agregó la opción "(bom)" a la función EGA RES_save.
+    - Se agregó compatibilidad con High DPI.
+- v.5.9.2 (23-10-2025)
+    - Se solucionó el problema de la doble firma.
 - v.5.9.3 (20XX-YY-ZZ)
     - Fixed AutoComplete case-insensitiveness problem.
     - Fixed handling of resource name zero.
     - Implemented TEXTINCLUDE 1.
     - Fixed many memory leaks.
     - Supported MP3 sounds.
+    - Fixed menu empty quotes problem.

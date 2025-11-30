@@ -364,3 +364,4 @@
     - Implemented TEXTINCLUDE 1.
     - Fixed many memory leaks.
     - Supported MP3 sounds.
+    - Fixed menu empty quotes problem.

@@ -244,7 +244,7 @@ Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HYOJUNKA.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "mcdx\MESSAGETABLEDX.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion

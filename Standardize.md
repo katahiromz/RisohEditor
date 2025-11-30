@@ -93,17 +93,17 @@ The user ID defined in file "resource.h" should be inside of the following range
 
 | ID Type                  | Bounded Range    | Preferable Range |
 |--------------------------|------------------|------------------|
-| String ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| String ID                | 0 to 0x7FFF      | 100 to 0x7FFF    |
 | Message ID               | 0 to 0xFFFFFFFF  | 1 to 0x7FFFFFFF  |
-| Command ID               | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Command ID (Old Type)    | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Command ID               | 0 to 0x7FFF      | 100 to 0x7FFF    |
+| Command ID (Old Type)    | 0 to 0x7FFF      | 100 to 0x7FFF    |
 | Control ID               | 8 to 0xDFFF      | 1000 to 0x7FFF   |
-| Cursor ID                | 1 to 0x7FFF      | 100 to 999       |
-| Icon ID                  | 1 to 0x7FFF      | 100 to 999       |
-| Dialog ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Bitmap ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Other Entity Resource ID | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Window ID                | 1 to 0x7FFF      | 1 to 0x7FFF      |
+| Cursor ID                | 0 to 0x7FFF      | 100 to 999       |
+| Icon ID                  | 0 to 0x7FFF      | 100 to 999       |
+| Dialog ID                | 0 to 0x7FFF      | 100 to 0x7FFF    |
+| Bitmap ID                | 0 to 0x7FFF      | 100 to 0x7FFF    |
+| Other Entity Resource ID | 0 to 0x7FFF      | 100 to 0x7FFF    |
+| Window ID                | 0 to 0x7FFF      | 1 to 0x7FFF      |
 | Help ID                  | 0 to 0xFFFFFFFF  | 1 to 0x7FFFFFFF  |
 
 Two different resource IDs of the same ID prefix should have a different value from each other.
@@ -140,10 +140,49 @@ END
 #endif    // APSTUDIO_INVOKED
 ```
 
-## COMMENTS
+### TEXTINCLUDE 1
 
-The resource file and "resource.h" file should use C++ comments rather than C comments.
+TEXTINCLUDE 1 specifies the local header (custom resource header) to be included by this resource file.
+
+However, RisohEditor writes resource IDs on `resource.h` even if you specify a custom resource header.
+Please specify that `resource.h` is to be included from the custom resource header.
+If you write the RC file by RisohEditor, to a different location, the custom resource header will be copied to the destination.
+
+When you add `"< "` as a prefix to TEXTINCLUDE 1, the resource file will be considered read-only.
+RisohEditor will warn you and ask you to confirm the write if you try to overwrite a read-only resource file.
+
+Specifying TEXTINCLUDE 1 other than `"resource.h"` and `"< resource.h"` is not recommended.
+
+It is recommended that you use forward slashes (`/`), not backslashes (`\`), to separate paths.
+
+### TEXTINCLUDE 2
+
+TEXTINCLUDE 2 specifies the system headers to be included by this resource file.
+You can specify system headers to load in addition to `<windows.h>` and `<commctrl.h>`.
+
+However, currently, to use constants that are not in RisohEditor, you need to add a system header to RisohEditor and add the constants to `Constants.txt`.
+
+### TEXTINCLUDE 3
+
+TEXTINCLUDE 3 specifies the code to embed read-only resource data in this resource file.
+With RisohEditor, you can choose whether or not to import the data specified by TEXTINCLUDE 3 when loading from the app.
+
+## Differences Between Resource Compilers
+
+There are two major resource compilers available for Windows: Visual Studio's `rc.exe` and GNU's `windres.exe`.
+RisohEditor is designed with compatibility in mind, allowing it to read and write resource data with both resource compilers.
+However, users should take the following into consideration:
+
+- `rc.exe` correctly supports UTF-16, but prior to Visual Studio 2022, loading a UTF-8 file will result in garbage in the output data.
+- `windres.exe` does not currently support UTF-16 directly; a special C preprocessor that supports UTF-16 is required.
+   Currently, the GNU C preprocessor (version 15.1.0) does not support UTF-16.
+
+## NOTE
+
+- The resource file and "resource.h" file should use C++ comments rather than C comments.
+- `MAKEINTRESOURCE(0)` results in a null pointer, which is why you should not use zero as a resource name.
 
 ## SEE ALSO
 
-[https://msdn.microsoft.com/en-us/library/t2zechd4.aspx](https://msdn.microsoft.com/en-us/library/t2zechd4.aspx)
+- [https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions](https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions)
+- [https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding](https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding)

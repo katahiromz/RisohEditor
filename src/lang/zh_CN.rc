@@ -1516,8 +1516,6 @@ STRINGTABLE
     IDS_EXPORT, "导出"
     IDS_CANTEXPORT, "导出失败。"
     IDS_MUSTBEEMPTYDIR, "如果有任何外部文件，则导出目标必须是空文件夹。"
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "宏名称"
     IDS_MACROVALUE, "宏值"
     IDS_OPTIONAL, "(可选的)"
@@ -1645,7 +1643,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "该文件受 TEXTINCLUDE 1 写保护。\r\n\r\n您仍要写入该文件吗？"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 包含无法编辑的资源项。\r\n\r\n是否要将 TEXTINCLUDE 3 中的项包含为可编辑项并重置 TEXTINCLUDE 3？"
     IDS_MP3RESBINFILTER, "MP3声音 (*.mp3)|*.mp3|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
-	IDS_MP3SOUND, "(MP3声音)\r\n"
+    IDS_MP3SOUND, "(MP3声音)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

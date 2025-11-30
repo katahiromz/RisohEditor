@@ -31,10 +31,10 @@ Pregunta 3. Qué es mcdx?
 
 Pregunta 4. ¿Por qué obtuve caracteres ilegibles al compilar con Visual Studio?
 
- Respuesta. El compilador de recursos de MSVC tiene un error en el tratamiento
-            de archivos de recursos UTF-8.
+ Respuesta. rc.exe admite correctamente UTF-16, pero antes de Visual Studio 2022,
+            cargar un archivo UTF-8 generaba basura en los datos de salida.
 
-            Use UTF-16 (pero UTF-16 no está soportado en GNU windres).
+            Utilice Visual Studio 2022 o posterior.
 
 Pregunta 5. ¿Cuál es la diferencia entre la versión sin instalador y la versión portable?
 

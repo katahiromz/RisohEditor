@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Vie"
     IDS_CANTEXPORT, "Vienti epäonnistui."
     IDS_MUSTBEEMPTYDIR, "Jos on olemassa ulkoinen tiedosto, vientikohteen on oltava tyhjä kansio."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Makron nimi"
     IDS_MACROVALUE, "Makron arvo"
     IDS_OPTIONAL, "(Valinnainen)"
@@ -1646,7 +1644,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "Tämä tiedosto on kirjoitussuojattu tekstillä TEXTINCLUDE 1.\r\n\r\nHaluatko silti kirjoittaa tiedostoon?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 sisältää resurssikohteita, joita ei voi muokata.\r\n\r\nHaluatko sisällyttää TEXTINCLUDE 3:n kohteet muokattaviksi kohteiksi ja nollata TEXTINCLUDE 3:n?"
     IDS_MP3RESBINFILTER, "MP3 ääni (*.mp3)|*.mp3|Binaariset resurssit (*.res)|*.res|Binaariset tiedostot (*.bin)|*.bin|Kaikki tiedostot (*.*)|*.*|"
-	IDS_MP3SOUND, "(MP3 ääni)\r\n"
+    IDS_MP3SOUND, "(MP3 ääni)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

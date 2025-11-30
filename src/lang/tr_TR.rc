@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Dışa Aktar"
     IDS_CANTEXPORT, "Dışa aktarma başarısız oldu."
     IDS_MUSTBEEMPTYDIR, "Eğer dışa aktarma hedefinde başka dosya varsa, hedef klasör boş olmalıdır."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Makro Adı"
     IDS_MACROVALUE, "Makro Değeri"
     IDS_OPTIONAL, "(Opsiyonel)"

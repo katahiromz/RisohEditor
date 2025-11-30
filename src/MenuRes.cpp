@@ -451,7 +451,7 @@ MenuRes::Dump(const MIdOrString& name) const
 		else
 		{
 			ret += string_type((item.wDepth + 1) * 4, L' ');
-			if (item.text.empty())
+			if (item.wMenuID == 0)
 			{
 				ret += L"MENUITEM SEPARATOR\r\n";
 			}

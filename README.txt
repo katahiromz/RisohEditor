@@ -31,10 +31,10 @@ Question 3. What is mcdx?
 
 Question 4. Why did I get garbled characters when compiling with Visual Studio?
 
-    Answer. The resource compiler of MSVC has a bug in treatment of
-            UTF-8 resource files.
+    Answer. rc.exe correctly supports UTF-16, but prior to Visual Studio 2022,
+            loading a UTF-8 file will result in garbage in the output data.
 
-            Use UTF-16 (but UTF-16 is not supported in GNU windres).
+            Please use Visual Studio 2022 or later.
 
 Question 5. What is the difference between no installer and portable version?
 

@@ -1517,8 +1517,6 @@ STRINGTABLE
     IDS_EXPORT, "Exportation"
     IDS_CANTEXPORT, "L'exportation a échoué."
     IDS_MUSTBEEMPTYDIR, "S'il existe un fichier externe, la destination d'exportation doit être un dossier vide."
-    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
-    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Nom de la macro"
     IDS_MACROVALUE, "Valeur macro"
     IDS_OPTIONAL, "(Optionnel)"
@@ -1646,7 +1644,7 @@ STRINGTABLE
     IDS_TEXTINCLUDEREADONLY, "Ce fichier est protégé en écriture par TEXTINCLUDE 1.\r\n\r\nVoulez-vous toujours écrire dans le fichier ?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contient des éléments de ressources qui ne peuvent pas être modifiés.\r\n\r\nVoulez-vous inclure les éléments dans TEXTINCLUDE 3 en tant qu'éléments modifiables et réinitialiser TEXTINCLUDE 3 ?"
     IDS_MP3RESBINFILTER, "MP3 Sound (*.mp3)|*.mp3|Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
-	IDS_MP3SOUND, "(MP3 Sound)\r\n"
+    IDS_MP3SOUND, "(MP3 Sound)\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
-# Win32リソースの標準化
-
 (UTF-8, Japanese)
+---
+
+# Win32リソースの標準化
 
 新しいリソーエディタのリソース情報は、以下のガイドラインに従うべきです。
 古いリソーエディタのデータを使っているなら、以下のガイドラインを適用する必要があります。
@@ -24,7 +25,7 @@
 
 ## ガイドライン
 
-Visual C++互換性のために、ファイル「resource.h」の中身は、次のようなC++コメントで始まるべきです。
+Visual C++互換性のために、ファイル `resource.h` の中身は、次のようなC++コメントで始まるべきです。
 
 ```c
 //{{NO_DEPENDENCIES}}
@@ -32,11 +33,11 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 // TheProject.rc
 ```
 
-ここで、「TheProject.rc」は、この「resource.h」に対する実際のリソースファイル名で置き換えなければなりません。
+ここで、`TheProject.rc` は、この `resource.h` に対する実際のリソースファイル名で置き換えなければなりません。
 
-ファイル「resource.h」は、インクルードガードを使うべきではありません。
+ファイル `resource.h` は、インクルードガードを使うべきではありません。
 
-ファイル「resource.h」の中で、文字列マクロを使わないで下さい。文字列値のリソースIDを使わないで下さい。
+ファイル `resource.h` の中で、文字列マクロを使わないで下さい。文字列値のリソースIDを使わないで下さい。
 
 もし、rcファイルがシステムヘッダーの#includeを有するなら、そのインクルードは、次のように包まれるべきです：
 
@@ -47,7 +48,7 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 #undef APSTUDIO_HIDDEN_SYMBOLS
 ```
 
-ファイル「resource.h」の中身は、次のようなテキストで終わるべきです：
+ファイル `resource.h` の中身は、次のようなテキストで終わるべきです：
 
 ```c
 #ifdef APSTUDIO_INVOKED
@@ -69,7 +70,7 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 
 ## IDプレフィックス
 
-「resource.h」で定義されるユーザーIDプレフィックスは次の表に従うべきです：
+`resource.h` で定義されるユーザーIDプレフィックスは次の表に従うべきです：
 
 | IDタイプ               | IDプレフィックス |
 |------------------------|------------------|
@@ -86,29 +87,29 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 | Window ID              | IDW_             |
 | Help ID                | HID_             |
 
-「IDP_」プレフィックスは使わないで下さい。
+`IDP_` プレフィックスは使わないで下さい。
 
 ## 値と範囲
 
-「resource.h」で定義されるユーザーIDは、次の表の範囲であるべきです。
+`resource.h` で定義されるユーザーIDは、次の表の範囲であるべきです。
 
 | IDタイプ               | 束縛範囲      | 好ましい範囲  |
 |------------------------|---------------|---------------|
-| String ID              | 1～0x7FFF     | 100～0x7FFF   |
+| String ID              | 0～0x7FFF     | 100～0x7FFF   |
 | Message ID             | 0～0xFFFFFFFF | 1～0x7FFFFFFF |
-| Command ID             | 1～0x7FFF     | 100～0x7FFF   |
-| Command ID (Old Type)  | 1～0x7FFF     | 100～0x7FFF   |
+| Command ID             | 0～0x7FFF     | 100～0x7FFF   |
+| Command ID (Old Type)  | 0～0x7FFF     | 100～0x7FFF   |
 | Control ID             | 8～0xDFFF     | 1000～0x7FFF  |
-| Cursor ID              | 1～0x7FFF     | 100～999      |
-| Icon ID                | 1～0x7FFF     | 100～999      |
-| Dialog ID              | 1～0x7FFF     | 100～0x7FFF   |
-| Bitmap ID              | 1～0x7FFF     | 100～0x7FFF   |
-| その他のエンティティID | 1～0x7FFF     | 100～0x7FFF   |
-| Window ID              | 1～0x7FFF     | 1～0x7FFF     |
+| Cursor ID              | 0～0x7FFF     | 100～999      |
+| Icon ID                | 0～0x7FFF     | 100～999      |
+| Dialog ID              | 0～0x7FFF     | 100～0x7FFF   |
+| Bitmap ID              | 0～0x7FFF     | 100～0x7FFF   |
+| その他のエンティティID | 0～0x7FFF     | 100～0x7FFF   |
+| Window ID              | 0～0x7FFF     | 1～0x7FFF     |
 | Help ID                | 0～0xFFFFFFFF | 1～0x7FFFFFFF |
 
 同じIDプレフィックスの２つの異なるリソースIDは、互いに違う値を持つべきです。
-「IDC_」のリソースIDは、コントロールIDか、カーソルIDです。
+`IDC_` のリソースIDは、コントロールIDか、カーソルIDです。
 もし、我々がIDの好ましい範囲に従えば、コントロールIDとカーソルIDは衝突しません。
 
 ## TEXTINCLUDE
@@ -141,10 +142,49 @@ END
 #endif    // APSTUDIO_INVOKED
 ```
 
-## コメント
+### TEXTINCLUDE 1
 
-「resource.h」ファイルのリソースファイルは、CコメントよりもC++コメントを使うべきです。
+TEXTINCLUDE 1は、このリソースファイルがインクルードするローカル ヘッダー（カスタム リソース ヘッダー）を指定します。
+
+ただし、RisohEditorでは、カスタム リソース ヘッダーを指定しても、`resource.h` にリソースID群が書き込みされます。
+カスタム リソース ヘッダーから `resource.h` をインクルードするように指定してください。
+RisohEditorでRC ファイルを別の場所に書き込むと、カスタム リソース ヘッダーが書き込み先にコピーされます。
+
+TEXTINCLUDE 1にprefixとして、`"< "`を追加したときは、リソースファイルは読み込み専用と見なされます。
+RisohEditorは読み込み専用のリソースファイルに上書きしようとすると、警告を出して書き込みを確認します。
+
+`"resource.h"` および `"< resource.h"` 以外の TEXTINCLUDE 1 を指定することは推奨されません。
+
+パスの区切りはバックスラッシュ (`\`)ではなく、スラッシュ (`/`)を使うことが推奨されます。
+
+### TEXTINCLUDE 2
+
+TEXTINCLUDE 2は、このリソースファイルがインクルードするシステム ヘッダー群を指定します。
+`<windows.h>`、`<commctrl.h>`以外に読み込むシステム ヘッダー群を指定できます。
+
+ただし、現在、RisohEditor にない定数群を使用するには、RisohEditor にシステム ヘッダーを追加し、定数群を `Constants.txt` に追加する必要があります。
+
+### TEXTINCLUDE 3
+
+TEXTINCLUDE 3は、このリソースファイルで読み込み専用のリソースデータを埋め込むためのコードを指定します。
+RisohEditorでは、TEXTINCLUDE 3が指定するデータの取り込みの有無をアプリから読み込み時に選ぶことができます。
+
+## リソース コンパイラの差異
+
+Windowsで利用できる代表的なリソース コンパイラは、Visual Studioの`rc.exe`とGNUの`windres.exe`の2つです。
+RisohEditorは両方のリソース コンパイラでリソース データを読み書きできるように、互換性が考慮されて設計されています。
+しかし、利用者は、以下の点を考慮する必要があります。
+
+- `rc.exe` は UTF-16 を正しくサポートしますが、Visual Studio 2022 より前では UTF-8 ファイルをロードすると出力データにゴミが混在します。
+- `windres.exe`は、現在、直接UTF-16をサポートしておらず、UTF-16をサポートする特殊なCプリプロセッサを使う必要があります。
+   現在、GNUのCプリプロセッサ (バージョン 15.1.0)は、UTF-16をサポートしていません。
+
+## 注記
+
+- リソースファイルと`resource.h` ファイルは、CコメントよりもC++コメントを使うべきです。
+- `MAKEINTRESOURCE(0)` はヌルポインタになります。これがリソース名にゼロを使うべきでない理由です。
 
 ## 参照
 
-[https://msdn.microsoft.com/en-us/library/t2zechd4.aspx](https://msdn.microsoft.com/en-us/library/t2zechd4.aspx)
+[https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions](https://learn.microsoft.com/en-us/cpp/mfc/tn020-id-naming-and-numbering-conventions)
+- [https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding](https://stackoverflow.com/questions/72143553/visual-studio-resource-editor-corrupts-rc-files-with-utf-8-encoding)
