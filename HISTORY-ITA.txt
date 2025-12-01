@@ -358,7 +358,7 @@
     - Aggiunto supporto DPI elevati.
 - v.5.9.2 (23.10.2025)
     - Risolto il problema della doppia firma.
-- v.5.9.3 (20XX-YY-ZZ)
+- v.5.9.3 (01.12.2025)
     - Risolto problema completamento automatico senza distinzione tra maiuscole e minuscole.
     - Risolto problema gestione nome risorsa zero.
     - Implementato TEXTINCLUDE 1.

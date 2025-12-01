@@ -358,7 +358,7 @@
     - Se agregó compatibilidad con High DPI.
 - v.5.9.2 (23-10-2025)
     - Se solucionó el problema de la doble firma.
-- v.5.9.3 (20XX-YY-ZZ)
+- v.5.9.3 (01-12-2025)
     - Fixed AutoComplete case-insensitiveness problem.
     - Fixed handling of resource name zero.
     - Implemented TEXTINCLUDE 1.
