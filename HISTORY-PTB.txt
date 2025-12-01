@@ -365,3 +365,4 @@
     - Fixed many memory leaks.
     - Supported MP3 sounds.
     - Fixed menu empty quotes problem.
+- v.5.9.4 (20XX-YY-ZZ)

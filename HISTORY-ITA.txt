@@ -365,3 +365,4 @@
     - Risolti problemi legati alla memoria.
     - Supportati audio MP3.
     - Risolto il problema delle virgolette vuote del menu.
+- v.5.9.4 (20XX-YY-ZZ)
