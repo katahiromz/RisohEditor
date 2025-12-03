@@ -134,7 +134,7 @@ IDR_MAINMENU MENU
     POPUP "&?"
     {
         MENUITEM "Apri file Leggimi (i&taliano)", ID_OPENREADMEIT
-        MENUITEM "Apri file cronologia programma (italiano)", ID_OPENHISTORYITA
+        MENUITEM "Apri file info versioni programma (italiano)", ID_OPENHISTORYITA
         MENUITEM "Apri file Leggimi (&inglese)", ID_OPENREADME
         MENUITEM SEPARATOR
         MENUITEM "&Guida in linea RisohEditor", ID_GUIDE
