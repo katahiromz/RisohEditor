@@ -5843,7 +5843,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		{
 			if (!textinclude1_a.empty())
 			{
-				std::wstring path = textinclude1_w;
+				std::wstring path = textinclude1_w.c_str();
 				if (path.find(L"< ") == 0)
 					path = path.substr(2);
 
@@ -9442,9 +9442,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_OPENREADMEPTB:
 		OnOpenLocalFile(hwnd, L"README_pt.txt");
-		break;
-	case ID_OPENREADMETR:
-		OnOpenLocalFile(hwnd, L"README_tr.txt");
 		break;
 	case ID_OPENHISTORYPTB:
 		OnOpenLocalFile(hwnd, L"CHANGELOG_pt.txt");
