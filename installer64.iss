@@ -228,21 +228,21 @@ Name: "res_association"; Description: "{cm:AssociateResFiles}"
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-TR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_id.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_it.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_ko.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_tr.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_pt.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_es.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_id.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_it.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_ko.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_pt.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG_es.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HYOJUNKA.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -314,7 +314,7 @@ Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\To
 [Icons]
 Name: "{group}\RisohEditor 64-bit"; Filename: "{app}\RisohEditor64.exe"
 Name: "{group}\{cm:ReadmeEnglish}"; Filename: "{app}\README.txt"
-Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
+Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\README_ja.txt"
 Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
 Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"

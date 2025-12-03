@@ -134,9 +134,9 @@ IDR_MAINMENU MENU
     POPUP "&Ayuda"
     {
         MENUITEM "Abrir &README.txt (English)", ID_OPENREADME
-        MENUITEM "Abrir &README-ES.txt (Español)", ID_OPENREADMEES
-        MENUITEM "Abrir HISTORY.txt", ID_OPENHISTORY
-        MENUITEM "Abrir HISTORY-ES.txt (Español)", ID_OPENHISTORYES
+        MENUITEM "Abrir &README_es.txt (Español)", ID_OPENREADMEES
+        MENUITEM "Abrir CHANGELOG.txt", ID_OPENHISTORY
+        MENUITEM "Abrir CHANGELOG_es.txt (Español)", ID_OPENHISTORYES
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Una &guía de RisohEditor", ID_GUIDE

@@ -9217,10 +9217,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnOpenLocalFile(hwnd, L"README.txt");
 		break;
 	case ID_OPENREADMEJP:
-		OnOpenLocalFile(hwnd, L"README-JPN.txt");
+		OnOpenLocalFile(hwnd, L"README_ja.txt");
 		break;
 	case ID_OPENREADMEES:
-		OnOpenLocalFile(hwnd, L"README-ES.txt");
+		OnOpenLocalFile(hwnd, L"README_es.txt");
 		break;
 	case ID_LOADWCLIB:
 		OnLoadWCLib(hwnd);
@@ -9282,22 +9282,22 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnOpenLocalFile(hwnd, L"LICENSE.txt");
 		break;
 	case ID_OPENHISTORY:
-		OnOpenLocalFile(hwnd, L"HISTORY.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG.txt");
 		break;
 	case ID_OPENHISTORYITA:
-		OnOpenLocalFile(hwnd, L"HISTORY-ITA.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_it.txt");
 		break;
 	case ID_OPENHISTORYJPN:
-		OnOpenLocalFile(hwnd, L"HISTORY-JPN.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_ja.txt");
 		break;
 	case ID_OPENHISTORYKOR:
-		OnOpenLocalFile(hwnd, L"HISTORY-KOR.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_ko.txt");
 		break;
 	case ID_OPENHISTORYES:
-		OnOpenLocalFile(hwnd, L"HISTORY-ES.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_es.txt");
 		break;
 	case ID_OPENHYOJUNKA:
-		OnOpenLocalFile(hwnd, L"HYOJUNKA.txt");
+		OnOpenLocalFile(hwnd, L"HYOJUNKA.md");
 		break;
 	case ID_DEBUGTREENODE:
 		OnDebugTreeNode(hwnd);
@@ -9383,7 +9383,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnEgaProgram(hwnd);
 		break;
 	case ID_OPENREADMEIT:
-		OnOpenLocalFile(hwnd, L"README-ITA.txt");
+		OnOpenLocalFile(hwnd, L"README_it.txt");
 		break;
 	case ID_OPEN_EGA_MANUAL:
 		OnOpenLocalFile(hwnd, L"EGA\\EGA-Manual.pdf");
@@ -9422,7 +9422,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		DoLangEditAutoCompleteRelease(hwnd);
 		break;
 	case ID_OPENREADMEKO:
-		OnOpenLocalFile(hwnd, L"README-KOR.txt");
+		OnOpenLocalFile(hwnd, L"README_ko.txt");
 		break;
 	case ID_CHOOSEUILANG:
 		{
@@ -9432,19 +9432,19 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		}
 		break;
 	case ID_OPENREADMETR:
-		OnOpenLocalFile(hwnd, L"README-TR.txt");
+		OnOpenLocalFile(hwnd, L"README_tr.txt");
 		break;
 	case ID_OPENREADMEID:
-		OnOpenLocalFile(hwnd, L"README-ID.txt");
+		OnOpenLocalFile(hwnd, L"README_id.txt");
 		break;
 	case ID_OPENHISTORYID:
-		OnOpenLocalFile(hwnd, L"HISTORY-ID.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_id.txt");
 		break;
 	case ID_OPENREADMEPTB:
-		OnOpenLocalFile(hwnd, L"README-PTB.txt");
+		OnOpenLocalFile(hwnd, L"README_pt.txt");
 		break;
 	case ID_OPENHISTORYPTB:
-		OnOpenLocalFile(hwnd, L"HISTORY-PTB.txt");
+		OnOpenLocalFile(hwnd, L"CHANGELOG_pt.txt");
 		break;
 	case ID_EGAFINISH:
 		{

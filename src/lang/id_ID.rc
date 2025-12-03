@@ -134,9 +134,9 @@ IDR_MAINMENU MENU
     POPUP "&Bantuan"
     {
         MENUITEM "Buka &README.txt (English)", ID_OPENREADME
-        MENUITEM "Buka R&EADME-ID.txt (Indonesia)", ID_OPENREADMEID
-        MENUITEM "Buka &HISTORY.txt", ID_OPENHISTORY
-        MENUITEM "Buka H&ISTORY-ID.txt (Indonesia)", ID_OPENHISTORYID
+        MENUITEM "Buka README_id.txt (Indonesia)", ID_OPENREADMEID
+        MENUITEM "Buka CHANGELOG.txt", ID_OPENHISTORY
+        MENUITEM "Buka CHANGELOG_id.txt (Indonesia)", ID_OPENHISTORYID
         MENUITEM "Buka &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Petu&njuk RisohEditor", ID_GUIDE
