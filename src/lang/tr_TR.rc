@@ -134,7 +134,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&README.txt Dosyasını Aç (İngilizce)", ID_OPENREADME
         MENUITEM "&README_tr.txt Dosyasını Aç", ID_OPENREADMETR
-        MENUITEM "CHANGELOG.txt Dosyasını Aç", ID_OPENHISTORY
+        MENUITEM "ChangeLog.txt Dosyasını Aç", ID_OPENHISTORY
         MENUITEM "&LICENSE.txt Dosyasını Aç", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "RisohEditor için &Kılavuz", ID_GUIDE

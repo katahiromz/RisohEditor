@@ -134,7 +134,7 @@ IDR_MAINMENU MENU
     POPUP "&Help"
     {
         MENUITEM "Open &README.txt (English)", ID_OPENREADME
-        MENUITEM "Open CHANGELOG.txt", ID_OPENHISTORY
+        MENUITEM "Open ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Open &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "A &Guide to RisohEditor", ID_GUIDE

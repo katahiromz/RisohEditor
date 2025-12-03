@@ -135,8 +135,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
         MENUITEM "Abrir README_pt.txt", ID_OPENREADMEPTB
-        MENUITEM "Abrir CHANGELOG.txt", ID_OPENHISTORY
-        MENUITEM "Abrir CHANGELOG_pt.txt", ID_OPENHISTORYPTB
+        MENUITEM "Abrir ChangeLog.txt", ID_OPENHISTORY
+        MENUITEM "Abrir ChangeLog_pt.txt", ID_OPENHISTORYPTB
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guia do RisohEditor", ID_GUIDE

@@ -135,8 +135,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "README_ko.txt 열기 (한국어)(&K)", ID_OPENREADMEKO
         MENUITEM "README.txt 열기 (영어)(&R)", ID_OPENREADME
-        MENUITEM "CHANGELOG_ko.txt", ID_OPENHISTORYKOR
-        MENUITEM "CHANGELOG.txt", ID_OPENHISTORY
+        MENUITEM "ChangeLog_ko.txt", ID_OPENHISTORYKOR
+        MENUITEM "ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "LICENSE.txt 열기(&L)", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "RisohEditor 안내서(&G)", ID_GUIDE

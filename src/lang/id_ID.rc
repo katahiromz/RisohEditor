@@ -135,8 +135,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "Buka &README.txt (English)", ID_OPENREADME
         MENUITEM "Buka README_id.txt (Indonesia)", ID_OPENREADMEID
-        MENUITEM "Buka CHANGELOG.txt", ID_OPENHISTORY
-        MENUITEM "Buka CHANGELOG_id.txt (Indonesia)", ID_OPENHISTORYID
+        MENUITEM "Buka ChangeLog.txt", ID_OPENHISTORY
+        MENUITEM "Buka ChangeLog_id.txt (Indonesia)", ID_OPENHISTORYID
         MENUITEM "Buka &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Petu&njuk RisohEditor", ID_GUIDE

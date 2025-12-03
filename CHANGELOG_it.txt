@@ -367,5 +367,5 @@
     - Risolto il problema delle virgolette vuote del menu.
 - v.5.9.4 (20XX-YY-ZZ)
     - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimitted.
-    - Renamed HISTORY*.txt as CHANGELOG*.txt.
+    - Renamed HISTORY*.txt as ChangeLog*.txt.
     - Renamed README-*.txt as README_*.txt.
