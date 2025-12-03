@@ -367,6 +367,6 @@
     - Supported MP3 sounds.
     - Fixed menu empty quotes problem.
 - v.5.9.4 (20XX-YY-ZZ)
-    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimitted.
+    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimited.
     - Renamed HISTORY*.txt as ChangeLog*.txt.
     - Renamed README-*.txt as README_*.txt.
