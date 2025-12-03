@@ -710,3 +710,4 @@
     - MP3音声のサポート。
     - メニューの空文字列の問題を修正。
 - v.5.9.4 (20XX-YY-ZZ)
+    - Updated mcpp.exe to enlarge the buffer length to 4096 bytes.

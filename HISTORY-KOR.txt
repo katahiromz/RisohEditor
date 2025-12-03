@@ -367,3 +367,4 @@
     - Supported MP3 sounds.
     - Fixed menu empty quotes problem.
 - v.5.9.4 (20XX-YY-ZZ)
+    - Updated mcpp.exe to enlarge the buffer length to 4096 bytes.

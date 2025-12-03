@@ -366,3 +366,4 @@
     - Supportati audio MP3.
     - Risolto il problema delle virgolette vuote del menu.
 - v.5.9.4 (20XX-YY-ZZ)
+    - Updated mcpp.exe to enlarge the buffer length to 4096 bytes.
