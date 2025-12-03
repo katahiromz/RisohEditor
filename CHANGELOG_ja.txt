@@ -710,6 +710,6 @@
     - MP3音声のサポート。
     - メニューの空文字列の問題を修正。
 - v.5.9.4 (20XX-YY-ZZ)
-    - Updated mcpp.exe to enlarge the buffer length to 4096 bytes.
-    - Renamed HISTORY*.txt as CHANGELOG*.txt.
-    - Renamed README-*.txt.
+    - バッファの長さを 4096 バイトに大きくするために mcpp.exe を更新。
+    - HISTORY*.txt を CHANGELOG*.txt に名前を変更
+    - README-*.txt の名前を変更。
