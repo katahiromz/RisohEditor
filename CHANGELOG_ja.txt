@@ -710,6 +710,6 @@
     - MP3音声のサポート。
     - メニューの空文字列の問題を修正。
 - v.5.9.4 (20XX-YY-ZZ)
-    - バッファの長さを 4096 バイトに大きくするために mcpp.exe を更新。
+    - UTF-16/UTF-32バッファ長を無制限にするために mcpp.exe を更新。
     - HISTORY*.txt を CHANGELOG*.txt に改名。
     - README-*.txt を README_*.txt に改名。

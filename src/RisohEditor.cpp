@@ -14,7 +14,6 @@
 #include <thread>
 
 LPWSTR g_pszLogFile = NULL;
-bool g_wrap_enabled = false;
 
 //////////////////////////////////////////////////////////////////////////////
 // constants
@@ -6785,24 +6784,9 @@ BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
 	return g_res.extract_res(pszResFile, g_res);
 }
 
-struct AutoWrapEnable
-{
-	AutoWrapEnable()
-	{
-		// Wrap string literals only in UTF-16 RC. See Issue #302.
-		g_wrap_enabled = g_settings.bRCFileUTF16;
-	}
-	~AutoWrapEnable()
-	{
-		g_wrap_enabled = false;
-	}
-};
-
 // do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
 {
-	AutoWrapEnable auto_wrap_enable;
-
 	if (found.empty())
 	{
 		// unable to export the empty data

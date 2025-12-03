@@ -717,14 +717,6 @@ mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str)
 
 	for (size_t i = 0; i < str.size(); ++i)
 	{
-		extern bool g_wrap_enabled;
-#define MAX_ESCAPE_LINE ((4096 / sizeof(wchar_t)) - 256) // mcpp.exe can accept up to UTF-16 line of 4096 bytes
-		if (g_wrap_enabled && i % MAX_ESCAPE_LINE == MAX_ESCAPE_LINE - 1)
-		{
-			ret += T_CHAR('\\');
-			ret += T_CHAR('\r');
-			ret += T_CHAR('\n');
-		}
 		T_CHAR ch = str[i];
 		switch (ch)
 		{
