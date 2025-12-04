@@ -23,7 +23,7 @@ static const DWORD s_nMaxCaptions = 10;
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
 	g_settings.ui_lang = ::GetThreadUILanguage();
-	g_settings.bShowBinEdit = FALSE;
+	m_bShowBinEdit = FALSE;
 	g_settings.bAlwaysControl = FALSE;
 	g_settings.bShowStatusBar = TRUE;
 	g_settings.nTreeViewWidth = TV_WIDTH;
@@ -251,7 +251,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
 	keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bUseIDC_STATIC);
 	keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)g_settings.bShowStatusBar);
-	//keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
 	keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)g_settings.bAlwaysControl);
 	keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)g_settings.nTreeViewWidth);
 	keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)g_settings.nBmpViewWidth);
@@ -572,7 +571,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
 	keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
 	keyRisoh.SetDword(TEXT("ShowStatusBar"), g_settings.bShowStatusBar);
-	//keyRisoh.SetDword(TEXT("ShowBinEdit"), g_settings.bShowBinEdit);
 	keyRisoh.SetDword(TEXT("AlwaysControl"), g_settings.bAlwaysControl);
 	keyRisoh.SetDword(TEXT("TreeViewWidth"), g_settings.nTreeViewWidth);
 	keyRisoh.SetDword(TEXT("BmpViewWidth"), g_settings.nBmpViewWidth);

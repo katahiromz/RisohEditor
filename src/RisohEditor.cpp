@@ -9,6 +9,7 @@
 #define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
 #include "MChooseLangDlg.hpp"
+#include "MGoToLineDlg.hpp"
 #include "ToolbarRes.hpp"
 #include "Utils.h"
 #include <thread>
@@ -2192,25 +2193,16 @@ void MMainWnd::OnPlay(HWND hwnd)
 
 void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
 {
-	if (iSelected != m_tab.GetCurSel())
-	{
-		// update tab control selection
-		m_tab.SetCurSel(iSelected);
-	}
-
-	// update g_settings.bShowBinEdit
+	// update show
 	switch (iSelected)
 	{
 	case 0:
-		g_settings.bShowBinEdit = FALSE;
+		SetShowMode(m_nShowMode, FALSE);
 		break;
 	case 1:
-		g_settings.bShowBinEdit = TRUE;
+		SetShowMode(m_nShowMode, TRUE);
 		break;
 	}
-
-	// update show
-	SetShowMode(m_nShowMode);
 
 	// relayout
 	PostMessage(hwnd, WM_SIZE, 0, 0);
@@ -2803,11 +2795,14 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 	MsgBoxDx(sz, MB_ICONINFORMATION);
 }
 
-void MMainWnd::SetShowMode(SHOW_MODE mode)
+void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 {
+	m_bShowBinEdit = bShowBinary;
 	m_nShowMode = mode;
-	if (g_settings.bShowBinEdit)
+	if (m_bShowBinEdit)
 	{
+		if (m_tab.GetCurSel() != 1)
+			m_tab.SetCurSel(1);
 		ShowWindow(m_hCodeEditor, SW_HIDE);
 		ShowWindow(m_hBmpView, SW_HIDE);
 		ShowWindow(m_hHexViewer, SW_SHOWNOACTIVATE);
@@ -2816,6 +2811,8 @@ void MMainWnd::SetShowMode(SHOW_MODE mode)
 	}
 	else
 	{
+		if (m_tab.GetCurSel() != 0)
+			m_tab.SetCurSel(0);
 		switch (mode)
 		{
 		case SHOW_MOVIE:
@@ -3024,7 +3021,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 	else
 		CheckMenuItem(hMenu, ID_STATUSBAR, MF_UNCHECKED);
 
-	if (g_settings.bShowBinEdit)
+	if (m_bShowBinEdit)
 		CheckMenuItem(hMenu, ID_BINARYPANE, MF_CHECKED);
 	else
 		CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
@@ -3579,7 +3576,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		bEditable = FALSE;
 
 		// update show mode
-		SetShowMode(SHOW_CODEONLY);
+		SetShowMode(SHOW_CODEONLY, m_bShowBinEdit);
 	}
 
 	if (stv == STV_DONTRESET || stv == STV_RESETTEXT)
@@ -3621,7 +3618,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	}
 
 	// update show
-	SetShowMode(m_nShowMode);
+	SetShowMode(m_nShowMode, m_bShowBinEdit);
 
 	// recalculate the splitter
 	PostMessageDx(WM_SIZE);
@@ -8933,6 +8930,23 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
 	PostUpdateLangArrow(hwnd);
 }
 
+// ID_GOTOLINE
+void MMainWnd::OnGoToLine(HWND hwnd) {
+	MGoToLineDlg dialog;
+	if (dialog.DialogBoxDx(hwnd) == IDOK) {
+		SetShowMode(SHOW_CODEONLY, FALSE);
+		INT line = dialog.m_line;
+		INT ich = Edit_LineIndex(m_hCodeEditor, (line <= 0) ? 0 : (line - 1));
+		INT cch = Edit_GetTextLength(m_hCodeEditor);
+		if (ich == -1)
+			Edit_SetSel(m_hCodeEditor, cch, cch);
+		else
+			Edit_SetSel(m_hCodeEditor, ich, ich);
+		Edit_ScrollCaret(m_hCodeEditor);
+		SetFocus(m_hCodeEditor);
+	}
+}
+
 // WM_COMMAND
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
@@ -9098,10 +9112,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_BINARYPANE:
 		// toggle the flag
-		g_settings.bShowBinEdit = !g_settings.bShowBinEdit;
+		m_bShowBinEdit = !m_bShowBinEdit;
 		// show/hide the binary
-		m_tab.SetCurSel(!!g_settings.bShowBinEdit);
-		OnSelChange(hwnd, !!g_settings.bShowBinEdit);
+		m_tab.SetCurSel(!!m_bShowBinEdit);
+		OnSelChange(hwnd, !!m_bShowBinEdit);
 		break;
 	case ID_ALWAYSCONTROL:
 		{
@@ -9458,6 +9472,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_INTERNALTEST:
 		OnInternalTest(hwnd);
+		break;
+	case ID_GOTOLINE:
+		OnGoToLine(hwnd);
 		break;
 	default:
 		bUpdateStatus = FALSE;

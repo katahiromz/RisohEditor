@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "편집(&E)"
     {
-        MENUITEM "GUI로 편집(&G)...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "GUI로 편집(&G)...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "추가(&A)"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "아래로 검색(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "쿼리 상수(&Q)...", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "지정된 행으로 이동(&G)...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "보기(&V)"
     {
@@ -150,7 +152,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "GUI로 편집(&G)...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "GUI로 편집(&G)...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "추가(&A)"
         {
@@ -1354,6 +1356,17 @@ FONT 9, "Gulim"
     AUTOCHECKBOX "분리 기호(&S)", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "확인", IDOK, 45, 70, 60, 15
     PUSHBUTTON "취소", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "지정된 행으로 이동"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    RTEXT "행 번호(&L):", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "확인", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "취소", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

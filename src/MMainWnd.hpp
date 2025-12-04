@@ -81,6 +81,7 @@ protected:
 	MIdOrString     m_type;
 	MIdOrString     m_name;
 	WORD            m_lang;
+    BOOL            m_bShowBinEdit;
 
 	// classes
 	MRadWindow      m_rad_window;               // the RADical window
@@ -132,6 +133,7 @@ public:
 		m_bUpxCompressed = FALSE;
 
 		m_lang = BAD_LANG;
+		m_bShowBinEdit = FALSE;
 		m_pAutoComplete = NULL;
 	}
 
@@ -229,7 +231,8 @@ public:
 		SHOW_MOVIE, SHOW_CODEONLY, SHOW_CODEANDBMP
 	};
 	SHOW_MODE m_nShowMode;
-	void SetShowMode(SHOW_MODE mode);
+	void SetShowMode(SHOW_MODE mode, BOOL bShowBinary);
+	void SetShowMode(SHOW_MODE mode) { SetShowMode(mode, m_bShowBinEdit); }
 	void ShowStatusBar(BOOL bShow = TRUE);
 	BOOL ShowLangArrow(BOOL bShow, HTREEITEM hItem = NULL);
 	void UpdateLangArrow();
@@ -502,6 +505,7 @@ protected:
 	std::wstring GetRisohEditorVersion() const;
 	std::wstring ParseVersionFile(LPCWSTR pszFile, std::wstring& url) const;
 	void OnInternalTest(HWND hwnd);
+	void OnGoToLine(HWND hwnd);
 };
 
 extern MMainWnd *s_pMainWnd;

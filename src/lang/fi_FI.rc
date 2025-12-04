@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Muokkaus"
     {
-        MENUITEM "Muokkaa &GUI:ssa...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Muokkaa &GUI:ssa...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Lisää"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "Etsi &alaspäin\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Kyselyvakio...", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "&Siirry määritettyyn riviin...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Näkymä"
     {
@@ -147,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Muokkaa &GUI:ssa...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Muokkaa &GUI:ssa...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Lisää"
         {
@@ -1351,6 +1353,17 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "&Erotin", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
     PUSHBUTTON "Peruuta", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "Siirry määritettyyn riviin"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    RTEXT "&Rivinumero:", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "Peruuta", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

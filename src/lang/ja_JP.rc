@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "&GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "&GUI編集...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "下検索(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "定数を問い合わせ(&Q)", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "指定行へ移動(&G)...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "表示(&V)"
     {
@@ -151,7 +153,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "ポップアップ #0"
     {
-        MENUITEM "&GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "&GUI編集...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
@@ -1355,6 +1357,17 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "セパレーター(&S)", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
     PUSHBUTTON "キャンセル", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "指定行へ移動"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS UI Gothic"
+{
+    RTEXT "行番号(&L):", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "キャンセル", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -713,3 +713,4 @@
     - UTF-16/UTF-32バッファ長を無制限にするために mcpp.exe を更新。
     - HISTORY*.txt を ChangeLog*.txt に改名。
     - README-*.txt を README_*.txt に改名。
+    - 「指定行へ移動」機能を追加。

@@ -77,6 +77,7 @@
 #define IDD_TOOLBARRES                      168
 #define IDD_ADDTBBTN                        169
 #define IDD_MODIFYTBBTN                     170
+#define IDD_GOTOLINE                        171
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -532,6 +533,7 @@
 #define ID_OPENREADMEES                     280
 #define ID_OPENHISTORYES                    281
 #define ID_INTERNALTEST                     282
+#define ID_GOTOLINE                         283
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -542,7 +544,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    111
-        #define _APS_NEXT_COMMAND_VALUE     283
+        #define _APS_NEXT_COMMAND_VALUE     284
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

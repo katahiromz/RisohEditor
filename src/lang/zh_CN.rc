@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "编辑(&E)"
     {
-        MENUITEM "&GUI模式编辑...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "&GUI模式编辑...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "向下搜索(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "查询常量(&Q)...", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "跳转到指定行(&G)...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "界面显示(&V)"
     {
@@ -147,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "&GUI模式...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "&GUI模式...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
@@ -1350,6 +1352,17 @@ FONT 9, "宋体"
     AUTOCHECKBOX "分隔器(&S)", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
     PUSHBUTTON "取消", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "跳转到指定行"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "宋体"
+{
+    RTEXT "行号(&L):", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "取消", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

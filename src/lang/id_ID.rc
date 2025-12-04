@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Edit"
     {
-        MENUITEM "Edit dengan &GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Edit dengan &GUI...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "Cari ke &Bawah\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Permintaan konstan...", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "Pergi &ke baris yang ditentukan...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Tampilan"
     {
@@ -150,7 +152,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Edit dengan &GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Edit dengan &GUI...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
@@ -1354,6 +1356,17 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "&pemisah", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
     PUSHBUTTON "Batal", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "Pergi ke baris yang ditentukan"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    RTEXT "&Nomor baris:", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "Batal", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

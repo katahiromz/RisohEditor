@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Bearbeiten"
     {
-        MENUITEM "Bearbeiten per &GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Bearbeiten per &GUI...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Hinzufügen"
         {
@@ -100,6 +100,8 @@ IDR_MAINMENU MENU
         MENUITEM "Suche nach &unten\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Abfragekonstante...", ID_QUERYCONSTANT
+        MENUITEM SEPARATOR
+        MENUITEM "&Gehe zur angegebenen Zeile...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Aussicht"
     {
@@ -147,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Pop-up #0"
     {
-        MENUITEM "&Bearbeiten per GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "&Bearbeiten per GUI...", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Hinzufügen"
         {
@@ -1351,6 +1353,17 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "&Separator", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
     PUSHBUTTON "Stornieren", IDCANCEL, 110, 70, 60, 15
+}
+
+IDD_GOTOLINE DIALOG 0, 0, 134, 47
+CAPTION "Gehe zur angegebenen Zeile"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    RTEXT "&Zeilennummer:", -1, 5, 5, 70, 15
+    EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
+    PUSHBUTTON "Stornieren", IDCANCEL, 70, 25, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////
