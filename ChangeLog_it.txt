@@ -369,4 +369,4 @@
     - Aggiornato mcpp.exe per rendere illimitata la lunghezza del buffer UTF-16/UTF-32.
     - Rinominati HISTORY*.txt come ChangeLog*.txt.
     - Rinominati README-*.txt come README_*.txt.
-    - Added the "Go to line" feature.
+    - Aggiunta funzionalità "Vai alla riga".

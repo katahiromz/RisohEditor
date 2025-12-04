@@ -1361,7 +1361,7 @@ CAPTION "Vai alla riga specificata"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Numero di riga:", -1, 5, 5, 70, 15
+    RTEXT "&Numero riga:", -1, 5, 5, 70, 15
     EDITTEXT edt1, 80, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 5, 25, 60, 15
     PUSHBUTTON "Annulla", IDCANCEL, 70, 25, 60, 15
