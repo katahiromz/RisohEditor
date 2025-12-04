@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "&GUI編集...", ID_GUIEDIT
+        MENUITEM "&GUI編集...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
@@ -153,7 +153,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "ポップアップ #0"
     {
-        MENUITEM "&GUI編集...", ID_GUIEDIT
+        MENUITEM "&GUI編集...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {

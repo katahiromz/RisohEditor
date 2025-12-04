@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "편집(&E)"
     {
-        MENUITEM "GUI로 편집(&G)...", ID_GUIEDIT
+        MENUITEM "GUI로 편집(&G)...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "추가(&A)"
         {
@@ -152,7 +152,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "GUI로 편집(&G)...", ID_GUIEDIT
+        MENUITEM "GUI로 편집(&G)...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "추가(&A)"
         {

@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Правка"
     {
-        MENUITEM "Редактировать в &графическом интерфейсе...", ID_GUIEDIT
+        MENUITEM "Редактировать в &графическом интерфейсе...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Добавить"
         {
@@ -149,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Редактировать в &графическом интерфейсе...", ID_GUIEDIT
+        MENUITEM "Редактировать в &графическом интерфейсе...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Добавить"
         {

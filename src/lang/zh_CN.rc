@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "编辑(&E)"
     {
-        MENUITEM "&GUI模式编辑...", ID_GUIEDIT
+        MENUITEM "&GUI模式编辑...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
@@ -149,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "&GUI模式...", ID_GUIEDIT
+        MENUITEM "&GUI模式...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {

@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Muokkaus"
     {
-        MENUITEM "Muokkaa &GUI:ssa...", ID_GUIEDIT
+        MENUITEM "Muokkaa &GUI:ssa...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Lisää"
         {
@@ -149,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Muokkaa &GUI:ssa...", ID_GUIEDIT
+        MENUITEM "Muokkaa &GUI:ssa...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Lisää"
         {

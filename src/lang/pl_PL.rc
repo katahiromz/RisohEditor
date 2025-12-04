@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Edycja"
     {
-        MENUITEM "Edytuj przez &GUI...", ID_GUIEDIT
+        MENUITEM "Edytuj przez &GUI...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Dodaj"
         {
@@ -149,7 +149,7 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Edytuj przez &GUI...", ID_GUIEDIT
+        MENUITEM "Edytuj przez &GUI...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Dodaj"
         {

@@ -83,6 +83,7 @@ IDR_MAINACCEL ACCELERATORS
     VK_RETURN, ID_CONFIG, ALT, VIRTKEY
     "Q", ID_INTERNALTEST, CONTROL, VIRTKEY
     "G", ID_GOTOLINE, CONTROL, VIRTKEY
+    "U", IDS_GUIEDIT, CONTROL, VIRTKEY
 }
 
 //////////////////////////////////////////////////////////////////////////////
