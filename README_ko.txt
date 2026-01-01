@@ -11,8 +11,8 @@ RC/RES/EXE/DLL 파일의 리소스 데이터를 편집/추출/복제/삭제
 
 Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
-저작권 및 라이센스 계약에 대한 자세한 내용은 
-"LICENSE.txt"를 참조하십시오.
+저작권 및 라이선스 계약에 대한 자세한 내용은 
+"LICENSE.txt"를 참조하세요.
 
 /////////////////////////////////////////////////////
 
@@ -27,7 +27,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 질문 3. mcdx란 무엇입니까?
 
     대답. 제가 만든 특별한 메시지 컴파일러입니다.
-            자세한 내용은 mcdx/MESSAGETABLEDX.md를 참조하십시오.
+            자세한 내용은 mcdx/MESSAGETABLEDX.md를 참조하세요.
 
 질문 4. Visual Studio로 컴파일할 때 잘못된 문자가 표시되는 이유는 무엇입니까?
 
@@ -36,21 +36,21 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
          Visual Studio 2022 이상을 사용합니다.
 
-질문 5. 설치 프로그램 없음과 휴대용 버전의 차이점은 무엇입니까?
+질문 5. 설치 프로그램 없음과 포터블 버전의 차이점은 무엇입니까?
 
-    대답. 휴대용 버전은 레지스트리를 사용하지 않고 ini 파일을 사용합니다.
+    대답. 포터블 버전은 레지스트리를 사용하지 않고 ini 파일을 사용합니다.
 
 질문 6. 64비트를 지원하나요?
 
-    답변. 네, 지원합니다.
+    답변. 예, 지원합니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-Webpage (Korean):   https://katahiromz.web.fc2.com/re/ko
-Webpage (English):  https://katahiromz.web.fc2.com/re/en
-Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
-Webpage (Japanese): https://katahiromz.fc2.page/risoheditor/
-Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
-Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
+Webpage (한국어):   https://katahiromz.web.fc2.com/re/ko
+Webpage (영어):  https://katahiromz.web.fc2.com/re/en
+Webpage (중국어):  https://katahiromz.web.fc2.com/re/ch
+Webpage (일본어): https://katahiromz.fc2.page/risoheditor/
+Webpage (이탈리아어):  https://katahiromz.web.fc2.com/re/it
+Webpage (러시아어):  https://katahiromz.web.fc2.com/re/ru
 Email               katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////////////////////
