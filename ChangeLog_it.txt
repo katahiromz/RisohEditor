@@ -365,7 +365,7 @@
     - Risolti problemi legati alla memoria.
     - Supportati audio MP3.
     - Risolto il problema delle virgolette vuote del menu.
-- v.5.9.4 (20XX-YY-ZZ)
+- v.5.9.4 (01.01.2026)
     - Aggiornato mcpp.exe per rendere illimitata la lunghezza del buffer UTF-16/UTF-32.
     - Rinominati HISTORY*.txt come ChangeLog*.txt.
     - Rinominati README-*.txt come README_*.txt.

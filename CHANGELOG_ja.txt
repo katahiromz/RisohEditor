@@ -709,7 +709,7 @@
     - 多くのメモリリークを修正。
     - MP3音声のサポート。
     - メニューの空文字列の問題を修正。
-- v.5.9.4 (20XX-YY-ZZ)
+- v.5.9.4 (2026-01-01)
     - UTF-16/UTF-32バッファ長を無制限にするために mcpp.exe を更新。
     - HISTORY*.txt を ChangeLog*.txt に改名。
     - README-*.txt を README_*.txt に改名。
