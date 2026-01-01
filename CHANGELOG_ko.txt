@@ -362,12 +362,12 @@
 - v.5.9.3 (2025-12-01)
     - 자동 완성 시 대소문자 구분 문제가 수정되었습니다.
     - 리소스 이름 0 처리 문제가 수정되었습니다.
-    - Implemented TEXTINCLUDE 1.
-    - Fixed many memory leaks.
-    - Supported MP3 sounds.
-    - Fixed menu empty quotes problem.
+    - TEXTINCLUDE 1을 구현했습니다.
+    - 여러 메모리 누수를 수정했습니다.
+    - MP3 사운드를 지원합니다.
+    - 메뉴에서 빈 따옴표 문제를 수정했습니다.
 - v.5.9.4 (2026-01-01)
-    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimited.
-    - Renamed HISTORY*.txt as ChangeLog*.txt.
-    - Renamed README-*.txt as README_*.txt.
-    - Added the "Go to line" feature.
+    - mcpp.exe를 업데이트하여 UTF-16/UTF-32 버퍼 길이를 무제한으로 만들었습니다.
+    - HISTORY*.txt 파일의 이름을 ChangeLog*.txt로 변경했습니다.
+    - README-*.txt 파일의 이름을 README_*.txt로 변경했습니다.
+    - "해당 줄로 이동" 기능을 추가했습니다
