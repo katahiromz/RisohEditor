@@ -370,3 +370,4 @@
     - Renamed HISTORY*.txt as ChangeLog*.txt.
     - Renamed README-*.txt as README_*.txt.
     - Added the "Go to line" feature.
+- v.5.9.5 (2026-XX-YY)

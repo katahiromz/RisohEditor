@@ -370,3 +370,4 @@
     - Rinominati HISTORY*.txt come ChangeLog*.txt.
     - Rinominati README-*.txt come README_*.txt.
     - Aggiunta funzionalità "Vai alla riga".
+- v.5.9.5 (2026-XX-YY)

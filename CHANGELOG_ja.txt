@@ -714,3 +714,4 @@
     - HISTORY*.txt を ChangeLog*.txt に改名。
     - README-*.txt を README_*.txt に改名。
     - 「指定行へ移動」機能を追加。
+- v.5.9.5 (2026-XX-YY)
