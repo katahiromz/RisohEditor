@@ -45,7 +45,7 @@ public:
 		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE950));
 		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE65001));
 
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCbPrintf(szText, sizeof(szText), TEXT("%u"), m_nCodePage);
 		ComboBox_SetText(hCmb1, szText);
 

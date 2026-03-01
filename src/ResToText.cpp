@@ -354,7 +354,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 	{
 		if (entry.m_lang != 0 && entry.m_lang != BAD_LANG)
 		{
-			WCHAR sz[32];
+			WCHAR sz[MAX_PATH];
 			StringCchPrintfW(sz, _countof(sz), L"%u_", entry.m_lang);
 			ret = sz + ret;
 		}
@@ -1275,7 +1275,7 @@ MString ResToText::DoFontDir(const EntryBase& entry)
 
 	WORD wCount = *(const WORD *)pb;
 
-	TCHAR szText[64];
+	TCHAR szText[MAX_PATH];
 	StringCbPrintf(szText, sizeof(szText), TEXT("Count: %u\r\n---\r\n"), wCount);
 	str += szText;
 

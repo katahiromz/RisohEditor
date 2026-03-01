@@ -465,7 +465,7 @@ std::wstring MMainWnd::GetRisohEditorVersion() const
 		return L"";
 	}
 
-	WCHAR szValue[16];
+	WCHAR szValue[MAX_PATH];
 	DWORD dwValue = *(LPDWORD)pValue;
 	StringCbPrintfW(szValue, sizeof(szValue), L"%04X%04X", LOWORD(dwValue), HIWORD(dwValue));
 
@@ -1296,7 +1296,7 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 	BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
 
 	// get and delete the filename extension
-	WCHAR szExt[32] = L"";
+	WCHAR szExt[MAX_PATH] = L"";
 	LPWSTR pch = wcsrchr(szFile, L'.');
 	static const LPCWSTR s_DotExts[] =
 	{
@@ -6377,7 +6377,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 	if (pszRCFile)
 	{
 		// get file title
-		TCHAR szFileTitle[64];
+		TCHAR szFileTitle[MAX_PATH];
 		GetFileTitle(pszRCFile, szFileTitle, _countof(szFileTitle));
 
 		// change extension to .rc or .rc2
@@ -7918,7 +7918,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
 				if (eval_int(parser.ast(), value))  // evaluate
 				{
 					// convert to a string by base m_id_list_dlg.m_nBase
-					char sz[32];
+					CHAR sz[MAX_PATH];
 					if (m_id_list_dlg.m_nBase == 16)
 						StringCchPrintfA(sz, _countof(sz), "0x%X", value);
 					else
@@ -8772,7 +8772,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 	ofn.nFilterIndex = RFFI2_EXECUTABLE;
 
 	// use the preferred extension
-	WCHAR szExt[32];
+	WCHAR szExt[MAX_PATH];
 	LPWSTR pchDotExt = PathFindExtensionW(m_szFile);
 	if (pchDotExt && *pchDotExt == L'.')
 	{
@@ -9506,7 +9506,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #if 0 && !defined(NDEBUG) && (WINVER >= 0x0500)
 	// show object counts (for debugging purpose)
 	HANDLE hProcess = GetCurrentProcess();
-	TCHAR szText[64];
+	TCHAR szText[MAX_PATH];
 	StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"),
 			 GetGuiResources(hProcess, GR_GDIOBJECTS),
 			 GetGuiResources(hProcess, GR_USEROBJECTS));
@@ -9518,7 +9518,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
 	// pszText --> szText
-	WCHAR szText[128];
+	WCHAR szText[MAX_PATH];
 	StringCchCopyW(szText, _countof(szText), pszText);
 
 	// replace the fullwidth characters with halfwidth characters
@@ -10448,7 +10448,7 @@ void MMainWnd::AddHeadComment(std::vector<MStringA>& lines)
 {
 	if (m_szFile[0])
 	{
-		WCHAR title[64];
+		WCHAR title[MAX_PATH];
 		GetFileTitleW(m_szFile, title, _countof(title));
 		MStringA line = "// ";
 		line += MWideToAnsi(CP_ACP, title).c_str();
@@ -11714,7 +11714,7 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	// get the 1st and 2nd subitem texts
-	TCHAR szText[128];
+	TCHAR szText[MAX_PATH];
 	ListView_GetItemText(m_id_list_dlg.m_hLst1, iItem, 0, szText, _countof(szText));
 	MString name = szText;      // 1st is name
 	ListView_GetItemText(m_id_list_dlg.m_hLst1, iItem, 1, szText, _countof(szText));
@@ -11787,7 +11787,7 @@ void MMainWnd::DoEvents()
 
 static BOOL DoMsgCtrlA(MSG *pMsg)
 {
-	WCHAR szClass[16] = L"";
+	WCHAR szClass[MAX_PATH] = L"";
 	GetClassNameW(pMsg->hwnd, szClass, _countof(szClass));
 
 	if (lstrcmpiW(szClass, L"EDIT") == 0 || lstrcmpiW(szClass, L"LineNumEdit") == 0)

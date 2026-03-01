@@ -97,7 +97,7 @@ public:
 		if (iItem < 0)
 			return;
 
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
 
 		LANGID langid = _wtoi(szText);
@@ -134,7 +134,7 @@ public:
 		if (iItem < 0)
 			return;
 
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
 
 		INT cch = lstrlen(szText) + 1;

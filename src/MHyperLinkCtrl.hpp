@@ -37,8 +37,8 @@ public:
 	{
 		ModifyStyleDx(0, SS_NOTIFY | WS_TABSTOP);
 
-		TCHAR szClass[64];
-		GetClassName(hwnd, szClass, 64);
+		TCHAR szClass[MAX_PATH];
+		GetClassName(hwnd, szClass, _countof(szClass));
 		assert(lstrcmpi(szClass, TEXT("STATIC")) == 0);
 
 		PAINTSTRUCT ps;

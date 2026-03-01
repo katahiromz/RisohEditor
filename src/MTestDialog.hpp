@@ -163,8 +163,8 @@ public:
 			SIZE siz = { 0, 0 };
 			GetWindowPosDx(hCtrl, NULL, &siz);
 
-			WCHAR szClass[32];
-			GetClassNameW(hCtrl, szClass, 32);
+			WCHAR szClass[MAX_PATH];
+			GetClassNameW(hCtrl, szClass, _countof(szClass));
 			if (lstrcmpiW(szClass, L"STATIC") == 0)
 			{
 				MIdOrString title = m_dialog_res[i].m_title;

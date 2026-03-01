@@ -286,8 +286,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	keyRisoh.QueryDword(TEXT("nEgaHeight"), (DWORD&)g_settings.nEgaHeight);
 	keyRisoh.QueryDword(TEXT("nDefResLangID"), (DWORD&)g_settings.nDefResLangID);
 
-	TCHAR szText[128];
-	TCHAR szValueName[128];
+	TCHAR szText[MAX_PATH];
+	TCHAR szValueName[MAX_PATH];
 
 	// load the macros
 	DWORD dwMacroCount = 0;
@@ -387,7 +387,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 		g_settings.nRadLeft = CW_USEDEFAULT;
 
 	DWORD i, dwCount;
-	TCHAR szFormat[32], szFile[MAX_PATH];
+	TCHAR szFormat[MAX_PATH], szFile[MAX_PATH];
 
 	// load the recently used files
 	keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
@@ -482,7 +482,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 		g_settings.encoding_map.clear();
 		for (DWORD i = 0; i < encoding_count; ++i)
 		{
-			WCHAR szName[32];
+			WCHAR szName[MAX_PATH];
 			StringCchPrintfW(szName, _countof(szName), L"encoding%lu", i);
 			if (keyRisoh.QuerySz(szName, szText, _countof(szText)) == ERROR_SUCCESS)
 			{
@@ -617,7 +617,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	if (dwCount > MAX_MRU)
 		dwCount = MAX_MRU;
 	keyRisoh.SetDword(TEXT("FileCount"), dwCount);
-	TCHAR szValueName[128];
+	TCHAR szValueName[MAX_PATH];
 	for (i = 0; i < dwCount; ++i)
 	{
 		StringCchPrintf(szValueName, _countof(szValueName), TEXT("File%lu"), i);
@@ -701,10 +701,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 		DWORD i = 0;
 		for (auto pair : g_settings.encoding_map)
 		{
-			WCHAR szName[32];
+			WCHAR szName[MAX_PATH];
 			StringCchPrintfW(szName, _countof(szName), L"encoding%lu", i);
 
-			WCHAR szText[64];
+			WCHAR szText[MAX_PATH];
 			StringCchPrintfW(szText, _countof(szText), L"%s:%s", pair.first.c_str(), pair.second.c_str());
 
 			keyRisoh.SetSz(szName, szText);

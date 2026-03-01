@@ -380,7 +380,7 @@ public:
 		INT iItem;
 
 		LV_FINDINFO find;
-		TCHAR sz[128];
+		TCHAR sz[MAX_PATH];
 		StringCchCopy(sz, _countof(sz), s_entry.StringID);
 		ZeroMemory(&find, sizeof(find));
 		find.flags = LVFI_STRING;
@@ -559,7 +559,7 @@ public:
 				NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
 				INT iItem = pGetInfoTip->iItem;
 				INT iSubItem = pGetInfoTip->iSubItem;
-				TCHAR szText[128];
+				TCHAR szText[MAX_PATH];
 				ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
 				StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
 				return 1;

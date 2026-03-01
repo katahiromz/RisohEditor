@@ -371,4 +371,5 @@
     - HISTORY*.txt 파일의 이름을 ChangeLog*.txt로 변경했습니다.
     - README-*.txt 파일의 이름을 README_*.txt로 변경했습니다.
     - "해당 줄로 이동" 기능을 추가했습니다
-- v.5.9.5 (2026-XX-YY)
+- v.5.9.5 (2026-03-01)
+    - Relaxed the buffer size.

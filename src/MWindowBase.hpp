@@ -1156,7 +1156,7 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	MWindowBase *base;
 	if (uMsg == WM_CREATE)
 	{
-		TCHAR szClass[128];
+		TCHAR szClass[MAX_PATH];
 		GetClassName(hwnd, szClass, _countof(szClass));
 
 		LPCREATESTRUCT pcs = (LPCREATESTRUCT)lParam;
@@ -1191,7 +1191,7 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if (base)
 	{
 #ifndef NDEBUG
-		TCHAR szClass[128];
+		TCHAR szClass[MAX_PATH];
 		GetClassName(hwnd, szClass, _countof(szClass));
 #endif
 		base->SaveMessageDx(hwnd, uMsg, wParam, lParam);
@@ -1464,7 +1464,7 @@ MWindowBase::_msgBoxCbtProcDx(INT nCode, WPARAM wParam, LPARAM lParam)
 	if (nCode == HCBT_ACTIVATE)
 	{
 		HWND hwnd = (HWND)wParam;
-		TCHAR szClassName[16];
+		TCHAR szClassName[MAX_PATH];
 		::GetClassName(hwnd, szClassName, _countof(szClassName));
 		if (lstrcmpi(szClassName, TEXT("#32770")) == 0)
 		{

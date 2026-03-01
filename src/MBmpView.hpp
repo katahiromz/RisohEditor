@@ -35,7 +35,7 @@ inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
 	}
 	else
 	{
-		TCHAR szMsg[128];
+		TCHAR szMsg[MAX_PATH];
 		wnsprintf(szMsg, _countof(szMsg), TEXT("MCI Error in %s: code %lu\n"), pszContext, dwError);
 		OutputDebugString(szMsg);
 	}

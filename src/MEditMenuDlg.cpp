@@ -617,7 +617,7 @@ void MEditMenuDlg::OnLeft(HWND hwnd)
 	if (iItem < 0)
 		return;
 
-	WCHAR szCaption[128];
+	WCHAR szCaption[MAX_PATH];
 	ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
 
 	std::wstring strIndent = LoadStringDx(IDS_INDENT);
@@ -640,9 +640,9 @@ void MEditMenuDlg::OnRight(HWND hwnd)
 	if (iItem == 0)
 		return;
 
-	WCHAR CaptionUp[128];
+	WCHAR CaptionUp[MAX_PATH];
 	ListView_GetItemText(m_hLst1, iItem - 1, 0, CaptionUp, _countof(CaptionUp));
-	WCHAR szCaption[128];
+	WCHAR szCaption[MAX_PATH];
 	ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
 
 	MStringW strIndent = LoadStringDx(IDS_INDENT);
@@ -795,7 +795,7 @@ LRESULT MEditMenuDlg::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
 			INT iItem = pGetInfoTip->iItem;
 			INT iSubItem = pGetInfoTip->iSubItem;
-			TCHAR szText[128];
+			TCHAR szText[MAX_PATH];
 			ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
 			StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
 		}

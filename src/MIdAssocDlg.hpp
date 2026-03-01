@@ -92,7 +92,7 @@ public:
 		if (iItem == -1)
 			return;
 
-		TCHAR szText[64];
+		TCHAR szText[MAX_PATH];
 		MString str1, str2;
 
 		ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
@@ -110,7 +110,7 @@ public:
 
 	void OnOK(HWND hwnd)
 	{
-		TCHAR szText[64];
+		TCHAR szText[MAX_PATH];
 		MString str1, str2;
 
 		INT iItem, nCount = ListView_GetItemCount(m_hLst1);

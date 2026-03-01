@@ -105,7 +105,7 @@ public:
 	void PostSubclass()
 	{
 		SIZE siz = { 0, 0 };
-		TCHAR szClass[16];
+		TCHAR szClass[MAX_PATH];
 		GetWindowPosDx(m_hwnd, NULL, &siz);
 		GetClassName(m_hwnd, szClass, _countof(szClass));
 		if (lstrcmpi(szClass, TEXT("STATIC")) == 0)
@@ -469,8 +469,8 @@ public:
 	BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
 	{
 		// get the window class name of MRadCtrl
-		WCHAR szClass[64];
-		GetClassNameW(hwnd, szClass, 64);
+		WCHAR szClass[MAX_PATH];
+		GetClassNameW(hwnd, szClass, _countof(szClass));
 
 		// special rendering for specific classes
 		if (lstrcmpiW(szClass, TOOLBARCLASSNAMEW) == 0 ||
@@ -2237,7 +2237,7 @@ public:
 		item.m_siz.cy = rc.bottom - rc.top;
 
 		// if it was combobox, then apply the settings
-		TCHAR szClass[64];
+		TCHAR szClass[MAX_PATH];
 		GetClassName(hwndCtrl, szClass, _countof(szClass));
 		if (lstrcmpi(szClass, TEXT("COMBOBOX")) == 0 ||
 			lstrcmpi(szClass, WC_COMBOBOXEX) == 0)

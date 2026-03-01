@@ -388,7 +388,7 @@ public:
 		auto& map = g_settings.encoding_map;
 		map.clear();
 
-		WCHAR szText1[64], szText2[64];
+		WCHAR szText1[MAX_PATH], szText2[MAX_PATH];
 		for (iItem = 0; iItem < nCount; ++iItem)
 		{
 			ListView_GetItemText(m_hLst1, iItem, 0, szText1, _countof(szText1));
@@ -435,7 +435,7 @@ public:
 		INT iItem;
 
 		LV_FINDINFO find;
-		WCHAR sz[128];
+		WCHAR sz[MAX_PATH];
 		StringCchCopyW(sz, _countof(sz), text1.c_str());
 		ZeroMemory(&find, sizeof(find));
 		find.flags = LVFI_STRING;
@@ -474,7 +474,7 @@ public:
 		if (iItem == -1)
 			return;
 
-		WCHAR szText1[64], szText2[64];
+		WCHAR szText1[MAX_PATH], szText2[MAX_PATH];
 
 		ListView_GetItemText(m_hLst1, iItem, 0, szText1, _countof(szText1));
 		mstr_trim(szText1);

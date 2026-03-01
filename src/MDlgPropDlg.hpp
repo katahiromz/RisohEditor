@@ -118,6 +118,21 @@ public:
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
+		SendDlgItemMessageW(hwnd, cmb1, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb2, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb3, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb4, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb5, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb6, CB_LIMITTEXT, MAX_PATH, 0);
+
+		SendDlgItemMessageW(hwnd, edt1, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt2, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt3, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt4, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt5, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt6, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt7, EM_LIMITTEXT, MAX_PATH, 0);
+
 		MString strCaption = m_dialog_res.m_title.c_str();
 		if (strCaption.size())
 		{
@@ -126,7 +141,6 @@ public:
 
 		SubclassChildDx(m_cmb1, cmb1);
 		InitCaptionComboBox(m_cmb1, strCaption.c_str());
-		SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
 
 		if (m_dialog_res.IsExtended())
 		{
@@ -165,25 +179,18 @@ public:
 		SetDlgItemInt(hwnd, edt2, m_dialog_res.m_pt.y, TRUE);
 		SetDlgItemInt(hwnd, edt3, m_dialog_res.m_siz.cx, TRUE);
 		SetDlgItemInt(hwnd, edt4, m_dialog_res.m_siz.cy, TRUE);
-		SendDlgItemMessage(hwnd, edt1, EM_SETLIMITTEXT, 12, 0);
-		SendDlgItemMessage(hwnd, edt2, EM_SETLIMITTEXT, 12, 0);
-		SendDlgItemMessage(hwnd, edt3, EM_SETLIMITTEXT, 12, 0);
-		SendDlgItemMessage(hwnd, edt4, EM_SETLIMITTEXT, 12, 0);
 
 		SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
-		SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
 		MStringW strHelp = g_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
 		SetDlgItemText(hwnd, cmb3, strHelp.c_str());
 		InitResNameComboBox(GetDlgItem(hwnd, cmb3), L"", IDTYPE_HELP);
 		SubclassChildDx(m_cmb3, cmb3);
-		SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
 
 		SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().c_str_or_empty());
 		SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
 		SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
-		SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
 
 		MString strMenu;
 		if (m_dialog_res.m_menu.empty())
@@ -193,12 +200,11 @@ public:
 		else
 			strMenu = m_dialog_res.m_menu.str();
 		SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
-		SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
 		SubclassChildDx(m_cmb6, cmb6);
 
 		InitTables(TEXT("DIALOG"));
 
-		WCHAR Buf[32];
+		WCHAR Buf[MAX_PATH];
 
 		m_dwStyle = m_dialog_res.m_style;
 		HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -209,7 +215,6 @@ public:
 		m_bUpdating = TRUE;
 		StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwStyle);
 		SetDlgItemTextW(hwnd, edt6, Buf);
-		SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
 		m_bUpdating = FALSE;
 
 		m_dwExStyle = m_dialog_res.m_ex_style;
@@ -221,7 +226,6 @@ public:
 		m_bUpdating = TRUE;
 		StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwExStyle);
 		SetDlgItemTextW(hwnd, edt7, Buf);
-		SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
 		m_bUpdating = FALSE;
 
 		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
@@ -385,7 +389,7 @@ public:
 		ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
 		m_bUpdating = TRUE;
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
 		SetDlgItemText(hwnd, edt6, szText);
 		if ((dwOldStyle & DS_SETFONT) && !(m_dwStyle & DS_SETFONT))
@@ -442,7 +446,7 @@ public:
 		ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
 		m_bUpdating = TRUE;
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwExStyle);
 		SetDlgItemText(hwnd, edt7, szText);
 		m_bUpdating = FALSE;

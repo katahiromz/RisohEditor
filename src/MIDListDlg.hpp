@@ -35,7 +35,7 @@ public:
 			if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
 			{
 				INT iItem = ListView_GetNextItem(m_hwnd, -1, LVNI_ALL | LVNI_SELECTED);
-				TCHAR szText[128];
+				TCHAR szText[MAX_PATH];
 				ListView_GetItemText(m_hwnd, iItem, 2, szText, _countof(szText));
 				if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
 				{
@@ -92,7 +92,7 @@ public:
 		find.lParam = lParam2;
 		INT i2 = ListView_FindItem(m_hLst1, -1, &find);
 
-		TCHAR sz1[64], sz2[64];
+		TCHAR sz1[MAX_PATH], sz2[MAX_PATH];
 		if (i1 != -1 && i2 != -1)
 		{
 			ListView_GetItemText(m_hLst1, i1, 1, sz1, _countof(sz1));
@@ -189,7 +189,7 @@ public:
 
 		for (INT i = 0; i < iItem; ++i)
 		{
-			WCHAR szText[64];
+			WCHAR szText[MAX_PATH];
 			ZeroMemory(&item, sizeof(item));
 			item.iItem = i;
 			item.iSubItem = 0;
@@ -233,7 +233,7 @@ public:
 		{
 			int value = mstr_parse_int(text3.c_str(), true);
 
-			TCHAR szText[32];
+			TCHAR szText[MAX_PATH];
 			if (m_nBase == 10)
 				StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
 			else if (m_nBase == 16)
@@ -256,7 +256,7 @@ public:
 	{
 		MStringW ret;
 
-		WCHAR szText[64];
+		WCHAR szText[MAX_PATH];
 		LV_ITEM item;
 		ZeroMemory(&item, sizeof(item));
 		item.iItem = i;
@@ -541,7 +541,7 @@ public:
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		INT iItem;
-		TCHAR szText[64];
+		TCHAR szText[MAX_PATH];
 		MString str1, str2;
 		switch (id)
 		{
@@ -760,7 +760,7 @@ public:
 		if (iItem == -1)
 			return;
 
-		TCHAR szText[128];
+		TCHAR szText[MAX_PATH];
 		ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
 		MString str = szText;
 		if (str.find(TEXT('/')) == MString::npos || nIndex == 0)
@@ -839,7 +839,7 @@ public:
 		}
 		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
 
-		TCHAR szText[128];
+		TCHAR szText[MAX_PATH];
 		ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
 		if (iItem == -1 || szText[0] == TEXT('L') || szText[0] == TEXT('"'))
 		{
@@ -936,7 +936,7 @@ public:
 				NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
 				INT iItem = pGetInfoTip->iItem;
 				INT iSubItem = pGetInfoTip->iSubItem;
-				TCHAR szText[128];
+				TCHAR szText[MAX_PATH];
 				ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
 				StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
 				return 1;

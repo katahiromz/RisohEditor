@@ -75,7 +75,7 @@ public:
 				GetWindowRect(pair.second, &rc);
 				MapWindowRect(NULL, m_hwndOwner, &rc);
 
-				TCHAR szText[32];
+				TCHAR szText[MAX_PATH];
 				StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
 				TextOut(hDC, rc.left, rc.top, szText, lstrlen(szText));
 			}

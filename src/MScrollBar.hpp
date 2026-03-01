@@ -179,7 +179,7 @@ inline UINT GetMouseScrollLinesDx(VOID)
 	if (::RegOpenKeyEx(HKEY_CURRENT_USER,  TEXT("Control Panel\\Desktop"),
 					   0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
 	{
-		TCHAR szData[128];
+		TCHAR szData[MAX_PATH];
 		DWORD dwKeyDataType;
 		DWORD dwDataBufSize = sizeof(szData);
 

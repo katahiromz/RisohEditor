@@ -226,7 +226,7 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
 MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 {
 	MStringW ret;
-	WCHAR sz[64];
+	WCHAR sz[MAX_PATH];
 	DWORD addr, size = DWORD(data.size());
 
 	// is it empty?
@@ -474,7 +474,7 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 
 HRESULT FileSystemAutoComplete(HWND hwnd)
 {
-	WCHAR szClass[64];
+	WCHAR szClass[MAX_PATH];
 	if (!GetClassNameW(hwnd, szClass, _countof(szClass)))
 		return E_FAIL;
 
@@ -1488,7 +1488,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 		break;
 	}
 
-	TCHAR szText[32];
+	TCHAR szText[MAX_PATH];
 	if (strPrim.empty())
 	{
 		StringCchPrintf(szText, _countof(szText), TEXT("0x%04X"), PRIMARYLANGID(langid));
@@ -2423,14 +2423,14 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 	// delete all the items of listview
 	ListView_DeleteAllItems(hLst1);
 
-	WCHAR szText[128];
+	WCHAR szText[MAX_PATH];
 	if (pszText)
 	{
 		StringCbCopyW(szText, sizeof(szText), pszText);
 		CharUpperW(szText);
 	}
 
-	WCHAR sz1[64], sz2[64];
+	WCHAR sz1[MAX_PATH], sz2[MAX_PATH];
 	LV_ITEM item;
 	INT iItem = 0;
 	for (auto& entry : g_langs)	 // for all the items of g_langs
@@ -2767,7 +2767,7 @@ BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString)
 	entry.LangID = LANGIDFROMLCID(lcid);	// store the language ID
 
 	// get the localized language and country
-	WCHAR sz[128] = L"";
+	WCHAR sz[MAX_PATH] = L"";
 	if (lcid == 0)
 		return TRUE;	// continue
 	if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
@@ -2791,7 +2791,7 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 	entry.LangID = LANGIDFROMLCID(lcid);	// store the language ID
 
 	// get the language and country in English
-	WCHAR sz1[128] = L"", sz2[128] = L"";
+	WCHAR sz1[MAX_PATH] = L"", sz2[MAX_PATH] = L"";
 	if (lcid == 0)
 		return TRUE;	// continue
 	if (!GetLocaleInfoW(lcid, LOCALE_SENGLANGUAGE, sz1, _countof(sz1)))
@@ -2814,7 +2814,7 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 // get the text from a language ID
 MStringW TextFromLang(WORD lang)
 {
-	WCHAR sz[128], szLoc[128];
+	WCHAR sz[MAX_PATH], szLoc[MAX_PATH];
 
 	// get the locale ID
 	LCID lcid = MAKELCID(lang, SORT_DEFAULT);

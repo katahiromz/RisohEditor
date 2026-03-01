@@ -59,7 +59,7 @@ public:
 				if (codeNotify == CBN_SELCHANGE)
 				{
 					INT iItem = (INT)SendMessageW(m_cmb1, CB_GETCURSEL, 0, 0);
-					WCHAR szText[128];
+					WCHAR szText[MAX_PATH];
 					SendMessageW(m_cmb1, CB_GETLBTEXT, iItem, (LPARAM)szText);
 					name = szText;
 				}
@@ -89,7 +89,7 @@ public:
 				{
 					SetDlgItemInt(hwnd, edt2, value, FALSE);
 
-					WCHAR szText[64];
+					WCHAR szText[MAX_PATH];
 					StringCbPrintfW(szText, sizeof(szText), L"0x%08lX", value);
 					SetDlgItemText(hwnd, edt3, szText);
 				}

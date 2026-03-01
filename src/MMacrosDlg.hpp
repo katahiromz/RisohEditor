@@ -466,7 +466,7 @@ public:
 				NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
 				INT iItem = pGetInfoTip->iItem;
 				INT iSubItem = pGetInfoTip->iSubItem;
-				TCHAR szText[128];
+				TCHAR szText[MAX_PATH];
 				ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
 				StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
 			}

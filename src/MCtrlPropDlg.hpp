@@ -404,6 +404,20 @@ public:
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
+		SendDlgItemMessageW(hwnd, cmb1, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb2, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb3, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb4, CB_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, cmb5, CB_LIMITTEXT, MAX_PATH, 0);
+
+		SendDlgItemMessageW(hwnd, edt1, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt2, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt3, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt4, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt5, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt6, EM_LIMITTEXT, MAX_PATH, 0);
+		SendDlgItemMessageW(hwnd, edt7, EM_LIMITTEXT, MAX_PATH, 0);
+
 		SubclassChildDx(m_hTB, ctl1);
 		InitToolBar();
 
@@ -438,7 +452,7 @@ public:
 		InitWndClassComboBox(hCmb4, m_item.m_class.c_str());
 		SubclassChildDx(m_cmb4, cmb4);
 
-		TCHAR szText[64];
+		TCHAR szText[MAX_PATH];
 
 		HWND hLst1 = GetDlgItem(hwnd, lst1);
 		if (m_flags & F_STYLE)
@@ -597,7 +611,7 @@ public:
 		ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
 		m_bUpdating = TRUE;
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
 		SetDlgItemText(hwnd, edt6, szText);
 		m_bUpdating = FALSE;
@@ -618,7 +632,7 @@ public:
 		ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
 		m_bUpdating = TRUE;
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwExStyle);
 		SetDlgItemText(hwnd, edt7, szText);
 		m_bUpdating = FALSE;
@@ -683,7 +697,7 @@ public:
 		ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
 		m_bUpdating = TRUE;
-		TCHAR szText[32];
+		TCHAR szText[MAX_PATH];
 		StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
 		SetDlgItemText(hwnd, edt6, szText);
 		m_bUpdating = FALSE;
