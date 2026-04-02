@@ -372,3 +372,4 @@
     - Added the "Go to line" feature.
 - v.5.9.5 (2026-03-01)
     - Relaxed the buffer size.
+- v.5.9.6 (2026-XX-YY)
