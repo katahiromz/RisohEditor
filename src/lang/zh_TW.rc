@@ -123,7 +123,7 @@ IDR_MAINMENU MENU
         MENUITEM "使用微軟訊息表(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "資源項的編碼(&E)...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "對話框字型替換(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "更新到最新資訊(&F)", ID_REFRESHALL
     }
