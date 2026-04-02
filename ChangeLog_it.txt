@@ -370,8 +370,8 @@
     - Rinominati HISTORY*.txt come ChangeLog*.txt.
     - Rinominati README-*.txt come README_*.txt.
     - Aggiunta funzionalità "Vai alla riga".
-- v.5.9.5 (2026-03-01)
+- v.5.9.5 (01.03.2026)
     - Relaxed the buffer size.
-- v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
+- v.5.9.6 (02.04.2026)
+    - Corretta info versione.
+    - Modello info versione localizzata (RT_VERSION).
