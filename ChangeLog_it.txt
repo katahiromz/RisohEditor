@@ -372,4 +372,6 @@
     - Aggiunta funzionalità "Vai alla riga".
 - v.5.9.5 (2026-03-01)
     - Relaxed the buffer size.
-- v.5.9.6 (2026-XX-YY)
+- v.5.9.6 (2026-04-02)
+    - Fixed version info.
+    - Localized version info (RT_VERSION) templates.
