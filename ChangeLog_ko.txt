@@ -2,10 +2,10 @@
 // 업데이트 내역
 
 - v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
+    - 버전 정보를 수정했습니다.
+    - 버전 정보 (RT_VERSION) 템플릿을 현지화했습니다.
 - v.5.9.5 (2026-03-01)
-    - Relaxed the buffer size.
+    - 퍼 크기를 완화했습니다.
 - v.5.9.4 (2026-01-01)
     - mcpp.exe를 업데이트하여 UTF-16/UTF-32 버퍼 길이를 무제한으로 만들었습니다.
     - HISTORY*.txt 파일의 이름을 ChangeLog*.txt로 변경했습니다.
