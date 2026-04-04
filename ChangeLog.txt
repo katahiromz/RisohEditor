@@ -1,5 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
+- v.5.9.7 (2026-XX-YY)
 - v.5.9.6 (2026-04-02)
     - Fixed version info.
     - Localized version info (RT_VERSION) templates.
