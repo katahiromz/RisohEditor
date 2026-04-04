@@ -1,11 +1,11 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.5.9.7 (2026-XX-YY)
-- v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
-- v.5.9.5 (2026-03-01)
-    - Relaxed the buffer size.
+- v.5.9.6 (02.04.2026)
+    - Corretta info versione.
+    - Localizzato modello info versione (RT_VERSION).
+- v.5.9.5 (01.03.2026)
+    - Ridotta la dimensione del buffer.
 - v.5.9.4 (01.01.2026)
     - Aggiornato mcpp.exe per rendere illimitata la lunghezza del buffer UTF-16/UTF-32.
     - Rinominati HISTORY*.txt come ChangeLog*.txt.
