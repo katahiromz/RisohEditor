@@ -307,7 +307,7 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 }
 
 // dump a file
-BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
+BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, size_t size)
 {
 	using namespace std;
 
