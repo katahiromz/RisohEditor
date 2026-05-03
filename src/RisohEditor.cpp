@@ -39,6 +39,28 @@ void DoSetFileModified(BOOL bModified)
 HWND g_hMainWnd = NULL;
 static INT s_ret = 0;
 
+struct CODEPAGE_INFO
+{
+	UINT number;
+	const char *name;
+};
+
+static const CODEPAGE_INFO g_codepage_info[] = {
+#define DEFINE_CODEPAGE(number, name) { number, name },
+#include "codepages.h"
+#undef DEFINE_CODEPAGE
+};
+
+LPCSTR FindCodePageName(UINT nCodePage)
+{
+	for (auto& entry : g_codepage_info)
+	{
+		if (entry.number == nCodePage)
+			return entry.name;
+	}
+	return "(Unknown)";
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // global variables
 
@@ -5932,7 +5954,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (nCodePage == CP_UTF8)
 			file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 		else
-			file.WriteFormatA("#pragma code_page(%u)\r\n\r\n", nCodePage);
+			file.WriteFormatA("#pragma code_page(%u) // %s\r\n\r\n", nCodePage,
+			                  FindCodePageName(nCodePage));
 
 		if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
 		{
@@ -6062,7 +6085,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 				if (nCodePage == CP_UTF8)
 					lang_file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 				else
-					lang_file.WriteFormatA("#pragma code_page(%u)\r\n\r\n", nCodePage);
+					lang_file.WriteFormatA("#pragma code_page(%u) // %s\r\n\r\n", nCodePage,
+					                       FindCodePageName(nCodePage));
 			}
 			if (!lang_file) {
 				textinclude.delete_all();
