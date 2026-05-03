@@ -1,24 +1,24 @@
 ﻿## HISTORIA
 
 - v.5.9.7 (2026-XX-YY)
-    - Supported RichEdit20A/RichEdit20W.
+    - Compatibilidad con RichEdit20A/RichEdit20W.
 - v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
+    - Información de versión corregida.
+    - Plantillas de información de versión (RT_VERSION) localizadas.
 - v.5.9.5 (2026-03-01)
-    - Relaxed the buffer size.
+    - Tamaño del búfer ampliado.
 - v.5.9.4 (2026-01-01)
-    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimitted.
-    - Renamed HISTORY*.txt as ChangeLog*.txt.
-    - Renamed README-*.txt as README_*.txt.
-    - Added the "Go to line" feature.
+    - mcpp.exe actualizado para que la longitud del búfer UTF-16/UTF-32 sea ilimitada.
+    - HISTORY*.txt renombrado a ChangeLog*.txt.
+    - README-*.txt renombrado a README_*.txt.
+    - Se agregó la función "Ir a la línea".
 - v.5.9.3 (01-12-2025)
-    - Fixed AutoComplete case-insensitiveness problem.
-    - Fixed handling of resource name zero.
-    - Implemented TEXTINCLUDE 1.
-    - Fixed many memory leaks.
-    - Supported MP3 sounds.
-    - Fixed menu empty quotes problem.
+    - Se solucionó el problema de insensibilidad a mayúsculas y minúsculas de la función Autocompletar.
+    - Se corrigió el manejo del nombre de recurso cero.
+    - Se implementó TEXTINCLUDE 1.
+    - Se corrigieron varias fugas de memoria.
+    - Se agregó compatibilidad con sonidos MP3.
+    - Se solucionó el problema de las comillas vacías en el menú.
 - v.5.9.2 (23-10-2025)
     - Se solucionó el problema de la doble firma.
 - v.5.9.1 (23-10-2025)
