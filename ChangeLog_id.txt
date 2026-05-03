@@ -1,95 +1,95 @@
 ﻿## SEJARAH
 
 - v.5.9.7 (2026-XX-YY)
-    - Supported RichEdit20A/RichEdit20W.
+    - Mendukung RichEdit20A/RichEdit20W.
 - v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
+    - Memperbaiki informasi versi.
+    - Templat informasi versi (RT_VERSION) yang dilokalisasi.
 - v.5.9.5 (2026-03-01)
-    - Relaxed the buffer size.
+    - Mempermudah ukuran buffer.
 - v.5.9.4 (2026-01-01)
-    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimited.
-    - Renamed HISTORY*.txt as ChangeLog*.txt.
-    - Renamed README-*.txt as README_*.txt.
-    - Added the "Go to line" feature.
+    - Memperbarui mcpp.exe untuk membuat panjang buffer UTF-16/UTF-32 tidak terbatas.
+    - Mengganti nama HISTORY*.txt menjadi ChangeLog*.txt.
+    - Mengganti nama README-*.txt menjadi README_*.txt.
+    - Menambahkan fitur "Lanjutkan ke baris".
 - v.5.9.3 (2025-12-01)
-    - Fixed AutoComplete case-insensitiveness problem.
-    - Fixed handling of resource name zero.
-    - Implemented TEXTINCLUDE 1.
-    - Fixed many memory leaks.
-    - Supported MP3 sounds.
-    - Fixed menu empty quotes problem.
+    - Memperbaiki masalah ketidakpekaan huruf besar/kecil pada AutoComplete.
+    - Memperbaiki penanganan nama sumber daya nol.
+    - Mengimplementasikan TEXTINCLUDE 1.
+    - Memperbaiki banyak kebocoran memori.
+    - Mendukung suara MP3.
+    - Memperbaiki masalah tanda kutip kosong pada menu.
 - v.5.9.2 (2025-10-23)
-    - Fixed double signature problem.
+    - Memperbaiki masalah tanda tangan ganda.
 - v.5.9.1 (2025-10-23)
-    - Now, the maximum length of a non-wrapped string literal is 400.
-    - Wrap string literals only in UTF-16 RC.
-    - Fixed Search (Ctrl+F).
-    - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
-    - Improved Search UI/UX.
-    - Added "(bom)" option to EGA RES_save function.
-    - Added High DPI support.
+    - Sekarang, panjang maksimum literal string yang tidak dibungkus adalah 400.
+    - Bungkus literal string hanya di UTF-16 RC.
+    - Perbaikan Pencarian (Ctrl+F).
+    - Kata kunci ANICURSOR dan ANIICON tidak tersedia di lingkungan lama. Gunakan angka sebagai gantinya.
+    - Peningkatan UI/UX Pencarian.
+    - Menambahkan opsi "(bom)" ke fungsi EGA RES_save.
+    - Menambahkan dukungan High DPI.
 - v.5.9.0 (2025-09-01)
-    - Supported rc2 filename extension.
-    - Notified icon change on extracting file by SHChangeNotify.
-    - Enabled wrapping of excessively long string literals.
-    - It is now possible to add a Byte Order Mark (BOM) when outputting an RC file.
+    - Mendukung ekstensi nama file rc2.
+    - Pemberitahuan perubahan ikon saat mengekstrak file oleh SHChangeNotify.
+    - Mengaktifkan pembungkus literal string yang terlalu panjang.
+    - Sekarang dimungkinkan untuk menambahkan Byte Order Mark (BOM) saat mengeluarkan file RC.
 - v.5.8.9 (2025-07-01)
-    - Notified icon change on saving EXE file by SHChangeNotify.
-    - Added English "Neutral" entry to the language list.
-    - Fixed initial language list box selection.
-    - Correctly retrieving info of RLE Bitmap.
-    - Reduced flickering when moving the splitter.
-    - Disabled WoW filesystem redirection.
-    - Enabled filesystem auto-completion.
+    - Pemberitahuan perubahan ikon saat menyimpan file EXE oleh SHChangeNotify.
+    - Menambahkan entri "Netral" Bahasa Inggris ke daftar bahasa.
+    - Memperbaiki pemilihan kotak daftar bahasa awal.
+    - Mengambil informasi Bitmap RLE dengan benar.
+    - Mengurangi kedipan saat memindahkan pemisah.
+    - Menonaktifkan pengalihan sistem file WoW.
+    - Mengaktifkan penyelesaian otomatis sistem file.
 - v.5.8.8 (2025-06-03)
-    - Added digital signature to EXE files.
-    - Added Turkish translation.
-    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
-    - Fixed MRadWindow crash.
-    - Updated installers.
+    - Menambahkan tanda tangan digital ke file EXE.
+    - Menambahkan terjemahan bahasa Turki.
+    - Mendukung TEXTINCLUDE 2 dan TEXTINCLUDE 3.
+    - Memperbaiki kerusakan MRadWindow.
+    - Memperbarui installer.
 - v.5.8.7 (2025-04-04)
-    - Reduced memory leaks and handle leaks.
-    - Improved main icon.
-    - Improved adding icon/cursor/bitmap/resource UI/UX.
+    - Mengurangi kebocoran memori dan kebocoran handle.
+    - Meningkatkan ikon utama.
+    - Meningkatkan UI/UX penambahan ikon/kursor/bitmap/sumber daya.
 - v.5.8.6 (2025-02-04)
-    - Added Spanish translation.
-    - Fixed RES_save function for saving *.dll.
-    - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
-- v.5.8.5 (2024-08-21)
-    - Improved EGA console usability.
-    - Abolished EGA input function.
-- v.5.8.4 (2024-08-02)
-    - Separated x86 and x64 settings.
-    - Fixed misinterpretation of open filter index.
-- v.5.8.3 (2024-07-24)
-    - Auto filling resource name from filename.
-    - Added resource language setting.
-    - Fixed freeze on Enter key.
-    - Supported x64.
-- v.5.8.2 (2024-07-20)
-    - Added ES_AUTOHSCROLL style to some text boxes.
-    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
-    - Centering "Edit Dialog" window.
-    - Supported exporting RES file.
+    - Menambahkan terjemahan bahasa Spanyol.
+    - Memperbaiki fungsi RES_save untuk menyimpan *.dll.
+    - Jangan gunakan SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, dan SUBLANG_UI_CUSTOM_DEFAULT untuk kompatibilitas mundur.
+- v.5.8.5 (21-08-2024)
+    - Peningkatan kegunaan konsol EGA.
+    - Menghapus fungsi input EGA.
+- v.5.8.4 (02-08-2024)
+    - Memisahkan pengaturan x86 dan x64.
+    - Memperbaiki kesalahan interpretasi indeks filter terbuka.
+- v.5.8.3 (24-07-2024)
+    - Pengisian otomatis nama sumber daya dari nama file.
+    - Menambahkan pengaturan bahasa sumber daya.
+    - Memperbaiki pembekuan pada tombol Enter.
+    - Mendukung x64.
+- v.5.8.2 (20-07-2024)
+    - Menambahkan gaya ES_AUTOHSCROLL ke beberapa kotak teks.
+    - Memperbaiki kegagalan pemuatan Win2k3 ieframe.dll BITMAP 214.
+    - Memusatkan jendela "Dialog Edit".
+    - Mendukung ekspor file RES.
 - v.5.8.1 (2024-03-04)
-    - Improved IDD_ADDCTRL and IDD_CTRLPROP dialogs.
+    - Peningkatan dialog IDD_ADDCTRL dan IDD_CTRLPROP.
 - v.5.8.0 (2024-03-03)
-    - Coping with security scan when generating EXE files.
+    - Mengatasi pemindaian keamanan saat menghasilkan file EXE.
 - v.5.7.9 (2023-11-14)
-    - Added EGA sample DeleteNonEnglish.ega.
-    - Fixed IDS_THEREISUPDATE translation.
+    - Menambahkan contoh EGA DeleteNonEnglish.ega.
+    - Memperbaiki terjemahan IDS_THEREISUPDATE.
 - v.5.7.8 (2023-10-06)
-    - Improved Portuguese (Brazilian) translation.
-    - Relaxed font selection requirements.
-    - Added Traditional Chinese translation.
+    - Peningkatan terjemahan Portugis (Brasil).
+    - Persyaratan pemilihan font yang lebih longgar.
+    - Menambahkan terjemahan Bahasa Mandarin Tradisional.
 - v.5.7.7 (2023-06-05)
-    - Commonized IDD_ADDDLGINIT and IDD_MODIFYDLGINIT.
-    - Changed the design of RES_str_get and RES_str_set.
-    - Added RES_get_text and RES_set_text functions to EGA.
+    - Menyeragamkan IDD_ADDDLGINIT dan IDD_MODIFYDLGINIT.
+    - Mengubah desain RES_str_get dan RES_str_set.
+    - Menambahkan fungsi RES_get_text dan RES_set_text ke EGA.
 - v.5.7.6 (2023-06-02)
-    - Localized the Help menu.
-    - Added RES_str_get and RES_str_set functions to EGA.
+    - Melokalisasi menu Bantuan.
+    - Menambahkan fungsi RES_str_get dan RES_str_set ke EGA.
 - v.5.7.5 (2023-05-08)
     - Peningkatan dialog IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
     - Menambahkan penginstal Korea.
