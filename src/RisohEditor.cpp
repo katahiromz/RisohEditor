@@ -12037,7 +12037,8 @@ RisohEditor_Main(
 	InitCommonControlsEx(&iccx);
 
 	// load RichEdit
-	HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
+	HINSTANCE hinstRichEdit = LoadLibrary(TEXT("riched20.dll"));
+	HINSTANCE hinstMSFTEDIT = LoadLibrary(TEXT("msftedit.dll"));
 
 	HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
 	FARPROC fn = GetProcAddress(hinstUXTheme, "SetWindowTheme");
@@ -12083,6 +12084,7 @@ RisohEditor_Main(
 	Gdiplus::GdiplusShutdown(gp_token);
 
 	// free the libraries
+	FreeLibrary(hinstMSFTEDIT);
 	FreeLibrary(hinstRichEdit);
 	FreeLibrary(hinstUXTheme);
 	OleUninitialize();
