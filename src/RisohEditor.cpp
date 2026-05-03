@@ -6781,7 +6781,7 @@ BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
 	return g_res.extract_res(pszResFile, g_res);
 }
 
-UINT MMainWnd::DoGetCodePage() const
+UINT MMainWnd::DoGetCodePageOfWritingRC() const
 {
 	if (g_settings.bRCFileUTF16)
 		return _CP_UTF16;
@@ -6877,7 +6877,7 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
 		StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
 
 		// write the resource.h file and the RC file
-		bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath, found, DoGetCodePage());
+		bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath, found, DoGetCodePageOfWritingRC());
 
 		// szPath --> pszResHFile
 		if (bOK && pszResHFile)
@@ -6886,7 +6886,7 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
 	else
 	{
 		// write the RC file
-		bOK = DoWriteRC(pszRCFile, NULL, found, DoGetCodePage());
+		bOK = DoWriteRC(pszRCFile, NULL, found, DoGetCodePageOfWritingRC());
 	}
 
 	// resume the current directory

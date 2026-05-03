@@ -257,7 +257,7 @@ public:
 	void DoIDStat(UINT anValues[5]);
 	BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
 	BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
-	UINT DoGetCodePage() const;
+	UINT DoGetCodePageOfWritingRC() const;
 	BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found, UINT nCodePage);
 	BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
 	BOOL DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
