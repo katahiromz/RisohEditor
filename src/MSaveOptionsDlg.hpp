@@ -48,7 +48,7 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE950));
 
 		WCHAR sz[MAX_PATH];
-		StringCchPrintfW(sz, _countof(sz), L"%u", g_settings.nCodePageForRC);
+		StringCchPrintfW(sz, _countof(sz), L"%u (", g_settings.nCodePageForRC);
 		INT iItem = ComboBox_FindString(hCmb2, 0, sz);
 		if (iItem == CB_ERR)
 			ComboBox_SetText(hCmb2, sz);
