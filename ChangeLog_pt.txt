@@ -1,88 +1,86 @@
 ﻿## HISTÓRICO
 
 - v.5.9.7 (2026-XX-YY)
-    - Supported RichEdit20A/RichEdit20W.
+    - Suporte para RichEdit20A/RichEdit20W.
 - v.5.9.6 (2026-04-02)
-    - Fixed version info.
-    - Localized version info (RT_VERSION) templates.
+    - Informações de versão corrigidas.
+    - Modelos de informações de versão (RT_VERSION) localizados.
 - v.5.9.5 (2026-03-01)
-    - Relaxed the buffer size.
+    - Tamanho do buffer aumentado.
 - v.5.9.4 (2026-01-01)
-    - Updated mcpp.exe to make UTF-16/UTF-32 buffer length unlimited.
-    - Renamed HISTORY*.txt as ChangeLog*.txt.
-    - Renamed README-*.txt as README_*.txt.
-    - Added the "Go to line" feature.
+    - mcpp.exe atualizado para permitir comprimento de buffer UTF-16/UTF-32 ilimitado.
+    - HISTORY*.txt renomeado para ChangeLog*.txt.
+    - README-*.txt renomeado para README_*.txt.
+    - Adicionada a função "Ir para a linha".
 - v.5.9.3 (2025-12-01)
-    - Fixed AutoComplete case-insensitiveness problem.
-    - Fixed handling of resource name zero.
-    - Implemented TEXTINCLUDE 1.
-    - Fixed many memory leaks.
-    - Supported MP3 sounds.
-    - Fixed menu empty quotes problem.
+    - Problema de insensibilidade a maiúsculas e minúsculas no AutoComplete corrigido. - Corrigido o tratamento de recursos com nome zero.
+    - Implementado TEXTINCLUDE 1.
+    - Corrigidos diversos vazamentos de memória.
+    - Adicionado suporte a sons MP3.
+    - Corrigido o problema de aspas vazias no menu.
 - v.5.9.2 (2025-10-23)
-    - Fixed double signature problem.
+    - Corrigido o problema de assinatura dupla.
 - v.5.9.1 (2025-10-23)
-    - Now, the maximum length of a non-wrapped string literal is 400.
-    - Wrap string literals only in UTF-16 RC.
-    - Fixed Search (Ctrl+F).
-    - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
-    - Improved Search UI/UX.
-    - Added "(bom)" option to EGA RES_save function.
-    - Added High DPI support.
+    - Agora, o comprimento máximo de uma string literal sem quebra de linha é 400.
+    - Quebra de linha em strings literais apenas em UTF-16 RC.
+    - Correção na Busca (Ctrl+F).
+    - As palavras-chave ANICURSOR e ANIICON não estão disponíveis em ambientes antigos. Use numeric em vez delas.
+    - Melhoria na interface/experiência do usuário da Busca.
+    - Adicionada a opção "(bom)" à função EGA RES_save.
+    - Adicionado suporte a DPI alto.
 - v.5.9.0 (2025-09-01)
-    - Supported rc2 filename extension.
-    - Notified icon change on extracting file by SHChangeNotify.
-    - Enabled wrapping of excessively long string literals.
-    - It is now possible to add a Byte Order Mark (BOM) when outputting an RC file.
-- v.5.8.9 (2025-07-01)
-    - Notified icon change on saving EXE file by SHChangeNotify.
-    - Added English "Neutral" entry to the language list.
-    - Fixed initial language list box selection.
-    - Correctly retrieving info of RLE Bitmap.
-    - Reduced flickering when moving the splitter.
-    - Disabled WoW filesystem redirection.
-    - Enabled filesystem auto-completion.
-- v.5.8.8 (2025-06-03)
-    - Added digital signature to EXE files.
-    - Added Turkish translation.
-    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
-    - Fixed MRadWindow crash.
-    - Updated installers.
-- v.5.8.7 (2025-04-04)
-    - Reduced memory leaks and handle leaks.
-    - Improved main icon.
-    - Improved adding icon/cursor/bitmap/resource UI/UX.
-- v.5.8.6 (2025-02-04)
-    - Added Spanish translation.
-    - Fixed RES_save function for saving *.dll.
-    - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
-- v.5.8.5 (2024-08-21)
-    - Improved EGA console usability.
-    - Abolished EGA input function.
-- v.5.8.4 (2024-08-02)
-    - Separated x86 and x64 settings.
-    - Fixed misinterpretation of open filter index.
-- v.5.8.3 (2024-07-24)
-    - Auto filling resource name from filename.
-    - Added resource language setting.
-    - Fixed freeze on Enter key.
-    - Supported x64.
+    - Suporte à extensão de nome de arquivo rc2.
+    - Notificação de alteração de ícone ao extrair o arquivo por SHChangeNotify.
+    - Habilitado o quebra de linha em strings literais excessivamente longas.
+    - Agora é possível adicionar uma Marca de Ordem de Bytes (BOM) ao gerar um arquivo RC.
+- v.5.8.9 (01/07/2025)
+    - Notificação de alteração de ícone ao salvar arquivo EXE pelo SHChangeNotify.
+    - Adicionada entrada "Neutro" em inglês à lista de idiomas.
+    - Corrigida a seleção inicial na caixa de seleção de idiomas.
+    - Recuperação correta das informações do Bitmap RLE.
+    - Redução da cintilação ao mover o divisor.
+    - Desativado o redirecionamento do sistema de arquivos do WoW.
+    - Ativado o preenchimento automático do sistema de arquivos.
+- v.5.8.8 (03/06/2025)
+    - Adicionada assinatura digital aos arquivos EXE.
+    - Adicionada tradução para turco.
+    - Suporte para TEXTINCLUDE 2 e TEXTINCLUDE 3.
+    - Corrigida a falha do MRadWindow.
+    - Instaladores atualizados.
+- v.5.8.7 (04/04/2025)
+    - Redução de vazamentos de memória e de identificadores.
+    - Ícone principal aprimorado.
+    - Melhoria na interface do usuário (UI) para adição de ícones/cursores/bitmaps/recursos.
+- v.5.8.6 (04/02/2025)
+    - Adicionada tradução para espanhol.
+    - Corrigida a função RES_save para salvar arquivos *.dll.
+    - Não utilize SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED e SUBLANG_UI_CUSTOM_DEFAULT para manter a compatibilidade com versões anteriores.
+- v.5.8.5 (21/08/2024)
+    - Melhoria na usabilidade do console EGA.
+    - Função de entrada EGA removida.
+- v.5.8.4 (02/08/2024)
+    - Separadas as configurações x86 e x64.
+    - Corrigida a interpretação incorreta do índice de filtro aberto.
+- v.5.8.3 (24/07/2024)
+    - Preenchimento automático do nome do recurso a partir do nome do arquivo.
+    - Adicionada configuração de idioma do recurso.
+    - Corrigido o travamento ao pressionar a tecla Enter.
+    - Suporte a x64.
 - v.5.8.2 (2024-07-20)
-    - Added ES_AUTOHSCROLL style to some text boxes.
-    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
-    - Centering "Edit Dialog" window.
-    - Supported exporting RES file.
+    - Adicionado o estilo ES_AUTOHSCROLL a algumas caixas de texto.
+    - Corrigida a falha de carregamento do BITMAP 214 do ieframe.dll do Win2k3.
+    - Centralização da janela "Diálogo de Edição".
+    - Suporte para exportação de arquivo RES.
 - v.5.8.1 (2024-03-04)
-    - Improved IDD_ADDCTRL and IDD_CTRLPROP dialogs.
+    - Melhorias nos diálogos IDD_ADDCTRL e IDD_CTRLPROP.
 - v.5.8.0 (2024-03-03)
-    - Coping with security scan when generating EXE files.
+    - Correção na verificação de segurança ao gerar arquivos EXE.
 - v.5.7.9 (2023-11-14)
-    - Added EGA sample DeleteNonEnglish.ega.
-    - Fixed IDS_THEREISUPDATE translation.
+    - Adicionado o exemplo EGA DeleteNonEnglish.ega.
+    - Correção na tradução de IDS_THEREISUPDATE.
 - v.5.7.8 (2023-10-06)
-    - Melhorias na tradução Português do Brasil.
-    - Relaxed font selection requirements.
-    - Added Traditional Chinese translation.
+    - Melhorias na tradução para Português do Brasil. - Requisitos de seleção de fontes mais flexíveis.
+    - Adicionada tradução para chinês tradicional.
 - v.5.7.7 (2023-06-05)
     - Comunizado IDD_ADDDLGINIT e IDD_MODIFYDLGINIT.
     - Alterou o design de RES_str_get e RES_str_set.
