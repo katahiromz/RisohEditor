@@ -57,6 +57,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.bDfmRawTextComments = TRUE;
 	g_settings.bDfmNoUnicode = FALSE;
 	g_settings.bUseMSMSGTABLE = FALSE;
+    g_settings.nCodePageForRC = CP_UTF8;
 	g_settings.nEgaX = CW_USEDEFAULT;
 	g_settings.nEgaY = CW_USEDEFAULT;
 	g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -187,8 +188,6 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.bRedundantComments = TRUE;
 	g_settings.bWrapManifest = FALSE;
 
-	g_settings.bRCFileUTF16 = FALSE;
-
 	g_settings.ResetEncoding();
 
 	g_settings.strFontReplaceFrom1 = L"MS Shell Dlg";
@@ -280,6 +279,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
 	keyRisoh.QueryDword(TEXT("bDfmNoUnicode"), (DWORD&)g_settings.bDfmNoUnicode);
 	keyRisoh.QueryDword(TEXT("bUseMSMSGTABLE"), (DWORD&)g_settings.bUseMSMSGTABLE);
+	keyRisoh.QueryDword(TEXT("nCodePageForRC"), (DWORD&)g_settings.nCodePageForRC);
 	keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
 	keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
 	keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
@@ -464,8 +464,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
 	keyRisoh.QueryDword(TEXT("nSaveFilterIndex"), (DWORD&)g_settings.nSaveFilterIndex);
 	keyRisoh.QueryDword(TEXT("bWordWrap"), (DWORD&)g_settings.bWordWrap);
-	keyRisoh.QueryDword(TEXT("RCFileUTF16"), (DWORD&)g_settings.bRCFileUTF16);
-
 	keyRisoh.QueryDword(TEXT("bBackup"), (DWORD&)g_settings.bBackup);
 
 	if (keyRisoh.QuerySz(L"strBackupSuffix", szText, _countof(szText)) == ERROR_SUCCESS)
@@ -600,6 +598,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
 	keyRisoh.SetDword(TEXT("bDfmNoUnicode"), g_settings.bDfmNoUnicode);
 	keyRisoh.SetDword(TEXT("bUseMSMSGTABLE"), g_settings.bUseMSMSGTABLE);
+	keyRisoh.SetDword(TEXT("nCodePageForRC"), g_settings.nCodePageForRC);
 	keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
 	keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
 	keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
@@ -685,8 +684,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
 	keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
 	keyRisoh.SetDword(TEXT("bWordWrap"), g_settings.bWordWrap);
-	keyRisoh.SetDword(TEXT("RCFileUTF16"), g_settings.bRCFileUTF16);
-
 	keyRisoh.SetDword(TEXT("bBackup"), g_settings.bBackup);
 
 	keyRisoh.SetSz(TEXT("strBackupSuffix"), GetRisohEditorVersion().c_str());

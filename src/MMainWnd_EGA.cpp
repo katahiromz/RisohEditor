@@ -55,7 +55,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 	BOOL bRedundantComments = g_settings.bRedundantComments;
 	BOOL bWrapManifest = g_settings.bWrapManifest;
 	BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
-	BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
+	BOOL bRCFileUTF16 = (g_settings.nCodePageForRC == _CP_UTF16);
 	BOOL bBackup = g_settings.bBackup;
 	BOOL bUseMSMSGTABLE = g_settings.bUseMSMSGTABLE;
 	g_settings.bUseIDC_STATIC = options.find(L"(idc-static)") != options.npos;
@@ -67,7 +67,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 	g_settings.bRedundantComments = options.find(L"(less-comments)") == options.npos;
 	g_settings.bWrapManifest = options.find(L"(wrap-manifest)") != options.npos;
 	g_settings.bUseBeginEnd = options.find(L"(begin-end)") != options.npos;
-	g_settings.bRCFileUTF16 = options.find(L"(utf-16)") != options.npos;
+	g_settings.nCodePageForRC = (options.find(L"(utf-16)") != options.npos) ? _CP_UTF16 : CP_UTF8; 
 	g_settings.bAddBomToRC = options.find(L"(bom)") != options.npos;
 	g_settings.bBackup = options.find(L"(backup)") != options.npos;
 	g_settings.bUseMSMSGTABLE = options.find(L"(ms-msgtbl)") != options.npos;
@@ -83,7 +83,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 	g_settings.bRedundantComments = bRedundantComments;
 	g_settings.bWrapManifest = bWrapManifest;
 	g_settings.bUseBeginEnd = bUseBeginEnd;
-	g_settings.bRCFileUTF16 = bRCFileUTF16;
+	g_settings.nCodePageForRC = bRCFileUTF16 ? _CP_UTF16 : CP_UTF8;
 	g_settings.bBackup = bBackup;
 	g_settings.bUseMSMSGTABLE = bUseMSMSGTABLE;
 

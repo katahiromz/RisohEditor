@@ -27,9 +27,33 @@ public:
 		CheckDlgButton(hwnd, chx4, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx5, g_settings.bRedundantComments ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx6, g_settings.bWrapManifest ? BST_CHECKED : BST_UNCHECKED);
-		CheckDlgButton(hwnd, chx7, g_settings.bRCFileUTF16 ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx8, g_settings.bUseMSMSGTABLE ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx9, g_settings.bAddBomToRC ? BST_CHECKED : BST_UNCHECKED);
+
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE65001));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1200));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1252));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1250));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1251));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1253));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1254));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1255));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1256));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE1257));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE874));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE932));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE936));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE949));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE950));
+
+		WCHAR sz[MAX_PATH];
+		StringCchPrintfW(sz, _countof(sz), L"%u", g_settings.nCodePageForRC);
+		INT iItem = ComboBox_FindString(hCmb2, 0, sz);
+		if (iItem == CB_ERR)
+			ComboBox_SetText(hCmb2, sz);
+		else
+			ComboBox_SetCurSel(hCmb2, iItem);
 
 		SendDlgItemMessageW(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)L"-old");
 		SendDlgItemMessageW(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)L"-bak");
@@ -53,13 +77,23 @@ public:
 		g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
 		g_settings.bRedundantComments = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
 		g_settings.bWrapManifest = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
-		g_settings.bRCFileUTF16 = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
 		g_settings.bUseMSMSGTABLE = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
 		g_settings.bAddBomToRC = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
 		MStringW strBackupSuffix = GetDlgItemText(cmb1);
 		mstr_trim(strBackupSuffix);
 		g_settings.strBackupSuffix = strBackupSuffix;
+
+		WCHAR sz[MAX_PATH];
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		INT iItem = ComboBox_GetCurSel(hCmb2);
+		if (iItem == CB_ERR)
+			ComboBox_GetText(hCmb2, sz, _countof(sz));
+		else
+			ComboBox_GetLBText(hCmb2, iItem, sz);
+		UINT nCodePage = _wtoi(sz);
+		if (nCodePage > 0)
+			g_settings.nCodePageForRC = nCodePage;
 
 		if (strBackupSuffix.empty())
 			g_settings.bBackup = FALSE;

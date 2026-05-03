@@ -6807,9 +6807,7 @@ BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
 
 UINT MMainWnd::DoGetCodePageOfWritingRC() const
 {
-	if (g_settings.bRCFileUTF16)
-		return _CP_UTF16;
-	return CP_UTF8;
+	return g_settings.nCodePageForRC;
 }
 
 // do export the resource data to an RC file and related files

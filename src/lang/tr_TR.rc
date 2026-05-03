@@ -1080,7 +1080,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Yinelenen yorumları çıkışa aktar", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif ile manifest ifadelerini sar", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "RC dosyalarını &UTF-16 olarak çıkışa aktar", chx7, 5, 180, 240, 14
+    RTEXT "&Kod sayfası:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "Tamam", IDOK, 120, 205, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 185, 205, 60, 14
@@ -1180,7 +1181,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Fazla &yorumları çıktıya al", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Manifest ifadelerini #ifndef MSVC ... #endif ile sarmala", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "RC dosyalarını &UTF-16 olarak çıkart", chx7, 5, 180, 240, 14
+    RTEXT "&Kod sayfası:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "Tamam", IDOK, 120, 205, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 185, 205, 60, 14

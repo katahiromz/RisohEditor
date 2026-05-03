@@ -2,6 +2,7 @@
 
 - v.5.9.7 (2026-XX-YY)
     - Supported RichEdit20A/RichEdit20W/RichEdit50W.
+    - Supported codepages.
 - v.5.9.6 (2026-04-02)
     - Fixed version info.
     - Localized version info (RT_VERSION) templates.

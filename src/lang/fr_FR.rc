@@ -1079,7 +1079,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 240, 14
+    RTEXT "&Page de codes:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 185, 205, 60, 14
@@ -1179,7 +1180,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 240, 14
+    RTEXT "&Page de codes:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 185, 205, 60, 14

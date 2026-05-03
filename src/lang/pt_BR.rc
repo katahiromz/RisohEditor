@@ -1082,7 +1082,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Saída redundante e &comentários", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Quebrar as declarações de ma&nifesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "Saída de arquivo RC como &UTF-16", chx7, 5, 180, 240, 14
+    RTEXT "&Página de código:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 185, 205, 60, 14
@@ -1182,7 +1183,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Saída redundante e &comentários", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Quebrar as declarações de ma&nifesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "Saída de arquivo RC como &UTF-16", chx7, 5, 180, 240, 14
+    RTEXT "&Página de código:", -1, 7, 181, 78, 14
+    COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 185, 205, 60, 14

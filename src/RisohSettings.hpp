@@ -81,13 +81,13 @@ struct RisohSettings
 	BOOL                bRedundantComments; // output redundant comments?
 	BOOL                bWrapManifest;      // wrap manifest statements by #ifndef MSVC ... #endif?
 	encoding_map_type   encoding_map;       // text resource encoding
-	BOOL                bRCFileUTF16;       // output RC files as UTF-16?
 	BOOL                bUseBeginEnd;       // Use BEGIN/END instead of braces?
 	BOOL                bShowFullPath;      // Show full path on title bar
 	INT                 nDfmCodePage;       // Delphi DFM Data codepage
 	BOOL                bDfmRawTextComments; // Delphi DFM raw text comments
 	BOOL                bDfmNoUnicode;      // Don't use Unicode nor UTF-8 in Delphi DFM
 	BOOL                bUseMSMSGTABLE;     // Use Microsoft's MESSAGETABLE
+    UINT                nCodePageForRC;
 	INT                 nEgaX;
 	INT                 nEgaY;
 	INT                 nEgaWidth;
