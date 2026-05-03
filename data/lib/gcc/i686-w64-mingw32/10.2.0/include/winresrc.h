@@ -2,19 +2,19 @@
 #define _WINRESRC_
 
 #ifndef WINVER
-#define WINVER 0x0502
+#define WINVER 0x502
 #endif
 
 #ifndef _WIN32_IE
-#define _WIN32_IE 0x0501
+#define _WIN32_IE 0x501
 #endif
 
 #ifndef _WIN32_WINDOWS
-#define _WIN32_WINDOWS 0x0502
+#define _WIN32_WINDOWS 0x502
 #endif
 
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0502
+#define _WIN32_WINNT 0x502
 #endif
 
 #include <winuser.h>
