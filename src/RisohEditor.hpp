@@ -61,6 +61,8 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
+#define _CP_UTF16 1200
+
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MRadWindow.hpp"

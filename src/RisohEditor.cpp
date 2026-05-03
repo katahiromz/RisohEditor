@@ -5281,9 +5281,9 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 	return TRUE;
 }
 
-BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
+BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage)
 {
-	MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
+	MTextToAnsi comment_sep(nCodePage, LoadStringDx(IDS_COMMENT_SEP));
 
 	if (!g_settings.bSepFilesByLang && g_settings.bRedundantComments)
 	{
@@ -5294,7 +5294,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 	// dump a comment and a LANGUAGE statement
 	MString strLang = ::GetLanguageStatement(lang, TRUE);
 	strLang += L"\r\n";
-	file.WriteSzA(MWideToAnsi(CP_ACP, strLang).c_str());
+	file.WriteSzA(MWideToAnsi(nCodePage, strLang).c_str());
 
 	// search the language entries
 	EntrySet found;
@@ -5337,16 +5337,16 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 			{
 				file.WriteSzA(comment_sep.c_str());
 				MStringW strType = res2text.GetResTypeName(type);
-				MWideToAnsi utf8(CP_UTF8, strType);
+				MWideToAnsi ansi(nCodePage, strType);
 				file.WriteSzA("// ");
-				file.WriteSzA(utf8.c_str());
+				file.WriteSzA(ansi.c_str());
 				file.WriteSzA("\r\n\r\n");
 			}
 
 			mstr_trim(str);     // trim
 
-			// convert the text to UTF-8
-			MTextToAnsi t2a(CP_UTF8, str.c_str());
+			// convert the text
+			MTextToAnsi t2a(nCodePage, str.c_str());
 			file.WriteSzA(t2a.c_str());
 
 			// add newlines
@@ -5386,8 +5386,8 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 		// append newlines
 		str += L"\r\n\r\n";
 
-		// convert the text to UTF-8
-		MTextToAnsi t2a(CP_UTF8, str.c_str());
+		// convert the text
+		MTextToAnsi t2a(nCodePage, str.c_str());
 
 		// write it
 		file.WriteSzA(t2a.c_str());
@@ -5427,8 +5427,8 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 			str += msg_res.Dump();
 			str += L"#endif\r\n\r\n";
 
-			// convert it to UTF-8
-			MTextToAnsi t2a(CP_UTF8, str.c_str());
+			// convert it
+			MTextToAnsi t2a(nCodePage, str.c_str());
 
 			// write it
 			file.WriteSzA(t2a.c_str());
@@ -5588,12 +5588,12 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 }
 
 // write a language-specific RC text
-BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
+BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage)
 {
-	if (g_settings.bRCFileUTF16)
+	if (nCodePage == _CP_UTF16)
 		return DoWriteRCLangUTF16(file, res2text, lang, targets);
 	else
-		return DoWriteRCLangUTF8(file, res2text, lang, targets);
+		return DoWriteRCLangCodePage(file, res2text, lang, targets, nCodePage);
 }
 
 // do backup a folder
@@ -5656,7 +5656,7 @@ std::wstring generated_from(INT n)
 }
 
 // write a RC file
-BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found)
+BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found, UINT nCodePage)
 {
 	ResToText res2text;
 	res2text.m_bHumanReadable = FALSE;  // it's not human-friendly
@@ -5700,15 +5700,15 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 	if (!file)
 		return FALSE;
 
-	BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
+	BOOL bRCFileUTF16 = (nCodePage == _CP_UTF16);
 
 	// Add Byte Order Mark (BOM)
 	if (g_settings.bAddBomToRC)
 	{
 		DWORD cbWritten;
-		if (bRCFileUTF16)
+		if (nCodePage == _CP_UTF16)
 			file.WriteFile("\xFF\xFE", 2, &cbWritten);
-		else
+		else if (nCodePage == CP_UTF8)
 			file.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
 	}
 
@@ -5876,20 +5876,20 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 	}
 	else
 	{
-		MWideToAnsi utf8(CP_UTF8, szTitle);
-		file.WriteFormatA("// %s\r\n", utf8.c_str());
+		MWideToAnsi ansi(nCodePage, szTitle);
+		file.WriteFormatA("// %s\r\n", ansi.c_str());
 
-		MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
-		MWideToAnsi utf8Dagger(CP_UTF8, LoadStringDx(IDS_DAGGER));
-		MWideToAnsi utf8CommentSep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
-		file.WriteSzA(utf8Notice.c_str());
-		file.WriteSzA(utf8Dagger.c_str());
+		MWideToAnsi ansiNotice(nCodePage, LoadStringDx(IDS_NOTICE));
+		MWideToAnsi ansiDagger(nCodePage, LoadStringDx(IDS_DAGGER));
+		MWideToAnsi ansiCommentSep(nCodePage, LoadStringDx(IDS_COMMENT_SEP));
+		file.WriteSzA(ansiNotice.c_str());
+		file.WriteSzA(ansiDagger.c_str());
 
 		if (g_settings.bRedundantComments)
 		{
-			file.WriteSzA(utf8CommentSep.c_str());
-			MWideToAnsi utf8GeneratedFrom1(CP_UTF8, generated_from(1));
-			file.WriteSzA(utf8GeneratedFrom1);
+			file.WriteSzA(ansiCommentSep.c_str());
+			MWideToAnsi ansiGeneratedFrom1(nCodePage, generated_from(1));
+			file.WriteSzA(ansiGeneratedFrom1);
 			file.WriteSzA("\r\n");
 		}
 
@@ -5914,8 +5914,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (g_settings.bRedundantComments)
 		{
 			file.WriteSzA("\r\n");
-			file.WriteSzA(utf8CommentSep.c_str());
-			MWideToAnsi w2a(CP_UTF8, generated_from(2).c_str());
+			file.WriteSzA(ansiCommentSep.c_str());
+			MWideToAnsi w2a(nCodePage, generated_from(2).c_str());
 			file.WriteSzA(w2a.c_str());
 			file.WriteSzA("\r\n");
 		}
@@ -5925,11 +5925,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (g_settings.bRedundantComments)
 		{
 			file.WriteSzA("\r\n");
-			file.WriteSzA(utf8CommentSep.c_str());
+			file.WriteSzA(ansiCommentSep.c_str());
 			file.WriteSzA("\r\n");
 		}
 
-		file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+		if (nCodePage == CP_UTF8)
+			file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+		else
+			file.WriteFormatA("#pragma code_page(%u)\r\n\r\n", nCodePage);
 
 		if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
 		{
@@ -5974,7 +5977,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		// dump neutral
 		if (langs.count(0) > 0)
 		{
-			if (!DoWriteRCLang(file, res2text, 0, found)) {
+			if (!DoWriteRCLang(file, res2text, 0, found, nCodePage)) {
 				textinclude.delete_all();
 				return FALSE;
 			}
@@ -6051,18 +6054,21 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 			}
 			else
 			{
-				MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
-				MWideToAnsi utf8Dagger(CP_UTF8, LoadStringDx(IDS_DAGGER));
-				lang_file.WriteSzA(utf8Notice.c_str());
-				lang_file.WriteSzA(utf8Dagger.c_str());
+				MWideToAnsi ansiNotice(nCodePage, LoadStringDx(IDS_NOTICE));
+				MWideToAnsi ansiDagger(nCodePage, LoadStringDx(IDS_DAGGER));
+				lang_file.WriteSzA(ansiNotice.c_str());
+				lang_file.WriteSzA(ansiDagger.c_str());
 				lang_file.WriteSzA("\r\n");
-				lang_file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+				if (nCodePage == CP_UTF8)
+					lang_file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+				else
+					lang_file.WriteFormatA("#pragma code_page(%u)\r\n\r\n", nCodePage);
 			}
 			if (!lang_file) {
 				textinclude.delete_all();
 				return FALSE;
 			}
-			if (!DoWriteRCLang(lang_file, res2text, lang, found)) {
+			if (!DoWriteRCLang(lang_file, res2text, lang, found, nCodePage)) {
 				textinclude.delete_all();
 				return FALSE;
 			}
@@ -6087,7 +6093,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		{
 			auto lang = lang_pair.first;
 			// write it for each language
-			if (!DoWriteRCLang(file, res2text, lang, found)) {
+			if (!DoWriteRCLang(file, res2text, lang, found, nCodePage)) {
 				textinclude.delete_all();
 				return FALSE;
 			}
@@ -6273,7 +6279,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (p_textinclude1)
 		{
 			auto str = res2text.DumpEntry(*p_textinclude1);
-			MWideToAnsi strA(CP_UTF8, str.c_str());
+			MWideToAnsi strA(nCodePage, str.c_str());
 			file.WriteSzA(strA.c_str());
 			file.WriteSzA("\r\n");
 		}
@@ -6281,7 +6287,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (p_textinclude2)
 		{
 			auto str = res2text.DumpEntry(*p_textinclude2);
-			MWideToAnsi strA(CP_UTF8, str.c_str());
+			MWideToAnsi strA(nCodePage, str.c_str());
 			file.WriteSzA(strA.c_str());
 			file.WriteSzA("\r\n");
 		}
@@ -6289,7 +6295,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 		if (p_textinclude3)
 		{
 			auto str = res2text.DumpEntry(*p_textinclude3);
-			MWideToAnsi strA(CP_UTF8, str.c_str());
+			MWideToAnsi strA(nCodePage, str.c_str());
 			file.WriteSzA(strA.c_str());
 			file.WriteSzA("\r\n");
 		}
@@ -6301,7 +6307,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 			file.WriteSzA("\r\n");
 			file.WriteSzA(comment_sep.c_str());
 
-			MWideToAnsi w2a(CP_UTF8, generated_from(3).c_str());
+			MWideToAnsi w2a(nCodePage, generated_from(3).c_str());
 			file.WriteSzA(w2a.c_str());
 
 			file.WriteSzA("\r\n");
@@ -6775,6 +6781,13 @@ BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
 	return g_res.extract_res(pszResFile, g_res);
 }
 
+UINT MMainWnd::DoGetCodePage() const
+{
+	if (g_settings.bRCFileUTF16)
+		return _CP_UTF16;
+	return CP_UTF8;
+}
+
 // do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
 {
@@ -6864,7 +6877,7 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
 		StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
 
 		// write the resource.h file and the RC file
-		bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath, found);
+		bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath, found, DoGetCodePage());
 
 		// szPath --> pszResHFile
 		if (bOK && pszResHFile)
@@ -6873,7 +6886,7 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
 	else
 	{
 		// write the RC file
-		bOK = DoWriteRC(pszRCFile, NULL, found);
+		bOK = DoWriteRC(pszRCFile, NULL, found, DoGetCodePage());
 	}
 
 	// resume the current directory

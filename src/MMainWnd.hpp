@@ -257,9 +257,10 @@ public:
 	void DoIDStat(UINT anValues[5]);
 	BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
 	BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
-	BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found);
-	BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
-	BOOL DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
+	UINT DoGetCodePage() const;
+	BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found, UINT nCodePage);
+	BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
+	BOOL DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
 	BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
 	BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
 	BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
