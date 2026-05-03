@@ -2,6 +2,7 @@
 // 업데이트 내역
 
 - v.5.9.7 (2026-XX-YY)
+    - Supported RichEdit20A/RichEdit20W.
 - v.5.9.6 (2026-04-02)
     - 버전 정보를 수정했습니다.
     - 버전 정보 (RT_VERSION) 템플릿을 현지화했습니다.

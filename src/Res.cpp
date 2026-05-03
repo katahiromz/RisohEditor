@@ -1939,6 +1939,7 @@ void EntrySet::add_default_TEXTINCLUDE()
 		"#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
 		"#include <windows.h>\r\n"
 		"#include <commctrl.h>\r\n"
+		"#include <richedit.h>\r\n"
 		"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
 		"\0";
 	data.resize(str2.size());

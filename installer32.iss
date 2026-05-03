@@ -283,6 +283,7 @@ Source: "EGA-samples\RES_str_get.ega"; DestDir: "{app}\EGA"; Flags: ignoreversio
 Source: "EGA-samples\RES_str_set.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\richedit.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion

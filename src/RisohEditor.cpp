@@ -3730,6 +3730,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, WORD lang, const MStringW
 	}
 	r1.WriteFormatA("#include <windows.h>\r\n");
 	r1.WriteFormatA("#include <commctrl.h>\r\n");
+	r1.WriteFormatA("#include <richedit.h>\r\n");
 	r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 	r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 
@@ -3984,6 +3985,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, WORD lang, const MString
 	}
 	r1.WriteFormatA("#include <windows.h>\r\n");
 	r1.WriteFormatA("#include <commctrl.h>\r\n");
+	r1.WriteFormatA("#include <richedit.h>\r\n");
 	r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 	r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 
@@ -4206,6 +4208,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	}
 	r1.WriteSzA("#include <windows.h>\r\n");
 	r1.WriteSzA("#include <commctrl.h>\r\n");
+	r1.WriteSzA("#include <richedit.h>\r\n");
 	r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 	r1.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 	r1.WriteSzA("#ifndef IDC_STATIC\r\n");
