@@ -6,11 +6,11 @@ extern "C" {
 #endif
 
 #ifndef _INC_WINDOWS
-    #include <windows.h>
+#include <windows.h>
 #endif
 
 #ifndef IDC_STATIC
-    #define IDC_STATIC (-1)
+#define IDC_STATIC (-1)
 #endif
 
 #ifdef __cplusplus
