@@ -5648,15 +5648,6 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 	return TRUE;
 }
 
-// write a RC file
-BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
-{
-	EntrySet found;
-	g_res.search(found, ET_LANG);
-
-	return DoWriteRC(pszFileName, pszResH, found);
-}
-
 std::wstring generated_from(INT n)
 {
 	WCHAR szText[MAX_PATH];
