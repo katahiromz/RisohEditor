@@ -15,7 +15,7 @@
 class MExportOptionsDlg : public MDialogBase
 {
 public:
-	MExportOptionsDlg() : MDialogBase(IDD_EXP_OPTIONS)
+	MExportOptionsDlg(BOOL bExport) : MDialogBase(bExport ? IDD_EXP_OPTIONS : IDD_SAVE_OPTIONS)
 	{
 	}
 

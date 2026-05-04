@@ -770,7 +770,7 @@ void MMainWnd::OnExtractRC(HWND hwnd)
 	if (GetSaveFileNameW(&ofn))
 	{
 		// show the "export options" dialog
-		MExportOptionsDlg dialog;
+		MExportOptionsDlg dialog(TRUE);
 		if (dialog.DialogBoxDx(hwnd) != IDOK)
 			return;
 
@@ -1070,7 +1070,7 @@ void MMainWnd::OnExport(HWND hwnd)
 		else // .rc or .rc2
 		{
 			// show the "export options" dialog
-			MExportOptionsDlg dialog;
+			MExportOptionsDlg dialog(TRUE);
 			if (dialog.DialogBoxDx(hwnd) != IDOK)
 				return;
 
@@ -1408,7 +1408,7 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 			// export and save it
 			{
 				// show "save options" dialog
-				MSaveOptionsDlg save_options;
+				MExportOptionsDlg save_options(FALSE);
 				if (save_options.DialogBoxDx(hwnd) != IDOK)
 					return FALSE;
 
@@ -1492,7 +1492,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
 		// export and save it
 		{
 			// show "save options" dialog
-			MSaveOptionsDlg save_options;
+			MExportOptionsDlg save_options(FALSE);
 			if (save_options.DialogBoxDx(hwnd) != IDOK)
 				return FALSE;
 

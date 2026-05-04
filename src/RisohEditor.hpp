@@ -94,7 +94,6 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MExportOptionsDlg.hpp"
-#include "MSaveOptionsDlg.hpp"
 #include "MLangsDlg.hpp"
 #include "MTestParentWnd.hpp"
 #include "MDlgInitDlg.hpp"
