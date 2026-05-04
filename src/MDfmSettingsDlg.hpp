@@ -10,6 +10,8 @@
 #include "RisohSettings.hpp"
 #include "Common.hpp"
 
+BOOL IsCodePageReallyUsable(UINT cp);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MDfmSettingsDlg : public MDialogBase
@@ -30,19 +32,19 @@ public:
 	{
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 		ComboBox_AddString(hCmb1, TEXT("0"));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1252));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1250));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1251));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1253));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1254));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1255));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1256));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1257));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE874));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE932));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE936));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE949));
-		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE950));
+		if (IsCodePageReallyUsable(1252)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1252));
+		if (IsCodePageReallyUsable(1250)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1250));
+		if (IsCodePageReallyUsable(1251)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1251));
+		if (IsCodePageReallyUsable(1253)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1253));
+		if (IsCodePageReallyUsable(1254)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1254));
+		if (IsCodePageReallyUsable(1255)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1255));
+		if (IsCodePageReallyUsable(1256)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1256));
+		if (IsCodePageReallyUsable(1257)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1257));
+		if (IsCodePageReallyUsable(874)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE874));
+		if (IsCodePageReallyUsable(932)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE932));
+		if (IsCodePageReallyUsable(936)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE936));
+		if (IsCodePageReallyUsable(949)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE949));
+		if (IsCodePageReallyUsable(950)) ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE950));
 		ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE65001));
 
 		TCHAR szText[MAX_PATH];
