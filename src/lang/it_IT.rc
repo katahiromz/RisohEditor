@@ -1080,7 +1080,7 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Visualizza &commenti ridondanti", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Includi istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    RTEXT "Codifica della &pagina:", -1, 7, 181, 78, 14
+    RTEXT "Codifica &pagina:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "BOM (Byte Order Mark)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
@@ -1181,7 +1181,7 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Commenti ridondanti output", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Includi le istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    RTEXT "Codifica della &pagina:", -1, 7, 181, 78, 14
+    RTEXT "Codifica &pagina:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "BOM (Byte Order Mark)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14

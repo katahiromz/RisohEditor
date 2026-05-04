@@ -1,10 +1,10 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.5.9.8 (2026-XX-YY)
-    - Made codepage support safer.
-- v.5.9.7 (2026-05-03)
-    - Supported RichEdit20A/RichEdit20W/RichEdit50W.
-    - Supported codepages.
+- v.5.9.8 (DD.MM.2026)
+    - Reso più sicuro il supporto della pagina codice
+- v.5.9.7 (03.05.2026)
+    - Supportati RichEdit20A/RichEdit20W/RichEdit50W.
+    - Pagine codice supportate.
 - v.5.9.6 (02.04.2026)
     - Corretta info versione.
     - Localizzato modello info versione (RT_VERSION).
