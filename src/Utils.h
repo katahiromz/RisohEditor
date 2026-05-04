@@ -97,3 +97,4 @@ BOOL CALLBACK
 EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LPARAM lParam);
 BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString);
 BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString);
+BOOL IsCodePageReallyUsable(UINT cp);

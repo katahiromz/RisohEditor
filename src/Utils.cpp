@@ -3185,3 +3185,9 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD
 
 	return wide.c_str();	// return the wide
 }
+
+BOOL IsCodePageReallyUsable(UINT cp)
+{
+	CPINFOEXW info;
+	return IsValidCodePage(cp) && GetCPInfoExW(cp, 0, &info);
+}
