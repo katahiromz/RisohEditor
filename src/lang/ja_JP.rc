@@ -1667,6 +1667,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3音声 (*.mp3)|*.mp3|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3音声)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
+    IDS_INVALIDCODEPAGE, "無効なコードページです。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

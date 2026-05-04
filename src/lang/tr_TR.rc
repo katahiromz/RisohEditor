@@ -1664,6 +1664,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3 Sesi (*.mp3)|*.mp3|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3 Sesi)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
+    IDS_INVALIDCODEPAGE, "Invalid codepage."
 }
 
 //////////////////////////////////////////////////////////////////////////////

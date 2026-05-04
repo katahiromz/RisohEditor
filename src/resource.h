@@ -356,6 +356,7 @@
 #define IDS_MP3RESBINFILTER                 354
 #define IDS_MP3SOUND                        355
 #define IDS_CODEPAGE1200                    356
+#define IDS_INVALIDCODEPAGE                 357
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
