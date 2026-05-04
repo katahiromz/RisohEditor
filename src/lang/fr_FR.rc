@@ -1663,7 +1663,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3 Sound (*.mp3)|*.mp3|Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3 Sound)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
-    IDS_INVALIDCODEPAGE, "Invalid codepage."
+    IDS_INVALIDCODEPAGE, "Page de codes invalide."
 }
 
 //////////////////////////////////////////////////////////////////////////////

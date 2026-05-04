@@ -1666,7 +1666,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3 사운드 (*.mp3)|*.mp3|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3 사운드)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
-    IDS_INVALIDCODEPAGE, "Invalid codepage."
+    IDS_INVALIDCODEPAGE, "잘못된 코드 페이지입니다."
 }
 
 //////////////////////////////////////////////////////////////////////////////

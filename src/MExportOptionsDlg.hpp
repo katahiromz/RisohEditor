@@ -77,6 +77,23 @@ public:
 
 	void OnOK(HWND hwnd)
 	{
+		WCHAR sz[MAX_PATH];
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		INT iItem = ComboBox_GetCurSel(hCmb2);
+		if (iItem == CB_ERR)
+			ComboBox_GetText(hCmb2, sz, _countof(sz));
+		else
+			ComboBox_GetLBText(hCmb2, iItem, sz);
+
+		UINT nCodePage = _wtoi(sz);
+		if (!IsCodePageReallyUsable(nCodePage))
+		{
+			SetFocus(hCmb2);
+			MsgBoxDx(IDS_INVALIDCODEPAGE, MB_ICONERROR);
+			return;
+		}
+		g_settings.nCodePageForRC = nCodePage;
+
 		g_settings.bSepFilesByLang = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
 		g_settings.bUseBeginEnd = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
 		g_settings.bSelectableByMacro = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
@@ -88,17 +105,6 @@ public:
 		MStringW strBackupSuffix = GetDlgItemText(cmb1);
 		mstr_trim(strBackupSuffix);
 		g_settings.strBackupSuffix = strBackupSuffix;
-
-		WCHAR sz[MAX_PATH];
-		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-		INT iItem = ComboBox_GetCurSel(hCmb2);
-		if (iItem == CB_ERR)
-			ComboBox_GetText(hCmb2, sz, _countof(sz));
-		else
-			ComboBox_GetLBText(hCmb2, iItem, sz);
-		UINT nCodePage = _wtoi(sz);
-		if (nCodePage > 0)
-			g_settings.nCodePageForRC = nCodePage;
 
 		if (strBackupSuffix.empty())
 			g_settings.bBackup = FALSE;

@@ -1663,7 +1663,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3聲音 (*.mp3)|*.mp3|資源檔(*.res)|*.res|二進位制文件 (*.bin)|*.bin|所有檔案 (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3聲音)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
-    IDS_INVALIDCODEPAGE, "Invalid codepage."
+    IDS_INVALIDCODEPAGE, "無效的代碼頁。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

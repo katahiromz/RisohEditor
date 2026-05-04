@@ -1666,7 +1666,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "Suara MP3 (*.mp3)|*.mp3|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_MP3SOUND, "(Suara MP3)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
-    IDS_INVALIDCODEPAGE, "Invalid codepage."
+    IDS_INVALIDCODEPAGE, "Halaman kode tidak valid."
 }
 
 //////////////////////////////////////////////////////////////////////////////

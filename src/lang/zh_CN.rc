@@ -1662,7 +1662,7 @@ STRINGTABLE
     IDS_MP3RESBINFILTER, "MP3声音 (*.mp3)|*.mp3|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_MP3SOUND, "(MP3声音)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
-    IDS_INVALIDCODEPAGE, "Invalid codepage."
+    IDS_INVALIDCODEPAGE, "无效的代码页。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

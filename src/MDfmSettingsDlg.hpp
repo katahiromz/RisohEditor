@@ -80,7 +80,15 @@ public:
 		{
 			strText = GetComboBoxLBText(hCmb1, iItem);
 		}
-		m_nCodePage = _tcstoul(strText.c_str(), NULL, 0);
+
+		INT nCodePage = _tcstoul(strText.c_str(), NULL, 0);
+		if (!IsCodePageReallyUsable(nCodePage))
+		{
+			SetFocus(hCmb1);
+			MsgBoxDx(IDS_INVALIDCODEPAGE, MB_ICONERROR);
+			return;
+		}
+		m_nCodePage = nCodePage;
 
 		if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
 			m_bComments = TRUE;
