@@ -9468,7 +9468,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnOpenLocalFile(hwnd, L"ChangeLog_id.txt");
 		break;
 	case ID_OPENREADMEPTB:
-		OnOpenLocalFile(hwnd, L"README_pt.txt");
+		OnOpenLocalFile(hwnd, L"README_pt_BR.txt");
 		break;
 	case ID_OPENHISTORYPTB:
 		OnOpenLocalFile(hwnd, L"ChangeLog_pt_BR.txt");
