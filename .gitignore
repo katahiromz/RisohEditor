@@ -40,3 +40,5 @@ risoheditor-*.exe
 *.ninja
 .ninja_*
 _codeql_detected_source_root
+Testing/
+*.cmake
