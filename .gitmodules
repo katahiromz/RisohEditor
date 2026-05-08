@@ -10,3 +10,6 @@
 [submodule "WonSetThreadUILanguage"]
 	path = WonSetThreadUILanguage
 	url = https://github.com/katahiromz/WonSetThreadUILanguage.git
+[submodule "WonRes"]
+	path = WonRes
+	url = https://github.com/katahiromz/WonRes

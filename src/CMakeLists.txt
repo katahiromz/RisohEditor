@@ -19,7 +19,8 @@ add_library(libRisohEditor STATIC
     StringRes.cpp
     ToolbarRes.cpp
     Utils.cpp
-    VersionRes.cpp)
+    VersionRes.cpp
+    WonResWrap.cpp)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # RisohEditor.exe
@@ -31,7 +32,7 @@ add_executable(RisohEditor WIN32
 target_link_libraries(RisohEditor
     LineNumEdit_static libRisohEditor
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
-    oledlg msimg32 advapi32 shlwapi version urlmon)
+    oledlg msimg32 advapi32 shlwapi version urlmon WonRes)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set_target_properties(RisohEditor PROPERTIES OUTPUT_NAME "RisohEditor64")
@@ -46,7 +47,7 @@ add_executable(RisohEditorPortable WIN32
 target_link_libraries(RisohEditorPortable
     LineNumEdit_static libRisohEditor
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
-    oledlg msimg32 advapi32 shlwapi version urlmon)
+    oledlg msimg32 advapi32 shlwapi version urlmon WonRes)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set_target_properties(RisohEditorPortable PROPERTIES OUTPUT_NAME "RisohEditorPortable64")

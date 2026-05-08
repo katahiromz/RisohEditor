@@ -563,7 +563,7 @@ UINT EntrySet::get_last_id(const MIdOrString& type, WORD lang) const
 BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
 {
 	// begin the update
-	HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
+	HANDLE hUpdate = ::Wrap_BeginUpdateResourceW(ExeFile, TRUE);
 	if (hUpdate == NULL)
 	{
 		return FALSE;   // failure
@@ -594,18 +594,18 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
 		bool is_zero = (*entry).m_name.is_zero();
 
 		// do update
-		if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(),
-							   is_zero ? NULL : (*entry).m_name.ptr(),
-							   (*entry).m_lang, pv, size))
+		if (!::Wrap_UpdateResourceW(hUpdate, (*entry).m_type.ptr(),
+		                            is_zero ? NULL : (*entry).m_name.ptr(),
+		                            (*entry).m_lang, pv, size))
 		{
 			assert(0);
-			::EndUpdateResourceW(hUpdate, TRUE);    // discard
+			::Wrap_EndUpdateResourceW(hUpdate, TRUE);    // discard
 			return FALSE;   // failure
 		}
 	}
 
 	// finish
-	return ::EndUpdateResourceW(hUpdate, FALSE);
+	return ::Wrap_EndUpdateResourceW(hUpdate, FALSE);
 }
 
 void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
@@ -1420,14 +1420,14 @@ EntryBase *
 EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
 {
 	// find the resource in hMod
-	HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
+	HRSRC hResInfo = ::Wrap_FindResourceExW(hMod, type, name, lang);
 	if (!hResInfo)
 		return NULL;
 
 	// get the size and the pointer
-	DWORD dwSize = SizeofResource(hMod, hResInfo);
-	HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
-	LPVOID pv = LockResource(hGlobal);
+	DWORD dwSize = ::Wrap_SizeofResource(hMod, hResInfo);
+	HGLOBAL hGlobal = ::Wrap_LoadResource(hMod, hResInfo);
+	LPVOID pv = ::Wrap_LockResource(hGlobal);
 	if (pv && dwSize)
 	{
 		// got it. add a language entry

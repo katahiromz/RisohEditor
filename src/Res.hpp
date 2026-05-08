@@ -23,6 +23,7 @@
 #include "DialogRes.hpp"
 #include "ResHeader.hpp"
 #include "ToolbarRes.hpp"
+#include "WonResWrap.h"
 
 struct BaseEntry;
 struct EntrySet;
@@ -657,14 +658,14 @@ struct EntrySet : protected EntrySetBase
 	static BOOL CALLBACK
 	EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
 	{
-		return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
+		return ::Wrap_EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
 	}
 
 	// callback to insert the resource in the executable
 	static BOOL CALLBACK
 	EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 	{
-		return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
+		return ::Wrap_EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
 	}
 
 	// get the child if any
@@ -676,7 +677,7 @@ public:
 	{
 		EnumResStruct ers;
 		ers.this_ = this;
-		return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
+		return ::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
 	}
 
 	// delete all the entries
