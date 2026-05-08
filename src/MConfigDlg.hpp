@@ -56,6 +56,7 @@ public:
 		SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
 
 		CheckDlgButton(hwnd, chx10, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
+		CheckDlgButton(hwnd, chx11, g_settings.bUseWonRes ? BST_CHECKED : BST_UNCHECKED);
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-old");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-bak");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"~");
@@ -137,6 +138,7 @@ public:
 		g_settings.strAtlAxWin = strAtlAxWin;
 
 		g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx10) == BST_CHECKED);
+		g_settings.bUseWonRes = (IsDlgButtonChecked(hwnd, chx11) == BST_CHECKED);
 
 		MStringW strBackupSuffix = GetDlgItemText(cmb2);
 		mstr_trim(strBackupSuffix);

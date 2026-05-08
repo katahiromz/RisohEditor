@@ -87,7 +87,8 @@ struct RisohSettings
 	BOOL                bDfmRawTextComments; // Delphi DFM raw text comments
 	BOOL                bDfmNoUnicode;      // Don't use Unicode nor UTF-8 in Delphi DFM
 	BOOL                bUseMSMSGTABLE;     // Use Microsoft's MESSAGETABLE
-    UINT                nCodePageForRC;
+	UINT                nCodePageForRC;
+	BOOL                bUseWonRes;
 	INT                 nEgaX;
 	INT                 nEgaY;
 	INT                 nEgaWidth;

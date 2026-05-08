@@ -57,7 +57,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.bDfmRawTextComments = TRUE;
 	g_settings.bDfmNoUnicode = FALSE;
 	g_settings.bUseMSMSGTABLE = FALSE;
-    g_settings.nCodePageForRC = CP_UTF8;
+	g_settings.nCodePageForRC = CP_UTF8;
+	g_settings.bUseWonRes = FALSE;
 	g_settings.nEgaX = CW_USEDEFAULT;
 	g_settings.nEgaY = CW_USEDEFAULT;
 	g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -279,6 +280,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
 	keyRisoh.QueryDword(TEXT("bDfmNoUnicode"), (DWORD&)g_settings.bDfmNoUnicode);
 	keyRisoh.QueryDword(TEXT("bUseMSMSGTABLE"), (DWORD&)g_settings.bUseMSMSGTABLE);
+	keyRisoh.QueryDword(TEXT("bUseWonRes"), (DWORD&)g_settings.bUseWonRes);
 	keyRisoh.QueryDword(TEXT("nCodePageForRC"), (DWORD&)g_settings.nCodePageForRC);
 	keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
 	keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
@@ -597,6 +599,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);
 	keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
 	keyRisoh.SetDword(TEXT("bDfmNoUnicode"), g_settings.bDfmNoUnicode);
+	keyRisoh.SetDword(TEXT("bUseWonRes"), g_settings.bUseWonRes);
 	keyRisoh.SetDword(TEXT("bUseMSMSGTABLE"), g_settings.bUseMSMSGTABLE);
 	keyRisoh.SetDword(TEXT("nCodePageForRC"), g_settings.nCodePageForRC);
 	keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
