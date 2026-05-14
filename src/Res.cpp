@@ -1110,7 +1110,7 @@ HTREEITEM EntrySet::get_insert_parent(EntryBase *entry)
 	if (entry->m_et == ET_TYPE)
 		return TVI_ROOT;    // the root handle
 
-	auto new_entry = add_type_entry(entry->m_type, false);
+	auto new_entry = add_type_entry(entry->m_type);
 	if (!new_entry)
 		return NULL;    // unable to add
 

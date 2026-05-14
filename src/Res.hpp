@@ -157,7 +157,7 @@ struct EntryBase
 	{
 		if (et != ET_ANY && m_et != et)
 			return false;
-		if (!type.is_zero() && m_type != type)
+		if (type != BAD_TYPE && m_type != type)
 			return false;
 		if (name != BAD_NAME && m_name != name)
 			return false;
@@ -432,7 +432,7 @@ struct EntrySet : protected EntrySetBase
 	}
 
 	// find by pattern matching
-	EntryBase *find(EntryType et, const MIdOrString& type = BAD_NAME, const MIdOrString& name = BAD_NAME,
+	EntryBase *find(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME,
 					WORD lang = BAD_LANG, bool invalid_ok = false) const
 	{
 		self_type found;
@@ -580,7 +580,7 @@ struct EntrySet : protected EntrySetBase
 
 	// add a type entry
 	EntryBase *
-	add_type_entry(const MIdOrString& type, bool replace)
+	add_type_entry(const MIdOrString& type)
 	{
 		auto entry = find(ET_TYPE, type, BAD_NAME, BAD_LANG, true);
 		if (!entry)
