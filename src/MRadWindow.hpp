@@ -2963,7 +2963,8 @@ public:
 			break;
 
 		case 'L':
-			pCtrl->DoTest();
+			if (pCtrl)
+				pCtrl->DoTest();
 			break;
 
 		default:
