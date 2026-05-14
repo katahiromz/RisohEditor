@@ -46,7 +46,7 @@ public:
 		Destroy();
 
 		if (!CreateWindowDx(hwndOwner, NULL, WS_CHILD | WS_VISIBLE | WS_DISABLED,
-			WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT))
+							WS_EX_NOACTIVATE | WS_EX_TRANSPARENT))
 		{
 			return FALSE;
 		}
