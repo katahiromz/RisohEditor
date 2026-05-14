@@ -4,8 +4,8 @@
     - Reso più sicuro il supporto della pagina codice
     - Aggiunta traduzione portoghese (Portogallo).
     - Introdotto WonRes (manipolatore risorse originali).
-    - Fixed IDD_IDLIST dialog behavior.
-    - Fixed a bug that caused the application to crash when 'L' was pressed in MRadWindow.
+    - Corretto il comportamento della finestra di dialogo IDD_IDLIST.
+    - Corretto un bug che causava l'arresto anomalo dell'applicazione quando si premeva il tasto 'L' in MRadWindow.
 - v.5.9.7 (03.05.2026)
     - Supportati RichEdit20A/RichEdit20W/RichEdit50W.
     - Pagine codice supportate.
