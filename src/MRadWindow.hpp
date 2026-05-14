@@ -828,12 +828,14 @@ public:
 	{
 		WCHAR szText[256];
 		MStringW str = GetWindowTextW();
-		StringCchPrintfW(szText, _countof(szText),
-			L"MRadCtrl:%p, m_hwnd:%p, m_dwMagic:0x%08X, m_bTopCtrl:%d, m_nIndex:%d, "
-			L"str:%s, IndexToCtrlMap()[m_nIndex]: %p",
-			this, m_hwnd, m_dwMagic, m_bTopCtrl, m_nIndex,
-			str.c_str(), IndexToCtrlMap()[m_nIndex]
-		);
+		auto it = IndexToCtrlMap().find(m_nIndex);
+		if (it != IndexToCtrlMap().end()) {
+			StringCchPrintfW(szText, _countof(szText),
+				L"MRadCtrl:%p, m_hwnd:%p, m_dwMagic:0x%08X, m_bTopCtrl:%d, m_nIndex:%d, "
+				L"str:%s, it->second: %p",
+				this, m_hwnd, m_dwMagic, m_bTopCtrl, m_nIndex,
+				str.c_str(), it->second);
+		}
 
 		MessageBoxW(NULL, szText, L"MRadCtrl::DoTest()", MB_ICONINFORMATION);
 	}
@@ -1430,7 +1432,7 @@ public:
 
 		// calculate another color
 		DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
-		rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
+		rgb = (dwTotal < 255 * 3 / 2) ? RGB(255, 255, 255) : RGB(0, 0, 0);
 
 		// an 8x8-pixel rectangle
 		RECT rc8x8 = { 0, 0, 8, 8 };
@@ -1842,6 +1844,8 @@ public:
 							GetObject(info.hbmColor, sizeof(BITMAP), &bm);
 							siz.cx = bm.bmWidth;
 							siz.cy = bm.bmHeight;
+							DeleteObject(info.hbmMask);
+							DeleteObject(info.hbmColor);
 						}
 						else if (style & SS_REALSIZECONTROL)
 						{
