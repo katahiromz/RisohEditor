@@ -2931,7 +2931,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 		if (value < SHRT_MIN || USHRT_MAX < value)
 		{
 			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-			ComboBox_SetText(hCmb2, std::to_wstring(value).c_str());
+			SetDlgItemInt(hwnd, cmb2, value, TRUE);
 			ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
 			SetFocus(hCmb2);	// set focus
 			// show error message
