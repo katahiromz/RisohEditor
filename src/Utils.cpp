@@ -2930,7 +2930,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
 		INT value = mstr_parse_int(str.c_str());
 		if (value < SHRT_MIN || USHRT_MAX < value)
 		{
-			value = std::max(std::min(value, SHRT_MIN), USHRT_MAX);
+			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
 			ComboBox_SetText(hCmb2, std::to_wstring(value).c_str());
 			ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
 			SetFocus(hCmb2);	// set focus

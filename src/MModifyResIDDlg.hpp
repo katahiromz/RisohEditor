@@ -60,7 +60,7 @@ public:
 		INT value = mstr_parse_int(str3.c_str());
 		if (str3.empty() || value < SHRT_MIN || value > USHRT_MAX)
 		{
-			value = std::max(std::min(value, SHRT_MIN), USHRT_MAX);
+			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
 			SetDlgItemInt(hwnd, edt3, value, TRUE);
 			HWND hEdt3 = GetDlgItem(hwnd, edt3);
 			Edit_SetSel(hEdt3, 0, -1);
