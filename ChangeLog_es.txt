@@ -5,6 +5,7 @@
     - Se agregó la traducción al portugués (Portugal).
     - Se introdujo WonRes (manipulador de recursos originales).
     - Fixed IDD_IDLIST dialog behavior.
+    - Fixed a bug that caused the application to crash when 'L' was pressed in MRadWindow.
 - v.5.9.7 (2026-05-03)
     - Compatibilidad con RichEdit20A/RichEdit20W/RichEdit50W.
     - Supported codepages.
