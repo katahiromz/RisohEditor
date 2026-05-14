@@ -1930,8 +1930,11 @@ public:
 		HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
 		DoSendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
+		MRadCtrl::GetTargets().clear();
+		MRadCtrl::GetLastSel() = NULL;
+		MRadCtrl::IndexToCtrlMap().clear();
+
 		// notify selection change to the owner
-		MRadCtrl::GetTargetIndeces().clear();
 		DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
 		// destroy the icons
