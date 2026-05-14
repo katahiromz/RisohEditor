@@ -1,5 +1,9 @@
 #pragma once
 
+#undef min
+#undef max
+#include <algorithm>
+
 enum LANG_TYPE
 {
 	LANG_TYPE_0,
