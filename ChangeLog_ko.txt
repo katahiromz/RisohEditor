@@ -5,6 +5,7 @@
     - 코드 페이지 지원을 더욱 안전하게 만들었습니다.
     - 포르투갈어(포르투갈) 번역을 추가했습니다.
     - WonRes(오리지널 리소스 조작 도구)를 도입했습니다.
+    - Fixed IDD_IDLIST dialog behavior.
 - v.5.9.7 (2026-05-03)
     - RichEdit20A/RichEdit20W/RichEdit50W를 지원합니다.
     - 코드 페이지를 지원합니다.

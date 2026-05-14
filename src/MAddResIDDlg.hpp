@@ -52,8 +52,7 @@ public:
 		SetDlgItemTextW(hwnd, edt1, table[IDTYPE_default].name.c_str());
 		m_bChanging = FALSE;
 
-		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0,
-						   MAKELPARAM((WORD)SHRT_MAX, (WORD)SHRT_MIN));
+		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE32, SHRT_MIN, USHRT_MAX);
 
 		CenterWindowDx();
 		return TRUE;
@@ -77,8 +76,11 @@ public:
 		MString str2 = GetDlgItemText(hwnd, edt2);
 		ReplaceFullWithHalf(str2);
 		mstr_trim(str2);
-		if (str2.empty())
+		INT value = mstr_parse_int(str2.c_str());
+		if (str2.empty() || value < SHRT_MIN || value > USHRT_MAX)
 		{
+			value = std::max(std::min(value, SHRT_MIN), USHRT_MAX);
+			SetDlgItemInt(hwnd, edt2, value, TRUE);
 			HWND hEdt2 = GetDlgItem(hwnd, edt2);
 			Edit_SetSel(hEdt2, 0, -1);
 			SetFocus(hEdt2);

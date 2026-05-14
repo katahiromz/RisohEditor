@@ -385,30 +385,26 @@ public:
 		if (pszIDType == NULL && !m_bChanging)
 		{
 			m_bChanging = TRUE;
-			if (pszIDType == NULL)
+			ComboBox_ResetContent(m_hCmb1);
+			ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
+			INT i, nCount = ListView_GetItemCount(m_hLst1);
+			for (i = 0; i < nCount; ++i)
 			{
-				ComboBox_ResetContent(m_hCmb1);
-				ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
-				INT i, nCount = ListView_GetItemCount(m_hLst1);
-				for (i = 0; i < nCount; ++i)
+				TCHAR szText[256];
+				ListView_GetItemText(m_hLst1, i, 1, szText, _countof(szText));
+				std::vector<MString> types;
+				mstr_split(types, szText, TEXT("/"));
+				for (size_t k = 0; k < types.size(); ++k)
 				{
-					TCHAR szText[256];
-					ListView_GetItemText(m_hLst1, i, 1, szText, _countof(szText));
-					std::vector<MString> types;
-					mstr_split(types, szText, TEXT("/"));
-					for (size_t k = 0; k < types.size(); ++k)
+					INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
+					if (ret == CB_ERR)
 					{
-						INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
-						if (ret == CB_ERR)
-						{
-							if (!types[k].empty())
-								ComboBox_AddString(m_hCmb1, types[k].c_str());
-						}
+						if (!types[k].empty())
+							ComboBox_AddString(m_hCmb1, types[k].c_str());
 					}
 				}
 			}
-			if (pszIDType == NULL)
-				ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
+			ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
 			m_bChanging = FALSE;
 		}
 
@@ -840,7 +836,8 @@ public:
 		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
 
 		TCHAR szText[MAX_PATH];
-		ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+		if (iItem != -1)
+			ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
 		if (iItem == -1 || szText[0] == TEXT('L') || szText[0] == TEXT('"'))
 		{
 			EnableMenuItem(hMenu, ID_MODIFYRESID, MF_GRAYED);

@@ -33,8 +33,7 @@ public:
 		int value = mstr_parse_int(m_str2.c_str(), true);
 		SetDlgItemInt(hwnd, edt3, value, TRUE);
 
-		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0,
-						   MAKELPARAM((WORD)SHRT_MAX, (WORD)SHRT_MIN));
+		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE32, SHRT_MIN, USHRT_MAX);
 
 		CenterWindowDx();
 		return TRUE;
@@ -55,26 +54,18 @@ public:
 		}
 		m_str1 = std::move(str1);
 
-		MString str2 = GetDlgItemText(hwnd, edt1);
-		mstr_trim(str2);
-		if (str2.empty())
-		{
-			HWND hEdt1 = GetDlgItem(hwnd, edt1);
-			Edit_SetSel(hEdt1, 0, -1);
-			SetFocus(hEdt1);
-			ErrorBoxDx(IDS_ENTERID);
-			return;
-		}
-
 		MString str3 = GetDlgItemText(hwnd, edt3);
 		ReplaceFullWithHalf(str3);
 		mstr_trim(str3);
-		if (str3.empty())
+		INT value = mstr_parse_int(str3.c_str());
+		if (str3.empty() || value < SHRT_MIN || value > USHRT_MAX)
 		{
+			value = std::max(std::min(value, SHRT_MIN), USHRT_MAX);
+			SetDlgItemInt(hwnd, edt3, value, TRUE);
 			HWND hEdt3 = GetDlgItem(hwnd, edt3);
 			Edit_SetSel(hEdt3, 0, -1);
 			SetFocus(hEdt3);
-			ErrorBoxDx(IDS_ENTERTEXT);
+			ErrorBoxDx(IDS_ENTERINT);
 			return;
 		}
 		m_str2 = std::move(str3);
