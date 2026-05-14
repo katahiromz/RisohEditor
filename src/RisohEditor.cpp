@@ -9982,6 +9982,22 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 			if (entry->m_et == ET_NAME)
 			{
+				WCHAR ch = szNewText[0];
+				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
+				{
+					INT value = mstr_parse_int(szNewText);
+					if (value == 0)
+					{
+						ErrorBoxDx(IDS_INVALIDNAME);
+						return FALSE; // failure
+					}
+					if (value < SHRT_MIN || USHRT_MAX < value)
+					{
+						ErrorBoxDx(IDS_ENTERINT);
+						return FALSE; // failure
+					}
+				}
+
 				// rename the name
 				MIdOrString old_name = GetNameFromText(szOldText);
 				MIdOrString new_name = GetNameFromText(szNewText);

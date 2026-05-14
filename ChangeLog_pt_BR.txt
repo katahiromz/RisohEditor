@@ -6,6 +6,7 @@
     - Introduzido o WonRes (manipulador de recursos original).
     - Corrigido o comportamento da caixa de diálogo IDD_IDLIST.
     - Corrigido um erro que causava o travamento do aplicativo ao pressionar a tecla 'L' na janela MRadWindow.
+    - Validação de IDs inteiros.
 - v.5.9.7 (2026-05-03)
     - Suporte para RichEdit20A/RichEdit20W/RichEdit50W.
     - Páginas de código suportadas.
