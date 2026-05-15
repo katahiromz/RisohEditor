@@ -1,6 +1,6 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.5.9.8 (DD.MM.2026)
+- v.5.9.8 (15.05.2026)
     - Reso più sicuro il supporto della pagina codice
     - Aggiunta traduzione portoghese (Portogallo).
     - Introdotto WonRes (manipolatore risorse originali).

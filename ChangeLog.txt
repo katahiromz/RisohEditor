@@ -1,6 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
-- v.5.9.8 (2026-XX-YY)
+- v.5.9.8 (2026-05-15)
     - Made codepage support safer.
     - Added Portuguese (Portugal) translation.
     - Introduced WonRes (original resource manipulator).

@@ -1,6 +1,6 @@
 ﻿## HISTORIA
 
-- v.5.9.8 (2026-XX-YY)
+- v.5.9.8 (2026-05-15)
     - Se mejoró la seguridad de la compatibilidad con páginas de códigos.
     - Se agregó la traducción al portugués (Portugal).
     - Se introdujo WonRes (manipulador de recursos originales).

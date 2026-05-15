@@ -1,6 +1,6 @@
 ﻿## HISTÓRICO
 
-- v.5.9.8 (2026-XX-YY)
+- v.5.9.8 (2026-05-15)
     - Suporte a páginas de código mais seguro.
     - Adicionada tradução para português (Portugal).
     - Introduzido o WonRes (manipulador de recursos original).
