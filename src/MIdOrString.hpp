@@ -31,9 +31,30 @@
 
 struct MIdOrString;
 
-MString mstr_dec_short(SHORT value);
-MString mstr_dec_word(WORD value);
-MString mstr_dec_dword(DWORD value);
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_word(WORD value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, value);
+	return ret;
+}
+
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_short(SHORT value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, (short)value);
+	return ret;
+}
+
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_dword(DWORD value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, value);
+	return ret;
+}
+
 MString mstr_dec(int value);
 MString mstr_hex(int value);
 MString mstr_hex_word(WORD value);
@@ -540,27 +561,6 @@ inline bool guts_quote(MStringW& str, const WCHAR*& pch)
 	}
 
 	return true;
-}
-
-inline MString mstr_dec_short(SHORT value)
-{
-	MString ret;
-	mstr_to_dec(ret, (short)value);
-	return ret;
-}
-
-inline MString mstr_dec_word(WORD value)
-{
-	MString ret;
-	mstr_to_dec(ret, value);
-	return ret;
-}
-
-inline MString mstr_dec_dword(DWORD value)
-{
-	MString ret;
-	mstr_to_dec(ret, value);
-	return ret;
 }
 
 inline MString mstr_dec(int value)

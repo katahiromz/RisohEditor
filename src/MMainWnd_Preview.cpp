@@ -428,7 +428,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 		str += L"    #error Ap Studio cannot edit this message table.\r\n";
 		str += L"#endif\r\n";
 		str += L"#ifdef MCDX_INVOKED\r\n";
-		str += msg_res.Dump();
+		str += msg_res.Dump(entry.m_name);
 		str += L"#endif\r\n\r\n";
 	}
 	SetWindowTextW(m_hCodeEditor, str.c_str());

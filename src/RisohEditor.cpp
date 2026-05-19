@@ -2593,7 +2593,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 			// dump (with disabling macro IDs)
 			bool shown = !g_settings.bHideID;
 			g_settings.bHideID = false;
-			MStringW strWide = msg_res.Dump();
+			MStringW strWide = msg_res.Dump(entry->m_name);
 			g_settings.bHideID = !shown;
 
 			// compile the dumped result
@@ -5446,7 +5446,7 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang
 			str += L"    #error Ap Studio cannot edit this message table.\r\n";
 			str += L"#endif\r\n";
 			str += L"#ifdef MCDX_INVOKED\r\n";
-			str += msg_res.Dump();
+			str += msg_res.Dump(1); // FIXME
 			str += L"#endif\r\n\r\n";
 
 			// convert it
@@ -5598,7 +5598,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 			str += L"    #error Ap Studio cannot edit this message table.\r\n";
 			str += L"#endif\r\n";
 			str += L"#ifdef MCDX_INVOKED\r\n";
-			str += msg_res.Dump();
+			str += msg_res.Dump(1); // FIXME
 			str += L"#endif\r\n\r\n";
 
 			// write it

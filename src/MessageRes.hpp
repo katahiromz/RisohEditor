@@ -8,6 +8,7 @@
 
 #include "MByteStream.hpp"
 #include "MString.hpp"
+#include "MIdOrString.hpp"
 #include "MTextToText.hpp"
 #ifndef NO_CONSTANTS_DB
 	#include "ConstantsDB.hpp"
@@ -211,10 +212,24 @@ public:
 	}
 
 #ifdef NO_CONSTANTS_DB
-	string_type Dump() const
+	string_type Dump(const MIdOrString& tableId = MIdOrString((WORD)1)) const
 	{
 		MStringW ret, str;
 
+		// Emit optional table-id prefix when not the default integer 1.
+		if (tableId.is_str())
+		{
+			// String name: emit as a quoted literal, e.g.  "MyTable" MESSAGETABLEDX
+			ret += WIDE("\"");
+			ret += mstr_escape(MStringW(MTextToWide(CP_ACP, tableId.c_str()).c_str()));
+			ret += WIDE("\" ");
+		}
+		else if (tableId.m_id != 1)
+		{
+			// Non-default integer id, e.g.  2 MESSAGETABLEDX
+			ret += mstr_dec_word<wchar_t>(tableId.m_id);
+			ret += WIDE(" ");
+		}
 		ret += WIDE("MESSAGETABLEDX\r\n");
 		ret += WIDE("{\r\n");
 
@@ -235,10 +250,22 @@ public:
 		return ret;
 	}
 #else
-	string_type Dump(WORD wName) const
+	string_type Dump(const MIdOrString& tableId = MIdOrString((WORD)1)) const
 	{
 		MStringW ret;
 
+		// Emit optional table-id prefix when not the default integer 1.
+		if (tableId.is_str())
+		{
+			ret += WIDE("\"");
+			ret += mstr_escape(MStringW(MTextToWide(CP_ACP, tableId.c_str()).c_str()));
+			ret += WIDE("\" ");
+		}
+		else if (tableId.m_id != 1)
+		{
+			ret += mstr_dec_word(tableId.m_id);
+			ret += WIDE(" ");
+		}
 		ret += WIDE("MESSAGETABLEDX\r\n");
 		if (g_settings.bUseBeginEnd)
 			ret += WIDE("BEGIN\r\n");
@@ -263,7 +290,7 @@ public:
 	}
 	string_type Dump() const
 	{
-		return Dump(1);
+		return Dump(MIdOrString((WORD)1));
 	}
 #endif
 

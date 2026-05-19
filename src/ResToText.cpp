@@ -534,7 +534,7 @@ ResToText::DoMessage(const EntryBase& entry)
 	else
 	{
 		str += L"#ifdef MCDX_INVOKED\r\n";
-		str += msg_res.Dump();
+		str += msg_res.Dump(entry.m_name);
 		str += L"#endif\r\n\r\n";
 	}
 

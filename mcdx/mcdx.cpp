@@ -24,6 +24,7 @@
     #include "MProcessMaker.hpp"
 #endif
 #include "MString.hpp"
+#include "MIdOrString.hpp"
 #include "MacroParser.hpp"
 #include "MessageRes.hpp"
 #include "ResHeader.hpp"
@@ -82,8 +83,10 @@ int g_nLineNo = 0;
 LANGID   g_langid    = 0;
 uint16_t g_wCodePage = CP_UTF8;
 int      g_value     = 0;
+MIdOrString g_table_id((WORD)1);  // Current MESSAGETABLEDX table-id (default: 1)
 
-typedef std::map<LANGID, MessageRes> msg_tables_type;
+typedef std::pair<LANGID, MIdOrString>           msg_table_key_type;
+typedef std::map<msg_table_key_type, MessageRes> msg_tables_type;
 msg_tables_type g_msg_tables;
 
 char g_lang_english[] = "LANG=en_US";
@@ -410,7 +413,7 @@ int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
         MStringA str = ptr;
         mstr_unquote(str);
         MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
-        g_msg_tables[g_langid].m_map[(DWORD)g_value] = wstr;
+        g_msg_tables[{g_langid, g_table_id}].m_map[(DWORD)g_value] = wstr;
 
         const char *ptr0 = ptr;
         guts_quote(str, ptr0);
@@ -576,8 +579,69 @@ int eat_output(const std::string& output)
             if (nMode == 0 && *ptr)
             {
                 ptr = mstr_skip_space(ptr);
-                if (memcmp("MESSAGETABLEDX", ptr, 14) == 0 &&
-                    (mchr_is_space(ptr[14]) || ptr[14] == 0 || ptr[14] == '{'))
+                g_table_id = MIdOrString((WORD)1); // reset to default for each new block
+
+                // Check whether line starts directly with MESSAGETABLEDX or
+                // has an optional table-id (integer / string literal / macro) before it.
+                bool found = (memcmp("MESSAGETABLEDX", ptr, 14) == 0 &&
+                              (mchr_is_space(ptr[14]) || ptr[14] == 0 ||
+                               ptr[14] == '{'));
+                if (!found)
+                {
+                    char *ptr_save = ptr;
+
+                    // Case 1: quoted string literal  "MyTable" MESSAGETABLEDX
+                    if (*ptr == '"')
+                    {
+                        std::string token;
+                        const char *p2 = ptr;
+                        if (guts_quote(token, p2))
+                        {
+                            p2 = mstr_skip_space(p2);
+                            if (memcmp("MESSAGETABLEDX", p2, 14) == 0 &&
+                                (mchr_is_space(p2[14]) || p2[14] == 0 || p2[14] == '{'))
+                            {
+                                g_table_id = MIdOrString(token.c_str());
+                                ptr  = const_cast<char *>(p2);
+                                found = true;
+                            }
+                        }
+                    }
+
+                    // Case 2: integer literal / macro expression  2 MESSAGETABLEDX
+                    if (!found)
+                    {
+                        char *ptr0 = ptr;
+                        while (*ptr && !mchr_is_space(*ptr))
+                            ++ptr;
+                        if (ptr != ptr0)
+                        {
+                            MStringA token(ptr0, ptr);
+                            char *p2 = mstr_skip_space(ptr);
+                            if (memcmp("MESSAGETABLEDX", p2, 14) == 0 &&
+                                (mchr_is_space(p2[14]) || p2[14] == 0 || p2[14] == '{'))
+                            {
+                                using namespace MacroParser;
+                                StringScanner scanner(token);
+                                TokenStream ts(scanner);
+                                ts.read_tokens();
+                                Parser parser(ts);
+                                int val = 1;
+                                if (parser.parse() && eval_int(parser.ast(), val))
+                                {
+                                    g_table_id = MIdOrString((WORD)(uint16_t)val);
+                                    ptr   = p2;
+                                    found = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!found)
+                        ptr = ptr_save;
+                }
+
+                if (found)
                 {
                     nMode = 1;
                     ptr += 14;
@@ -622,11 +686,14 @@ int save_rc(const char *output_file)
 
     for (auto& kv : g_msg_tables)
     {
+        LANGID            langid   = kv.first.first;
+        const MIdOrString table_id = kv.first.second;
+
         fprintf(fp, "#ifdef MCDX_INVOKED\r\n");
         fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\r\n",
-                PRIMARYLANGID(kv.first), SUBLANGID(kv.first));
+                PRIMARYLANGID(langid), SUBLANGID(langid));
 
-        MStringW wstr = kv.second.Dump();
+        MStringW wstr = kv.second.Dump(table_id);
         MStringA str  = MWideToAnsi(CP_UTF8, wstr.c_str()).c_str();
         fputs(str.c_str(), fp);
         fprintf(fp, "#endif\r\n\r\n");
@@ -644,20 +711,23 @@ int save_res(const char *output_file)
 
     for (auto& kv : g_msg_tables)
     {
+        LANGID            langid   = kv.first.first;
+        const MIdOrString table_id = kv.first.second;
+
         MByteStreamEx stream;
         kv.second.SaveToStream(stream);
 
         header.DataSize   = DWORD(stream.size());
-        header.HeaderSize = header.GetHeaderSize(RT_MESSAGETABLE, 1);
+        header.HeaderSize = header.GetHeaderSize(RT_MESSAGETABLE, table_id);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;
 
         header.type           = RT_MESSAGETABLE;
-        header.name           = 1;
+        header.name           = table_id;
         header.DataVersion    = 0;
         header.MemoryFlags    = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
                                 MEMORYFLAG_MOVEABLE;
-        header.LanguageId     = kv.first;
+        header.LanguageId     = langid;
         header.Version        = 0;
         header.Characteristics = 0;
 
@@ -813,7 +883,9 @@ int load_bin(const char *input_file)
     }
 
     MByteStreamEx stream(&contents[0], contents.size());
-    if (!g_msg_tables[g_langid].LoadFromStream(stream, 1))
+    // bin files carry raw MESSAGETABLE data without a resource header, so the
+    // table-id defaults to 1.
+    if (!g_msg_tables[{g_langid, 1}].LoadFromStream(stream, 1))
     {
         fprintf(stderr, "ERROR: Invalid data.\n");
         return EXITCODE_INVALID_DATA;
@@ -849,7 +921,10 @@ int load_res(const char *input_file)
         if (!stream.ReadData(&bs[0], header.DataSize))
             break;
 
-        if (!g_msg_tables[header.LanguageId].LoadFromStream(bs, 1))
+        // header.name is an MIdOrString holding either a WORD id or a string name.
+        // Use it as-is for the composite key so round-trip fidelity is preserved.
+        const MIdOrString& table_id = header.name;
+        if (!g_msg_tables[{header.LanguageId, table_id}].LoadFromStream(bs, 1))
         {
             fprintf(stderr, "ERROR: Data is broken, invalid, or not supported.\n");
             return EXITCODE_INVALID_DATA;

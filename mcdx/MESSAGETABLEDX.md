@@ -14,7 +14,7 @@ Syntax
     #error Ap Studio cannot edit this message table.
 #endif
 #ifdef MCDX_INVOKED
-MESSAGETABLEDX
+[table-id] MESSAGETABLEDX
 {
     message-statement
     ...
@@ -23,7 +23,8 @@ MESSAGETABLEDX
 ```
 
 `MESSAGETABLEDX` contains one or more `message-statement`'s.
-
+`table-id` is a signed/unsigned 16-bit integer, identifier, or string literal.
+`table-id` is optional (default: `1`).
 
 message-statement
 -----------------
