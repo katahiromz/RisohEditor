@@ -1,9 +1,9 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.5.9.9 (2026-XX-YY)
-    - Refactored msdx.
+    - Rifattorizzato msdx.
 - v.5.9.8 (15.05.2026)
-    - Reso più sicuro il supporto della pagina codice
+    - Reso più sicuro il supporto della pagina codice.
     - Aggiunta traduzione portoghese (Portogallo).
     - Introdotto WonRes (manipolatore risorse originali).
     - Corretto il comportamento della finestra di dialogo IDD_IDLIST.
