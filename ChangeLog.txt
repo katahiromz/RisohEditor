@@ -1,6 +1,7 @@
 ﻿## HISTORY (ChangeLog)
 
 - v.5.9.9 (2026-XX-YY)
+    - Refactored msdx.
 - v.5.9.8 (2026-05-15)
     - Made codepage support safer.
     - Added Portuguese (Portugal) translation.

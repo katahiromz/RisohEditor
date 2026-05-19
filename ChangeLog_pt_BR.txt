@@ -1,6 +1,7 @@
 ﻿## HISTÓRICO
 
 - v.5.9.9 (2026-XX-YY)
+    - Refactored msdx.
 - v.5.9.8 (2026-05-15)
     - Suporte a páginas de código mais seguro.
     - Adicionada tradução para português (Portugal).

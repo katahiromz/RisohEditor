@@ -1,6 +1,7 @@
 ﻿## SEJARAH
 
 - v.5.9.9 (2026-XX-YY)
+    - Refactored msdx.
 - v.5.9.8 (2026-05-15)
     - Meningkatkan keamanan dukungan halaman kode.
     - Menambahkan terjemahan bahasa Portugis (Portugal).

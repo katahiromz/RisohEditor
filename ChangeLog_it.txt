@@ -1,6 +1,7 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.5.9.9 (2026-XX-YY)
+    - Refactored msdx.
 - v.5.9.8 (15.05.2026)
     - Reso più sicuro il supporto della pagina codice
     - Aggiunta traduzione portoghese (Portogallo).
