@@ -4,6 +4,7 @@
     - Correção no msdx.
     - Correção no tratamento de IDs de recursos.
     - Correção no tratamento da tabela de mensagens.
+    - Modificado para aceitar páginas de código UTF-16.
 - v.5.9.8 (2026-05-15)
     - Suporte a páginas de código mais seguro.
     - Adicionada tradução para português (Portugal).

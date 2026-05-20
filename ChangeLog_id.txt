@@ -4,6 +4,7 @@
     - Memperbaiki msdx.
     - Memperbaiki penanganan ID sumber daya.
     - Memperbaiki penanganan tabel pesan.
+    - Dimodifikasi agar dapat menerima halaman kode UTF-16.
 - v.5.9.8 (2026-05-15)
     - Meningkatkan keamanan dukungan halaman kode.
     - Menambahkan terjemahan bahasa Portugis (Portugal).

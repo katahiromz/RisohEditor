@@ -4,6 +4,7 @@
     - Fixed msdx.
     - Fixed resource ID handling.
     - Fixed message table handling.
+    - Modified to accept UTF-16 code pages.
 - v.5.9.8 (2026-05-15)
     - Made codepage support safer.
     - Added Portuguese (Portugal) translation.

@@ -4,6 +4,7 @@
     - Corretto il file msdx.
     - Corretta la gestione degli ID risorsa.
     - Corretta la gestione delle tabelle dei messaggi.
+    - Modificato per accettare le tabelle codici UTF-16.
 - v.5.9.8 (15.05.2026)
     - Reso più sicuro il supporto della pagina codice.
     - Aggiunta traduzione portoghese (Portogallo).
