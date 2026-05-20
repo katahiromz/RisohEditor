@@ -7,7 +7,7 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 
 - A "resource ID" is the ID, that is used for Win32 resource data.
 - An "ID prefix" is the prefix of the resource ID.
-- An "entity resource" is a resource data except RT_ICON, RT_CURSOR, RT_STRING, RT_MANIFEST, RT_VERSION and RT_MESSAGETABLE.
+- An "entity resource" is a resource data except RT_ICON, RT_CURSOR, RT_STRING, RT_MANIFEST, and RT_VERSION.
 - A "resource name" of an entity resource is either a 16-bit integer value, a wide string, or a macro of 16-bit integer value.
 - The resource data of RT_ICON type is referred by the resource data of RT_GROUP_ICON type.
 - The resource data of RT_CURSOR type is referred by the resource data of RT_GROUP_CURSOR type.
@@ -43,6 +43,7 @@ If the rc file has #include's of the system headers, then the includes should be
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include <windows.h>
 #include <commctrl.h>
+#include <richedit.h>
 #undef APSTUDIO_HIDDEN_SYMBOLS
 ```
 
@@ -127,6 +128,7 @@ BEGIN
     "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "#include <windows.h>\r\n"
     "#include <commctrl.h>\r\n"
+    "#include <richedit.h>\r\n"
     "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "\0"
 END
@@ -158,7 +160,7 @@ It is recommended that you use forward slashes (`/`), not backslashes (`\`), to 
 ### TEXTINCLUDE 2
 
 TEXTINCLUDE 2 specifies the system headers to be included by this resource file.
-You can specify system headers to load in addition to `<windows.h>` and `<commctrl.h>`.
+You can specify system headers to load in addition to `<windows.h>`, `<commctrl.h>`, and `<richedit.h>`.
 
 However, currently, to use constants that are not in RisohEditor, you need to add a system header to RisohEditor and add the constants to `Constants.txt`.
 
