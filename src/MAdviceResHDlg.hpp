@@ -29,7 +29,6 @@ public:
 		SetDlgItemText(hwnd, edt1, m_str.c_str());
 
 		CenterWindowDx();
-
 		SetFocus(GetDlgItem(hwnd, IDOK));
 		return FALSE;
 	}

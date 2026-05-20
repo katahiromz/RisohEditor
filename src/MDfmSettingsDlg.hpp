@@ -62,7 +62,6 @@ public:
 			CheckDlgButton(hwnd, chx2, BST_UNCHECKED);
 
 		CenterWindowDx();
-
 		return TRUE;
 	}
 

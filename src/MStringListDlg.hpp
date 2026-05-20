@@ -36,6 +36,7 @@ public:
 		str += LoadStringDx(IDS_DLGINIT3);
 		SetDlgItemText(hwnd, stc1, str.c_str());
 
+		CenterWindowDx();
 		return TRUE;
 	}
 

@@ -129,6 +129,7 @@ public:
 
 		ComboBox_SetCurSel(hCmb2, k);
 
+		CenterWindowDx();
 		return TRUE;
 	}
 
@@ -220,6 +221,7 @@ public:
 		int k = ComboBox_FindStringExact(hCmb2, -1, txt.c_str());
 		ComboBox_SetCurSel(hCmb2, k);
 
+		CenterWindowDx();
 		return TRUE;
 	}
 
