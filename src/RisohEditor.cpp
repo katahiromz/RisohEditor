@@ -550,7 +550,7 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
 			break;
 		}
 		int a0 = _wtoi(vecLocalVersion[i].c_str());
-		int a1 = _wtoi(vecLocalVersion[i].c_str());
+		int a1 = _wtoi(vecRemoteVersion[i].c_str());
 		if (a0 < a1)
 		{
 			compare = -1;
