@@ -421,7 +421,7 @@ bool EntrySet::intersect(const EntrySet& another) const
 
 EntryBase *
 EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
-						 WORD lang, const EntryBase::data_type& data)
+						 LANGID lang, const EntryBase::data_type& data)
 {
 	if (m_hwndTV)   // it has the treeview handle
 	{
@@ -528,7 +528,7 @@ void EntrySet::delete_invalid()
 	}
 }
 
-UINT EntrySet::get_last_id(const MIdOrString& type, WORD lang) const
+UINT EntrySet::get_last_id(const MIdOrString& type, LANGID lang) const
 {
 	WORD wLastID = 0;
 	for (auto entry : *this)
@@ -600,7 +600,7 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
 	return ::Wrap_EndUpdateResourceW(hUpdate, FALSE);
 }
 
-void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
+void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, LANGID lang)
 {
 	MIdOrString type = RT_BITMAP;
 
@@ -629,7 +629,7 @@ void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD
 	}
 }
 
-void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
+void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, LANGID lang)
 {
 	MIdOrString type = RT_GROUP_ICON;
 
@@ -999,7 +999,7 @@ bool EntrySet::extract_group_icon(const EntryBase& group, const wchar_t *file_na
 	return stream.SaveToFile(file_name);
 }
 
-EntryBase *EntrySet::add_bitmap(const MIdOrString& name, WORD lang, const MStringW& file)
+EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStringW& file)
 {
 	// load the data from an *.bmp file
 	MByteStreamEx stream;
@@ -1045,7 +1045,7 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, WORD lang, const MStrin
 }
 
 EntryBase *
-EntrySet::add_group_icon(const MIdOrString& name, WORD lang,
+EntrySet::add_group_icon(const MIdOrString& name, LANGID lang,
 						 const MStringW& file_name)
 {
 	// load the data from an *.ico file
@@ -1070,7 +1070,7 @@ EntrySet::add_group_icon(const MIdOrString& name, WORD lang,
 }
 
 EntryBase *
-EntrySet::add_group_cursor(const MIdOrString& name, WORD lang,
+EntrySet::add_group_cursor(const MIdOrString& name, LANGID lang,
 						   const MStringW& file_name)
 {
 	// load the data from an *.cur file
@@ -1399,7 +1399,7 @@ bool EntrySet::on_delete_group_cursor(EntryBase *entry)
 }
 
 EntryBase *
-EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
+EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 {
 	// find the resource in hMod
 	HRSRC hResInfo = ::Wrap_FindResourceExW(hMod, type, name, lang);
@@ -1445,7 +1445,7 @@ EntryBase *EntrySet::get_child(EntryBase *parent) const
 	return child;
 }
 
-BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
+BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, LANGID new_lang)
 {
 	assert(entry->m_et == ET_LANG);
 	assert(entry->m_type == RT_GROUP_ICON);
@@ -1507,7 +1507,7 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WO
 	return TRUE;
 }
 
-BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
+BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, LANGID new_lang)
 {
 	assert(entry->m_et == ET_LANG);
 	assert(entry->m_type == RT_GROUP_CURSOR);

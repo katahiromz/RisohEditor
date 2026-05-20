@@ -86,7 +86,7 @@ struct EntryBase
 	EntryType       m_et;                   // entry type
 	MIdOrString     m_type;                 // resource type
 	MIdOrString     m_name;                 // resource name
-	WORD            m_lang;                 // resource language
+	LANGID          m_lang;                 // resource language
 	HTREEITEM       m_hItem;                // treeview item handle
 	bool            m_valid;                // "is it valid?" flag
 	data_type       m_data;                 // the item data
@@ -98,7 +98,7 @@ struct EntryBase
 	}
 
 	// constructor
-	EntryBase(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG)
+	EntryBase(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, LANGID lang = BAD_LANG)
 		: m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
 	{
 		if (m_name == BAD_NAME)
@@ -152,7 +152,7 @@ struct EntryBase
 	}
 
 	// pattern match
-	bool match(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG) const
+	bool match(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, LANGID lang = BAD_LANG) const
 	{
 		if (et != ET_ANY && m_et != et)
 			return false;
@@ -229,7 +229,7 @@ struct EntryBase
 	MStringW get_lang_label() const
 	{
 		// use an external helper function
-		MStringW TextFromLang(WORD lang);
+		MStringW TextFromLang(LANGID lang);
 		return TextFromLang(m_lang);
 	}
 
@@ -333,13 +333,13 @@ Res_NewNameEntry(const MIdOrString& type, const MIdOrString& name)
 }
 
 inline EntryBase *
-Res_NewStringEntry(WORD lang)
+Res_NewStringEntry(LANGID lang)
 {
 	return new EntryBase(ET_STRING, RT_STRING, BAD_NAME, lang);
 }
 
 inline EntryBase *
-Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = BAD_LANG)
+Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, LANGID lang = BAD_LANG)
 {
 	return new EntryBase(ET_LANG, type, name, lang);
 }
@@ -412,7 +412,7 @@ struct EntrySet : protected EntrySetBase
 
 	// search by pattern matching
 	bool search(self_type& found, EntryType et, const MIdOrString& type = BAD_TYPE,
-				const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG, bool invalid_ok = false) const
+				const MIdOrString& name = BAD_NAME, LANGID lang = BAD_LANG, bool invalid_ok = false) const
 	{
 		for (auto entry : *this)
 		{
@@ -426,7 +426,7 @@ struct EntrySet : protected EntrySetBase
 
 	// find by pattern matching
 	EntryBase *find(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME,
-					WORD lang = BAD_LANG, bool invalid_ok = false) const
+					LANGID lang = BAD_LANG, bool invalid_ok = false) const
 	{
 		self_type found;
 		if (search(found, et, type, name, lang, invalid_ok))
@@ -457,14 +457,14 @@ struct EntrySet : protected EntrySetBase
 
 	// add a language entry
 	EntryBase *
-	add_lang_entry(const MIdOrString& type, const MIdOrString& name, WORD lang)
+	add_lang_entry(const MIdOrString& type, const MIdOrString& name, LANGID lang)
 	{
 		EntryBase::data_type data;
 		return add_lang_entry(type, name, lang, data);
 	}
 	EntryBase *
 	add_lang_entry(const MIdOrString& type, const MIdOrString& name,
-				   WORD lang, const EntryBase::data_type& data);
+				   LANGID lang, const EntryBase::data_type& data);
 
 	// delete an entry (and related entries)
 	void delete_entry(EntryBase *entry);
@@ -488,7 +488,7 @@ struct EntrySet : protected EntrySetBase
 	void delete_invalid();
 
 	// search and delete
-	bool search_and_delete(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME, WORD lang = BAD_LANG)
+	bool search_and_delete(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME, LANGID lang = BAD_LANG)
 	{
 		// search
 		self_type found;
@@ -505,16 +505,16 @@ struct EntrySet : protected EntrySetBase
 	}
 
 	// get last ID of the specified type and language
-	UINT get_last_id(const MIdOrString& type, WORD lang) const;
+	UINT get_last_id(const MIdOrString& type, LANGID lang) const;
 
 	// update the executable
 	BOOL update_exe(LPCWSTR ExeFile) const;
 
 	// helper method for MRadWindow and MTestDialog
-	void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang);
+	void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, LANGID lang);
 
 	// helper method for MRadWindow and MTestDialog
-	void do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang);
+	void do_icon(MTitleToIcon& title_to_icon, DialogItem& item, LANGID lang);
 
 	// extract the cursor as a *.cur file
 	bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name) const;
@@ -529,21 +529,19 @@ struct EntrySet : protected EntrySetBase
 	bool extract_group_icon(const EntryBase& group, const wchar_t *file_name) const;
 
 	// add a bitmap entry
-	EntryBase *add_bitmap(const MIdOrString& name, WORD lang, const MStringW& file);
+	EntryBase *add_bitmap(const MIdOrString& name, LANGID lang, const MStringW& file);
 
 	// add a group icon
 	EntryBase *
-	add_group_icon(const MIdOrString& name, WORD lang,
-				   const MStringW& file_name);
+	add_group_icon(const MIdOrString& name, LANGID lang, const MStringW& file_name);
 
 	// add a group cursor
 	EntryBase *
-	add_group_cursor(const MIdOrString& name, WORD lang,
-					 const MStringW& file_name);
+	add_group_cursor(const MIdOrString& name, LANGID lang, const MStringW& file_name);
 
 	// add a string entry
 	EntryBase *
-	add_string_entry(WORD lang)
+	add_string_entry(LANGID lang)
 	{
 		auto entry = find(ET_STRING, RT_STRING, BAD_NAME, lang, true);
 		if (!entry)
@@ -618,7 +616,7 @@ struct EntrySet : protected EntrySetBase
 
 	// add a resource entry from an executable module
 	EntryBase *
-	add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang);
+	add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang);
 
 	// callback to insert the resource in the executable
 	static BOOL CALLBACK
@@ -721,10 +719,10 @@ public:
 	}
 
 	// copy the group icon
-	BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WORD new_lang);
+	BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name, LANGID new_lang);
 
 	// copy the group cursor
-	BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, WORD new_lang);
+	BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, LANGID new_lang);
 
 	// extract one resource item as an *.res file
 	BOOL extract_res(LPCWSTR pszFileName, const EntryBase *entry) const;

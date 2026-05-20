@@ -21,7 +21,7 @@ public:
 	EntryBase *m_entry;
 	MIdOrString m_type;
 	MIdOrString m_name;
-	WORD m_lang;
+	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb2;
 
 	MCloneInNewNameDlg(EntryBase *entry)

@@ -1858,7 +1858,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 
 	// show the dialog
 	MCopyToMultiLangDlg dialog(entry);
-	WORD wLang = BAD_LANG;
+	LANGID wLang = BAD_LANG;
 	if (dialog.DialogBoxDx(hwnd) == IDOK)
 	{
 		for (auto& lang : dialog.m_langs)
@@ -1982,13 +1982,13 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	if (index >= (INT)g_langs.size())
 		return FALSE; // reject
 
-	WORD wNewLang = g_langs[index].LangID;
+	LANGID wNewLang = g_langs[index].LangID;
 
 	auto entry = g_res.get_entry();
 	if (!entry || entry->m_et == ET_TYPE || entry->m_et == ET_NAME)
 		return FALSE;   // reject
 
-	WORD wOldLang = entry->m_lang;
+	LANGID wOldLang = entry->m_lang;
 	if (wNewLang == BAD_LANG || wOldLang == wNewLang)
 		return FALSE;   // reject
 
@@ -2466,7 +2466,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 	else if (entry->m_type == RT_STRING && entry->m_et == ET_STRING)
 	{
 		// g_res --> found
-		WORD lang = entry->m_lang;
+		LANGID lang = entry->m_lang;
 		EntrySet found;
 		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
 
@@ -2529,7 +2529,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 			return;
 
 		// g_res --> found
-		WORD lang = entry->m_lang;
+		LANGID lang = entry->m_lang;
 		EntrySet found;
 		g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry->m_name, lang);
 
@@ -3466,7 +3466,7 @@ void MMainWnd::UpdateOurToolBarButtons(INT iType)
 // select an item in the tree control
 void
 MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
-				   const MIdOrString& name, WORD lang,
+				   const MIdOrString& name, LANGID lang,
 				   BOOL bDoubleClick, STV stv)
 {
 	// close the preview
@@ -3670,7 +3670,7 @@ MStringW MMainWnd::GetIncludesDumpForWindres() const
 }
 
 // compile the string table
-BOOL MMainWnd::CompileStringTable(MStringA& strOutput, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStringW& strWide)
 {
 	// convert strWide to UTF-8
 	MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
@@ -3820,7 +3820,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, WORD lang, const MStringW
 	return bOK;
 }
 
-BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
 	// convert strWide to ANSI
 	MStringA ansi = MWideToAnsi(CP_ACP, strWide).c_str();
@@ -3861,7 +3861,7 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
 	return TRUE;
 }
 
-BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
 	EntryBase *entry = g_res.find(ET_LANG, RT_RCDATA, name, lang);
 	if (!entry || !entry->is_delphi_dfm())
@@ -3924,7 +3924,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
 }
 
 // compile the message table
-BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
 	// convert strWide to UTF-8
 	MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
@@ -4064,7 +4064,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
 // compile a resource item source
 BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
-							WORD lang, const MStringW& strWide, BOOL bReopen)
+							LANGID lang, const MStringW& strWide, BOOL bReopen)
 {
 	if (type == RT_STRING)
 	{
@@ -5254,7 +5254,7 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 	return TRUE;
 }
 
-BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage)
+BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets, UINT nCodePage)
 {
 	MTextToAnsi comment_sep(nCodePage, LoadStringDx(IDS_COMMENT_SEP));
 
@@ -5367,7 +5367,7 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang
 	return TRUE;
 }
 
-BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
+BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets)
 {
 	MString comment_sep(LoadStringDx(IDS_COMMENT_SEP));
 
@@ -5476,7 +5476,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 }
 
 // write a language-specific RC text
-BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage)
+BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets, UINT nCodePage)
 {
 	if (nCodePage == _CP_UTF16)
 		return DoWriteRCLangUTF16(file, res2text, lang, targets);
@@ -5832,13 +5832,13 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 	}
 
 	// get the used languages
-	std::unordered_set<WORD> langs;
-	typedef std::pair<WORD, MStringW> lang_pair;
+	std::unordered_set<LANGID> langs;
+	typedef std::pair<LANGID, MStringW> lang_pair;
 	std::vector<lang_pair> lang_vec;
 
 	for (auto res : found)
 	{
-		WORD lang = res->m_lang;
+		LANGID lang = res->m_lang;
 		if (langs.insert(lang).second)
 		{
 			MString lang_name = g_db.GetLangName(lang);
@@ -9715,7 +9715,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 	}
 	else
 	{
-		static WORD old_lang = BAD_LANG;
+		static LANGID old_lang = BAD_LANG;
 		static WCHAR szOldText[MAX_PATH] = L"";
 
 		if (pnmhdr->code == TBN_DROPDOWN)
@@ -9856,7 +9856,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 				if (old_lang == BAD_LANG)
 					return FALSE;   // reject
 
-				WORD new_lang = LangFromText(szNewText);
+				LANGID new_lang = LangFromText(szNewText);
 				if (new_lang == BAD_LANG)
 				{
 					ErrorBoxDx(IDS_INVALIDLANG);
@@ -9887,7 +9887,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 				if (old_lang == BAD_LANG)
 					return FALSE;   // reject
 
-				WORD new_lang = LangFromText(szNewText);
+				LANGID new_lang = LangFromText(szNewText);
 				if (new_lang == BAD_LANG)
 				{
 					ErrorBoxDx(IDS_INVALIDLANG);
@@ -9959,7 +9959,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 }
 
 // change the language of the resource entries
-void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
+void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, LANGID old_lang, LANGID new_lang)
 {
 	EntrySet found;
 

@@ -23,7 +23,7 @@ public:
 	EntryBase *m_entry;
 	MIdOrString m_type;
 	MIdOrString m_name;
-	WORD m_lang;
+	LANGID m_lang;
 
 	MReplaceIconDlg(EntryBase *entry)
 		: MDialogBase(IDD_REPLACEICON), m_entry(entry),
@@ -65,7 +65,7 @@ public:
 			return;
 
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-		WORD lang;
+		LANGID lang;
 		if (!CheckLangComboBox(hCmb3, lang))
 			return;
 

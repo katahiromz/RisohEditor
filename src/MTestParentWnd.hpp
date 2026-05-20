@@ -20,7 +20,7 @@ public:
 	HICON m_hIconSm;
 
 	MTestParentWnd(DialogRes& dialog_res,
-				   MIdOrString menu, WORD lang, const MByteStreamEx& stream,
+				   MIdOrString menu, LANGID lang, const MByteStreamEx& stream,
 				   const std::vector<BYTE>& dlginit_data)
 		: m_test_dialog(dialog_res, menu, lang, dlginit_data), m_stream(stream)
 	{

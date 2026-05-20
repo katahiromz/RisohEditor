@@ -20,7 +20,7 @@ static BOOL s_bEnter = FALSE;
 extern HWND g_hMainWnd;
 extern MIdOrString g_RES_select_type;
 extern MIdOrString g_RES_select_name;
-extern WORD g_RES_select_lang;
+extern LANGID g_RES_select_lang;
 
 static bool EGA_dialog_input(char *buf, size_t buflen)
 {

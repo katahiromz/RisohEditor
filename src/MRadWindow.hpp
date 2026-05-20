@@ -1543,7 +1543,7 @@ public:
 	}
 
 	// create the mappings
-	void create_maps(WORD lang)
+	void create_maps(LANGID lang)
 	{
 		// for all the dialog items
 		for (size_t i = 0; i < m_dialog_res.size(); ++i)

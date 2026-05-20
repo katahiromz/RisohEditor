@@ -497,15 +497,15 @@ void MyChangeNotify(LPCWSTR pszFileName)
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 }
 
-DWORD GetDefaultResLanguage(VOID)
+LANGID GetDefaultResLanguage(VOID)
 {
 	if (g_settings.nDefResLangID == BAD_LANG)
 		return ::GetThreadUILanguage();
-	return g_settings.nDefResLangID;
+	return (LANGID)g_settings.nDefResLangID;
 }
 
 // get the LANGUAGE statement
-MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
+MString GetLanguageStatement(LANGID langid, BOOL bOldStyle)
 {
 	MString strPrim, strSub;
 
@@ -2363,7 +2363,7 @@ MLangAutoComplete::MLangAutoComplete(BOOL bUILanguage)
 }
 
 // initialize the language combobox
-void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage)
+void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
 {
 	InitComboBoxPlaceholder(hCmb3, IDS_INTEGERORIDENTIFIER);
 
@@ -2407,12 +2407,12 @@ void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage)
 		ComboBox_AddString(hCmb3, sz);
 	}
 
-	if (langid == (DWORD)-1)
+	if (langid == BAD_LANG)
 		ComboBox_SetText(hCmb3, L"");
 }
 
 // initialize the language combobox
-void InitLangComboBox(HWND hCmb3, DWORD langid)
+void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
 	InitLangComboBox(hCmb3, langid, FALSE);
 }
@@ -2516,9 +2516,9 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 }
 
 // get the language ID from a text
-WORD LangFromText(LPWSTR pszLang)
+LANGID LangFromText(LPWSTR pszLang)
 {
-	WORD lang = BAD_LANG;	 // not found yet
+	LANGID lang = BAD_LANG;	 // not found yet
 
 	// replace the fullwidth characters with halfwidth characters
 	ReplaceFullWithHalf(pszLang);
@@ -2729,7 +2729,7 @@ WORD LangFromText(LPWSTR pszLang)
 }
 
 // verify the language combobox
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type)
+BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type)
 {
 	// get the text from combobox
 	MStringW strLang = MWindowBase::GetWindowText(hCmb3);
@@ -2752,7 +2752,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type)
 }
 
 // verify the language combobox
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
+BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang)
 {
 	return CheckLangComboBox(hCmb3, lang, LANG_TYPE_0);
 }
@@ -2812,7 +2812,7 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 }
 
 // get the text from a language ID
-MStringW TextFromLang(WORD lang)
+MStringW TextFromLang(LANGID lang)
 {
 	WCHAR sz[MAX_PATH], szLoc[MAX_PATH];
 
@@ -3185,7 +3185,7 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 //////////////////////////////////////////////////////////////////////////////
 
 // get the RISOHTEMPLATE text
-MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang)
+MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, LANGID wLang)
 {
 	// get this application module
 	HINSTANCE hInst = GetModuleHandle(NULL);

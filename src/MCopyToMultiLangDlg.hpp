@@ -22,7 +22,7 @@ public:
 	EntryBase *m_entry;
 	MIdOrString m_type;
 	MIdOrString m_name;
-	WORD m_lang;
+	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb3;
 	std::vector<LANGID> m_langs;
 	MLangAutoComplete *m_pAutoComplete;
@@ -102,7 +102,7 @@ public:
 			MStringW str = GetListBoxText(hLst1, iItem);
 			if (str.empty())
 				continue;
-			WORD wLang = LangFromText(&str[0]);
+			LANGID wLang = LangFromText(&str[0]);
 			m_langs.push_back(wLang);
 		}
 
@@ -143,7 +143,7 @@ public:
 			return;
 		}
 
-		WORD wLang = LangFromText(&str[0]);
+		LANGID wLang = LangFromText(&str[0]);
 		if (wLang != BAD_LANG)
 		{
 			HWND hLst1 = GetDlgItem(hwnd, lst1);

@@ -27,7 +27,7 @@ public:
 	MIdOrString     name;
 	DWORD           DataVersion;
 	WORD            MemoryFlags;
-	WORD            LanguageId;
+	LANGID          LanguageId;
 	DWORD           Version;
 	DWORD           Characteristics;
 

@@ -105,7 +105,7 @@ public:
 	void OnOK(HWND hwnd)
 	{
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-		WORD lang;
+		LANGID lang;
 		if (CheckLangComboBox(hCmb3, lang, LANG_TYPE_2))
 			g_settings.nDefResLangID = lang;
 		else

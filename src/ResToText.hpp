@@ -32,7 +32,7 @@ CreateBitmapFromCursorDx(HWND hwnd, const EntryBase& entry, BITMAP& bm);
 HBITMAP
 CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry);
 
-MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
+MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 
 MStringW DumpTextInclude(const EntryBase& entry);
 
@@ -58,7 +58,7 @@ public:
 	BOOL m_bNoLanguage;
 	MString m_strFilePrefix;
 
-	MString GetLanguageStatement(WORD langid)
+	MString GetLanguageStatement(LANGID langid)
 	{
 		if (!m_bNoLanguage)
 			return ::GetLanguageStatement(langid, TRUE) + TEXT("\r\n");

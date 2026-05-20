@@ -22,7 +22,7 @@ class MAddResDlg : public MDialogBase
 public:
 	MIdOrString m_type;
 	MIdOrString m_name;
-	WORD m_lang;
+	LANGID m_lang;
 	MStringW m_strTemplate;
 	LPCTSTR m_file;
 	MStringW m_strText;
@@ -107,7 +107,7 @@ public:
 		return FALSE;
 	}
 
-	bool HasSample(const MIdOrString& type, const MIdOrString& name, WORD wLang) const
+	bool HasSample(const MIdOrString& type, const MIdOrString& name, LANGID wLang) const
 	{
 		return !GetRisohTemplate(type, name, wLang).empty();
 	}
@@ -156,7 +156,7 @@ public:
 
 		// check the language combobox cmb3
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-		WORD lang;
+		LANGID lang;
 		if (!CheckLangComboBox(hCmb3, lang))
 			return;     // failure
 

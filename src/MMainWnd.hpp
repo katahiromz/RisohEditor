@@ -80,7 +80,7 @@ protected:
 	// selection
 	MIdOrString     m_type;
 	MIdOrString     m_name;
-	WORD            m_lang;
+	LANGID          m_lang;
     BOOL            m_bShowBinEdit;
 
 	// classes
@@ -197,7 +197,7 @@ public:
 
 	void SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv = STV_RESETTEXTANDMODIFIED);
 	void SelectTV(EntryType et, const MIdOrString& type,
-				  const MIdOrString& name, WORD lang,
+				  const MIdOrString& name, LANGID lang,
 				  BOOL bDoubleClick, STV stv = STV_RESETTEXTANDMODIFIED);
 
 	template <typename T_DIALOG>
@@ -258,9 +258,9 @@ public:
 	BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
 	UINT DoGetCodePageOfWritingRC() const;
 	BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found, UINT nCodePage);
-	BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
-	BOOL DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets, UINT nCodePage);
-	BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
+	BOOL DoWriteRCLang(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets, UINT nCodePage);
+	BOOL DoWriteRCLangCodePage(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets, UINT nCodePage);
+	BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets);
 	BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
 	BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
 	BOOL DoSaveResAs(LPCWSTR pszResFile);
@@ -276,7 +276,7 @@ public:
 	BOOL DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile);
 	BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
 	void DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
-	void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
+	void DoRelangEntry(LPWSTR pszText, EntryBase *entry, LANGID old_lang, LANGID new_lang);
 	void DoRefreshTV(HWND hwnd);
 	void DoRefreshIDList(HWND hwnd);
 	void DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit);
@@ -316,11 +316,11 @@ public:
 protected:
 	// parsing resource IDs
 	BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
-					  WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
-	BOOL CompileStringTable(MStringA& strOutput, WORD lang, const MStringW& strWide);
-	BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
-	BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
-	BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
+					  LANGID lang, const MStringW& strWide, BOOL bReopen = FALSE);
+	BOOL CompileStringTable(MStringA& strOutput, LANGID lang, const MStringW& strWide);
+	BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
+	BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
+	BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
 	BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
 	BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
 	BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
@@ -492,7 +492,7 @@ protected:
 	BOOL OnFindPrev(HWND hwnd);
 
 protected:
-	MString GetLanguageStatement(WORD langid)
+	MString GetLanguageStatement(LANGID langid)
 	{
 		return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
 	}

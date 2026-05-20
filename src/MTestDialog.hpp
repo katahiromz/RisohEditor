@@ -46,7 +46,7 @@ class MTestDialog : public MDialogBase
 public:
 	DialogRes& m_dialog_res;
 	MIdOrString m_menu;
-	WORD m_lang;
+	LANGID m_lang;
 	HMENU m_hMenu;
 	std::vector<BYTE> m_dlginit_data;
 	MTitleToBitmap  m_title_to_bitmap;
@@ -55,7 +55,7 @@ public:
 	INT             m_yDialogBaseUnit;
 	MOleHost *m_pOleHost;
 
-	MTestDialog(DialogRes& dialog_res, MIdOrString menu, WORD lang, const std::vector<BYTE>& dlginit_data)
+	MTestDialog(DialogRes& dialog_res, MIdOrString menu, LANGID lang, const std::vector<BYTE>& dlginit_data)
 		: m_dialog_res(dialog_res), m_menu(menu),
 		  m_lang(lang), m_hMenu(NULL), m_dlginit_data(dlginit_data),
 		  m_pOleHost(NULL)
@@ -103,7 +103,7 @@ public:
 		m_title_to_icon.clear();
 	}
 
-	void create_maps(WORD lang)
+	void create_maps(LANGID lang)
 	{
 		for (size_t i = 0; i < m_dialog_res.size(); ++i)
 		{

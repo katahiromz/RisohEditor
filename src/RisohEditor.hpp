@@ -111,7 +111,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 // structure for language information
 struct LANG_ENTRY
 {
-	WORD LangID;    // language ID
+	LANGID LangID;    // language ID
 	MStringW str;   // string
 
 	// for sorting

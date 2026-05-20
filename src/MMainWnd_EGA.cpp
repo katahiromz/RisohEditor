@@ -22,7 +22,7 @@ INT g_bNoGuiMode = 0; // No-GUI mode
 
 MIdOrString g_RES_select_type = BAD_TYPE;
 MIdOrString g_RES_select_name = BAD_NAME;
-WORD g_RES_select_lang = BAD_LANG;
+LANGID g_RES_select_lang = BAD_LANG;
 
 IMPLEMENT_DYNAMIC(MEgaDlg)
 
@@ -266,7 +266,7 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 		arg2 = EGA_eval_arg(args[2], false);
 
 	MIdOrString type, name = BAD_NAME;
-	WORD lang = BAD_LANG;
+	LANGID lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
@@ -303,7 +303,7 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 		arg2 = EGA_eval_arg(args[2], false);
 
 	MIdOrString type, name = BAD_NAME;
-	WORD lang = BAD_LANG;
+	LANGID lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
@@ -338,7 +338,7 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 		arg2 = EGA_eval_arg(args[2], false);
 
 	MIdOrString type, src_name = BAD_NAME, dest_name;
-	WORD lang = BAD_LANG;
+	LANGID lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
@@ -395,7 +395,7 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 		arg3 = EGA_eval_arg(args[3], false);
 
 	MIdOrString type, name = BAD_NAME;
-	WORD src_lang = BAD_LANG, dest_lang = BAD_LANG;
+	LANGID src_lang = BAD_LANG, dest_lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
@@ -506,7 +506,7 @@ EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
 
 	MIdOrString type, name;
 	std::string contents;
-	WORD lang;
+	LANGID lang;
 
 	type = EGA_get_id_or_str(arg0);
 	name = EGA_get_id_or_str(arg1);
@@ -538,7 +538,7 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 		arg2 = EGA_eval_arg(args[2], false);
 
 	MIdOrString type, name = BAD_NAME;
-	WORD lang = BAD_LANG;
+	LANGID lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
@@ -574,7 +574,7 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 
 	MIdOrString type = EGA_get_id_or_str(arg0);
 	MIdOrString name = EGA_get_id_or_str(arg1);
-	WORD lang = static_cast<WORD>(EGA_get_int(arg2));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg2));
 
 	auto bHideID = g_settings.bHideID; // Save old value
 	g_settings.bHideID = TRUE;
@@ -604,7 +604,7 @@ EGA::arg_t MMainWnd::RES_set_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 
 	MIdOrString type = EGA_get_id_or_str(arg0);
 	MIdOrString name = EGA_get_id_or_str(arg1);
-	WORD lang = static_cast<WORD>(EGA_get_int(arg2));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg2));
 	auto ansi = EGA_get_str(arg3);
 	MAnsiToWide wide(CP_UTF8, ansi);
 
@@ -623,7 +623,7 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 	using namespace EGA;
 
 	arg0 = EGA_eval_arg(arg0, true);
-	WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 
 	EntrySet found;
 	g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
@@ -660,7 +660,7 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
 
 	arg0 = EGA_eval_arg(arg0, true);
 	arg1 = EGA_eval_arg(arg1, true);
-	WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 	int index = EGA_get_int(arg1);
 	if (index < 0)
 		return make_arg<AstStr>(); // error
@@ -696,7 +696,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 	arg0 = EGA_eval_arg(arg0, true);
 	arg1 = EGA_eval_arg(arg1, true);
 
-	WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 	auto array1 = EGA_get_array(arg1);
 
 	StringRes str_res;
@@ -744,7 +744,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 	arg1 = EGA_eval_arg(arg1, true);
 	arg2 = EGA_eval_arg(arg2, true);
 
-	WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 
 	EntrySet found;
 	g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
@@ -797,7 +797,7 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 		arg2 = EGA_eval_arg(args[2], false);
 
 	MIdOrString type, name;
-	WORD lang = BAD_LANG;
+	LANGID lang = BAD_LANG;
 
 	if (arg0)
 		type = EGA_get_id_or_str(arg0);
