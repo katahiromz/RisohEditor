@@ -521,8 +521,9 @@ ResToText::DoMessage(const EntryBase& entry)
 	}
 
 	MString str;
-	if (entry.m_name.empty())
-		str += GetLanguageStatement(entry.m_lang);
+
+	// LANGUAGE ..., ...
+	str += GetLanguageStatement(entry.m_lang);
 
 	if (g_settings.bUseMSMSGTABLE)
 	{

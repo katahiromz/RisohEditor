@@ -185,11 +185,11 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 	// entry.m_data --> stream --> mes
 	MessageRes mes;
 	MByteStreamEx stream(entry.m_data);
-	WORD nNameID = entry.m_name.m_id;
-	if (mes.LoadFromStream(stream, nNameID))
+	if (mes.LoadFromStream(stream, 0))
 	{
 		// dump the text to m_hCodeEditor
-		MStringW str = mes.Dump(nNameID);
+		MString str = GetLanguageStatement(entry.m_lang);
+		str += mes.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
 	}
 }
@@ -403,7 +403,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
 	// search the message tables
 	EntrySet found;
-	g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry.m_lang);
+	g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
 	// dump the text to m_hCodeEditor
 	MString str;
@@ -420,13 +420,10 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 		for (auto e : found)
 		{
 			MByteStreamEx stream(e->m_data);
-			if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+			if (!msg_res.LoadFromStream(stream, 0))
 				return;
 		}
 
-		str += L"#ifdef APSTUDIO_INVOKED\r\n";
-		str += L"    #error Ap Studio cannot edit this message table.\r\n";
-		str += L"#endif\r\n";
 		str += L"#ifdef MCDX_INVOKED\r\n";
 		str += msg_res.Dump(entry.m_name);
 		str += L"#endif\r\n\r\n";
