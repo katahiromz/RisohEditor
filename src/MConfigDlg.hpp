@@ -85,7 +85,7 @@ public:
 #endif
 
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-		InitLangComboBox(hCmb3, g_settings.nDefResLangID);
+		InitLangComboBox(hCmb3, (LANGID)g_settings.nDefResLangID);
 		SubclassChildDx(m_cmb3, cmb3);
 
 		// auto complete
