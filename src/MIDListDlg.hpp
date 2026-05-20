@@ -35,11 +35,14 @@ public:
 			if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
 			{
 				INT iItem = ListView_GetNextItem(m_hwnd, -1, LVNI_ALL | LVNI_SELECTED);
-				TCHAR szText[MAX_PATH];
-				ListView_GetItemText(m_hwnd, iItem, 2, szText, _countof(szText));
-				if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
+				if (iItem != -1)
 				{
-					SendMessage(GetParent(hwnd), WM_COMMAND, ID_MODIFYRESID, (LPARAM)hwnd);
+					TCHAR szText[MAX_PATH];
+					ListView_GetItemText(m_hwnd, iItem, 2, szText, _countof(szText));
+					if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
+					{
+						SendMessage(GetParent(hwnd), WM_COMMAND, ID_MODIFYRESID, (LPARAM)hwnd);
+					}
 				}
 			}
 		}
@@ -64,7 +67,7 @@ public:
 
 	MIDListDlg()
 		: MDialogBase(IDD_IDLIST), m_hMainWnd(NULL), m_pszResH(NULL),
-		  m_nBase(10), m_hLst1(NULL), m_bChanging(FALSE)
+		  m_nBase(10), m_hCmb1(NULL), m_hLst1(NULL), m_bChanging(FALSE)
 	{
 		m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
 	}
@@ -187,9 +190,9 @@ public:
 
 		INT iItem = ListView_GetItemCount(m_hLst1);
 
+		WCHAR szText[MAX_PATH];
 		for (INT i = 0; i < iItem; ++i)
 		{
-			WCHAR szText[MAX_PATH];
 			ZeroMemory(&item, sizeof(item));
 			item.iItem = i;
 			item.iSubItem = 0;
@@ -203,7 +206,7 @@ public:
 
 			item.iSubItem = 1;
 			ListView_GetItem(m_hLst1, &item);
-			if (wcsstr(item.pszText, text2.c_str()) == NULL)
+			if (wcsstr(item.pszText, text2.c_str()) == NULL) // Target is multiple
 				continue;
 
 			item.iSubItem = 2;
@@ -316,6 +319,7 @@ public:
 			item.pszText = &str[0];
 			ListView_SetItem(m_hLst1, &item);
 		}
+
 		iItem = ListView_GetItemCount(m_hLst1);
 		for (INT i = 0; i < iItem - 1; ++i)
 		{
