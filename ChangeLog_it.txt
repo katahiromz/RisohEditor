@@ -1,9 +1,9 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.5.9.9 (2026-XX-YY)
-    - Fixed msdx.
-    - Fixed resource ID handling.
-    - Fixed message table handling.
+- v.5.9.9 (20.05.2026)
+    - Corretto il file msdx.
+    - Corretta la gestione degli ID risorsa.
+    - Corretta la gestione delle tabelle dei messaggi.
 - v.5.9.8 (15.05.2026)
     - Reso più sicuro il supporto della pagina codice.
     - Aggiunta traduzione portoghese (Portogallo).
