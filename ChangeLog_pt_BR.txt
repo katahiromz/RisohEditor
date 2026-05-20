@@ -1,6 +1,7 @@
 ﻿## HISTÓRICO
 
 - v.6.0.0 (2026-XX-YY)
+    - Fixed minor UI/UX bug.
 - v.5.9.9 (2026-05-20)
     - Correção no msdx.
     - Correção no tratamento de IDs de recursos.

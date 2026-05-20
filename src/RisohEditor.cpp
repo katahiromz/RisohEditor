@@ -2988,7 +2988,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		{
 			if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 			{
-				if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+				if (entry->m_type == RT_STRING)
 				{
 					bCanEditLabel = FALSE;
 				}
@@ -3341,7 +3341,7 @@ void MMainWnd::UpdateToolBarStatus()
 		{
 			if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 			{
-				if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+				if (entry->m_type == RT_STRING)
 				{
 					bCanEditLabel = FALSE;
 				}
