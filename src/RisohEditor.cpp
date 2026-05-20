@@ -304,6 +304,8 @@ void MMainWnd::UpdateMenu()
 		InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, szText);
 
 		++i;    // increment the index
+		if (i >= (INT)_countof(szPrefix) - 1)
+			break;
 	}
 
 	if (g_settings.vecRecentlyUsed.empty())
@@ -534,8 +536,35 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
 		return;
 	}
 
+	std::vector<std::wstring> vecLocalVersion, vecRemoteVersion;
+	mstr_split(vecLocalVersion, local_version, L".");
+	mstr_split(vecRemoteVersion, remote_version, L".");
+
+	// comparing version
+	int compare = 0;
+	for (size_t i = 0; i < 4; ++i)
+	{
+		if (i >= vecLocalVersion.size() || i >= vecRemoteVersion.size())
+		{
+			compare = (int)vecLocalVersion.size() - (int)vecRemoteVersion.size();
+			break;
+		}
+		int a0 = _wtoi(vecLocalVersion[i].c_str());
+		int a1 = _wtoi(vecLocalVersion[i].c_str());
+		if (a0 < a1)
+		{
+			compare = -1;
+			break;
+		}
+		if (a0 > a1)
+		{
+			compare = +1;
+			break;
+		}
+	}
+
 	WCHAR szText[256];
-	if (local_version < remote_version)
+	if (compare < 0)
 	{
 		StringCbPrintfW(szText, sizeof(szText), LoadStringDx(IDS_THEREISUPDATE),
 						remote_version.c_str());
@@ -1315,18 +1344,20 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 
 	// get and delete the filename extension
 	WCHAR szExt[MAX_PATH] = L"";
-	LPWSTR pch = wcsrchr(szFile, L'.');
-	static const LPCWSTR s_DotExts[] =
+	if (LPWSTR pch = wcsrchr(szFile, L'.'))
 	{
-		L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".rc2", L".res"
-	};
-	for (auto ext : s_DotExts)
-	{
-		if (lstrcmpiW(pch, ext) == 0)
+		static const LPCWSTR s_DotExts[] =
 		{
-			StringCbCopyW(szExt, sizeof(szExt), ext + 1);
-			*pch = 0;
-			break;
+			L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".rc2", L".res"
+		};
+		for (auto ext : s_DotExts)
+		{
+			if (lstrcmpiW(pch, ext) == 0)
+			{
+				StringCbCopyW(szExt, sizeof(szExt), ext + 1);
+				*pch = 0;
+				break;
+			}
 		}
 	}
 
@@ -2211,7 +2242,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 }
 
 // set error message
-void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
+void MMainWnd::SetErrorMessage(const MStringA& strOutput)
 {
 	// show the message box
 	if (strOutput.empty())
@@ -2278,7 +2309,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 {
 	// get the selected entry
 	auto entry = g_res.get_entry();
-	if (!entry->is_editable(m_szVCBat))
+	if (!entry || !entry->is_editable(m_szVCBat))
 		return;     // not editable
 
 	if (!entry->can_gui_edit())
@@ -10989,7 +11020,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 			UpdateOurToolBarButtons(2);
 
 			// set the error message
-			SetErrorMessage(strOutput, TRUE);
+			SetErrorMessage(strOutput);
 
 			// set the modification flag
 			Edit_SetModify(m_hCodeEditor, TRUE);
@@ -11797,43 +11828,59 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
 		if (lstrcmpiW(arg, L"-load") == 0 ||
 			lstrcmpiW(arg, L"--load") == 0)
 		{
-			bNoGUI = TRUE;
-			arg = targv[++iarg];
-			m_commands += L"load:";
-			m_commands += arg;
-			m_commands += L"\n";
+			if (iarg + 1 < argc)
+			{
+				bNoGUI = TRUE;
+				arg = targv[++iarg];
+				m_commands += L"load:";
+				m_commands += arg;
+				m_commands += L"\n";
+			}
 			continue;
 		}
 		if (lstrcmpiW(arg, L"-load-options") == 0 ||
 			lstrcmpiW(arg, L"--load-options") == 0)
 		{
-			arg = targv[++iarg];
-			m_load_options = arg;
+			if (iarg + 1 < argc)
+			{
+				arg = targv[++iarg];
+				m_load_options = arg;
+			}
 			continue;
 		}
 
 		if (lstrcmpiW(arg, L"-save") == 0 ||
 			lstrcmpiW(arg, L"--save") == 0)
 		{
-			bNoGUI = TRUE;
-			arg = targv[++iarg];
-			m_commands += L"save:";
-			m_commands += arg;
-			m_commands += L"\n";
+			if (iarg + 1 < argc)
+			{
+				bNoGUI = TRUE;
+				arg = targv[++iarg];
+				m_commands += L"save:";
+				m_commands += arg;
+				m_commands += L"\n";
+			}
+			continue;
 		}
 		if (lstrcmpiW(arg, L"-save-options") == 0 ||
 			lstrcmpiW(arg, L"--save-options") == 0)
 		{
-			arg = targv[++iarg];
-			m_save_options = arg;
+			if (iarg + 1 < argc)
+			{
+				arg = targv[++iarg];
+				m_save_options = arg;
+			}
 			continue;
 		}
 
 		if (lstrcmpiW(arg, L"-log-file") == 0 ||
 			lstrcmpiW(arg, L"--log-file") == 0)
 		{
-			arg = targv[++iarg];
-			g_pszLogFile = arg;
+			if (iarg + 1 < argc)
+			{
+				arg = targv[++iarg];
+				g_pszLogFile = arg;
+			}
 			continue;
 		}
 
@@ -11873,9 +11920,6 @@ RisohEditor_Main(
 	// set the UI language
 	g_settings.ui_lang = GetUILang();
 	SetThreadUILanguage(LANGID(g_settings.ui_lang));
-
-	// initialize the libraries
-	OleInitialize(NULL);
 
 	// register MOleSite window class
 	MOleSite::RegisterDx();
@@ -11945,7 +11989,6 @@ RisohEditor_Main(
 	FreeLibrary(hinstMSFTEDIT);
 	FreeLibrary(hinstRichEdit);
 	FreeLibrary(hinstUXTheme);
-	OleUninitialize();
 	FreeWCLib();
 
 	// check object counts
@@ -11955,11 +11998,6 @@ RisohEditor_Main(
 	HANDLE hProcess = GetCurrentProcess();
 	MTRACEA("Count of GDI objects: %ld\n", GetGuiResources(hProcess, GR_GDIOBJECTS));
 	MTRACEA("Count of USER objects: %ld\n", GetGuiResources(hProcess, GR_USEROBJECTS));
-#endif
-
-#if defined(_MSC_VER) && !defined(NDEBUG)
-	// for detecting memory leak (MSVC only)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
 	return s_ret;
@@ -11975,18 +12013,23 @@ wWinMain(HINSTANCE   hInstance,
 		 LPWSTR      lpCmdLine,
 		 INT         nCmdShow)
 {
+#if defined(_MSC_VER) && !defined(NDEBUG)
+	// for detecting memory leak (MSVC only)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	PVOID OldValue;
 	BOOL bWowFsDisabled = DisableWow64FsRedirection(&OldValue);
 
-	HRESULT hrCoInit = CoInitialize(NULL);
+	HRESULT hrOleInit = OleInitialize(NULL);
 
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
 	if (bWowFsDisabled)
 		RevertWow64FsRedirection(OldValue);
 
-	if (SUCCEEDED(hrCoInit))
-		CoUninitialize();
+	if (SUCCEEDED(hrOleInit))
+		OleUninitialize();
 
 	return ret;
 }

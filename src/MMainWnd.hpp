@@ -325,7 +325,7 @@ protected:
 	BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
 	BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
 	BOOL UnloadResourceH(HWND hwnd);
-	void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
+	void SetErrorMessage(const MStringA& strOutput);
 	MStringW GetMacroDump(BOOL bApStudio = FALSE) const;
 	MStringW GetIncludesDump() const;
 	MStringW GetIncludesDumpForWindres() const;
