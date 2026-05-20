@@ -9341,7 +9341,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 			DoRefreshIDList(hwnd);
 			s_bModified = bModifiedOld;
 		}
-		if (!g_RES_select_type.is_zero() ||
+		if (g_RES_select_type != BAD_TYPE ||
 			g_RES_select_name != BAD_TYPE ||
 			g_RES_select_lang != BAD_LANG)
 		{
