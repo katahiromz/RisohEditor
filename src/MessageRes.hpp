@@ -90,7 +90,7 @@ public:
 		m_map.clear();
 	}
 
-	bool LoadFromStream(const MByteStream& stream, WORD wUnused)
+	bool LoadFromStream(const MByteStream& stream)
 	{
 		m_map.clear();
 		if (stream.size() < sizeof(MESSAGE_RESOURCE_DATA))

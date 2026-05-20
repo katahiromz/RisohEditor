@@ -514,7 +514,7 @@ ResToText::DoMessage(const EntryBase& entry)
 	for (auto e : found)
 	{
 		MByteStreamEx stream(e->m_data);
-		if (!msg_res.LoadFromStream(stream, 0))
+		if (!msg_res.LoadFromStream(stream))
 			return LoadStringDx(IDS_INVALIDDATA);
 		name = e->m_name;
 		break;

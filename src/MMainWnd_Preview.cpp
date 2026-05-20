@@ -185,7 +185,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 	// entry.m_data --> stream --> mes
 	MessageRes mes;
 	MByteStreamEx stream(entry.m_data);
-	if (mes.LoadFromStream(stream, 0))
+	if (mes.LoadFromStream(stream))
 	{
 		// dump the text to m_hCodeEditor
 		MString str = GetLanguageStatement(entry.m_lang);
@@ -420,7 +420,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 		for (auto e : found)
 		{
 			MByteStreamEx stream(e->m_data);
-			if (!msg_res.LoadFromStream(stream, 0))
+			if (!msg_res.LoadFromStream(stream))
 				return;
 		}
 

@@ -2538,7 +2538,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		for (auto e : found)
 		{
 			MByteStreamEx stream(e->m_data);
-			if (!msg_res.LoadFromStream(stream, 1))
+			if (!msg_res.LoadFromStream(stream))
 			{
 				ErrorBoxDx(IDS_CANNOTLOAD);
 				return;
