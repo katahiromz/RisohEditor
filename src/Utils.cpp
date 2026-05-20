@@ -3235,6 +3235,8 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD
 
 BOOL IsCodePageReallyUsable(UINT cp)
 {
+	if (cp == _CP_UTF16)
+		return TRUE;
 	CPINFOEXW info;
 	return IsValidCodePage(cp) && GetCPInfoExW(cp, 0, &info);
 }
