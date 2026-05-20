@@ -186,6 +186,7 @@ struct RisohSettings
 		assoc_map[L"New.Command.ID"] = L"ID_";
 		assoc_map[L"Prompt.ID"] = L"IDP_";
 		assoc_map[L"RCData.ID"] = L"IDR_";
+		assoc_map[L"MsgTable.ID"] = L"IDR_";
 		assoc_map[L"Unknown.ID"].clear();
 	}
 

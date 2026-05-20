@@ -10961,7 +10961,9 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 		MStringA strOutput;
 		if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
 		{
-			// success. clear the modification flag
+			// refresh the ID list window
+			DoRefreshIDList(hwnd);
+			// clear the modification flag
 			Edit_SetModify(m_hCodeEditor, FALSE);
 			m_nStatusStringID = IDS_RECOMPILEOK;
 		}

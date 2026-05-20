@@ -40,7 +40,8 @@ enum IDTYPE_
 	IDTYPE_WINDOW       = 16, // Window.ID
 	IDTYPE_NEWCOMMAND   = 17, // New.Command.ID
 	IDTYPE_PROMPT       = 18, // Prompt.ID
-	IDTYPE_RCDATA       = 19  // RCData.ID
+	IDTYPE_RCDATA       = 19, // RCData.ID
+	IDTYPE_MSGTABLE     = 20, // MsgTable.ID
 };
 
 class ConstantsDB
@@ -87,6 +88,7 @@ public:
 		case IDTYPE_HTML:
 		case IDTYPE_RESOURCE:
 		case IDTYPE_RCDATA:
+		case IDTYPE_MSGTABLE:
 			return true;
 		default:
 			return false;
@@ -157,7 +159,7 @@ public:
 		}
 		if (type == RT_MESSAGETABLE)
 		{
-			return IDTYPE_MESSAGE;
+			return IDTYPE_MSGTABLE;
 		}
 		if (type == RT_RCDATA)
 		{

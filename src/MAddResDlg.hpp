@@ -377,7 +377,7 @@ public:
 
 		if (type == RT_STRING || type == RT_VERSION)
 		{
-			// the name is optional if RT_STRING, RT_MESSAGETABLE or RT_VERSION
+			// the name is optional if RT_STRING or RT_VERSION
 			SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_OPTIONAL));
 			InitComboBoxPlaceholder(m_cmb2, IDS_NOTEXT);
 		}
@@ -396,7 +396,7 @@ public:
 		// prefix --> m_cmb2
 		MString strCmb2Text = GetComboBoxText(m_cmb2);
 		ComboBox_ResetContent(m_cmb2);
-		if (type != RT_STRING && type != RT_MESSAGETABLE)
+		if (type != RT_STRING)
 		{
 			auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 			for (auto& table_entry : table)

@@ -1852,6 +1852,8 @@ void Res_ReplaceResTypeString(MString& str, bool bRevert)
 			str = L"RT_RCDATA";
 		else if (str == L"Html.ID")
 			str = L"RT_HTML";
+		else if (str == L"MsgTable.ID")
+			str = L"RT_MESSAGETABLE";
 	}
 	else
 	{
@@ -1876,6 +1878,8 @@ void Res_ReplaceResTypeString(MString& str, bool bRevert)
 			str = L"RCData.ID";
 		else if (str == L"RT_HTML")
 			str = L"Html.ID";
+		else if (str == L"RT_MESSAGETABLE")
+			str = L"MsgTable.ID";
 	}
 }
 

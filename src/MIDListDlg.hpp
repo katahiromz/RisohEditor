@@ -131,7 +131,7 @@ public:
 		if (entry && entry->m_et == ET_LANG)
 		{
 			if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR ||
-				entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+				entry->m_type == RT_STRING)
 			{
 				// ignore
 				return;

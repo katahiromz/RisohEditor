@@ -134,10 +134,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 			if (g_settings.bUseMSMSGTABLE)
 			{
 				ret += L"MessageTable_";
-				if (entry.m_name.is_zero())
-					ret += DumpEscapedName(1);
-				else
-					ret += DumpEscapedName(entry.m_name);
+				ret += DumpEscapedName(entry.m_name);
 				ret += L".bin";
 			}
 			else
