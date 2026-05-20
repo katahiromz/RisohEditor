@@ -566,8 +566,8 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
 	WCHAR szText[256];
 	if (compare < 0)
 	{
-		StringCbPrintfW(szText, sizeof(szText), LoadStringDx(IDS_THEREISUPDATE),
-						remote_version.c_str());
+		StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_THEREISUPDATE),
+		                 remote_version.c_str());
 		if (MsgBoxDx(szText, MB_ICONINFORMATION | MB_YESNOCANCEL) == IDYES)
 		{
 			ShellExecuteW(hwnd, NULL, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
@@ -9007,16 +9007,13 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		m_rad_window.IndexTop(m_rad_window);
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 		break;
-		break;
 	case ID_CTRLINDEXBOTTOM:
 		m_rad_window.IndexBottom(m_rad_window);
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 		break;
-		break;
 	case ID_CTRLINDEXMINUS:
 		m_rad_window.IndexMinus(m_rad_window);
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-		break;
 		break;
 	case ID_CTRLINDEXPLUS:
 		m_rad_window.IndexPlus(m_rad_window);
