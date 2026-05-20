@@ -83,6 +83,7 @@ int g_nLineNo = 0;
 LANGID   g_langid    = 0;
 uint16_t g_wCodePage = CP_UTF8;
 int      g_value     = 0;
+BOOL     g_in_msg_table = FALSE;
 MIdOrString g_table_id((WORD)1);  // Current MESSAGETABLEDX table-id (default: 1)
 
 typedef std::pair<LANGID, MIdOrString>           msg_table_key_type;
@@ -357,6 +358,7 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
     {
         ++ptr;
         nMode = 0;
+        g_in_msg_table = FALSE;
         do_retry = true;
         return EXITCODE_SUCCESS;
     }
@@ -364,6 +366,7 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
     {
         ptr += 3;
         nMode = 0;
+        g_in_msg_table = FALSE;
         do_retry = true;
         return EXITCODE_SUCCESS;
     }
@@ -404,6 +407,8 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
 
 int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
 {
+    if (!g_in_msg_table)
+        return EXITCODE_SUCCESS;
     ptr = mstr_skip_space(ptr);
     if (*ptr == ',') ++ptr;
     ptr = mstr_skip_space(ptr);
@@ -570,6 +575,7 @@ int eat_output(const std::string& output)
                     bSubLang = (uint8_t)strtoul(ptr, NULL, 0);
                     g_langid = MAKELANGID(bPrimLang, bSubLang);
                     nMode = 0;
+                    break;
                 }
                 else if (*ptr)
                 {
@@ -644,6 +650,7 @@ int eat_output(const std::string& output)
                 if (found)
                 {
                     nMode = 1;
+                    g_in_msg_table = TRUE;
                     ptr += 14;
                     ptr = mstr_skip_space(ptr);
                 }
@@ -953,9 +960,21 @@ const char *get_format(const char *file_path)
 int just_do_it(void)
 {
     // Load
-    if      (strcmp(g_inp_format, "rc")   == 0) { if (int r = load_rc(g_input_file))  return r; }
-    else if (strcmp(g_inp_format, "res")  == 0) { if (int r = load_res(g_input_file)) return r; }
-    else if (strcmp(g_inp_format, "bin")  == 0) { if (int r = load_bin(g_input_file)) return r; }
+    if (strcmp(g_inp_format, "rc") == 0)
+    {
+        if (int r = load_rc(g_input_file))  
+            return r;
+    }
+    else if (strcmp(g_inp_format, "res") == 0) 
+    { 
+        if (int r = load_res(g_input_file)) 
+            return r; 
+    }
+    else if (strcmp(g_inp_format, "bin") == 0) 
+    { 
+        if (int r = load_bin(g_input_file)) 
+            return r; 
+    }
     else if (strcmp(g_inp_format, "coff") == 0)
     {
         fprintf(stderr, "ERROR: COFF input format is not supported yet.\n");
@@ -968,10 +987,14 @@ int just_do_it(void)
     }
 
     // Save
-    if      (strcmp(g_out_format, "rc")   == 0) return save_rc(g_output_file);
-    else if (strcmp(g_out_format, "res")  == 0) return save_res(g_output_file);
-    else if (strcmp(g_out_format, "bin")  == 0) return save_bin(g_output_file);
-    else if (strcmp(g_out_format, "coff") == 0) return save_coff(g_output_file);
+    if (strcmp(g_out_format, "rc") == 0) 
+        return save_rc(g_output_file);
+    else if (strcmp(g_out_format, "res") == 0)
+        return save_res(g_output_file);
+    else if (strcmp(g_out_format, "bin") == 0) 
+        return save_bin(g_output_file);
+    else if (strcmp(g_out_format, "coff") == 0) 
+        return save_coff(g_output_file);
     else
     {
         fprintf(stderr, "ERROR: invalid output format\n");
