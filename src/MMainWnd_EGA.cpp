@@ -265,7 +265,7 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 	if (args.size() >= 3)
 		arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type, name = BAD_NAME;
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
 	LANGID lang = BAD_LANG;
 
 	if (arg0)
@@ -302,7 +302,7 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 	if (args.size() >= 3)
 		arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type, name = BAD_NAME;
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
 	LANGID lang = BAD_LANG;
 
 	if (arg0)
@@ -337,7 +337,7 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 	if (args.size() >= 3)
 		arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type, src_name = BAD_NAME, dest_name;
+	MIdOrString type = BAD_TYPE, src_name = BAD_NAME, dest_name;
 	LANGID lang = BAD_LANG;
 
 	if (arg0)
@@ -394,7 +394,7 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 	if (args.size() >= 4)
 		arg3 = EGA_eval_arg(args[3], false);
 
-	MIdOrString type, name = BAD_NAME;
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
 	LANGID src_lang = BAD_LANG, dest_lang = BAD_LANG;
 
 	if (arg0)
@@ -537,7 +537,7 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 	if (args.size() >= 3)
 		arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type, name = BAD_NAME;
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
 	LANGID lang = BAD_LANG;
 
 	if (arg0)
@@ -796,7 +796,7 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 	if (args.size() >= 3)
 		arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type, name;
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
 	LANGID lang = BAD_LANG;
 
 	if (arg0)
