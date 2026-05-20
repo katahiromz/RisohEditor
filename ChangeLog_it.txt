@@ -2,6 +2,7 @@
 
 - v.6.0.0 (2026-XX-YY)
     - Risolti alcuni bug minori relativi all'interfaccia utente e all'esperienza utente.
+    - bUseMSMSGTABLE è stato ripristinato all'impostazione predefinita.
 - v.5.9.9 (20.05.2026)
     - Corretto il file msdx.
     - Corretta la gestione degli ID risorsa.

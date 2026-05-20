@@ -56,7 +56,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.nDfmCodePage = 0;
 	g_settings.bDfmRawTextComments = TRUE;
 	g_settings.bDfmNoUnicode = FALSE;
-	g_settings.bUseMSMSGTABLE = FALSE;
+	g_settings.bUseMSMSGTABLE = TRUE;
 	g_settings.nCodePageForRC = CP_UTF8;
 	g_settings.bUseWonRes = FALSE;
 	g_settings.nEgaX = CW_USEDEFAULT;

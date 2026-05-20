@@ -2,6 +2,7 @@
 
 - v.6.0.0 (2026-XX-YY)
     - Memperbaiki beberapa bug UI/UX kecil.
+    - Mengubah bUseMSMSGTABLE ke pengaturan default.
 - v.5.9.9 (2026-05-20)
     - Memperbaiki msdx.
     - Memperbaiki penanganan ID sumber daya.
