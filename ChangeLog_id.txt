@@ -1,6 +1,6 @@
 ﻿## SEJARAH
 
-- v.6.0.0 (2026-XX-YY)
+- v.6.0.0 (2026-05-21)
     - Memperbaiki beberapa bug UI/UX kecil.
     - Mengubah bUseMSMSGTABLE ke pengaturan default.
 - v.5.9.9 (2026-05-20)
