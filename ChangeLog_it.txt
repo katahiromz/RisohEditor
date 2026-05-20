@@ -1,12 +1,12 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.0.0 (2026-XX-YY)
-    - Risolti alcuni bug minori relativi all'interfaccia utente e all'esperienza utente.
+    - Risolti bug minori UI/UX.
     - bUseMSMSGTABLE è stato ripristinato all'impostazione predefinita.
 - v.5.9.9 (20.05.2026)
-    - Corretto il file msdx.
-    - Corretta la gestione degli ID risorsa.
-    - Corretta la gestione delle tabelle dei messaggi.
+    - Corretto msdx.
+    - Corretta gestione ID risorsa.
+    - Corretta gestione tabelle messaggi.
     - Modificato per accettare le tabelle codici UTF-16.
 - v.5.9.8 (15.05.2026)
     - Reso più sicuro il supporto della pagina codice.
