@@ -1,3 +1,8 @@
+// MSplitterWnd.cpp --- Splitter window
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
 
 #include <windows.h>
 #include "MSplitterWnd.hpp"

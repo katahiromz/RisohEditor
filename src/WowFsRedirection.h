@@ -1,3 +1,8 @@
+// WowFsRedirection.h --- WOW FileSystem Redirection
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2022 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
 
 #pragma once
 

@@ -1,3 +1,9 @@
+// MOleHost.cpp --- OLE Host
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
+
 #include "MWindowBase.hpp"
 #include "MOleHost.hpp"
 #include <oledlg.h>

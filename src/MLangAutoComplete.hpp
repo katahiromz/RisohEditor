@@ -1,3 +1,10 @@
+// MLangAutoComplete.hpp --- Language auto-completion
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
+//////////////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #include <shldisp.h>

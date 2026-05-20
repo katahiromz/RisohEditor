@@ -1,6 +1,8 @@
-// MSplitterWnd.hpp --- MZC4 splitter window                    -*- C++ -*-
-// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
+// MSplitterWnd.hpp --- Splitter window
 //////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
 
 #ifndef MZC4_MSPLITTERWND_HPP_
 #define MZC4_MSPLITTERWND_HPP_      100 /* Version 100 */
