@@ -1,5 +1,6 @@
 ﻿## HISTÓRICO
 
+- v.6.0.1 (2026-XX-YY)
 - v.6.0.0 (2026-05-21)
     - Corrigimos alguns pequenos erros de interface/experiência do usuário.
     - Alterei a configuração bUseMSMSGTABLE para o padrão.
