@@ -1268,7 +1268,7 @@ void MMainWnd::OnOpen(HWND hwnd)
 	if (GetOpenFileNameW(&ofn))
 	{
 		// load the file
-		DoLoadFile(hwnd, szFile, ofn.nFilterIndex);
+		DoLoadFile(hwnd, ofn.lpstrFile, ofn.nFilterIndex);
 	}
 }
 
@@ -11772,7 +11772,7 @@ INT_PTR MMainWnd::RunDx()
 {
 	MSG msg;
 
-	while (BOOL bGot = ::GetMessage(&msg, NULL, 0, 0))
+	while (INT bGot = ::GetMessage(&msg, NULL, 0, 0))
 	{
 		if (bGot < 0)   // fatal error
 		{
