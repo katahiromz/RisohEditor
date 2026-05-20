@@ -555,7 +555,7 @@ void DialogItem::FixupForRad(bool bRevert)
 		}
 		else if (m_class.c_str()[0] == L'{')
 		{
-#if 1
+#ifndef NO_MOLESITE
 			m_title = m_class.c_str();
 			m_class = L"MOleSite";
 			m_style |= WS_BORDER;
@@ -631,7 +631,7 @@ void DialogItem::FixupForTest(bool bRevert)
 #endif
 		if (m_class.c_str()[0] == L'{')
 		{
-#if 1
+#ifndef NO_MOLESITE
 			m_title = m_class.c_str();
 			m_class = L"MOleSite";
 			m_style |= WS_BORDER;
