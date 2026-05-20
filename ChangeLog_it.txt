@@ -1,5 +1,6 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
+- v.6.0.0 (2026-XX-YY)
 - v.5.9.9 (20.05.2026)
     - Corretto il file msdx.
     - Corretta la gestione degli ID risorsa.

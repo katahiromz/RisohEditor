@@ -1,5 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
+- v.6.0.0 (2026-XX-YY)
 - v.5.9.9 (2026-05-20)
     - Fixed msdx.
     - Fixed resource ID handling.
