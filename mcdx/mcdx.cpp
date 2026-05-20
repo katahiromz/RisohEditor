@@ -892,7 +892,7 @@ int load_bin(const char *input_file)
     MByteStreamEx stream(&contents[0], contents.size());
     // bin files carry raw MESSAGETABLE data without a resource header, so the
     // table-id defaults to 1.
-    if (!g_msg_tables[{g_langid, 1}].LoadFromStream(stream, 1))
+    if (!g_msg_tables[{g_langid, 1}].LoadFromStream(stream))
     {
         fprintf(stderr, "ERROR: Invalid data.\n");
         return EXITCODE_INVALID_DATA;
@@ -931,7 +931,7 @@ int load_res(const char *input_file)
         // header.name is an MIdOrString holding either a WORD id or a string name.
         // Use it as-is for the composite key so round-trip fidelity is preserved.
         const MIdOrString& table_id = header.name;
-        if (!g_msg_tables[{header.LanguageId, table_id}].LoadFromStream(bs, 1))
+        if (!g_msg_tables[{header.LanguageId, table_id}].LoadFromStream(bs))
         {
             fprintf(stderr, "ERROR: Data is broken, invalid, or not supported.\n");
             return EXITCODE_INVALID_DATA;
