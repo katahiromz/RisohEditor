@@ -1,10 +1,5 @@
-﻿#ifdef APSTUDIO_INVOKED
-    #error Ap Studio cannot edit this message table.
-#endif
-#ifdef MCDX_INVOKED
-MESSAGETABLEDX
+﻿1 MESSAGETABLEDX
 {
     100, "Hello, world!\r\n"
     101, "This is a sample message."
 }
-#endif
