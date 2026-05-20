@@ -5253,6 +5253,22 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 
 BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets, UINT nCodePage)
 {
+	// search the language entries
+	EntrySet found;
+	targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
+
+	bool found_effective = false;
+	for (auto entry : found)
+	{
+		auto type = entry->m_type;
+		if (type == L"TEXTINCLUDE")
+			continue;
+		found_effective = true;
+		break;
+	}
+	if (!found_effective)
+		return TRUE;
+
 	MTextToAnsi comment_sep(nCodePage, LoadStringDx(IDS_COMMENT_SEP));
 
 	if (!g_settings.bSepFilesByLang && g_settings.bRedundantComments)
@@ -5265,10 +5281,6 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, LANGID la
 	MString strLang = ::GetLanguageStatement(lang, TRUE);
 	strLang += L"\r\n";
 	file.WriteSzA(MWideToAnsi(nCodePage, strLang).c_str());
-
-	// search the language entries
-	EntrySet found;
-	targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
 
 	std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
@@ -5366,6 +5378,21 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, LANGID la
 
 BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, LANGID lang, const EntrySet& targets)
 {
+	// search the language entries
+	EntrySet found;
+	targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
+
+	bool found_effective = false;
+	for (auto entry : found)
+	{
+		auto type = entry->m_type;
+		if (type == L"TEXTINCLUDE")
+			continue;
+		found_effective = true;
+	}
+	if (!found_effective)
+		return TRUE;
+
 	MString comment_sep(LoadStringDx(IDS_COMMENT_SEP));
 
 	if (!g_settings.bSepFilesByLang && g_settings.bRedundantComments)
@@ -5378,10 +5405,6 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, LANGID lang,
 	MString strLang = ::GetLanguageStatement(lang, TRUE);
 	strLang += L"\r\n";
 	file.WriteSzW(strLang.c_str());
-
-	// search the language entries
-	EntrySet found;
-	targets.search(found, ET_LANG, BAD_TYPE, BAD_NAME, lang);
 
 	std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
