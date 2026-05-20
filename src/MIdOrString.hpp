@@ -94,8 +94,8 @@ struct MIdOrString
 		{
 			m_id = LOWORD(str);
 		}
-		else if ((L'0' <= str[0] && str[0] <= L'9') ||
-				 str[0] == L'-' || str[0] == L'+')
+		else if ((TEXT('0') <= str[0] && str[0] <= TEXT('9')) ||
+		         str[0] == TEXT('-') || str[0] == TEXT('+'))
 		{
 			m_id = (WORD)mstr_parse_int(str);
 		}
