@@ -1,7 +1,9 @@
 ﻿## SEJARAH
 
 - v.5.9.9 (2026-XX-YY)
-    - Refactored msdx.
+    - Fixed msdx.
+    - Fixed resource ID handling.
+    - Fixed message table handling.
 - v.5.9.8 (2026-05-15)
     - Meningkatkan keamanan dukungan halaman kode.
     - Menambahkan terjemahan bahasa Portugis (Portugal).

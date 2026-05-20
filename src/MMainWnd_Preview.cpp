@@ -560,6 +560,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 		{
 			PreviewDlgInit(hwnd, *entry);
 		}
+		else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
+		{
+			PreviewMessageTable(hwnd, *entry);
+		}
 		else
 		{
 			PreviewUnknown(hwnd, *entry);

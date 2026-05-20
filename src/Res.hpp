@@ -55,7 +55,7 @@ BOOL Res_IsEntityType(const MIdOrString& type);
 inline BOOL
 Res_HasNoName(const MIdOrString& type)
 {
-	return type == RT_STRING || type == RT_MESSAGETABLE;
+	return type == RT_STRING;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,6 @@ enum EntryType
 	ET_ANY,         // Any.
 	ET_TYPE,        // TypeEntry.
 	ET_STRING,      // StringEntry.
-	ET_MESSAGE,     // MessageEntry.
 	ET_NAME,        // NameEntry.
 	ET_LANG         // EntryBase.
 };
@@ -340,12 +339,6 @@ Res_NewStringEntry(WORD lang)
 }
 
 inline EntryBase *
-Res_NewMessageEntry(WORD lang)
-{
-	return new EntryBase(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang);
-}
-
-inline EntryBase *
 Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = BAD_LANG)
 {
 	return new EntryBase(ET_LANG, type, name, lang);
@@ -558,16 +551,6 @@ struct EntrySet : protected EntrySetBase
 		return on_insert_entry(entry);
 	}
 
-	// add a message entry
-	EntryBase *
-	add_message_entry(WORD lang)
-	{
-		auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang, true);
-		if (!entry)
-			entry = Res_NewMessageEntry(lang);
-		return on_insert_entry(entry);
-	}
-
 	// add a name entry
 	EntryBase *
 	add_name_entry(const MIdOrString& type, const MIdOrString& name)
@@ -620,13 +603,6 @@ struct EntrySet : protected EntrySetBase
 	{
 		assert(entry->m_et == ET_STRING);
 		search_and_delete(ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
-	}
-
-	// helper method to delete the messages
-	void on_delete_message(EntryBase *entry)
-	{
-		assert(entry->m_et == ET_MESSAGE);
-		search_and_delete(ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
 	}
 
 	// helper method to delete the group icon

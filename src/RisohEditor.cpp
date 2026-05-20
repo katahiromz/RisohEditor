@@ -626,7 +626,6 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 	switch (e->m_et)
 	{
 	case ET_STRING:
-	case ET_MESSAGE:
 	case ET_TYPE:
 	case ET_NAME:
 		ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
@@ -739,9 +738,6 @@ void MMainWnd::OnExtractRC(HWND hwnd)
 	{
 	case ET_STRING:
 		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, e->m_lang);
-		break;
-	case ET_MESSAGE:
-		g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, e->m_lang);
 		break;
 	case ET_TYPE:
 		if (type == RT_ICON)
@@ -1664,7 +1660,6 @@ search_proc(void *arg)
 		switch (e.m_et)
 		{
 		case ET_LANG:
-		case ET_MESSAGE:
 			break;
 		case ET_STRING:
 			// ignore the name
@@ -1766,7 +1761,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 
 	switch (entry->m_et)
 	{
-	case ET_LANG: case ET_STRING: case ET_MESSAGE:
+	case ET_LANG: case ET_STRING:
 		break;      // ok
 
 	default:
@@ -1822,21 +1817,6 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 			// select the entry
 			SelectTV(ET_STRING, dialog.m_type, BAD_NAME, dialog.m_lang, FALSE);
 		}
-		else if (entry->m_et == ET_MESSAGE)
-		{
-			// search the messagetables
-			EntrySet found;
-			g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
-
-			// copy them
-			for (auto e : found)
-			{
-				g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
-			}
-
-			// select the entry
-			SelectTV(ET_MESSAGE, dialog.m_type, BAD_NAME, dialog.m_lang, FALSE);
-		}
 		else
 		{
 			// search the entries
@@ -1869,7 +1849,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 
 	switch (entry->m_et)
 	{
-	case ET_LANG: case ET_STRING: case ET_MESSAGE:
+	case ET_LANG: case ET_STRING:
 		break;      // ok
 
 	default:
@@ -1913,18 +1893,6 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 				// search the strings
 				EntrySet found;
 				g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
-
-				// copy them
-				for (auto e : found)
-				{
-					g_res.add_lang_entry(e->m_type, e->m_name, lang, e->m_data);
-				}
-			}
-			else if (entry->m_et == ET_MESSAGE)
-			{
-				// search the messagetables
-				EntrySet found;
-				g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
 
 				// copy them
 				for (auto e : found)
@@ -2555,7 +2523,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		// ready
 		ChangeStatusText(IDS_READY);
 	}
-	else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_MESSAGE)
+	else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_LANG)
 	{
 		if (g_settings.bUseMSMSGTABLE)
 			return;
@@ -2563,14 +2531,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		// g_res --> found
 		WORD lang = entry->m_lang;
 		EntrySet found;
-		g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
+		g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry->m_name, lang);
 
 		// found --> msg_res
 		MessageRes msg_res;
 		for (auto e : found)
 		{
 			MByteStreamEx stream(e->m_data);
-			if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+			if (!msg_res.LoadFromStream(stream, 1))
 			{
 				ErrorBoxDx(IDS_CANNOTLOAD);
 				return;
@@ -2598,12 +2566,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
 			// compile the dumped result
 			MStringA strOutput;
-			if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
+			if (CompileParts(strOutput, RT_MESSAGETABLE, entry->m_name, lang, strWide))
 			{
 				m_nStatusStringID = IDS_RECOMPILEOK;
 
 				// select the entry
-				SelectTV(ET_MESSAGE, RT_MESSAGETABLE, BAD_NAME, lang, FALSE);
+				SelectTV(ET_LANG, RT_MESSAGETABLE, entry->m_name, lang, FALSE);
 			}
 			else
 			{
@@ -2804,7 +2772,6 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 		L"ET_ANY",
 		L"ET_TYPE",
 		L"ET_STRING",
-		L"ET_MESSAGE",
 		L"ET_NAME",
 		L"ET_LANG"
 	};
@@ -3198,7 +3165,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
 		EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
-		if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+		if (entry->m_type == RT_STRING)
 		{
 			EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
 			EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
@@ -3210,7 +3177,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		}
 		break;
 
-	case ET_STRING: case ET_MESSAGE:
+	case ET_STRING:
 		EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
@@ -3441,13 +3408,13 @@ void MMainWnd::UpdateToolBarStatus()
 		}
 
 		SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
-		if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+		if (entry->m_type == RT_STRING)
 			SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
 		else
 			SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, TBSTATE_ENABLED);
 		break;
 
-	case ET_STRING: case ET_MESSAGE:
+	case ET_STRING:
 		SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
 		SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
 		SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, TBSTATE_ENABLED);
@@ -3567,23 +3534,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
 		// it's editable
 		bEditable = TRUE;
-		break;
-
-	case ET_MESSAGE:
-		// clean up m_hBmpView
-		m_hBmpView.DestroyView();
-
-		if (stv != STV_DONTRESET)
-		{
-			// show the message table
-			PreviewMessageTable(m_hwnd, *entry);
-		}
-
-		// hide the binary EDIT control
-		SetWindowTextW(m_hHexViewer, NULL);
-
-		// editable?
-		bEditable = !g_settings.bUseMSMSGTABLE;
 		break;
 
 	default:
@@ -3974,7 +3924,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
 }
 
 // compile the message table
-BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
 	// convert strWide to UTF-8
 	MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
@@ -4065,12 +4015,13 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, WORD lang, const MString
 						bOK = FALSE;
 						break;
 					}
+                    entry->m_name = name;
 				}
 
 				if (bOK)
 				{
 					// merge
-					g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
+					g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, name, lang);
 					g_res.merge(res);
 				}
 			}
@@ -4121,7 +4072,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	}
 	if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
 	{
-		return CompileMessageTable(strOutput, lang, strWide);
+		return CompileMessageTable(strOutput, name, lang, strWide);
 	}
 	if (type == RT_RCDATA)
 	{
@@ -5345,8 +5296,6 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang
 		// ignore the string or message tables or font dir
 		if (type == RT_STRING || type == RT_FONTDIR)
 			continue;
-		if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
-			continue;
 		if (type == L"TEXTINCLUDE")
 			continue;
 
@@ -5415,48 +5364,6 @@ BOOL MMainWnd::DoWriteRCLangCodePage(MFile& file, ResToText& res2text, WORD lang
 		file.WriteSzA(t2a.c_str());
 	}
 
-	// search the message tables
-	found.clear();
-	if (!g_settings.bUseMSMSGTABLE)
-	{
-		targets.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
-		if (found.size())
-		{
-			if (g_settings.bRedundantComments)
-			{
-				file.WriteSzA(comment_sep.c_str());
-				file.WriteSzA("// RT_MESSAGETABLE\r\n\r\n");
-			}
-
-			// found --> msg_res
-			MessageRes msg_res;
-			for (auto e : found)
-			{
-				if (e->m_lang != lang)
-					continue;       // must be same language
-
-				MByteStreamEx stream(e->m_data);
-				if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
-					return FALSE;
-			}
-
-			// dump it
-			MString str;
-			str += L"#ifdef APSTUDIO_INVOKED\r\n";
-			str += L"    #error Ap Studio cannot edit this message table.\r\n";
-			str += L"#endif\r\n";
-			str += L"#ifdef MCDX_INVOKED\r\n";
-			str += msg_res.Dump(1); // FIXME
-			str += L"#endif\r\n\r\n";
-
-			// convert it
-			MTextToAnsi t2a(nCodePage, str.c_str());
-
-			// write it
-			file.WriteSzA(t2a.c_str());
-		}
-	}
-
 	return TRUE;
 }
 
@@ -5501,8 +5408,6 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 
 		// ignore the string or message tables or font dir
 		if (type == RT_STRING || type == RT_FONTDIR)
-			continue;
-		if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
 			continue;
 		if (type == L"TEXTINCLUDE")
 			continue;
@@ -5565,45 +5470,6 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 
 		// write it
 		file.WriteSzW(str.c_str());
-	}
-
-	// search the message tables
-	found.clear();
-	if (!g_settings.bUseMSMSGTABLE)
-	{
-		targets.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, lang);
-		if (found.size())
-		{
-			if (g_settings.bRedundantComments)
-			{
-				file.WriteSzW(comment_sep.c_str());
-				file.WriteSzW(L"// RT_MESSAGETABLE\r\n\r\n");
-			}
-
-			// found --> msg_res
-			MessageRes msg_res;
-			for (auto e : found)
-			{
-				if (e->m_lang != lang)
-					continue;       // must be same language
-
-				MByteStreamEx stream(e->m_data);
-				if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
-					return FALSE;
-			}
-
-			// dump it
-			MString str;
-			str += L"#ifdef APSTUDIO_INVOKED\r\n";
-			str += L"    #error Ap Studio cannot edit this message table.\r\n";
-			str += L"#endif\r\n";
-			str += L"#ifdef MCDX_INVOKED\r\n";
-			str += msg_res.Dump(1); // FIXME
-			str += L"#endif\r\n\r\n";
-
-			// write it
-			file.WriteSzW(str.c_str());
-		}
 	}
 
 	return TRUE;
@@ -8532,10 +8398,8 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 
 	if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 	{
-		if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
-		{
+		if (entry->m_type == RT_STRING)
 			return;
-		}
 	}
 
 	HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
@@ -8676,7 +8540,6 @@ void MMainWnd::OnClone(HWND hwnd)
 
 	case ET_LANG:
 	case ET_STRING:
-	case ET_MESSAGE:
 		OnCopyAsNewLang(hwnd);
 		break;
 
@@ -8734,7 +8597,6 @@ void MMainWnd::OnExtractBang(HWND hwnd)
 	case ET_TYPE:
 	case ET_NAME:
 	case ET_STRING:
-	case ET_MESSAGE:
 		OnExtractBin(hwnd);
 		break;
 
@@ -8918,13 +8780,12 @@ void MMainWnd::UpdateLangArrow()
 	switch (entry->m_et)
 	{
 	case ET_LANG:
-		if (entry->m_type != RT_STRING && entry->m_type != RT_MESSAGETABLE)
+		if (entry->m_type != RT_STRING)
 			ShowLangArrow(TRUE, hItem);
 		else
 			ShowLangArrow(FALSE, hItem);
 		break;
 	case ET_STRING:
-	case ET_MESSAGE:
 		ShowLangArrow(TRUE, hItem);
 		break;
 	default:
@@ -9735,13 +9596,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 					OnGuiEdit(hwnd);
 				}
 				return 1;
-			case ET_MESSAGE:
-				OnEdit(hwnd);
-				if (g_settings.bGuiByDblClick)
-				{
-					OnGuiEdit(hwnd);
-				}
-				return 1;
 			default:
 				break;
 			}
@@ -9803,13 +9657,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 					OnGuiEdit(hwnd);
 				}
 				return 1;
-			case ET_MESSAGE:
-				OnEdit(hwnd);
-				if (g_settings.bGuiByDblClick)
-				{
-					OnGuiEdit(hwnd);
-				}
-				return 1;
 			default:
 				break;
 			}
@@ -9845,10 +9692,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 				if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 				{
-					if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
-					{
+					if (entry->m_type == RT_STRING)
 						return TRUE;
-					}
 				}
 
 				HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
@@ -9888,30 +9733,23 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			MTRACEW(L"TVN_BEGINLABELEDIT: %s\n", pszOldText);
 
 			if (IsWindow(m_arrow.m_dialog))
-			{
 				return TRUE;    // prevent
-			}
 
 			auto entry = (EntryBase *)lParam;
 
 			if (entry->m_et == ET_TYPE)
-			{
 				return TRUE;    // prevent
-			}
 
 			if (entry->m_et == ET_NAME || entry->m_et== ET_LANG)
 			{
-				if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
-				{
+				if (entry->m_type == RT_STRING)
 					return TRUE;    // prevent
-				}
 			}
 
 			StringCchCopyW(szOldText, _countof(szOldText), pszOldText);
 			mstr_trim(szOldText);
 
-			if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
-				entry->m_et == ET_MESSAGE)
+			if (entry->m_et == ET_LANG || entry->m_et == ET_STRING)
 			{
 				old_lang = LangFromText(szOldText);
 				if (old_lang == BAD_LANG)
@@ -9926,7 +9764,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			switch (entry->m_et)
 			{
 			case ET_LANG:
-			case ET_MESSAGE:
 			case ET_STRING:
 				PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETE, 0);
 				break;
@@ -9946,7 +9783,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			switch (entry->m_et)
 			{
 			case ET_LANG:
-			case ET_MESSAGE:
 			case ET_STRING:
 				PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETEDONE, 0);
 				break;
@@ -9959,16 +9795,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			}
 
 			if (!entry || entry->m_et == ET_TYPE)
-			{
 				return FALSE;   // reject
-			}
 
 			if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 			{
-				if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
-				{
+				if (entry->m_type == RT_STRING)
 					return FALSE;   // reject
-				}
 			}
 
 			WCHAR szNewText[MAX_PATH];
@@ -10047,7 +9879,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 				return TRUE;   // accept
 			}
-			else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
+			else if (entry->m_et == ET_STRING)
 			{
 				PostUpdateLangArrow(hwnd);
 
@@ -10135,20 +9967,6 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 	{
 	case ET_STRING:
 		// serach the resource strings
-		g_res.search(found, ET_LANG, entry->m_type, BAD_NAME, old_lang);
-
-		// replace the language
-		for (auto e : found)
-		{
-			assert(e->m_lang == old_lang);
-			e->m_lang = new_lang;
-			UpdateEntryLang(e, pszText);
-		}
-		found.clear();
-		break;
-
-	case ET_MESSAGE:
-		// serach the resource messages
 		g_res.search(found, ET_LANG, entry->m_type, BAD_NAME, old_lang);
 
 		// replace the language
@@ -11166,8 +10984,6 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 		// select the added entry
 		if (dialog.m_type == RT_STRING)
 			SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
-		else if (dialog.m_type == RT_MESSAGETABLE)
-			SelectTV(ET_MESSAGE, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
 		else
 			SelectTV(ET_LANG, dialog, FALSE);
    }
@@ -11566,17 +11382,6 @@ void MMainWnd::SelectString(void)
 	}
 }
 
-// select the message entry in the tree control
-void MMainWnd::SelectMessage()
-{
-	// find the message table entry
-	if (auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE))
-	{
-		// select the entry
-		SelectTV(entry, FALSE);
-	}
-}
-
 // do ID jump now!
 void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 {
@@ -11598,12 +11403,6 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 		{
 			// select the string entry
 			SelectString();
-			return;     // done
-		}
-		if (nIDTYPE_ == IDTYPE_MESSAGE)
-		{
-			// select the message entry
-			SelectMessage();
 			return;     // done
 		}
 	}

@@ -209,7 +209,6 @@ public:
 	BOOL CompileIfNecessary(BOOL bReopen = FALSE);
 	BOOL ReCompileOnSelChange(BOOL bReopen = FALSE);
 	void SelectString(void);
-	void SelectMessage(void);
 	BOOL CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools);
 	void UpdateOurToolBarButtons(INT iType);
 	void UpdateToolBarStatus();
@@ -319,7 +318,7 @@ protected:
 	BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
 					  WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
 	BOOL CompileStringTable(MStringA& strOutput, WORD lang, const MStringW& strWide);
-	BOOL CompileMessageTable(MStringA& strOutput, WORD lang, const MStringW& strWide);
+	BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
 	BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
 	BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
 	BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);

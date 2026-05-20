@@ -447,18 +447,6 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 				g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
 			}
 		}
-		else if (entry->m_et == ET_MESSAGE)
-		{
-			// search the messagetables
-			EntrySet found;
-			g_res.search(found, ET_LANG, RT_MESSAGETABLE, BAD_NAME, entry->m_lang);
-
-			// copy them
-			for (auto e : found)
-			{
-				g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
-			}
-		}
 		else
 		{
 			// search the entries

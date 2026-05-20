@@ -205,44 +205,9 @@ struct MIdOrString
 		return !(*this < id_or_str) && !(*this == id_or_str);
 	}
 
-	bool operator==(const TCHAR *psz) const
-	{
-		if (IS_INTRESOURCE(psz))
-		{
-			if (m_id != 0)
-				return LOWORD(psz) == m_id;
-		}
-		else
-		{
-			if (m_id == 0)
-				return m_str == psz;
-		}
-		return false;
-	}
-	bool operator==(const MStringW& str) const
-	{
-		return *this == str.c_str();
-	}
-	bool operator==(WORD w) const
-	{
-		return m_id == w;
-	}
-
 	bool operator!=(const MIdOrString& id_or_str) const
 	{
 		return !(*this == id_or_str);
-	}
-	bool operator!=(const WCHAR *psz) const
-	{
-		return !(*this == psz);
-	}
-	bool operator!=(const MStringW& str) const
-	{
-		return !(*this == str);
-	}
-	bool operator!=(WORD w) const
-	{
-		return m_id != w;
 	}
 
 	MString str(bool unsign = false) const

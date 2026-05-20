@@ -141,16 +141,6 @@ public:
 			if (sz.empty())
 				SetDlgItemTextW(hwnd, cmb2, NULL);
 		}
-		if (type == RT_MESSAGETABLE)
-		{
-			// edt1 --> sz (trimmed)
-			MStringW sz = GetDlgItemText(edt1);
-			mstr_trim(sz);
-
-			// clear the name if sz is empty
-			if (sz.empty())
-				SetDlgItemTextW(hwnd, cmb2, NULL);
-		}
 
 		// if RT_VERSION, the name is one
 		if (type == RT_VERSION)
@@ -226,8 +216,8 @@ public:
 				bTemplateToAdd = false;
 			}
 
-			// set one to the name if it's RT_STRING or RT_MESSAGETABLE
-			if (type == RT_STRING || type == RT_MESSAGETABLE)
+			// set one to the name if it's RT_STRING
+			if (type == RT_STRING)
 			{
 				name = 1;   // it will be fixed later
 			}
@@ -385,7 +375,7 @@ public:
 			SetDlgItemText(hwnd, stc2, NULL);
 		}
 
-		if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_VERSION)
+		if (type == RT_STRING || type == RT_VERSION)
 		{
 			// the name is optional if RT_STRING, RT_MESSAGETABLE or RT_VERSION
 			SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_OPTIONAL));

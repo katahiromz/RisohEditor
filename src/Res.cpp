@@ -106,11 +106,11 @@ BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
 			return TRUE;
 		if (type == L"TEXTINCLUDE" && (m_name.m_id != 1))
 			return TRUE;
+		if (type == RT_MESSAGETABLE)
+			return !g_settings.bUseMSMSGTABLE;
 		return FALSE;
 	case ET_STRING:
 		return TRUE;
-	case ET_MESSAGE:
-		return !g_settings.bUseMSMSGTABLE;
 	default:
 		return FALSE;
 	}
@@ -430,10 +430,6 @@ EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
 		{
 			add_string_entry(lang);
 		}
-		if (type == RT_MESSAGETABLE)
-		{
-			add_message_entry(lang);
-		}
 	}
 
 	// find the entry
@@ -482,10 +478,6 @@ void EntrySet::delete_entry(EntryBase *entry)
 
 	case ET_STRING:
 		on_delete_string(entry);
-		break;
-
-	case ET_MESSAGE:
-		on_delete_message(entry);
 		break;
 
 	default:
@@ -1116,7 +1108,7 @@ HTREEITEM EntrySet::get_insert_parent(EntryBase *entry)
 
 	switch (entry->m_et)
 	{
-	case ET_NAME: case ET_STRING: case ET_MESSAGE:
+	case ET_NAME: case ET_STRING:
 		return new_entry->m_hItem;  // success
 
 	case ET_LANG:
@@ -1151,17 +1143,10 @@ HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
 		search(found, ET_NAME, entry->m_type);
 		if (entry->m_type == RT_STRING)
 			search(found, ET_STRING, entry->m_type);
-		if (entry->m_type == RT_MESSAGETABLE)
-			search(found, ET_MESSAGE, entry->m_type);
 		break;
 
 	case ET_STRING:
 		search(found, ET_STRING, entry->m_type);
-		search(found, ET_NAME, entry->m_type);
-		break;
-
-	case ET_MESSAGE:
-		search(found, ET_MESSAGE, entry->m_type);
 		search(found, ET_NAME, entry->m_type);
 		break;
 
@@ -1206,7 +1191,6 @@ EntryBase *EntrySet::get_parent(EntryBase *entry)
 	{
 	case ET_NAME:
 	case ET_STRING:
-	case ET_MESSAGE:
 		// parent is a type entry
 		parent = find(ET_TYPE, entry->m_type);
 		break;
@@ -1236,7 +1220,6 @@ bool EntrySet::is_childless_parent(EntryBase *entry) const
 		return !find(ET_LANG, entry->m_type, entry->m_name);
 
 	case ET_STRING:
-	case ET_MESSAGE:
 	case ET_LANG:
 	default:
 		return false;   // not parent
@@ -1260,7 +1243,6 @@ MStringW EntrySet::get_label(const EntryBase *entry)
 
 	case ET_LANG:
 	case ET_STRING:
-	case ET_MESSAGE:
 		strText = entry->get_lang_label();
 		break;
 
@@ -1601,7 +1583,6 @@ BOOL EntrySet::extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
 		break;
 
 	case ET_STRING:
-	case ET_MESSAGE:
 		search(found, ET_LANG, entry->m_type, BAD_NAME, entry->m_lang);
 		break;
 
