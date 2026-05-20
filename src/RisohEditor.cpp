@@ -9838,11 +9838,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
 				{
 					INT value = mstr_parse_int(szNewText);
-					if (value == 0)
-					{
-						ErrorBoxDx(IDS_INVALIDNAME);
-						return FALSE; // failure
-					}
 					if (value < SHRT_MIN || USHRT_MAX < value)
 					{
 						ErrorBoxDx(IDS_ENTERINT);

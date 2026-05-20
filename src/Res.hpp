@@ -74,7 +74,7 @@ enum EntryType
 // EntryBase
 
 // NOTE: These values work like a wildcard for EntryBase search.
-#define BAD_TYPE    ((WORD)0)
+#define BAD_TYPE    L"*"        // invalid type
 #define BAD_NAME    L"*"        // invalid name
 #define BAD_LANG    0xFFFF      // invalid language value
 
