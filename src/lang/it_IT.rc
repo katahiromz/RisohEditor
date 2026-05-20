@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Usa IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "A capo a&utomatico", ID_WORD_WRAP
         MENUITEM "Usa BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Usa &tabella messaggi Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "Codifica &elementi risorse...", ID_ENCODING
         MENUITEM "Sostituzione &font finestra...", ID_DIALOG_FONT_SUBSTITUTES

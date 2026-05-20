@@ -406,14 +406,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 	g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
 	// dump the text to m_hCodeEditor
-	MString str;
-	str += GetLanguageStatement(entry.m_lang);
-	if (g_settings.bUseMSMSGTABLE)
-	{
-		ResToText res2text;
-		str = res2text.DumpEntry(entry);
-	}
-	else
+	MString str = GetLanguageStatement(entry.m_lang);
 	{
 		// found --> msg_res
 		MessageRes msg_res;
@@ -428,7 +421,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 		str += msg_res.Dump(entry.m_name);
 		str += L"#endif\r\n\r\n";
 	}
-	SetWindowTextW(m_hCodeEditor, str.c_str());
+	::SetWindowTextW(m_hCodeEditor, str.c_str());
 	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
 	// show code only

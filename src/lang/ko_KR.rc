@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_STATIC 사용(&A)", ID_USEIDC_STATIC
         MENUITEM "단어 줄바꿈(&W)", ID_WORD_WRAP
         MENUITEM "BEGIN/END 사용(&G)", ID_USEBEGINEND
-        MENUITEM "Microsoft 메시지 테이블 사용(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "리소스 항목의 인코딩(&E)...", ID_ENCODING
         MENUITEM "대화 상자 글꼴 대체(&F)...", ID_DIALOG_FONT_SUBSTITUTES

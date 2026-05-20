@@ -119,7 +119,6 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_ST&ATIC Kullan", ID_USEIDC_STATIC
         MENUITEM "&Sözcük Kaydırma", ID_WORD_WRAP
         MENUITEM "BE&GIN/END Kullan", ID_USEBEGINEND
-        MENUITEM "Microsoft Mesaj &Tablosu Kullan", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Kaynak ögesi kodlaması...", ID_ENCODING
         MENUITEM "İletişim kutusu &yazı tipi yerine geçerleri...", ID_DIALOG_FONT_SUBSTITUTES

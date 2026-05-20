@@ -66,7 +66,7 @@ MStringW EntryBase::get_name_label() const
 
 	// get the label from an IDTYPE_ value
 	MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
-	if (label.empty() || m_type == RT_STRING || m_type == RT_MESSAGETABLE)
+	if (label.empty() || m_type == RT_STRING)
 	{
 		return mstr_dec_word(id);   // returns numeric text
 	}
@@ -107,7 +107,7 @@ BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
 		if (type == L"TEXTINCLUDE" && (m_name.m_id != 1))
 			return TRUE;
 		if (type == RT_MESSAGETABLE)
-			return !g_settings.bUseMSMSGTABLE;
+			return TRUE;
 		return FALSE;
 	case ET_STRING:
 		return TRUE;

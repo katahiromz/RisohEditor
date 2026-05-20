@@ -2525,9 +2525,6 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 	}
 	else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_LANG)
 	{
-		if (g_settings.bUseMSMSGTABLE)
-			return;
-
 		// g_res --> found
 		LANGID lang = entry->m_lang;
 		EntrySet found;
@@ -2580,7 +2577,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 			}
 		}
 
-		Edit_SetReadOnly(m_hCodeEditor, g_settings.bUseMSMSGTABLE);
+		Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
 		// ready
 		ChangeStatusText(IDS_READY);
@@ -4070,7 +4067,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	{
 		return CompileStringTable(strOutput, lang, strWide);
 	}
-	if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
+	if (type == RT_MESSAGETABLE)
 	{
 		return CompileMessageTable(strOutput, name, lang, strWide);
 	}

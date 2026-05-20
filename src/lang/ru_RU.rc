@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Испо&льзовать IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "&Заворачивать строки", ID_WORD_WRAP
         MENUITEM "Использовать BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Использовать &таблицу сообщений Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Кодировка ресурсного элемента...", ID_ENCODING
         MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES

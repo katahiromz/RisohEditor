@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Käytä IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Sanan rivitys", ID_WORD_WRAP
         MENUITEM "Käytä BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Käytä Microsoft Message &Tablea", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "R&esurssikohteen koodaus...", ID_ENCODING
         MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES

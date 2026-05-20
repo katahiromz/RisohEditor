@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Verwenden Sie IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "Zeilenumbruch", ID_WORD_WRAP
         MENUITEM "Verwenden Sie BEGIN / END", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Codierung des Ressourcenelements...", ID_ENCODING
         MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES

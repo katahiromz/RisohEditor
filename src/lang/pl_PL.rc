@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Use IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
         MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Encoding of resource item...", ID_ENCODING
         MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES

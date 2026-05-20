@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "Usar IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Ajuste de línea", ID_WORD_WRAP
         MENUITEM "Usar BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Usar &Tabla de Mensajes de Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Codificación del elemento de Recurso...", ID_ENCODING
         MENUITEM "Sustituir &fuentes del Diálogo...", ID_DIALOG_FONT_SUBSTITUTES

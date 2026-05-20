@@ -120,7 +120,6 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
-        MENUITEM "Microsoft のメッセージテーブルを使用する(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "ダイアログ フォント代替(&F)...", ID_DIALOG_FONT_SUBSTITUTES
