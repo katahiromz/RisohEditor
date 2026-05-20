@@ -6,7 +6,9 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "AccelRes.hpp"
-#include "ConstantsDB.hpp"
+#ifndef NO_CONSTANTS_DB
+	#include "ConstantsDB.hpp"
+#endif
 
 bool AccelRes::LoadFromStream(const MByteStreamEx& stream)
 {
@@ -61,7 +63,11 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 	}
 	else
 	{
+#ifdef NO_CONSTANTS_DB
+		ret += mstr_dec_short(id_or_str.m_id);
+#else
 		ret += g_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
+#endif
 	}
 	ret += L" ";
 	ret += L"ACCELERATORS\r\n";
@@ -79,26 +85,25 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 		bool ALT = !!(entry.fFlags & FALT);
 
 		ret += L"    ";
+#ifndef NO_CONSTANTS_DB
 		if (VIRTKEY)
 		{
 			ret += g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
 		}
 		else
+#endif
 		{
 			std::string str;
 			str += (char)entry.wAscii;
 			ret += MAnsiToWide(CP_ACP, mstr_quote(str));
 		}
 		ret += L", ";
-		if (0)
-		{
-			ret += mstr_dec_word(entry.wId);
-		}
-		else
-		{
-			ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND,
-									   entry.wId, true);
-		}
+#ifdef NO_CONSTANTS_DB
+		ret += mstr_dec_word(entry.wId);
+#else
+		ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND,
+		                           entry.wId, true);
+#endif
 
 		if (NOINVERT)
 			ret += L", NOINVERT";
