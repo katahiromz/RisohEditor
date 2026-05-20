@@ -1257,7 +1257,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_FONTSUBST DIALOG 0, 0, 185, 180
 CAPTION "Substituir Fontes de Diálogo"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Fonte #&1:", -1, 5, 7, 44, 12
@@ -1287,7 +1287,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_DFMSETTINGS DIALOG 0, 0, 210, 135
 CAPTION "Configurações DFM do Delphi"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "As seguintes configurações são relevantes para o DFM do Delphi:", -1, 35, 5, 171, 20
@@ -1302,7 +1302,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_COPYTOMULTILANG DIALOG 0, 0, 200, 195
 CAPTION "Copiar Para Vários Idiomas"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Adicione os idiomas para os quais você deseja copiar o recurso:", -1, 5, 5, 190, 22
@@ -1316,7 +1316,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_TOOLBARRES DIALOG 0, 0, 230, 195
 CAPTION "Recurso da Barra de Ferramentas"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     RTEXT "&Largura do ícone:", -1, 5, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
@@ -1338,7 +1338,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_ADDTBBTN DIALOG 0, 0, 177, 92
 CAPTION "Botão Adicionar Barra de Ferramentas"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&ID do comando do botão da barra de ferramentas:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
@@ -1350,7 +1350,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_MODIFYTBBTN DIALOG 0, 0, 177, 92
 CAPTION "Modificar Botão da Barra de Ferramentas"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&ID do comando do botão da barra de ferramentas:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
@@ -1362,7 +1362,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_GOTOLINE DIALOG 0, 0, 134, 47
 CAPTION "Ir para a linha especificada"
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     RTEXT "&Número da linha:", -1, 5, 5, 70, 15
