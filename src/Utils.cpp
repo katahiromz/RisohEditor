@@ -1914,8 +1914,6 @@ MString GetAssoc(const MString& name)
 	if (prefix.empty())
 		return L"";
 
-	MIdOrString type;
-
 	std::vector<INT> indexes = GetPrefixIndexes(prefix);
 	for (size_t i = 0; i < indexes.size(); ++i)
 	{
