@@ -170,101 +170,100 @@ public:
 		}
 	}
 
-	void BuildItemsIntoCache()
+	void AddRow(const MStringA& first, const MStringA& second, const EntryBase *entry = NULL)
 	{
-		auto addRow = [&](const MStringA& first, const MStringA& second,
-		                  const EntryBase *entry = NULL)
+		if (entry && entry->m_et == ET_LANG)
 		{
-			if (entry && entry->m_et == ET_LANG)
-			{
-				if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR ||
-					entry->m_type == RT_STRING)
-					return;
-			}
+			if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR ||
+				entry->m_type == RT_STRING)
+				return;
+		}
 
-			MString text1 = MAnsiToText(CP_ACP, first.c_str()).c_str();
-			MString text2 = GetAssoc(text1);
-			MString text3 = MAnsiToText(CP_ACP, second.c_str()).c_str();
-			if (text2.empty() || text2 == L"Resource.ID" || text2 == L"Unknown.ID")
+		MString text1 = MAnsiToText(CP_ACP, first.c_str()).c_str();
+		MString text2 = GetAssoc(text1);
+		MString text3 = MAnsiToText(CP_ACP, second.c_str()).c_str();
+		if (text2.empty() || text2 == L"Resource.ID" || text2 == L"Unknown.ID")
+		{
+			if (entry)
 			{
-				if (entry)
+				auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+				if (nIDTYPE_ != IDTYPE_UNKNOWN)
 				{
-					auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
-					if (nIDTYPE_ != IDTYPE_UNKNOWN)
+					text2 = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+				}
+				else
+				{
+					if (entry->m_type.is_int())
 					{
-						text2 = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+						text2 = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
+						if (text2.empty())
+						{
+							if (m_nBase == 10)
+								text2 = mstr_dec(entry->m_type.m_id);
+							else if (m_nBase == 16)
+								text2 = mstr_hex(entry->m_type.m_id);
+							else
+								assert(0);
+						}
 					}
 					else
 					{
-						if (entry->m_type.is_int())
-						{
-							text2 = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
-							if (text2.empty())
-							{
-								if (m_nBase == 10)
-									text2 = mstr_dec(entry->m_type.m_id);
-								else if (m_nBase == 16)
-									text2 = mstr_hex(entry->m_type.m_id);
-								else
-									assert(0);
-							}
-						}
-						else
-						{
-							text2 = entry->m_type.c_str();
-						}
+						text2 = entry->m_type.c_str();
 					}
 				}
 			}
-			if (text2.empty())
-				text2 = L"Unknown.ID";
-			if (text2 == L"Resource.ID")
-				return;
+		}
+		if (text2.empty())
+			text2 = L"Unknown.ID";
+		if (text2 == L"Resource.ID")
+			return;
 
-			if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
-			{
-				int value = mstr_parse_int(text3.c_str(), true);
-				TCHAR szText[MAX_PATH];
-				if (m_nBase == 10)
-					StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
-				else if (m_nBase == 16)
-					StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
-				else
-					assert(0);
-				text3 = szText;
-			}
+		if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
+		{
+			int value = mstr_parse_int(text3.c_str(), true);
+			TCHAR szText[MAX_PATH];
+			if (m_nBase == 10)
+				StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
+			else if (m_nBase == 16)
+				StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
+			else
+				assert(0);
+			text3 = szText;
+		}
 
-			for (const auto& row : m_items)
+		for (const auto& row : m_items)
+		{
+			if (row.col0 == text1 && row.col2 == text3)
 			{
-				if (row.col0 == text1 && row.col2 == text3)
-				{
-					if (row.col1.find(text2) != MString::npos)
-						return;
-					break;
-				}
-			}
-
-			for (auto& row : m_items)
-			{
-				if (row.col0 == text1 && row.col2 == text3)
-				{
-					if (row.col1.find(text2) == MString::npos)
-					{
-						row.col1 += L"/";
-						row.col1 += text2;
-					}
+				if (row.col1.find(text2) != MString::npos)
 					return;
-				}
+				break;
 			}
+		}
 
-			ItemRow row = { text1, text2, text3 };
-			m_items.push_back(row);
-		};
+		for (auto& row : m_items)
+		{
+			if (row.col0 == text1 && row.col2 == text3)
+			{
+				if (row.col1.find(text2) == MString::npos)
+				{
+					row.col1 += L"/";
+					row.col1 += text2;
+				}
+				return;
+			}
+		}
 
+		ItemRow row = { text1, text2, text3 };
+		m_items.push_back(row);
+	}
+
+	void BuildItemsIntoCache()
+	{
 		if (!g_settings.bHideID)
 		{
 			for (auto& pair : g_settings.id_map)
-				addRow(pair.first, pair.second);
+				AddRow(pair.first, pair.second);
 		}
 
 		EntrySet found;
@@ -292,12 +291,12 @@ public:
 
 				MWideToAnsi strNameA(CP_ACP, strName);
 				MWideToAnsi strValueA(CP_ACP, strValue);
-				addRow(strNameA.c_str(), strValueA.c_str(), entry);
+				AddRow(strNameA.c_str(), strValueA.c_str(), entry);
 			}
 			else
 			{
 				MWideToAnsi strNameA(CP_ACP, entry->m_name.quoted_wstr());
-				addRow(strNameA.c_str(), strNameA.c_str(), entry);
+				AddRow(strNameA.c_str(), strNameA.c_str(), entry);
 			}
 		}
 
