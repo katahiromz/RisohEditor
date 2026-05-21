@@ -95,6 +95,29 @@ public:
 			SetItems(szText.c_str());
 	}
 
+	void UpdateComboBox()
+	{
+		if (m_bChanging)
+			return;
+
+		m_bChanging = TRUE;
+		ComboBox_ResetContent(m_hCmb1);
+		ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
+		for (const auto& row : m_items)
+		{
+			std::vector<MString> types;
+			mstr_split(types, row.col1, TEXT("/"));
+			for (size_t k = 0; k < types.size(); ++k)
+			{
+				INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
+				if (ret == CB_ERR && !types[k].empty())
+					ComboBox_AddString(m_hCmb1, types[k].c_str());
+			}
+		}
+		ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
+		m_bChanging = FALSE;
+	}
+
 	void SetItems(LPCTSTR pszIDType = NULL)
 	{
 		if (pszIDType == NULL)
@@ -112,25 +135,7 @@ public:
 				return lstrcmp(a.col0.c_str(), b.col0.c_str()) < 0;
 			});
 
-			if (!m_bChanging)
-			{
-				m_bChanging = TRUE;
-				ComboBox_ResetContent(m_hCmb1);
-				ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
-				for (const auto& row : m_items)
-				{
-					std::vector<MString> types;
-					mstr_split(types, row.col1, TEXT("/"));
-					for (size_t k = 0; k < types.size(); ++k)
-					{
-						INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
-						if (ret == CB_ERR && !types[k].empty())
-							ComboBox_AddString(m_hCmb1, types[k].c_str());
-					}
-				}
-				ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
-				m_bChanging = FALSE;
-			}
+			UpdateComboBox();
 		}
 
 		ListView_DeleteAllItems(m_hLst1);
