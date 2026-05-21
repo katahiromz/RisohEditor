@@ -79,7 +79,6 @@ public:
 		DestroyIcon(m_hIconDiamond);
 	}
 
-
 	void OnCmb1(HWND hwnd)
 	{
 		INT iItem = ComboBox_GetCurSel(m_hCmb1);
@@ -95,7 +94,6 @@ public:
 		if (szText != LoadStringDx(IDS_ALL))
 			SetItems(szText.c_str());
 	}
-
 
 	void SetItems(LPCTSTR pszIDType = NULL)
 	{
