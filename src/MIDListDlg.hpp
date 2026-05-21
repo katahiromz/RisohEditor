@@ -101,6 +101,18 @@ public:
 			return;
 
 		m_bChanging = TRUE;
+
+		MString szPrevSelected;
+		INT iCurSel = ComboBox_GetCurSel(m_hCmb1);
+		if (iCurSel != CB_ERR)
+		{
+			szPrevSelected = GetComboBoxLBText(m_hCmb1, iCurSel);
+		}
+		else
+		{
+			szPrevSelected = LoadStringDx(IDS_ALL);
+		}
+
 		ComboBox_ResetContent(m_hCmb1);
 		ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
 		for (const auto& row : m_items)
@@ -114,7 +126,10 @@ public:
 					ComboBox_AddString(m_hCmb1, types[k].c_str());
 			}
 		}
-		ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
+
+		if (ComboBox_SelectString(m_hCmb1, -1, szPrevSelected.c_str()) == CB_ERR)
+			ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
+
 		m_bChanging = FALSE;
 	}
 
@@ -477,7 +492,10 @@ public:
 					g_settings.removed_ids.erase(stra1);
 
 					UpdateItems();
-					UpdateListView(NULL);
+
+					MString strCmbText = GetComboBoxText(m_hCmb1);
+					UpdateListView(strCmbText.c_str());
+
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 
 					UpdateResHIfAsk();
@@ -522,13 +540,11 @@ public:
 					g_settings.removed_ids.erase(stra1old);
 					g_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
 
-					ListView_SetItemText(m_hLst1, iItem, 0, &str1[0]);
-					MString assoc = GetAssoc(str1);
-					ListView_SetItemText(m_hLst1, iItem, 1, &assoc[0]);
-					ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
-
 					UpdateItems();
-					UpdateListView(NULL);
+
+					MString strCmbText = GetComboBoxText(m_hCmb1);
+					UpdateListView(strCmbText.c_str());
+
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 					UpdateResHIfAsk();
 				}
@@ -566,6 +582,7 @@ public:
 
 				ListView_DeleteItem(m_hLst1, iItem);
 			}
+			UpdateItems();
 			SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 			UpdateResHIfAsk();
 			break;
