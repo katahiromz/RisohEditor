@@ -118,7 +118,7 @@ public:
 		m_bChanging = FALSE;
 	}
 
-	void SetItems(LPCTSTR pszIDType = NULL)
+	void SetItems(LPCTSTR pszIDType)
 	{
 		if (pszIDType == NULL)
 		{
@@ -428,7 +428,7 @@ public:
 			}
 		}
 
-		SetItems();
+		SetItems(NULL);
 
 		return TRUE;
 	}
@@ -474,7 +474,7 @@ public:
 					g_settings.added_ids.insert(std::make_pair(stra1, stra2));
 					g_settings.removed_ids.erase(stra1);
 
-					SetItems();
+					SetItems(NULL);
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 
 					UpdateResHIfAsk();
@@ -524,8 +524,7 @@ public:
 					ListView_SetItemText(m_hLst1, iItem, 1, &assoc[0]);
 					ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
 
-					SetItems();
-
+					SetItems(NULL);
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 					UpdateResHIfAsk();
 				}
