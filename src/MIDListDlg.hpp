@@ -83,16 +83,16 @@ public:
 	{
 		INT iItem = ComboBox_GetCurSel(m_hCmb1);
 		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
-		SetItems(szText.c_str());
+		UpdateListView(szText.c_str());
 	}
 
 	void OnRefreshList(HWND hwnd)
 	{
-		SetItems(NULL);
+		UpdateItems();
 		INT iItem = ComboBox_GetCurSel(m_hCmb1);
 		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
 		if (szText != LoadStringDx(IDS_ALL))
-			SetItems(szText.c_str());
+			UpdateListView(szText.c_str());
 	}
 
 	void UpdateComboBox()
@@ -118,27 +118,28 @@ public:
 		m_bChanging = FALSE;
 	}
 
-	void SetItems(LPCTSTR pszIDType)
+	void UpdateItems()
 	{
-		if (pszIDType == NULL)
+		m_items.clear();
+		BuildItemsIntoCache();
+
+		std::sort(m_items.begin(), m_items.end(), [](const ItemRow& a, const ItemRow& b)
 		{
-			m_items.clear();
-			BuildItemsIntoCache();
+			int cmp = lstrcmp(a.col1.c_str(), b.col1.c_str());
+			if (cmp != 0) return cmp < 0;
+			MIdOrString id1(a.col2.c_str()), id2(b.col2.c_str());
+			if (id1 < id2) return true;
+			if (id1 > id2) return false;
+			return lstrcmp(a.col0.c_str(), b.col0.c_str()) < 0;
+		});
 
-			std::sort(m_items.begin(), m_items.end(), [](const ItemRow& a, const ItemRow& b)
-			{
-				int cmp = lstrcmp(a.col1.c_str(), b.col1.c_str());
-				if (cmp != 0) return cmp < 0;
-				MIdOrString id1(a.col2.c_str()), id2(b.col2.c_str());
-				if (id1 < id2) return true;
-				if (id1 > id2) return false;
-				return lstrcmp(a.col0.c_str(), b.col0.c_str()) < 0;
-			});
+		UpdateComboBox();
+	}
 
-			UpdateComboBox();
-		}
-
+	void UpdateListView(LPCTSTR pszIDType)
+	{
 		ListView_DeleteAllItems(m_hLst1);
+
 		BOOL bAll = (pszIDType == NULL || lstrcmp(pszIDType, LoadStringDx(IDS_ALL)) == 0);
 		INT iRow = 0;
 		for (const auto& row : m_items)
@@ -428,7 +429,8 @@ public:
 			}
 		}
 
-		SetItems(NULL);
+		UpdateItems();
+		UpdateListView(NULL);
 
 		return TRUE;
 	}
@@ -474,7 +476,8 @@ public:
 					g_settings.added_ids.insert(std::make_pair(stra1, stra2));
 					g_settings.removed_ids.erase(stra1);
 
-					SetItems(NULL);
+					UpdateItems();
+					UpdateListView(NULL);
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 
 					UpdateResHIfAsk();
@@ -524,7 +527,8 @@ public:
 					ListView_SetItemText(m_hLst1, iItem, 1, &assoc[0]);
 					ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
 
-					SetItems(NULL);
+					UpdateItems();
+					UpdateListView(NULL);
 					SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 					UpdateResHIfAsk();
 				}
@@ -611,18 +615,18 @@ public:
 			{
 				m_nBase = 10;
 				MString strText = GetComboBoxText(m_hCmb1);
-				SetItems(NULL);
+				UpdateItems();
 				if (strText != LoadStringDx(IDS_ALL))
-					SetItems(strText.c_str());
+					UpdateListView(strText.c_str());
 			}
 			break;
 		case ID_BASE16:
 			{
 				m_nBase = 16;
 				MString strText = GetComboBoxText(m_hCmb1);
-				SetItems(NULL);
+				UpdateItems();
 				if (strText != LoadStringDx(IDS_ALL))
-					SetItems(strText.c_str());
+					UpdateListView(strText.c_str());
 			}
 			break;
 		case ID_IDJUMP00:
