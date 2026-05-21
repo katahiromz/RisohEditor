@@ -19,6 +19,7 @@ class MSubclassedListView;
 class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
+#define MYWM_REFRESHIDLIST (WM_USER + 239)
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -123,6 +124,13 @@ public:
 	}
 
 	void OnCmb1(HWND hwnd)
+	{
+		INT iItem = ComboBox_GetCurSel(m_hCmb1);
+		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
+		SetItems(szText.c_str());
+	}
+
+	void OnRefreshList(HWND hwnd)
 	{
 		INT iItem = ComboBox_GetCurSel(m_hCmb1);
 		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
@@ -820,9 +828,13 @@ public:
 		HANDLE_MSG(hwnd, WM_MEASUREITEM, OnMeasureItem);
 		HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
 		HANDLE_MSG(hwnd, WM_COMPAREITEM, OnCompareItem);
+		case MYWM_REFRESHIDLIST:
+			OnRefreshList(hwnd);
+			break;
 		default:
 			return DefaultProcDx();
 		}
+		return 0;
 	}
 
 	void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)

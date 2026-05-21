@@ -8096,7 +8096,8 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 // refresh the ID list window
 void MMainWnd::DoRefreshIDList(HWND hwnd)
 {
-	ShowIDList(hwnd, IsWindow(m_id_list_dlg));
+	if (IsWindow(m_id_list_dlg))
+		::SendMessageW(m_id_list_dlg, MYWM_REFRESHIDLIST, 0, 0);
 }
 
 // refresh the treeview
