@@ -257,10 +257,7 @@ public:
 				}
 			}
 
-			ItemRow row;
-			row.col0 = text1;
-			row.col1 = text2;
-			row.col2 = text3;
+			ItemRow row = { text1, text2, text3 };
 			m_items.push_back(row);
 		};
 
