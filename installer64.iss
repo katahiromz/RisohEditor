@@ -237,12 +237,13 @@ Source: "README_pt_BR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_es.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ChangeLog_es.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_id.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_it.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_ko.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_pt_BR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "ChangeLog_es.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ChangeLog_uk.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HYOJUNKA.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
