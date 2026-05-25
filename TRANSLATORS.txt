@@ -32,6 +32,8 @@ The translators of RisohEditor are listed below:
     - Cristobal Prieto <c_p_a@hotmail.es>
  * Turkish:
     - OnurGVNGL <ibadeath@yahoo.com>
+ * Ukrainian (Ukraine)
+    - Volodymyr Paliy <vovusp@gmail.com>
 
 # How to translate?
 
