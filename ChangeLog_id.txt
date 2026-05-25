@@ -2,7 +2,7 @@
 
 - v.6.0.1 (2026-XX-YY)
     - Daftar ID Sumber Daya yang Dioptimalkan.
-    - Added Ukrainian (Ukraine) translation.
+    - Terjemahan bahasa Ukraina (Ukraina) telah ditambahkan.
 - v.6.0.0 (2026-05-21)
     - Memperbaiki beberapa bug UI/UX kecil.
     - Mengubah bUseMSMSGTABLE ke pengaturan default.

@@ -3,7 +3,7 @@
 
 - v.6.0.1 (2026-XX-YY)
     - 최적화된 "리소스 ID 목록".
-    - Added Ukrainian (Ukraine) translation.
+    - 우크라이나어 (Ukraine) 번역이 추가되었습니다.
 - v.6.0.0 (2026-05-21)
     - 사소한 UI/UX 버그를 수정했습니다.
     - bUseMSMSGTABLE을 기본 설정으로 변경했습니다.

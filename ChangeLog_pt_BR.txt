@@ -2,7 +2,7 @@
 
 - v.6.0.1 (2026-XX-YY)
     - Lista otimizada de IDs de recursos.
-    - Added Ukrainian (Ukraine) translation.
+    - Adicionada tradução para ucraniano (Ucrânia).
 - v.6.0.0 (2026-05-21)
     - Corrigimos alguns pequenos erros de interface/experiência do usuário.
     - Alterei a configuração bUseMSMSGTABLE para o padrão.
