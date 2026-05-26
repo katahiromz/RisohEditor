@@ -138,7 +138,7 @@ IDR_MAINMENU MENU
         MENUITEM "Ві&дкрити файл README_uk.txt", ID_OPENREADMEUK
         MENUITEM "Відкрити файл ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Відкрити файл ChangeLog_uk.txt", ID_OPENHISTORYUK
-        MENUITEM "Від&рити файл LICENSE.txt", ID_OPENLICENSE
+        MENUITEM "Відк&рити файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Керівництво користувача RisohEditor", ID_GUIDE
         MENUITEM "Перевірити &оновлення RisohEditor...", ID_CHECKUPDATE
