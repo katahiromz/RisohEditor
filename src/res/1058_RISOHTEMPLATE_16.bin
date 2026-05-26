@@ -7,18 +7,18 @@ FILESUBTYPE     VFT2_UNKNOWN
 {
     BLOCK "StringFileInfo"
     {
-        BLOCK "040904E4"
+        BLOCK "042204E3"
         {
-            VALUE "CompanyName", "My Company\0"
-            VALUE "FileDescription", "My Application\0"
+            VALUE "CompanyName", "Моя компанія\0"
+            VALUE "FileDescription", "Моя заявка\0"
             VALUE "FileVersion", "0.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 My Company\0"
-            VALUE "ProductName", "My Application\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Моя компанія\0"
+            VALUE "ProductName", "Моя заявка\0"
             VALUE "ProductVersion", "0.0\0"
         }
     }
     BLOCK "VarFileInfo"
     {
-        VALUE "Translation", 0x0409, 0x04E4
+        VALUE "Translation", 0x0422, 0x04E3
     }
 }
