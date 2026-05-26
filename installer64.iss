@@ -228,13 +228,14 @@ Name: "res_association"; Description: "{cm:AssociateResFiles}"
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_es.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_id.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_it.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_ko.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README_tr.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README_pt_BR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README_es.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_tr.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README_uk.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog_es.txt"; DestDir: "{app}"; Flags: ignoreversion
