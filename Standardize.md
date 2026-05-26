@@ -1,4 +1,4 @@
-# Standardize Win32 Resource
+﻿# Standardize Win32 Resource
 
 New RisohEditor resource information should follow the following guidelines.
 If you are using old RisohEditor resource data, then you have to apply the following guidelines.
