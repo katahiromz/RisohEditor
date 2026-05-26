@@ -9415,6 +9415,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_GOTOLINE:
 		OnGoToLine(hwnd);
 		break;
+	case ID_OPENREADMEUK:
+		OnOpenLocalFile(hwnd, L"README_uk.txt");
+		break;
+	case ID_OPENHISTORYUK:
+		OnOpenLocalFile(hwnd, L"ChangeLog_uk.txt");
+		break;
 	default:
 		bUpdateStatus = FALSE;
 		break;
