@@ -1,6 +1,6 @@
 ﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.0.1 (2026-XX-YY)
+- v.6.0.1 (01.06.2026)
     - Ottimizzato elenco ID risorse.
     - Aggiunta la traduzione in ucraino (Ucraina).
 - v.6.0.0 (21.05.2026)

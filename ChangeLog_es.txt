@@ -1,6 +1,6 @@
 ﻿## HISTORIA
 
-- v.6.0.1 (2026-XX-YY)
+- v.6.0.1 (2026-06-01)
     - Lista de identificadores de recursos optimizada.
     - Se agregó la traducción al ucraniano (Ucrania).
 - v.6.0.0 (2026-05-21)

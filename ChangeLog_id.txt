@@ -1,6 +1,6 @@
 ﻿## SEJARAH
 
-- v.6.0.1 (2026-XX-YY)
+- v.6.0.1 (2026-06-01)
     - Daftar ID Sumber Daya yang Dioptimalkan.
     - Terjemahan bahasa Ukraina (Ukraina) telah ditambahkan.
 - v.6.0.0 (2026-05-21)
