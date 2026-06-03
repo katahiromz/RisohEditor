@@ -17,7 +17,7 @@ The translators of RisohEditor are listed below:
  * Japanese:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
  * Polish:
-    - Piotr Hetnarowicz <piotrhwz@gmail.com>
+    - Piotr Hetnarowicz <piotrhwz@gmail.com> and Fresta <aksafrest@wp.pl>
  * Portuguese (Brazil):
     - JNylson <nylsinho_ba@hotmail.com>
  * Portuguese (Portugal):
