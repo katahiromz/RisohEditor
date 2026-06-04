@@ -9421,6 +9421,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_OPENHISTORYUK:
 		OnOpenLocalFile(hwnd, L"ChangeLog_uk.txt");
 		break;
+	case ID_OPENREADMEPL:
+		OnOpenLocalFile(hwnd, L"README_pl.txt");
+		break;
 	default:
 		bUpdateStatus = FALSE;
 		break;
