@@ -1,10 +1,10 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v. 6.0.2 (2026-XX-YY)
-    - Traduzione migliorata in polacco (Polonia) (grazie, Fresta).
+    - Migliorata traduzione in polacco (Polonia) (grazie, Fresta).
 - v. 6.0.1 (01.06.2026)
     - Ottimizzato elenco ID risorse.
-    - Aggiunta la traduzione in ucraino (Ucraina).
+    - Aggiunta traduzione in ucraino (Ucraina).
 - v. 6.0.0 (21.05.2026)
     - Risolti bug minori UI/UX.
     - bUseMSMSGTABLE è stato ripristinato all'impostazione predefinita.
