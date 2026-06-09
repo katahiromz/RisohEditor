@@ -54,7 +54,7 @@ public:
 class MIDListDlg : public MDialogBase
 {
 public:
-	struct ItemRow { MString col0, col1, col2; };
+	struct ItemRow { MString col0, col1, col2; INT value; bool numeric; };
 	std::vector<ItemRow> m_items; // Sorted
 
 	HWND m_hMainWnd;
@@ -274,6 +274,12 @@ public:
 		}
 
 		ItemRow row = { text1, text2, text3 };
+		row.numeric = false;
+		if (mchr_is_digit(text3[0]) || text3[0] == L'+' || text3[0] == L'-')
+		{
+			row.value = mstr_parse_int(text3.c_str(), true);
+			row.numeric = true;
+		}
 		m_items.push_back(row);
 	}
 
@@ -456,6 +462,24 @@ public:
 			PostMessage(m_hMainWnd, WM_COMMAND, ID_UPDATERESHBANG, 0);
 	}
 
+	void RebuildNumericColumn()
+	{
+		for (auto& row : m_items)
+		{
+			if (!row.numeric)
+				continue;
+
+			TCHAR szText[64];
+
+			if (m_nBase == 10)
+				StringCchPrintf(szText, _countof(szText), TEXT("%d"), row.value);
+			else
+				StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), row.value);
+
+			row.col2 = szText;
+		}
+	}
+
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		INT iItem;
@@ -630,20 +654,22 @@ public:
 			break;
 		case ID_BASE10:
 			{
+				HCURSOR hOldCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
 				m_nBase = 10;
 				MString strText = GetComboBoxText(m_hCmb1);
-				UpdateItems();
-				if (strText != LoadStringDx(IDS_ALL))
-					UpdateListView(strText.c_str());
+				RebuildNumericColumn();
+				UpdateListView(strText.c_str());
+				SetCursor(hOldCursor);
 			}
 			break;
 		case ID_BASE16:
 			{
+				HCURSOR hOldCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
 				m_nBase = 16;
 				MString strText = GetComboBoxText(m_hCmb1);
-				UpdateItems();
-				if (strText != LoadStringDx(IDS_ALL))
-					UpdateListView(strText.c_str());
+				RebuildNumericColumn();
+				UpdateListView(strText.c_str());
+				SetCursor(hOldCursor);
 			}
 			break;
 		case ID_IDJUMP00:
