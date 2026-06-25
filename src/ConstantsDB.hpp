@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <cctype>
 #include <cstdio>
 #include <iostream>
@@ -70,7 +71,7 @@ public:
 		}
 	};
 	typedef std::vector<EntryType> TableType;
-	typedef std::map<CategoryType, TableType> MapType;
+	typedef std::unordered_map<CategoryType, TableType> MapType;
 	MapType m_map;
 
 	bool IsEntityIDType(IDTYPE_ nIDTYPE_) const

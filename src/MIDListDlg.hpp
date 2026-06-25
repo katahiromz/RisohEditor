@@ -66,12 +66,25 @@ public:
 	HICON m_hIconDiamond;
 	MSubclassedListView m_lv;
 	MResizable m_resizable;
+	std::unordered_map<INT, MStringW> m_map1; // IDTYPE_ --> MStringW
+	std::unordered_map<MStringW, INT> m_map2; // MStringW --> IDTYPE_
 
 	MIDListDlg()
 		: MDialogBase(IDD_IDLIST), m_hMainWnd(NULL), m_pszResH(NULL),
 		  m_nBase(10), m_hCmb1(NULL), m_hLst1(NULL), m_bChanging(FALSE)
 	{
 		m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
+		InitMaps();
+	}
+
+	void InitMaps()
+	{
+		for (INT i = IDTYPE_UNKNOWN; i <= IDTYPE_MSGTABLE; ++i)
+		{
+			MStringW str = g_db.GetName(L"RESOURCE.ID.TYPE", i);
+			m_map1[i] = str;
+			m_map2[str] = i;
+		}
 	}
 
 	~MIDListDlg()
@@ -208,7 +221,7 @@ public:
 				auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
 				if (nIDTYPE_ != IDTYPE_UNKNOWN)
 				{
-					text2 = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+					text2 = m_map1[nIDTYPE_];
 				}
 				else
 				{
