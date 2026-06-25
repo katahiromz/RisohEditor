@@ -754,14 +754,17 @@ public:
 			// See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
 			SetForegroundWindow(hwnd);
 
-			TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-				pt.x, pt.y, 0, hwnd, NULL);
+			INT nCmd = (INT)TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+			                               pt.x, pt.y, 0, hwnd, NULL);
 
 			// See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
 			PostMessage(hwnd, WM_NULL, 0, 0);
 
 			// destroy the menu
 			DestroyMenu(hMenu);
+
+			// Post WM_COMMAND message
+			PostMessage(hwnd, WM_COMMAND, nCmd, 0);
 		}
 		else
 		{
