@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Розгорнути все\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "&Згорнути все\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Сп&исок ID ресурсів", ID_IDLIST
+        MENUITEM "Ідент&ифікатори ресурсів", ID_IDLIST
         MENUITEM "Список &мов...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Зав&жди оператор CONTROL", ID_ALWAYSCONTROL
@@ -785,7 +785,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Список ID ресурсів"
+CAPTION "Ідентифікатори ресурсів"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

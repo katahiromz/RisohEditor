@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "Roz&wiń wszystko\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "&Zwiń wszystko\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Lista &ID Zasobów", ID_IDLIST
+        MENUITEM "&Identyfikatory zasobów", ID_IDLIST
         MENUITEM "Lista &języków...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Zawsze &CONTROL statement", ID_ALWAYSCONTROL
@@ -783,7 +783,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Lista ID zasobów"
+CAPTION "Identyfikatory zasobów"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

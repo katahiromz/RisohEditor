@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "Développer tout\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Réduire tout\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Liste des ID de ressource", ID_IDLIST
+        MENUITEM "Identifiants de ressource", ID_IDLIST
         MENUITEM "Liste des langues...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Instruction Always CONTROL", ID_ALWAYSCONTROL
@@ -782,7 +782,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Liste des ID de ressource"
+CAPTION "Identifiants de ressource"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

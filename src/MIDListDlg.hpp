@@ -800,13 +800,11 @@ public:
 	{
 		if (m_nBase == 10)
 		{
-			CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
-				ID_BASE10, MF_BYCOMMAND);
+			CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, ID_BASE10, MF_BYCOMMAND);
 		}
 		else if (m_nBase == 16)
 		{
-			CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
-				ID_BASE16, MF_BYCOMMAND);
+			CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, ID_BASE16, MF_BYCOMMAND);
 		}
 		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
 

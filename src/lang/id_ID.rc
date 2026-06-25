@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Perluas Semua\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Ciut&kan Semua\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Daftar ID Su&mber Daya", ID_IDLIST
+        MENUITEM "ID Su&mber Daya", ID_IDLIST
         MENUITEM "Daftar Baha&sa...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Selalu pernyataan &CONTROL", ID_ALWAYSCONTROL
@@ -785,7 +785,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Daftar ID Suber Daya"
+CAPTION "ID Sumber Daya"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

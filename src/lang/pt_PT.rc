@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "E&xpandir tudo\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "C&olapsar tudo\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Lista de IDs de &recursos", ID_IDLIST
+        MENUITEM "IDs de &recursos", ID_IDLIST
         MENUITEM "&Lista de idiomas...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Sempre instrução de &CONTROL", ID_ALWAYSCONTROL
@@ -783,7 +783,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Lista de IDs de recursos"
+CAPTION "IDs de recursos"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

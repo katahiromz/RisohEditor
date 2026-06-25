@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Распахнуть все\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "С&вернуть все\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Сп&исок ID ресурсов", ID_IDLIST
+        MENUITEM "Идент&ификаторы ресурсов", ID_IDLIST
         MENUITEM "Список &языков...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Все&гда оператор CONTROL", ID_ALWAYSCONTROL

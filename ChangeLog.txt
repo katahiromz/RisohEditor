@@ -3,6 +3,7 @@
 - v.6.0.2 (2026-XX-YY)
     - Improved Polish (Poland) translation (thanks, Fresta).
     - Fixed "List of Resource IDs" ID_BASE10 and ID_BASE16 actions.
+    - Renamed "List of Resource IDs" as "Resource IDs".
 - v.6.0.1 (2026-06-01)
     - Optimized "List of Resource IDs".
     - Added Ukrainian (Ukraine) translation.

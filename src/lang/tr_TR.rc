@@ -111,7 +111,7 @@ IDR_MAINMENU MENU
         MENUITEM "Tümünü G&enişlet\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Tümünü D&aralt\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "&Kaynak Kimlikleri Listesi", ID_IDLIST
+        MENUITEM "&Kaynak Kimlikleri", ID_IDLIST
         MENUITEM "&Diller Listesi...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Her Zaman &CONTROL ifadesi", ID_ALWAYSCONTROL
@@ -783,7 +783,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Kaynak ID'lerinin Listesi"
+CAPTION "Kaynak Kimlikleri"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

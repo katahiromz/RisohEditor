@@ -112,7 +112,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Laajenna kaikki\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "&Tiivistä kaikki\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Luettelo &resurssitunnuksista", ID_IDLIST
+        MENUITEM "&Resurssi-ID:t", ID_IDLIST
         MENUITEM "Kie&liluettelo...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "&CONTROL-lauseke aina", ID_ALWAYSCONTROL
@@ -782,7 +782,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "Luettelo resurssitunnuksista"
+CAPTION "Resurssi-ID:t"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"

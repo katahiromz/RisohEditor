@@ -3,6 +3,7 @@
 - v.6.0.2 (2026-XX-YY)
     - Traducción mejorada al polaco (Polonia) (gracias, Fresta).
     - Se corrigieron las acciones ID_BASE10 e ID_BASE16 de la «Lista de ID de recursos».
+    - Se cambió el nombre de «Lista de ID de recursos» a «ID de recursos».
 - v.6.0.1 (2026-06-01)
     - Lista de identificadores de recursos optimizada.
     - Se agregó la traducción al ucraniano (Ucrania).
