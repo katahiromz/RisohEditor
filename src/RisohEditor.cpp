@@ -2189,6 +2189,9 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 		if (g_res.super()->find(entry) != g_res.end())
 			TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
 	}
+
+	DoRefreshIDList(hwnd);
+
 	DoSetFileModified(TRUE);
 }
 
