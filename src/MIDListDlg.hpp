@@ -104,8 +104,7 @@ public:
 		UpdateItems();
 		INT iItem = ComboBox_GetCurSel(m_hCmb1);
 		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
-		if (szText != LoadStringDx(IDS_ALL))
-			UpdateListView(szText.c_str());
+		UpdateListView(szText.c_str());
 	}
 
 	void UpdateComboBox()
