@@ -2,7 +2,7 @@
 
 - v.6.0.2 (2026-XX-YY)
     - Terjemahan bahasa Polandia (Polandia) yang lebih baik (terima kasih, Fresta).
-    - Fixed "List of Resource IDs" ID_BASE10 and ID_BASE16 actions.
+    - Memperbaiki tindakan ID_BASE10 dan ID_BASE16 pada "List of Resource IDs".
 - v.6.0.1 (2026-06-01)
     - Daftar ID Sumber Daya yang Dioptimalkan.
     - Terjemahan bahasa Ukraina (Ukraina) telah ditambahkan.

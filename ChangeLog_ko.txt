@@ -3,7 +3,7 @@
 
 - v.6.0.2 (2026-XX-YY)
     - 개선된 폴란드어(폴란드어) 번역입니다(Fresta님 감사합니다).
-    - Fixed "List of Resource IDs" ID_BASE10 and ID_BASE16 actions.
+    - '리소스 ID 목록'의 ID_BASE10 및 ID_BASE16 작업을 수정했습니다.
 - v.6.0.1 (2026-06-01)
     - "리소스 ID 목록"을 최적화했습니다.
     - 우크라이나어 (Ukraine) 번역이 추가되었습니다.
