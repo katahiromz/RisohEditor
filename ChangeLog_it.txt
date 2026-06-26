@@ -3,7 +3,7 @@
 - v. 6.0.2 (2026-XX-YY)
     - Migliorata traduzione in polacco (Polonia) (grazie, Fresta).
     - Corette azioni "Elenco ID risorse" ID_BASE10 e ID_BASE16.
-    - Rinominato "Elenco ID risorsa" in "ID risorsa".
+    - Rinominato "Elenco ID risorse" in "ID risorse".
 - v. 6.0.1 (01.06.2026)
     - Ottimizzato elenco ID risorse.
     - Aggiunta traduzione in ucraino (Ucraina).
