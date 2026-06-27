@@ -1,4 +1,4 @@
-﻿# Standardize Win32 Resource
+﻿# Standardize Win32 Resource Version 3
 
 New RisohEditor resource information should follow the following guidelines.
 If you are using old RisohEditor resource data, then you have to apply the following guidelines.
@@ -7,12 +7,11 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 
 - A "resource ID" is the ID, that is used for Win32 resource data.
 - An "ID prefix" is the prefix of the resource ID.
-- An "entity resource" is a resource data except RT_ICON, RT_CURSOR, RT_STRING, RT_MANIFEST, and RT_VERSION.
+- An "entity resource" is a resource data except RT_ICON, RT_CURSOR, and RT_STRING.
 - A "resource name" of an entity resource is either a 16-bit integer value, a wide string, or a macro of 16-bit integer value.
 - The resource data of RT_ICON type is referred by the resource data of RT_GROUP_ICON type.
 - The resource data of RT_CURSOR type is referred by the resource data of RT_GROUP_CURSOR type.
 - The RT_STRING or RT_MESSAGETABLE resource can have multiple resource IDs.
-- The resource ID of RT_MANIFEST or RT_VERSION has special meanings.
 - The "user resource" is a Win32 resource data that the user's project directly provides, and that is not provided by another project or framework.
 - The "user ID" is the resource ID that the user's project directly provides, and that is not provided by another project or framework.
 - The "icon ID" is the resource ID of RT_GROUP_ICON type.
