@@ -357,6 +357,27 @@
 #define IDS_MP3SOUND                        355
 #define IDS_CODEPAGE1200                    356
 #define IDS_INVALIDCODEPAGE                 357
+#define IDS_UNKNOWNID                       358
+#define IDS_CURSORID                        359
+#define IDS_BITMAPID                        360
+#define IDS_MENUID                          361
+#define IDS_DIALOGID                        362
+#define IDS_STRINGID                        363
+#define IDS_ACCELID                         364
+#define IDS_ICONID                          365
+#define IDS_ANICURSORID                     366
+#define IDS_ANIICONID                       367
+#define IDS_HTMLID                          368
+#define IDS_HELPID                          369
+#define IDS_COMMANDID                       370
+#define IDS_CONTROLID                       371
+#define IDS_RESOURCEID                      372
+#define IDS_MESSAGEID                       373
+#define IDS_WINDOWID                        374
+#define IDS_NEWCOMMANDID                    375
+#define IDS_PROMPTID                        376
+#define IDS_RCDATAID                        377
+#define IDS_MSGTABLEID                      378
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
