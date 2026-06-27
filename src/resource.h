@@ -357,7 +357,7 @@
 #define IDS_MP3SOUND                        355
 #define IDS_CODEPAGE1200                    356
 #define IDS_INVALIDCODEPAGE                 357
-#define IDS_UNKNOWNID                       358
+#define IDS_UNKNOWN_ID                      358
 #define IDS_CURSOR_ID                       359
 #define IDS_BITMAP_ID                       360
 #define IDS_MENU_ID                         361
