@@ -23,12 +23,23 @@ add_library(libRisohEditor STATIC
     WonResWrap.cpp)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
+# Build shared executable objects once to reduce duplicate compiles.
+add_library(RisohEditorMain_obj OBJECT
+	RisohEditor.cpp)
+
+add_library(RisohSettings_obj OBJECT
+	RisohSettings.cpp)
+
+add_library(RisohSettingsPortable_obj OBJECT
+	RisohSettings.cpp)
+target_compile_definitions(RisohSettingsPortable_obj PRIVATE -DPORTABLE)
+
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
-    RisohSettings.cpp
-    RisohEditor.cpp
-    RisohEditor_res.rc
-    res/Manifest_1.manifest)
+	$<TARGET_OBJECTS:RisohEditorMain_obj>
+	$<TARGET_OBJECTS:RisohSettings_obj>
+	RisohEditor_res.rc
+	res/Manifest_1.manifest)
 target_link_libraries(RisohEditor
     LineNumEdit_static libRisohEditor
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
@@ -40,10 +51,10 @@ endif()
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
-    RisohSettings.cpp
-    RisohEditor.cpp
-    RisohEditor_res.rc
-    res/Manifest_1.manifest)
+	$<TARGET_OBJECTS:RisohEditorMain_obj>
+	$<TARGET_OBJECTS:RisohSettingsPortable_obj>
+	RisohEditor_res.rc
+	res/Manifest_1.manifest)
 target_link_libraries(RisohEditorPortable
     LineNumEdit_static libRisohEditor
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
@@ -56,18 +67,19 @@ endif()
 option(ATL_SUPPORT "Add ATL support" OFF)
 
 if (MSVC)
-    set(DOTRES ".res") # resource object extension
-    # ATL Support
-    if (ATL_SUPPORT)
-        add_definitions(-DATL_SUPPORT)
-    endif()
-    # No auto manifest
-    set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
-    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MANIFEST:NO")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
+	set(DOTRES ".res") # resource object extension
+	add_compile_options(/MP)
+	# ATL Support
+	if (ATL_SUPPORT)
+		add_definitions(-DATL_SUPPORT)
+	endif()
+	# No auto manifest
+	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
+	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MANIFEST:NO")
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
-    set(DOTRES ".o") # resource object extension
-    list(APPEND CMAKE_CXX_LINK_FLAGS -municode) # Unicode support
+	set(DOTRES ".o") # resource object extension
+	list(APPEND CMAKE_CXX_LINK_FLAGS -municode) # Unicode support
 endif()
 
 # use Unicode
