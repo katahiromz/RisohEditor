@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include "resource.h"
 #include "MWindowBase.hpp"
 #include "MTextToText.hpp"
@@ -54,7 +56,13 @@ public:
 class MIDListDlg : public MDialogBase
 {
 public:
-	struct ItemRow { MString col0, col1, col2; INT value; bool numeric; };
+	struct ItemRow
+	{
+		MString col0, col1, col2;
+		INT value;
+		bool numeric;
+		bool has_real_type;
+	};
 	std::vector<ItemRow> m_items; // Sorted
 
 	HWND m_hMainWnd;
@@ -63,6 +71,7 @@ public:
 	HWND m_hCmb1;
 	HWND m_hLst1;
 	BOOL m_bChanging;
+	BOOL m_bRefreshing;
 	HICON m_hIconDiamond;
 	MSubclassedListView m_lv;
 	MResizable m_resizable;
@@ -71,7 +80,8 @@ public:
 
 	MIDListDlg()
 		: MDialogBase(IDD_IDLIST), m_hMainWnd(NULL), m_pszResH(NULL),
-		  m_nBase(10), m_hCmb1(NULL), m_hLst1(NULL), m_bChanging(FALSE)
+		  m_nBase(10), m_hCmb1(NULL), m_hLst1(NULL),
+		  m_bChanging(FALSE), m_bRefreshing(FALSE)
 	{
 		m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
 		InitMaps();
@@ -101,10 +111,212 @@ public:
 
 	void OnRefreshList(HWND hwnd)
 	{
+		if (m_bRefreshing)
+			return;
+
+		m_bRefreshing = TRUE;
 		UpdateItems();
-		INT iItem = ComboBox_GetCurSel(m_hCmb1);
-		MString szText = GetComboBoxLBText(m_hCmb1, iItem);
-		UpdateListView(szText.c_str());
+		OnCmb1(hwnd);
+		m_bRefreshing = FALSE;
+	}
+
+	MString FormatByBase(INT value) const
+	{
+		if (m_nBase == 16)
+			return mstr_hex(value);
+		return mstr_dec(value);
+	}
+
+	void NormalizeValueText(MString& text, INT& value, bool& numeric) const
+	{
+		numeric = false;
+		value = 0;
+
+		if (text.empty())
+			return;
+
+		if (text[0] == TEXT('"') || text[0] == TEXT('L'))
+			return;
+
+		value = mstr_parse_int(text.c_str(), true);
+		text = FormatByBase(value);
+		numeric = true;
+	}
+
+	bool IsTypeMatched(const MString& rowTypes, LPCTSTR pszIDType) const
+	{
+		std::vector<MString> types;
+		mstr_split(types, rowTypes, TEXT("/"));
+		for (const auto& type : types)
+		{
+			if (type == pszIDType)
+				return true;
+		}
+		return false;
+	}
+
+	INT FindRowIndex(const MString& text1, const MString& text3) const
+	{
+		for (size_t i = 0; i < m_items.size(); ++i)
+		{
+			if (m_items[i].col0 == text1 && m_items[i].col2 == text3)
+				return INT(i);
+		}
+		return -1;
+	}
+
+	void MergeType(ItemRow& row, const MString& type, bool bRealType)
+	{
+		if (!type.empty())
+		{
+			std::vector<MString> types;
+			mstr_split(types, row.col1, TEXT("/"));
+			if (std::find(types.begin(), types.end(), type) == types.end())
+				types.push_back(type);
+			std::sort(types.begin(), types.end());
+			types.erase(std::unique(types.begin(), types.end()), types.end());
+			row.col1 = mstr_join(types, TEXT("/"));
+		}
+
+		if (bRealType)
+			row.has_real_type = true;
+	}
+
+	void AddOrMergeRow(const MString& text1, const MString& type, const MString& text3, bool bRealType)
+	{
+		INT value = 0;
+		bool numeric = false;
+		MString normalizedValue = text3;
+		NormalizeValueText(normalizedValue, value, numeric);
+
+		INT index = FindRowIndex(text1, normalizedValue);
+		if (index != -1)
+		{
+			MergeType(m_items[index], type, bRealType);
+			return;
+		}
+
+		ItemRow row = {};
+		row.col0 = text1;
+		row.col1.clear();
+		row.col2 = normalizedValue;
+		row.value = value;
+		row.numeric = numeric;
+		row.has_real_type = false;
+		MergeType(row, type, bRealType);
+		m_items.push_back(row);
+	}
+
+	MString GetTypeTextFromEntry(const EntryBase *entry) const
+	{
+		auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+		if (nIDTYPE_ != IDTYPE_UNKNOWN && nIDTYPE_ != IDTYPE_RESOURCE)
+		{
+			auto it = m_map1.find(nIDTYPE_);
+			if (it != m_map1.end())
+				return it->second;
+		}
+
+		MString typeText;
+		if (entry->m_type.is_int())
+		{
+			typeText = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
+			if (!typeText.empty())
+			{
+				Res_ReplaceResTypeString(typeText, false);
+			}
+			else
+			{
+				typeText = FormatByBase(entry->m_type.m_id);
+			}
+		}
+		else
+		{
+			typeText = entry->m_type.str();
+		}
+
+		if (typeText.empty())
+			typeText = MapIDType(IDTYPE_UNKNOWN);
+		return typeText;
+	}
+
+	std::vector<MString> GetPrefixTypeTexts(const MString& name) const
+	{
+		std::vector<MString> texts;
+		MString prefix = name.substr(0, name.find(L'_') + 1);
+		if (prefix.empty())
+			return texts;
+
+		std::vector<INT> indexes = GetPrefixIndexes(prefix);
+		for (size_t i = 0; i < indexes.size(); ++i)
+		{
+			auto nIDTYPE_ = IDTYPE_(indexes[i]);
+			if (nIDTYPE_ == IDTYPE_UNKNOWN)
+				continue;
+			MString text = MapIDType(nIDTYPE_);
+			if (text.empty())
+				continue;
+			if (std::find(texts.begin(), texts.end(), text) == texts.end())
+				texts.push_back(text);
+		}
+
+		std::sort(texts.begin(), texts.end());
+		if (texts.size() > 1)
+		{
+			auto it = std::find(texts.begin(), texts.end(), MapIDType(IDTYPE_RESOURCE));
+			if (it != texts.end())
+				texts.erase(it);
+		}
+		return texts;
+	}
+
+	void AddResourceRow(const EntryBase *entry)
+	{
+		if (!entry || entry->m_et != ET_LANG)
+			return;
+
+		if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR || entry->m_type == RT_STRING)
+			return;
+
+		MString text1, text3;
+		auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+		if (entry->m_name.m_id)
+		{
+			text1 = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
+			if (text1.empty() || g_settings.bHideID)
+				text1 = FormatByBase(entry->m_name.m_id);
+			text3 = FormatByBase(entry->m_name.m_id);
+		}
+		else
+		{
+			text1 = entry->m_name.quoted_wstr();
+			text3 = text1;
+		}
+
+		MString typeText = GetTypeTextFromEntry(entry);
+		AddOrMergeRow(text1, typeText, text3, true);
+	}
+
+	void AddMacroRow(const std::pair<MStringA, MStringA>& pair)
+	{
+		MString text1 = MAnsiToText(CP_ACP, pair.first.c_str()).c_str();
+		MString text3 = MAnsiToText(CP_ACP, pair.second.c_str()).c_str();
+
+		INT value = 0;
+		bool numeric = false;
+		MString normalizedValue = text3;
+		NormalizeValueText(normalizedValue, value, numeric);
+
+		INT index = FindRowIndex(text1, normalizedValue);
+		if (index != -1 && m_items[index].has_real_type)
+			return;
+
+		std::vector<MString> types = GetPrefixTypeTexts(text1);
+		if (types.empty())
+			types.push_back(MapIDType(IDTYPE_UNKNOWN));
+
+		for (const auto& type : types)
+			AddOrMergeRow(text1, type, text3, false);
 	}
 
 	void UpdateComboBox()
@@ -171,7 +383,7 @@ public:
 		INT iRow = 0;
 		for (const auto& row : m_items)
 		{
-			if (!bAll && row.col1.find(pszIDType) == MString::npos)
+			if (!bAll && !IsTypeMatched(row.col1, pszIDType))
 				continue;
 
 			LV_ITEM item;
@@ -201,152 +413,25 @@ public:
 		}
 	}
 
-	void AddRow(const MStringA& first, const MStringA& second, const EntryBase *entry = NULL)
-	{
-		if (entry && entry->m_et == ET_LANG)
-		{
-			if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR ||
-				entry->m_type == RT_STRING)
-				return;
-		}
-
-		MString text1 = MAnsiToText(CP_ACP, first.c_str()).c_str();
-		MString text2 = GetAssoc(text1);
-		MString text3 = MAnsiToText(CP_ACP, second.c_str()).c_str();
-		if (text2.empty() || text2 == MapIDType(IDTYPE_RESOURCE) || text2 == MapIDType(IDTYPE_UNKNOWN))
-		{
-			if (entry)
-			{
-				auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
-				if (nIDTYPE_ != IDTYPE_UNKNOWN)
-				{
-					text2 = m_map1[nIDTYPE_];
-				}
-				else
-				{
-					if (entry->m_type.is_int())
-					{
-						text2 = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
-						if (text2.empty())
-						{
-							if (m_nBase == 10)
-								text2 = mstr_dec(entry->m_type.m_id);
-							else if (m_nBase == 16)
-								text2 = mstr_hex(entry->m_type.m_id);
-							else
-								assert(0);
-						}
-					}
-					else
-					{
-						text2 = entry->m_type.c_str();
-					}
-				}
-			}
-		}
-		if (text2.empty())
-			text2 = MapIDType(IDTYPE_UNKNOWN);
-		if (text2 == MapIDType(IDTYPE_RESOURCE))
-			return;
-
-		if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
-		{
-			int value = mstr_parse_int(text3.c_str(), true);
-			TCHAR szText[MAX_PATH];
-			if (m_nBase == 10)
-				StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
-			else if (m_nBase == 16)
-				StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
-			else
-				assert(0);
-			text3 = szText;
-		}
-
-		for (const auto& row : m_items)
-		{
-			if (row.col0 == text1 && row.col2 == text3)
-			{
-				if (row.col1.find(text2) != MString::npos)
-					return;
-				break;
-			}
-		}
-
-		for (auto& row : m_items)
-		{
-			if (row.col0 == text1 && row.col2 == text3)
-			{
-				if (row.col1.find(text2) == MString::npos)
-				{
-					row.col1 += L"/";
-					row.col1 += text2;
-				}
-				return;
-			}
-		}
-
-		ItemRow row = { text1, text2, text3 };
-		row.numeric = false;
-		if (mchr_is_digit(text3[0]) || text3[0] == L'+' || text3[0] == L'-')
-		{
-			row.value = mstr_parse_int(text3.c_str(), true);
-			row.numeric = true;
-		}
-		m_items.push_back(row);
-	}
-
 	void BuildItemsIntoCache()
 	{
+		EntrySet found;
+		g_res.search(found, ET_LANG);
+		for (auto entry : found)
+		{
+			AddResourceRow(entry);
+		}
+
 		if (!g_settings.bHideID)
 		{
 			for (auto& pair : g_settings.id_map)
-				AddRow(pair.first, pair.second);
-		}
-
-		EntrySet found;
-		g_res.search(found, ET_LANG);
-
-		for (auto entry : found)
-		{
-			auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
-			if (entry->m_name.m_id)
-			{
-				auto strName = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
-				if (strName.empty() || g_settings.bHideID)
-				{
-					if (m_nBase == 10)
-						strName = mstr_dec(entry->m_name.m_id);
-					else if (m_nBase == 16)
-						strName = mstr_hex(entry->m_name.m_id);
-					else
-						assert(0);
-				}
-
-				auto strValue = mstr_dec(entry->m_name.m_id);
-				if (m_nBase == 16)
-					strValue = mstr_hex(entry->m_name.m_id);
-
-				MWideToAnsi strNameA(CP_ACP, strName);
-				MWideToAnsi strValueA(CP_ACP, strValue);
-				AddRow(strNameA.c_str(), strValueA.c_str(), entry);
-			}
-			else
-			{
-				MWideToAnsi strNameA(CP_ACP, entry->m_name.quoted_wstr());
-				AddRow(strNameA.c_str(), strNameA.c_str(), entry);
-			}
+				AddMacroRow(pair);
 		}
 
 		for (auto& row : m_items)
 		{
-			if (row.col1.find(L'/') != MString::npos)
-			{
-				std::vector<MString> vec;
-				mstr_split(vec, row.col1, L"/");
-				std::sort(vec.begin(), vec.end());
-				vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
-				row.col1 = mstr_join(vec, L"/");
-			}
+			if (row.col1.empty())
+				row.col1 = MapIDType(IDTYPE_UNKNOWN);
 		}
 	}
 
@@ -502,9 +587,7 @@ public:
 		case cmb1:
 			if (codeNotify == CBN_SELCHANGE && !m_bChanging)
 			{
-				m_bChanging = TRUE;
 				OnCmb1(hwnd);
-				m_bChanging = FALSE;
 			}
 			break;
 		case IDCANCEL:
