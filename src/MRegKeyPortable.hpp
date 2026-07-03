@@ -208,6 +208,8 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
 	StrTrim(s_szText, TEXT(" \t\r\n"));
 
 	DWORD cchText = lstrlen(s_szText);
+	if (cchText < 2)
+		return ERROR_ACCESS_DENIED;
 	DWORD cbValue = (cchText - 2) / 2;
 
 	if (lpcbData)

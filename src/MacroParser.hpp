@@ -1157,13 +1157,27 @@ namespace MacroParser
 		if (binary->m_str == "+") value = left + right;
 		else if (binary->m_str == "-") value = left - right;
 		else if (binary->m_str == "*") value = left * right;
-		else if (binary->m_str == "/") value = left / right;
-		else if (binary->m_str == "%") value = left % right;
+		else if (binary->m_str == "/")
+		{
+			if (right == 0) { value = 0; return false; }
+			value = left / right;
+		}
+		else if (binary->m_str == "%")
+		{
+			if (right == 0) { value = 0; return false; }
+			value = left % right;
+		}
 		else if (binary->m_str == "^") value = left ^ right;
-		else if (binary->m_str == "<<") value = left << right;
+		else if (binary->m_str == "<<")
+		{
+			value = (right >= 0 && right < 32) ? (left << right) : 0;
+		}
 		else if (binary->m_str == "<=") value = left <= right;
 		else if (binary->m_str == "<") value = left < right;
-		else if (binary->m_str == ">>") value = left >> right;
+		else if (binary->m_str == ">>")
+		{
+			value = (right >= 0 && right < 32) ? (left >> right) : 0;
+		}
 		else if (binary->m_str == ">=") value = left >= right;
 		else if (binary->m_str == ">") value = left > right;
 		else if (binary->m_str == "==") value = left == right;

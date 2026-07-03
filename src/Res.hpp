@@ -261,12 +261,12 @@ struct EntryBase
 	// the index accessor
 	BYTE& operator[](DWORD index)
 	{
-		assert(index <= m_data.size());
+		assert(index < m_data.size());
 		return m_data[index];
 	}
 	const BYTE& operator[](DWORD index) const
 	{
-		assert(index <= m_data.size());
+		assert(index < m_data.size());
 		return m_data[index];
 	}
 
