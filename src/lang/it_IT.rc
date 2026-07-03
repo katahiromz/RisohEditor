@@ -1683,7 +1683,7 @@ STRINGTABLE
     IDS_MESSAGE_ID, "ID messaggia"
     IDS_WINDOW_ID, "ID finestra"
     IDS_NEWCOMMAND_ID, "ID nuovo comando"
-    IDS_PROMPT_ID, "ID del prompt"
+    IDS_PROMPT_ID, "ID prompt"
     IDS_RCDATA_ID, "ID RCData"
     IDS_MSGTABLE_ID, "ID tabella messaggi"
 }
