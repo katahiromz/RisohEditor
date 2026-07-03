@@ -81,7 +81,7 @@ include_directories(WonRes)
 include_directories(WonSetThreadUILanguage)
 
 add_subdirectory(WonRes)
-if(MSVC AND TARGET WonRes)
+if(MSVC AND TARGET WonRes AND DEFINED CMAKE_MSVC_RUNTIME_LIBRARY AND NOT CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "")
 	set_property(TARGET WonRes PROPERTY MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
 endif()
 
