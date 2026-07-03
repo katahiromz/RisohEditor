@@ -16,6 +16,7 @@
 #include "MModifyResIDDlg.hpp"
 #include "MResizable.hpp"
 #include "Common.hpp"
+#include "Utils.h"
 
 class MSubclassedListView;
 class MIDListDlg;
