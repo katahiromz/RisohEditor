@@ -29,8 +29,6 @@
     #define _countof(array) (sizeof(array) / sizeof(array[0]))
 #endif
 
-bool g_wrap_enabled = false;
-
 //////////////////////////////////////////////////////////////////////////////
 
 enum EXITCODE
@@ -48,8 +46,14 @@ enum EXITCODE
     EXITCODE_CANT_MAKE_TEMP
 };
 
+// Types
+typedef std::pair<LANGID, MIdOrString>           msg_table_key_type;
+typedef std::map<msg_table_key_type, MessageRes> msg_tables_type;
+
 //////////////////////////////////////////////////////////////////////////////
 // Globals
+
+bool g_wrap_enabled = false;    // wrap enabled flag
 
 const char *g_cpp      = "mcpp";
 const char *g_windres  = "windres";
@@ -73,8 +77,6 @@ int      g_value     = 0;
 BOOL     g_in_msg_table = FALSE;
 MIdOrString g_table_id((WORD)1);  // Current MESSAGETABLEDX table-id (default: 1)
 
-typedef std::pair<LANGID, MIdOrString>           msg_table_key_type;
-typedef std::map<msg_table_key_type, MessageRes> msg_tables_type;
 msg_tables_type g_msg_tables;
 
 char g_lang_english[] = "LANG=en_US";

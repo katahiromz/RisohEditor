@@ -80,6 +80,17 @@ IDTYPE_ UnMapIDType(const MStringW& str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// types
+
+struct CODEPAGE_INFO
+{
+	UINT number;
+	const char *name;
+};
+
+typedef HRESULT (WINAPI *SETWINDOWTHEME)(HWND, LPCWSTR, LPCWSTR);
+
+//////////////////////////////////////////////////////////////////////////////
 // constants
 
 #define CX_STATUS_PART  80      // status bar part width
@@ -91,28 +102,30 @@ IDTYPE_ UnMapIDType(const MStringW& str)
 // the maximum number of backup
 static const UINT s_nBackupMaxCount = 5;
 
-// contents modified?
-static BOOL s_bModified = FALSE;
-
-void DoSetFileModified(BOOL bModified)
-{
-	s_bModified = bModified;
-}
-
-HWND g_hMainWnd = NULL;
-static INT s_ret = 0;
-
-struct CODEPAGE_INFO
-{
-	UINT number;
-	const char *name;
-};
-
 static const CODEPAGE_INFO g_codepage_info[] = {
 #define DEFINE_CODEPAGE(number, name) { number, name },
 #include "codepages.h"
 #undef DEFINE_CODEPAGE
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// global variables
+
+HWND g_hMainWnd = NULL;     // main window handle
+
+#ifdef USE_GLOBALS
+	ConstantsDB g_db;           // constants database
+	RisohSettings g_settings;   // settings
+	EntrySet g_res;             // the set of resource items
+#endif
+
+// contents modified?
+static BOOL s_bModified = FALSE;
+static INT s_ret = 0;           // return value storage
+static SETWINDOWTHEME s_pSetWindowTheme = NULL;  // pointer to SetWindowTheme API
+
+//////////////////////////////////////////////////////////////////////////////
+// helper functions
 
 LPCSTR FindCodePageName(UINT nCodePage)
 {
@@ -124,17 +137,10 @@ LPCSTR FindCodePageName(UINT nCodePage)
 	return "(Unknown)";
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// global variables
-
-#ifdef USE_GLOBALS
-	ConstantsDB g_db;           // constants database
-	RisohSettings g_settings;   // settings
-	EntrySet g_res;             // the set of resource items
-#endif
-
-typedef HRESULT (WINAPI *SETWINDOWTHEME)(HWND, LPCWSTR, LPCWSTR);
-static SETWINDOWTHEME s_pSetWindowTheme = NULL;
+void DoSetFileModified(BOOL bModified)
+{
+	s_bModified = bModified;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // the specialized toolbar
