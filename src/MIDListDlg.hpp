@@ -16,10 +16,10 @@
 #include "MModifyResIDDlg.hpp"
 #include "MResizable.hpp"
 #include "Common.hpp"
-#include "Utils.h"
 
 class MSubclassedListView;
 class MIDListDlg;
+void Res_ReplaceResTypeString(MString& str, bool bRevert);
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 #define MYWM_REFRESHIDLIST (WM_USER + 239)
