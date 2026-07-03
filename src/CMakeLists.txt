@@ -23,7 +23,7 @@ add_library(libRisohEditor STATIC
     WonResWrap.cpp)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
-# Build shared executable objects once to reduce duplicate compiles.
+# Create object libraries for shared source files.
 add_library(RisohEditorMain_obj OBJECT
 	RisohEditor.cpp)
 
@@ -32,7 +32,7 @@ add_library(RisohSettings_obj OBJECT
 
 add_library(RisohSettingsPortable_obj OBJECT
 	RisohSettings.cpp)
-target_compile_definitions(RisohSettingsPortable_obj PRIVATE -DPORTABLE)
+target_compile_definitions(RisohSettingsPortable_obj PRIVATE PORTABLE)
 
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
@@ -68,7 +68,14 @@ option(ATL_SUPPORT "Add ATL support" OFF)
 
 if (MSVC)
 	set(DOTRES ".res") # resource object extension
-	add_compile_options(/MP)
+	# Enable parallel C++ compilation for build targets.
+	foreach(target_name
+		libRisohEditor
+		RisohEditorMain_obj
+		RisohSettings_obj
+		RisohSettingsPortable_obj)
+		target_compile_options(${target_name} PRIVATE /MP)
+	endforeach()
 	# ATL Support
 	if (ATL_SUPPORT)
 		add_definitions(-DATL_SUPPORT)
