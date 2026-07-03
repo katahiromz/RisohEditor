@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <algorithm>
+#include <algorithm> // std::find, std::sort, std::unique
 
 #include "resource.h"
 #include "MWindowBase.hpp"
@@ -114,10 +114,21 @@ public:
 		if (m_bRefreshing)
 			return;
 
-		m_bRefreshing = TRUE;
+		struct MRefreshingGuard
+		{
+			BOOL& m_flag;
+			explicit MRefreshingGuard(BOOL& flag) : m_flag(flag)
+			{
+				m_flag = TRUE;
+			}
+			~MRefreshingGuard()
+			{
+				m_flag = FALSE;
+			}
+		} guard(m_bRefreshing);
+
 		UpdateItems();
 		OnCmb1(hwnd);
-		m_bRefreshing = FALSE;
 	}
 
 	MString FormatByBase(INT value) const
@@ -243,9 +254,10 @@ public:
 	std::vector<MString> GetPrefixTypeTexts(const MString& name) const
 	{
 		std::vector<MString> texts;
-		MString prefix = name.substr(0, name.find(L'_') + 1);
-		if (prefix.empty())
+		size_t iUnderscore = name.find(L'_');
+		if (iUnderscore == MString::npos)
 			return texts;
+		MString prefix = name.substr(0, iUnderscore + 1);
 
 		std::vector<INT> indexes = GetPrefixIndexes(prefix);
 		for (size_t i = 0; i < indexes.size(); ++i)
