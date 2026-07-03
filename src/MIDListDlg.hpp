@@ -179,16 +179,14 @@ public:
 
 	void MergeType(ItemRow& row, const MString& type, bool bRealType)
 	{
-		if (!type.empty())
-		{
-			std::vector<MString> types;
-			mstr_split(types, row.col1, TEXT("/"));
-			if (std::find(types.begin(), types.end(), type) == types.end())
-				types.push_back(type);
-			std::sort(types.begin(), types.end());
-			types.erase(std::unique(types.begin(), types.end()), types.end());
-			row.col1 = mstr_join(types, TEXT("/"));
-		}
+		std::vector<MString> types;
+		mstr_split(types, row.col1, TEXT("/"));
+		types.erase(std::remove(types.begin(), types.end(), MString()), types.end());
+		if (!type.empty() && std::find(types.begin(), types.end(), type) == types.end())
+			types.push_back(type);
+		std::sort(types.begin(), types.end());
+		types.erase(std::unique(types.begin(), types.end()), types.end());
+		row.col1 = mstr_join(types, TEXT("/"));
 
 		if (bRealType)
 			row.has_real_type = true;
@@ -830,9 +828,16 @@ public:
 
 		std::vector<MString> vecItems;
 		mstr_split(vecItems, str, TEXT("/"));
+		vecItems.erase(std::remove(vecItems.begin(), vecItems.end(), MString()), vecItems.end());
 
 		if (nIndex == -1)
 		{
+			if (vecItems.size() <= 1)
+			{
+				PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
+				return;
+			}
+
 			HMENU hMenu = CreatePopupMenu();
 			const size_t max_count = 10;
 			for (size_t i = 0; i < vecItems.size() && i < max_count; ++i)
