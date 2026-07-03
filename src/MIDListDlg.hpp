@@ -181,7 +181,7 @@ public:
 	{
 		std::vector<MString> types;
 		mstr_split(types, row.col1, TEXT("/"));
-		types.erase(std::remove(types.begin(), types.end(), MString()), types.end());
+		types.erase(std::remove_if(types.begin(), types.end(), [](const MString& item) { return item.empty(); }), types.end());
 		if (!type.empty() && std::find(types.begin(), types.end(), type) == types.end())
 			types.push_back(type);
 		std::sort(types.begin(), types.end());
@@ -828,11 +828,13 @@ public:
 
 		std::vector<MString> vecItems;
 		mstr_split(vecItems, str, TEXT("/"));
-		vecItems.erase(std::remove(vecItems.begin(), vecItems.end(), MString()), vecItems.end());
+		vecItems.erase(std::remove_if(vecItems.begin(), vecItems.end(), [](const MString& item) { return item.empty(); }), vecItems.end());
+		if (vecItems.empty())
+			return;
 
 		if (nIndex == -1)
 		{
-			if (vecItems.size() <= 1)
+			if (vecItems.size() == 1)
 			{
 				PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
 				return;
