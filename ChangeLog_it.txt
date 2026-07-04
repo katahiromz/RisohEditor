@@ -4,13 +4,13 @@
     - Finalizzazione localizzazione.
     - Corretto bug minore "ID risorse".
     - Corretta gestione nomi risorse tra virgolette.
-    - Migliorato il dump di RT_VERSION. 
+    - Migliorato dump di RT_VERSION. 
     - Aggiunto "winres.h".
-    - Aggiunta la funzionalità "Aiuto elemento" alla visualizzazione ad albero.
-    - Omesse le virgole nella tabella delle stringhe.
-    - Supporto per la guida contestuale (F1).
-    - Utilizzare sempre lettere maiuscole per le stringhe di ID delle risorse.
-    - È stata evitata la divisione per zero del parser delle macro.
+    - Aggiunta alla visualizzazione struttura la funzionalità "Argomento Guida in linea".
+    - Omesse virgole nella tabella delle stringhe.
+    - Supporto guida contestuale (F1).
+    - Forzato uso delle lettere maiuscole per le stringhe ID risorse.
+    - Risolto errore divisione per zero nell'analizzatore macro.
 - v. 6.0.2 (03.07.2026)
     - Migliorata traduzione in polacco (Polonia) (grazie, Fresta).
     - Corrette azioni "Elenco ID risorse" ID_BASE10 e ID_BASE16.
