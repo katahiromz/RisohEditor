@@ -9,6 +9,8 @@
 #undef min
 #undef max
 #include <algorithm>
+#include <cerrno>
+#include <cstdlib>
 
 enum LANG_TYPE
 {
@@ -119,68 +121,23 @@ inline MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
 // Stores the two's-complement DWORD in *pValue if non-NULL and returns true on success.
 inline bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue = NULL)
 {
-	if (!str) return false;
+	if (!str || !*str) return false;
 
-	// Skip leading whitespace
-	while (*str == L' ' || *str == L'\t') ++str;
-	if (!*str) return false;
+	WCHAR *endp;
+	errno = 0;
+	LONGLONG val = wcstoll(str, &endp, 0);
 
-	bool negative = false;
-	if (*str == L'-') { negative = true; ++str; }
-	else if (*str == L'+') { ++str; }
-
-	// Detect hex prefix
-	int base = 10;
-	if (str[0] == L'0' && (str[1] == L'x' || str[1] == L'X'))
-	{
-		base = 16;
-		str += 2;
-	}
-
-	if (!*str) return false; // No digits
-
-	// Accumulate into 64-bit unsigned to detect overflow
-	ULONGLONG val = 0;
-	bool hasDigit = false;
-	for (; *str; ++str)
-	{
-		int digit = -1;
-		if (*str >= L'0' && *str <= L'9')
-			digit = *str - L'0';
-		else if (base == 16 && *str >= L'A' && *str <= L'F')
-			digit = *str - L'A' + 10;
-		else if (base == 16 && *str >= L'a' && *str <= L'f')
-			digit = *str - L'a' + 10;
-
-		if (digit < 0 || digit >= base)
-			break; // Non-digit character stops parsing
-
-		hasDigit = true;
-		// Overflow guard
-		if (val > (0xFFFFFFFFFFFFFFFFULL - (ULONGLONG)digit) / (ULONGLONG)base)
-			return false;
-		val = val * (ULONGLONG)base + (ULONGLONG)digit;
-	}
-
-	if (!hasDigit) return false;
+	if (errno == ERANGE) return false;
+	if (endp == str) return false; // No digits parsed
 
 	// Skip trailing whitespace; reject any other trailing chars
-	while (*str == L' ' || *str == L'\t') ++str;
-	if (*str) return false;
+	while (*endp == L' ' || *endp == L'\t') ++endp;
+	if (*endp) return false;
 
-	if (negative)
-	{
-		// Valid signed range: absolute value in [0, 2147483648]
-		if (val > 2147483648ULL) return false;
-		if (pValue) *pValue = (DWORD)(0ULL - val);
-	}
-	else
-	{
-		// Valid unsigned range: [0, 4294967295]
-		if (val > 4294967295ULL) return false;
-		if (pValue) *pValue = (DWORD)val;
-	}
+	// Valid range: signed [-2147483648, 2147483647] or unsigned [0, 4294967295]
+	if (val < -2147483648LL || val > 4294967295LL) return false;
 
+	if (pValue) *pValue = (DWORD)val;
 	return true;
 }
 
