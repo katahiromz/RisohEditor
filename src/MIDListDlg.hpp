@@ -630,9 +630,18 @@ public:
 				if (dialog.DialogBoxDx(hwnd) == IDOK)
 				{
 					ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
-					INT value = mstr_parse_int(dialog.m_str2.c_str());
-					ConstantsDB::EntryType entry(dialog.m_str1, value);
-					table.push_back(entry);
+					DWORD dwValue;
+					if (dialog.m_bIsHelpID && IsValidHelpIDText(dialog.m_str2.c_str(), &dwValue))
+					{
+						ConstantsDB::EntryType entry(dialog.m_str1, dwValue);
+						table.push_back(entry);
+					}
+					else
+					{
+						INT value = mstr_parse_int(dialog.m_str2.c_str());
+						ConstantsDB::EntryType entry(dialog.m_str1, value);
+						table.push_back(entry);
+					}
 
 					MStringA stra1 = MTextToAnsi(CP_ACP, dialog.m_str1).c_str();
 					MStringA stra2 = MTextToAnsi(CP_ACP, dialog.m_str2).c_str();
@@ -662,7 +671,12 @@ public:
 			str2 = szText;
 			if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
 			{
-				MModifyResIDDlg dialog(str1, str2);
+				// Detect whether this row is a Help ID (wider 32-bit range)
+				TCHAR szType[MAX_PATH];
+				ListView_GetItemText(m_hLst1, iItem, 1, szType, _countof(szType));
+				BOOL bIsHelpID = IsTypeMatched(MString(szType), MapIDType(IDTYPE_HELP).c_str());
+
+				MModifyResIDDlg dialog(str1, str2, bIsHelpID);
 				if (dialog.DialogBoxDx(hwnd) == IDOK)
 				{
 					ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
@@ -675,9 +689,18 @@ public:
 							break;
 						}
 					}
-					INT value = mstr_parse_int(dialog.m_str2.c_str());
-					ConstantsDB::EntryType entry(dialog.m_str1, value);
-					table.push_back(entry);
+					DWORD dwValue;
+					if (dialog.m_bIsHelpID && IsValidHelpIDText(dialog.m_str2.c_str(), &dwValue))
+					{
+						ConstantsDB::EntryType entry(dialog.m_str1, dwValue);
+						table.push_back(entry);
+					}
+					else
+					{
+						INT value = mstr_parse_int(dialog.m_str2.c_str());
+						ConstantsDB::EntryType entry(dialog.m_str1, value);
+						table.push_back(entry);
+					}
 
 					MStringA stra1old = MTextToAnsi(CP_ACP, str1).c_str();
 					MStringA stra2old = MTextToAnsi(CP_ACP, str2).c_str();

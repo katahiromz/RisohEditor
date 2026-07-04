@@ -25,10 +25,12 @@ public:
 	MString m_str1;
 	MString m_str2;
 	BOOL m_bChanging;
+	BOOL m_bIsHelpID; // TRUE if the selected type is IDTYPE_HELP
 
 	MAddResIDDlg() : MDialogBase(IDD_ADDRESID)
 	{
 		m_bChanging = FALSE;
+		m_bIsHelpID = FALSE;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -76,19 +78,46 @@ public:
 		}
 		m_str1 = str1;
 
+		// Detect whether the selected type is Help ID
+		MString strType;
+		{
+			HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+			INT iSel = (INT)SendMessage(hCmb1, CB_GETCURSEL, 0, 0);
+			if (iSel != CB_ERR)
+				strType = GetComboBoxLBText(hCmb1, iSel);
+		}
+		m_bIsHelpID = (UnMapIDType(strType) == IDTYPE_HELP) ? TRUE : FALSE;
+
 		MString str2 = GetDlgItemText(hwnd, edt2);
 		ReplaceFullWithHalf(str2);
 		mstr_trim(str2);
-		INT value = mstr_parse_int(str2.c_str());
-		if (str2.empty() || value < SHRT_MIN || value > USHRT_MAX)
+
+		if (m_bIsHelpID)
 		{
-			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-			SetDlgItemInt(hwnd, edt2, value, TRUE);
-			HWND hEdt2 = GetDlgItem(hwnd, edt2);
-			Edit_SetSel(hEdt2, 0, -1);
-			SetFocus(hEdt2);
-			ErrorBoxDx(IDS_ENTERINT);
-			return;
+			// Help ID: accept signed [-2147483648, 2147483647] or unsigned [0, 4294967295]
+			DWORD dw;
+			if (str2.empty() || !IsValidHelpIDText(str2.c_str(), &dw))
+			{
+				HWND hEdt2 = GetDlgItem(hwnd, edt2);
+				Edit_SetSel(hEdt2, 0, -1);
+				SetFocus(hEdt2);
+				ErrorBoxDx(IDS_ENTERINT);
+				return;
+			}
+		}
+		else
+		{
+			INT value = mstr_parse_int(str2.c_str());
+			if (str2.empty() || value < SHRT_MIN || value > USHRT_MAX)
+			{
+				value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
+				SetDlgItemInt(hwnd, edt2, value, TRUE);
+				HWND hEdt2 = GetDlgItem(hwnd, edt2);
+				Edit_SetSel(hEdt2, 0, -1);
+				SetFocus(hEdt2);
+				ErrorBoxDx(IDS_ENTERINT);
+				return;
+			}
 		}
 		m_str2 = std::move(str2);
 
