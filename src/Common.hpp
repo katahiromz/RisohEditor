@@ -172,7 +172,7 @@ inline bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue = NULL)
 	{
 		// Valid signed range: absolute value in [0, 2147483648]
 		if (val > 2147483648ULL) return false;
-		if (pValue) *pValue = (DWORD)(0UL - (DWORD)val);
+		if (pValue) *pValue = (DWORD)(0ULL - val);
 	}
 	else
 	{
