@@ -1,7 +1,7 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.0.3 (2026-XX-YY)
-    - Consentito l'uso di interi a 32 bit con o senza segno per l'ID della Guida nella finestra di dialogo "Resource IDs".
+    - Consentito uso interi a 32 bit con/senza segno per l'ID della Guida nella finestra "ID risorse".
     - Finalizzazione localizzazione.
     - Corretto bug minore "ID risorse".
     - Corretta gestione nomi risorse tra virgolette.
