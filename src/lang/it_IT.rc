@@ -193,7 +193,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Elimina\tCanc", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "&Guida all'articolo...\tF1", ID_TREEITEMHELP
+        MENUITEM "Argomento &Guida in linea...\tF1", ID_TREEITEMHELP
     }
     POPUP "Popup #1"
     {
