@@ -1,8 +1,8 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.0.4 (2026-XX-YY)
-    - Corretta l'interpretazione degli ID delle risorse nella visualizzazione ad albero.
-    - Aggiunto il pulsante "Ripristina" nella finestra di dialogo IDD_FONTS.
+    - Corretta nella visualizzazione struttura l'interpretazione ID risorse.
+    - Aggiunto nella finestra di dialogo IDD_FONTS il pulsante "Ripristina".
 - v.6.0.3 (05.07.2026)
     - Consentito uso interi a 32 bit con/senza segno per l'ID della Guida nella finestra "ID risorse".
     - Finalizzazione localizzazione.
