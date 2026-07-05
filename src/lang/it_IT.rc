@@ -984,7 +984,7 @@ FONT 9, "MS Shell Dlg"
     GROUPBOX "Anteprima", -1, 5, 45, 185, 39
     CTEXT "Sorgente", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Binario", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
-    PUSHBUTTON "&Reset", psh3, 5, 90, 50, 14
+    PUSHBUTTON "&Ripristina", psh3, 5, 90, 50, 14
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 130, 90, 60, 14
 }
