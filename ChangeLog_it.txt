@@ -2,12 +2,12 @@
 
 - v.6.0.5 (2026-XX-YY)
     - Abilitata la freccia della visualizzazione struttura per modificare il nome risorsa.
-    - Fixed EGA. Added some EGA programs.
-    - Used DIALOGEX instead of DIALOG.
-    - Improved DIALOGEX FONT dumping.
-    - Improved handling when multiple controls are selected in IDD_CTRLPROP.
-    - Enabled input auto completion on name item of treeview.
-    - Fixed item deletion on treeview.
+    - Corretto EGA. Aggiunti alcuni programmi EGA.
+    - Usata DIALOGEX invece di DIALOG.
+    - Migliorato dumping di FONT DIALOGEX.
+    - Migliorata gestione quando vengono selezionati più controlli in IDD_CTRLPROP.
+    - Abilitato in visualizzazione struttura il completamento automatico dell'input sull'elemento nome.
+    - Corretto problema eliminazione elementi in visualizzazione struttura.
 - v.6.0.4 (07.07.2026)
     - Corretta nella visualizzazione struttura l'interpretazione ID risorse.
     - Aggiunto nella finestra di dialogo IDD_FONTS il pulsante "Ripristina".
