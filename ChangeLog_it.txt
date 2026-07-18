@@ -1,8 +1,8 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
+    - Aggiunta cronologia Console EGA (tasti su/giù).
+    - Migliorata guida per le parole chiave.
 - v.6.0.5 (17.07.2026)
     - Abilitata la freccia della visualizzazione struttura per modificare il nome risorsa.
     - Corretto EGA. Aggiunti alcuni programmi EGA.
