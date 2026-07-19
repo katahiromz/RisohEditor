@@ -1,29 +1,29 @@
 ﻿## HISTORIA
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
-    - Added EGA localtime and gmtime functions.
-    - Improved EGA manual.
-    - Added EGA load and save functions.
-    - Added EGA RES_extract function.
+    - Se añadió historial a la consola EGA (teclas Arriba/Abajo).
+    - Se mejoró la ayuda sobre palabras clave.
+    - Se añadieron las funciones `localtime` y `gmtime` a EGA.
+    - Se mejoró el manual de EGA.
+    - Se añadieron funciones de carga y guardado a EGA.
+    - Se añadió la función `RES_extract` a EGA.
 - v.6.0.5 (2026-07-17)
-    - Se habilitó la flecha de la vista de árbol para cambiar el nombre del recurso. 
-    - Se corrigió EGA. Se añadieron algunos programas EGA. 
-    - Se utilizó DIALOGEX en lugar de DIALOG. 
-    - Se mejoró el volcado de fuentes (FONT) en DIALOGEX. 
-    - Se mejoró la gestión al seleccionar múltiples controles en IDD_CTRLPROP. 
-    - Se habilitó el autocompletado de entrada en el elemento de nombre de la vista de árbol. 
+    - Se habilitó la flecha de la vista de árbol para cambiar el nombre del recurso.
+    - Se corrigió EGA. Se añadieron algunos programas EGA.
+    - Se utilizó DIALOGEX en lugar de DIALOG.
+    - Se mejoró el volcado de fuentes (FONT) en DIALOGEX.
+    - Se mejoró la gestión al seleccionar múltiples controles en IDD_CTRLPROP.
+    - Se habilitó el autocompletado de entrada en el elemento de nombre de la vista de árbol.
     - Se corrigió la eliminación de elementos en la vista de árbol.
 - v.6.0.4 (2026-07-07)
     - Se corrigió la interpretación de los ID de recursos en la vista de árbol.
     - Se añadió el botón "Restablecer" en el cuadro de diálogo IDD_FONTS.
 - v.6.0.3 (2026-07-05)
     - Se permite el uso de enteros de 32 bits (con o sin signo) para el ID de ayuda en el cuadro de diálogo "Resource IDs".
-    - Finalización de la localización. 
+    - Finalización de la localización.
     - Corregido un error menor en los «Lista de ID de recursos».
-    - Gestión correcta de nombres de recursos entre comillas. 
-    - Mejora en el volcado de RT_VERSION. 
+    - Gestión correcta de nombres de recursos entre comillas.
+    - Mejora en el volcado de RT_VERSION.
     - Se ha añadido "winres.h".
     - Se añadió la función de "Ayuda del elemento" a la vista de árbol.
     - Se omiten las comas en la tabla de cadenas.

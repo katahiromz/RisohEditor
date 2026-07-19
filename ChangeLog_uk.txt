@@ -1,12 +1,12 @@
 ﻿## ІСТОРІЯ (Журнал змін)
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
-    - Added EGA localtime and gmtime functions.
-    - Improved EGA manual.
-    - Added EGA load and save functions.
-    - Added EGA RES_extract function.
+    - Додано історію в консолі EGA (клавіші Вгору/Вниз).
+    - Покращено довідку з ключовими словами.
+    - Додано функції EGA localtime та gmtime.
+    - Покращено посібник EGA.
+    - Додано функції завантаження та збереження EGA.
+    - Додано функцію EGA RES_extract.
 - v.6.0.5 (2026-07-17)
     - Увімкнено стрілку деревоподібного перегляду для зміни назви ресурсу.
     - Виправлено EGA. Додано деякі програми EGA.

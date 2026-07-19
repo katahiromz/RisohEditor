@@ -886,6 +886,18 @@ LRESULT MMainWnd::OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+// MYWM_CHECKTREEVIEW
+LRESULT MMainWnd::OnCheckTreeView(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+	if (!g_res.get_entry())
+	{
+		HidePreview();
+		Edit_SetReadOnly(m_hCodeEditor, TRUE);
+		UpdateOurToolBarButtons(3);
+	}
+	return 0;
+}
+
 // extract an icon as an *.ico file
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
@@ -11845,6 +11857,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
 		DO_MESSAGE(MYWM_UPDATEARROW, OnUpdateArrow);
 		DO_MESSAGE(MYWM_RADDBLCLICK, OnRadDblClick);
+		DO_MESSAGE(MYWM_CHECKTREEVIEW, OnCheckTreeView);
 
 	default:
 		return DefaultProcDx();

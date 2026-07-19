@@ -1,29 +1,29 @@
 ﻿## SEJARAH
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
-    - Added EGA localtime and gmtime functions.
-    - Improved EGA manual.
-    - Added EGA load and save functions.
-    - Added EGA RES_extract function.
+    - Menambahkan fitur riwayat pada Konsol EGA (tombol Panah Atas/Bawah).
+    - Menyempurnakan bantuan kata kunci.
+    - Menambahkan fungsi `localtime` dan `gmtime` pada EGA.
+    - Menyempurnakan manual EGA.
+    - Menambahkan fungsi muat (*load*) dan simpan (*save*) pada EGA.
+    - Menambahkan fungsi `RES_extract` pada EGA.
 - v.6.0.5 (2026-07-17)
-    - Mengaktifkan fitur pengubahan nama sumber daya melalui tanda panah pada *treeview*. 
-    - Memperbaiki dukungan EGA. Menambahkan beberapa program EGA. 
-    - Menggunakan DIALOGEX sebagai pengganti DIALOG. 
-    - Menyempurnakan proses *dumping* FONT pada DIALOGEX. 
-    - Menyempurnakan penanganan saat beberapa kontrol dipilih di IDD_CTRLPROP. 
-    - Mengaktifkan fitur pelengkapan otomatis (*auto-completion*) untuk nama item pada *treeview*. 
+    - Mengaktifkan fitur pengubahan nama sumber daya melalui tanda panah pada *treeview*.
+    - Memperbaiki dukungan EGA. Menambahkan beberapa program EGA.
+    - Menggunakan DIALOGEX sebagai pengganti DIALOG.
+    - Menyempurnakan proses *dumping* FONT pada DIALOGEX.
+    - Menyempurnakan penanganan saat beberapa kontrol dipilih di IDD_CTRLPROP.
+    - Mengaktifkan fitur pelengkapan otomatis (*auto-completion*) untuk nama item pada *treeview*.
     - Memperbaiki masalah penghapusan item pada *treeview*.
 - v.6.0.4 (2026-07-07)
     - Memperbaiki interpretasi ID sumber daya pada tampilan pohon.
     - Menambahkan tombol "Reset" pada dialog IDD_FONTS.
 - v.6.0.3 (2026-07-05)
     - Mengizinkan penggunaan integer 32-bit bertanda (*signed*) maupun tidak bertanda (*unsigned*) untuk Help ID di dalam dialog "Resource IDs".
-    - Menyelesaikan lokalisasi. 
-    - Memperbaiki bug kecil terkait "Resource ID". 
-    - Menangani nama sumber daya (resource names) yang diapit tanda kutip dengan benar. 
-    - Meningkatkan proses *dumping* RT_VERSION. 
+    - Menyelesaikan lokalisasi.
+    - Memperbaiki bug kecil terkait "Resource ID".
+    - Menangani nama sumber daya (resource names) yang diapit tanda kutip dengan benar.
+    - Meningkatkan proses *dumping* RT_VERSION.
     - Menambahkan "winres.h".
     - Menambahkan fitur "Bantuan Item" pada treeview.
     - Menghilangkan tanda koma pada tabel string.

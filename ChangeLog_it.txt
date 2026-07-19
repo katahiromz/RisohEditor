@@ -23,7 +23,7 @@
     - Finalizzazione localizzazione.
     - Corretto bug minore "ID risorse".
     - Corretta gestione nomi risorse tra virgolette.
-    - Migliorato dump di RT_VERSION. 
+    - Migliorato dump di RT_VERSION.
     - Aggiunto "winres.h".
     - Aggiunta alla visualizzazione struttura la funzionalità "Argomento Guida in linea".
     - Omesse virgole nella tabella delle stringhe.

@@ -472,11 +472,20 @@ EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
 	return on_insert_entry(entry);
 }
 
+bool EntrySet::on_delete_type(EntryBase *entry)
+{
+	PostMessageW(g_hMainWnd, MYWM_CHECKTREEVIEW, 0, 0);
+	return true;
+}
+
 void EntrySet::delete_entry(EntryBase *entry)
 {
 	// delete the related entries
 	switch (entry->m_et)
 	{
+	case ET_TYPE:
+		on_delete_type(entry);
+		break;
 	case ET_LANG:
 		if (entry->m_type == RT_GROUP_CURSOR)
 		{

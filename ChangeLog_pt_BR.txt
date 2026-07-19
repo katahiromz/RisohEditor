@@ -1,29 +1,29 @@
 ﻿## HISTÓRICO
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
-    - Added EGA localtime and gmtime functions.
-    - Improved EGA manual.
-    - Added EGA load and save functions.
-    - Added EGA RES_extract function.
+    - Adicionado histórico ao Console EGA (teclas Cima/Baixo).
+    - Aprimorada a ajuda de palavras-chave.
+    - Adicionadas as funções `localtime` e `gmtime` ao EGA.
+    - Aprimorado o manual do EGA.
+    - Adicionadas funções de carregamento e salvamento ao EGA.
+    - Adicionada a função `RES_extract` ao EGA.
 - v.6.0.5 (2026-07-17)
-    - Habilitada a seta da *treeview* para alterar o nome do recurso. 
-    - Corrigido o suporte a EGA. Adicionados alguns programas EGA. 
-    - Utilizado DIALOGEX em vez de DIALOG. 
-    - Melhorada a extração de fontes do DIALOGEX. 
-    - Melhorado o tratamento de seleção múltipla de controles em IDD_CTRLPROP. 
-    - Habilitado o preenchimento automático de entrada no campo de nome da *treeview*. 
+    - Habilitada a seta da *treeview* para alterar o nome do recurso.
+    - Corrigido o suporte a EGA. Adicionados alguns programas EGA.
+    - Utilizado DIALOGEX em vez de DIALOG.
+    - Melhorada a extração de fontes do DIALOGEX.
+    - Melhorado o tratamento de seleção múltipla de controles em IDD_CTRLPROP.
+    - Habilitado o preenchimento automático de entrada no campo de nome da *treeview*.
     - Corrigida a exclusão de itens na *treeview*.
 - v.6.0.4 (2026-07-07)
     - Corrigida a interpretação dos IDs de recursos na visualização em árvore.
     - Adicionado botão "Redefinir" na caixa de diálogo IDD_FONTS.
 - v.6.0.3 (2026-07-05)
     - Permitido o uso de números inteiros de 32 bits (com ou sem sinal) para o ID de Ajuda na caixa de diálogo "IDs de Recurso".
-    - Finalizando a localização. 
-    - Corrigido um pequeno bug relacionado a "Resource IDs". 
-    - Tratamento correto de nomes de recursos entre aspas. 
-    - Melhoria na extração (dumping) de RT_VERSION. 
+    - Finalizando a localização.
+    - Corrigido um pequeno bug relacionado a "Resource IDs".
+    - Tratamento correto de nomes de recursos entre aspas.
+    - Melhoria na extração (dumping) de RT_VERSION.
     - Adicionado "winres.h".
     - Adicionado o recurso "Ajuda do Item" à visualização em árvore.
     - Omissão de vírgulas na tabela de strings.

@@ -35,6 +35,10 @@ typedef std::map<MIdOrString, HICON>    MTitleToIcon;
 
 BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
+#define MYWM_CHECKTREEVIEW (WM_USER + 500)
+
+extern HWND g_hMainWnd;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef RT_HTML
@@ -656,6 +660,8 @@ struct EntrySet : protected EntrySetBase
 		assert(entry->m_et == ET_STRING);
 		search_and_delete(ET_LANG, RT_STRING, BAD_NAME, entry->m_lang);
 	}
+
+	bool on_delete_type(EntryBase *entry);
 
 	// helper method to delete the group icon
 	bool on_delete_group_icon(EntryBase *entry);

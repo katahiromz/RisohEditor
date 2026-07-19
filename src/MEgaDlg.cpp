@@ -26,7 +26,9 @@ bool EGA_dialog_input(char *buf, size_t buflen)
 	{
 		if (EgaBridge::IsStopRequested())
 		{
+#ifndef NDEBUG
 			OutputDebugStringA("EGA_dialog_input: stop requested -> return false\n");
+#endif
 			return false;
 		}
 
