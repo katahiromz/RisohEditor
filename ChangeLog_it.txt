@@ -1,12 +1,12 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.0.6 (2026-XX-YY)
-    - Added history on EGA Console (Up/Down keys).
-    - Improved keyword help.
-    - Added EGA localtime and gmtime functions.
-    - Improved EGA manual.
-    - Added EGA load and save functions.
-    - Added EGA RES_extract function.
+    - Aggiunta cronologia EGA Console (tasti Su/Giù).
+    - Migliorata guida parole chiave.
+    - Aggiunte funzioni EGA localtime e gmtime.
+    - Migliorato manuale EGA.
+    - Aggiunte funzioni caricamento/salvataggio EGA.
+    - Aggiunta funzione EGA RES_extract.
 - v.6.0.5 (17.07.2026)
     - Abilitata la freccia della visualizzazione struttura per modificare il nome risorsa.
     - Corretto EGA. Aggiunti alcuni programmi EGA.
