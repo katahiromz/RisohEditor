@@ -8,8 +8,8 @@
     - Aggiunte funzioni caricamento/salvataggio EGA.
     - Aggiunta funzione EGA RES_extract.
     - Corretti gli stili BUTTON e RICHEDIT.
-    - Abilitata la modifica del tipo di risorsa.
-    - Abilitata la clonazione del tipo di risorsa.
+    - Abilitata modifica tipo risorsa.
+    - Abilitata clonazione tipo risorsa.
 - v.6.0.5 (17.07.2026)
     - Abilitata la freccia della visualizzazione struttura per modificare il nome risorsa.
     - Corretto EGA. Aggiunti alcuni programmi EGA.
