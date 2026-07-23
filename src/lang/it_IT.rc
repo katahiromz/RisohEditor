@@ -74,10 +74,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Cambia tipo/nome/lingua\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        POPUP "&Clone"
+        POPUP "&Clona"
         {
-            MENUITEM "&Clone...", ID_CLONE
-            MENUITEM "Copia in &più lingue...", ID_COPYTOMULTILANG
+            MENUITEM "&Clona...", ID_CLONE
+            MENUITEM "Clona in &più lingue...", ID_COPYTOMULTILANG
         }
         MENUITEM SEPARATOR
         MENUITEM "Effettua &test", ID_TEST
