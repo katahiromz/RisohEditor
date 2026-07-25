@@ -31,7 +31,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "File usati recentemente"
         {
-            MENUITEM "(None)", -1, GRAYED
+            MENUITEM "(Nessuno)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "E&sci\tAlt+F4", ID_EXIT
@@ -76,7 +76,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Clona con &nuovo nome...", ID_COPYASNEWNAME
         MENUITEM "Clona con nuova &lingua...", ID_COPYASNEWLANG
-        MENUITEM "Copia in più lingue...", ID_COPYTOMULTILANG
+        MENUITEM "Clona in più lingue...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Effettua &test", ID_TEST
         MENUITEM SEPARATOR
