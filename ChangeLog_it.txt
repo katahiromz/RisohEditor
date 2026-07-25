@@ -3,20 +3,20 @@
 - v.6.0.8 (2026-XX-YY)
     - Migliorata MConstantDlg.
     - Migliorati MAddCtrlDlg, MCtrlPropDlg e MDlgPropDlg.
-    - Risolto il problema relativo alla stringa di risorsa in portoghese mancante.
-    - Riduzione di IDD_EGA.
+    - Risolto problema relativo alla stringa risorsa mancante in portoghese.
+    - Riduzione IDD_EGA.
 - v.6.0.7 (24.07.2026)
-    - Risolto il problema di lentezza dello scorrimento della rotellina di visualizzazione della sorgente.
-    - Corretto il dumping in stile DIALOG.
-    - Migliorato il dump di RT_VERSION.
-    - Corretti i dati RT_VERSION.
-    - Corretti gli stili BUTTON e RICHEDIT.
-    - Migliorata la guida sulle parole chiave.
+    - Risolto problema lentezza scorrimento rotellina visualizzazione sorgente.
+    - Corretto dumping in stile DIALOG.
+    - Migliorato dump di RT_VERSION.
+    - Corretti dati RT_VERSION.
+    - Corretti stili BUTTON e RICHEDIT.
+    - Migliorata guida parole chiave.
 - v.6.0.5 (17.07.2026)
-    - Abilitata la freccia della visualizzazione struttura per modificare il nome risorsa.
+    - Abilitata freccia visualizzazione struttura per modificare il nome risorsa.
     - Corretto EGA. Aggiunti alcuni programmi EGA.
     - Usata DIALOGEX invece di DIALOG.
-    - Migliorato dumping di FONT DIALOGEX.
+    - Migliorato dumping FONT DIALOGEX.
     - Migliorata gestione quando vengono selezionati più controlli in IDD_CTRLPROP.
     - Abilitato in visualizzazione struttura il completamento automatico dell'input sull'elemento nome.
     - Corretto problema eliminazione elementi in visualizzazione struttura.
