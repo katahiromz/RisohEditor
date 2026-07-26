@@ -6,6 +6,7 @@
     - Corrigida uma string de recurso em português que estava faltando.
     - IDD_EGA reduzido.
     - Tornou a visualização de recursos mais segura.
+    - Saída da caixa de diálogo EGA aprimorada.
 - v.6.0.7 (2026-07-24)
     - Corrigida a lentidão da rolagem do mouse na visualização do código-fonte.
     - Corrigido o dump do estilo DIALOG.

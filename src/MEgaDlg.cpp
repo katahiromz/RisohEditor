@@ -6,6 +6,9 @@
 
 #include "MEgaDlg.hpp"
 #include "Res.hpp"
+#include <vector>
+#include <string>
+#include "resource.h"
 
 // EGA入力関数。EGA_set_input_fnに渡される。
 // この関数がfalseを返せば、EGAの実行単位が終了する。
@@ -20,21 +23,28 @@ bool EGA_dialog_input(char *buf, size_t buflen)
 	}
 
 	// 入力と終了を待つ。
-	while (!EgaBridge::IsEnterPressed() || !::IsWindowVisible(s_hwndEga))
+	while (true)
 	{
-		if (EgaBridge::IsStopRequested()) // 停止を要求されたか？
+		if (EgaBridge::IsStopRequested())
+		{
+#ifndef NDEBUG
+			OutputDebugStringA("EGA_dialog_input: stop requested -> return false\n");
+#endif
 			return false;
+		}
 
-		// キューから入力ファイルを取得。
+		if (EgaBridge::IsEnterPressed() && ::IsWindowVisible(s_hwndEga))
+			break;   // 入力可能
+
+		// ファイル入力
 		std::string pendingFile;
 		if (EgaBridge::TryTakeFileInputRequest(pendingFile))
 		{
-			// このスレッドで実行する。
 			EGA_file_input(pendingFile.c_str());
 			continue;
 		}
 
-		Sleep(10); // FIXME: もっと良い待ち方があるはずだ。
+		Sleep(10);
 	}
 
 	// 入力を受け入れる準備をする。
@@ -107,6 +117,10 @@ MEgaDlg::MEgaDlg() : MDialogBase(IDD_EGA)
 	EGA_extension();
 
 	m_bDynamicCreated = true;
+
+	// Initialize history
+	m_history.clear();
+	m_nHistoryPos = 0;
 }
 
 MEgaDlg::~MEgaDlg()
@@ -133,14 +147,73 @@ void MEgaDlg::ExecuteEgaFile(LPCWSTR filename)
 	}
 }
 
+LRESULT CALLBACK
+MEgaDlg::Edt2WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	auto pThis = (MEgaDlg*)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+	switch (uMsg)
+	{
+	case WM_KEYDOWN:
+		if (GetFocus() == hwnd)
+		{
+			if (wParam == VK_UP)
+			{
+				pThis->NavigateHistory(hwnd, true);
+				return 0;
+			}
+			else if (wParam == VK_DOWN)
+			{
+				pThis->NavigateHistory(hwnd, false);
+				return 0;
+			}
+		}
+		break;
+	}
+	return CallWindowProcW(pThis->m_fnOldEditWndProc, hwnd, uMsg, wParam, lParam);
+}
+
+// lst1 用サブクラスウィンドウプロシージャ（Ctrl+C で選択行をコピー）
+LRESULT CALLBACK
+MEgaDlg::Lst1WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	auto pThis = (MEgaDlg*)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+	switch (uMsg)
+	{
+	case WM_KEYDOWN:
+		if (GetFocus() != hwnd || GetKeyState(VK_CONTROL) >= 0)
+			break;
+		if (wParam == 'A') // Ctrl+A
+		{
+			pThis->DoSelectAll(hwnd);
+			return 0;
+		}
+		if (wParam == 'C') // Ctrl+C
+		{
+			pThis->DoCopyList(hwnd);
+			return 0;
+		}
+	}
+	return CallWindowProcW(pThis->m_fnOldLst1WndProc, hwnd, uMsg, wParam, lParam);
+}
+
 BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
 	MTRACEA("%s\n", __FUNCTION__);
 	s_hwndEga = hwnd; // Remember
 
+	// Subclassing edt2
+	HWND hEdt2 = GetDlgItem(hwnd, edt2);
+	m_fnOldEditWndProc = (WNDPROC)SetWindowLongPtrW(hEdt2, GWLP_WNDPROC, (LONG_PTR)Edt2WndProc);
+	SetWindowLongPtrW(hEdt2, GWLP_USERDATA, (LONG_PTR)this);
+
+	// Subclassing lst1 (for Ctrl+C copy)
+	HWND hLst1 = GetDlgItem(hwnd, lst1);
+	m_fnOldLst1WndProc = (WNDPROC)SetWindowLongPtrW(hLst1, GWLP_WNDPROC, (LONG_PTR)Lst1WndProc);
+	SetWindowLongPtrW(hLst1, GWLP_USERDATA, (LONG_PTR)this);
+
 	// Make it a resizable dialog
 	m_resizable.OnParentCreate(hwnd);
-	m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+	m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
 	m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
 	m_resizable.SetLayoutAnchor(edt2, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
 	m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
@@ -149,8 +222,7 @@ BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
 	SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
-	// No limit
-	SendDlgItemMessageW(hwnd, edt1, EM_SETLIMITTEXT, 0, 0);
+	// No limit for listbox (use item count limit instead)
 
 	// Create font
 	LOGFONTW lf;
@@ -159,11 +231,14 @@ BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	lf.lfCharSet = DEFAULT_CHARSET;
 	lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 	m_hFont = CreateFontIndirectW(&lf);
-	SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
+	SendDlgItemMessageW(hwnd, lst1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-	// edt1 starts out empty; track its length ourselves from here on
-	// (see the m_cchEdt1 comment in MEgaDlg.hpp).
-	m_cchEdt1 = GetWindowTextLengthW(GetDlgItem(hwnd, edt1));
+	// lst1 starts out empty
+
+	// 出力リングバッファもダイアログを開くたびにクリアする。
+	m_lines.clear();
+	m_openLine.clear();
+	m_cchLines = 0;
 
 	// Move and resize
 	if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
@@ -194,14 +269,30 @@ BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
 	// Start the EGA thread
 	EgaBridge::StartInteractive();
-	::SetFocus(::GetDlgItem(hwnd, edt2));
 
-	return TRUE;
+	// EGA出力バッファを定期的にpullする。worker threadのprint速度に
+	// UIの描画頻度を依存させないための仕組み(WM_EGA_DO_PRINTの乱発対策)。
+	::SetTimer(hwnd, TIMER_ID_EGA_PRINT, EGA_PRINT_POLL_MS, NULL);
+
+	::SetFocus(::GetDlgItem(hwnd, edt2));
+	return FALSE;
 }
 
 void MEgaDlg::OnOK(HWND hwnd) // Enterキーが押された？
 {
 	MTRACEA("%s\n", __FUNCTION__);
+
+	// Get current text from edt2
+	WCHAR szTextW[512];
+	GetDlgItemTextW(hwnd, edt2, szTextW, ARRAYSIZE(szTextW));
+	std::wstring str(szTextW);
+	mstr_trim(str);
+
+	// Add to history if not empty
+	if (!str.empty())
+	{
+		AddToHistory(str);
+	}
 
 	// リソース項目の選択情報をクリアする。
 	g_RES_select_type = BAD_TYPE;
@@ -213,6 +304,9 @@ void MEgaDlg::OnOK(HWND hwnd) // Enterキーが押された？
 
 	// フォーカスを edt2 に移動。
 	::SetFocus(::GetDlgItem(hwnd, edt2));
+
+	// Reset history position
+	m_nHistoryPos = m_history.size();
 }
 
 void MEgaDlg::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -233,6 +327,22 @@ void MEgaDlg::OnDestroy(HWND hwnd)
 {
 	MTRACEA("%s\n", __FUNCTION__);
 
+	::KillTimer(hwnd, TIMER_ID_EGA_PRINT);
+
+	// edt2 サブクラスを元に戻す
+	HWND hEdt2 = GetDlgItem(hwnd, edt2);
+	if (hEdt2 && m_fnOldEditWndProc)
+	{
+		SetWindowLongPtrW(hEdt2, GWLP_WNDPROC, (LONG_PTR)m_fnOldEditWndProc);
+	}
+
+	// lst1 サブクラスを元に戻す
+	HWND hLst1 = GetDlgItem(hwnd, lst1);
+	if (hLst1 && m_fnOldLst1WndProc)
+	{
+		SetWindowLongPtrW(hLst1, GWLP_WNDPROC, (LONG_PTR)m_fnOldLst1WndProc);
+	}
+
 	// 終了前に特殊なメッセージを投函する。
 	PostMessageW(g_hMainWnd, WM_EGA_FINISH, 0, 0);
 
@@ -250,13 +360,14 @@ HBRUSH MEgaDlg::OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
 	UINT id;
 	switch (type)
 	{
+	case CTLCOLOR_LISTBOX:
 	case CTLCOLOR_EDIT:
 	case CTLCOLOR_STATIC:
 	case CTLCOLOR_BTN:
 		id = GetDlgCtrlID(hwndChild);
 		switch (id)
 		{
-		case edt1:
+		case lst1:
 		case edt2:
 			SetTextColor(hdc, RGB(0, 255, 0));
 			SetBkColor(hdc, RGB(0, 0, 0));
@@ -298,14 +409,17 @@ void MEgaDlg::OnEgaGetInput(HWND hwnd)
 	// edt2から文字列を取得して、edt2をクリア。
 	WCHAR szTextW[512];
 	GetDlgItemTextW(hwnd, edt2, szTextW, ARRAYSIZE(szTextW));
-	mstr_trim(szTextW);
+	std::wstring str(szTextW);
+	mstr_trim(str);
 	SetDlgItemTextW(hwnd, edt2, L"");
 
 	// 入力文字列を投函。
-	EgaBridge::SubmitInputText(szTextW);
+	EgaBridge::SubmitInputText(str.c_str());
+
+	// Reset history position after input
+	m_nHistoryPos = m_history.size();
 }
 
-// WM_EGA_DO_PRINT
 // WM_EGA_DO_PRINT
 void MEgaDlg::OnEgaPrint(HWND hwnd)
 {
@@ -316,44 +430,243 @@ void MEgaDlg::OnEgaPrint(HWND hwnd)
 	if (EgaBridge::IsStopRequested())
 		return;
 
-	static DWORD s_lastHeavyPrint = 0;
-	static int   s_skipCounter = 0;
-	DWORD now = GetTickCount();
-
-	// 出力が巨大になったら強くスキップ
-	if (m_cchEdt1 > 1'000'000)
-	{
-		if (++s_skipCounter < 50)  // 50回に1回だけ処理
-			return;
-		s_skipCounter = 0;
-	}
-	else if (m_cchEdt1 > 500'000 && (now - s_lastHeavyPrint < 200))
-	{
-		return; // 200ms以内に連続printはスキップ
-	}
-
-	s_lastHeavyPrint = now;
-
-	// 極端に巨大ならさらに削る
-	if (m_cchEdt1 > 3'000'000)
-	{
-		SendDlgItemMessageW(hwnd, edt1, EM_SETSEL, 0, 1'500'000);
-		SendDlgItemMessageW(hwnd, edt1, EM_REPLACESEL, FALSE, (LPARAM)L"[... truncated ...]\r\n");
-		m_cchEdt1 = GetWindowTextLengthW(GetDlgItem(hwnd, edt1));
-	}
-
-	SendDlgItemMessageW(hwnd, edt1, EM_SETSEL, m_cchEdt1, m_cchEdt1);
-	SendDlgItemMessageW(hwnd, edt1, EM_REPLACESEL, FALSE, (LPARAM)text.c_str());
-	SendDlgItemMessageW(hwnd, edt1, EM_SCROLLCARET, 0, 0);
-	m_cchEdt1 += (INT)text.size();
-
-	::SetCursor(::LoadCursorW(NULL, IDC_ARROW));
+	// EgaBridgeから取り出した時点で、このtextは必ず画面に反映する
+	// (取り出したのに条件次第で捨てるのが従来のバグだったので、
+	// ここでの分岐によるdropは行わない)。表示量の制御は
+	// AppendEgaOutput内の行ベースのリングバッファに委ねる。
+	AppendEgaOutput(hwnd, text);
 }
 
+// EGA出力を行ベースのリングバッファ(m_lines/m_openLine)に取り込み、
+// lst1 (リストボックス) に反映する。
+//   - 確定した行をLB_ADDSTRINGで追加。
+//   - 上限超過時は古い行をLB_DELETESTRINGで削除。
+//   - リストボックスは行単位管理なので、表示の切れを防ぐ。
+void MEgaDlg::AppendEgaOutput(HWND hwnd, const std::wstring& text)
+{
+	// m_openLine + text から確定行を抽出
+	std::wstring combined = m_openLine + text;
+	m_cchLines -= m_openLine.size();
+	m_openLine.clear();
+
+	size_t pos = 0;
+	std::vector<std::wstring> new_lines;
+	for (;;)
+	{
+		size_t nl = combined.find(L"\r\n", pos);
+		if (nl == std::wstring::npos)
+			break;
+
+		std::wstring line = combined.substr(pos, nl - pos + 2);
+		new_lines.push_back(line);
+		m_lines.push_back(line);
+		m_cchLines += line.size();
+		pos = nl + 2;
+	}
+	m_openLine = combined.substr(pos);
+	m_cchLines += m_openLine.size();
+
+	// 上限チェック & eviction
+	bool bEvicted = false;
+	while ((m_lines.size() > EGA_OUTPUT_MAX_LINES || m_cchLines > EGA_OUTPUT_MAX_CHARS) &&
+	       !m_lines.empty())
+	{
+		m_cchLines -= m_lines.front().size();
+		m_lines.pop_front();
+		bEvicted = true;
+	}
+
+	HWND hLst1 = GetDlgItem(hwnd, lst1);
+	SendMessageW(hLst1, WM_SETREDRAW, FALSE, 0);
+
+	if (bEvicted)
+	{
+		// 全体再構築 (eviction occurred)
+		SendMessageW(hLst1, LB_RESETCONTENT, 0, 0);
+		SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)L"[... truncated ...]");
+		for (const auto& line : m_lines)
+		{
+			std::wstring display = line.substr(0, line.size() - 2); // remove \r\n for clean display
+			SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)display.c_str());
+		}
+		// m_openLine (not yet terminated by \r\n) is intentionally NOT
+		// shown here. It used to be added as a preview item, but the
+		// normal branch below never did the same -- so once this line
+		// was later completed, it would show up a second time as its
+		// own item in new_lines. Lines are now only ever displayed once
+		// they're complete, in both branches, so no duplication is
+		// possible.
+	}
+	else
+	{
+		// 通常: 新しい行だけ追加
+		for (const auto& line : new_lines)
+		{
+			std::wstring display = line.substr(0, line.size() - 2);
+			SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)display.c_str());
+		}
+		// openLineは次回に持ち越し
+	}
+
+	// Scroll to bottom
+	int nCount = (int)SendMessageW(hLst1, LB_GETCOUNT, 0, 0);
+	if (nCount > 0)
+		SendMessageW(hLst1, LB_SETTOPINDEX, nCount - 1, 0);
+
+	SendMessageW(hLst1, WM_SETREDRAW, TRUE, 0);
+	InvalidateRect(hLst1, NULL, FALSE);
+}
+
+// WM_TIMER: 定期的にEGA出力バッファをpullする。
+// WM_EGA_DO_PRINT(worker threadからの明示フラッシュ、実行単位の終わり
+// など)と共存させ、こちらを主経路にする。
+void MEgaDlg::OnTimer(HWND hwnd, UINT id)
+{
+	if (id != TIMER_ID_EGA_PRINT)
+		return;
+	OnEgaPrint(hwnd);
+}
+
+// Add non-empty trimmed string to history (avoid duplicates at end)
+void MEgaDlg::AddToHistory(const std::wstring& str)
+{
+	if (str.empty())
+		return;
+
+	// Remove trailing duplicates if same as last
+	if (!m_history.empty() && m_history.back() == str)
+		return;
+
+	m_history.push_back(str);
+	if (m_history.size() > 100) // limit history size
+		m_history.erase(m_history.begin());
+}
+
+// Navigate history with Up/Down arrows
+void MEgaDlg::NavigateHistory(HWND hEdt2, bool bUp)
+{
+	if (m_history.empty())
+		return;
+
+	if (bUp)
+	{
+		if (m_nHistoryPos > 0)
+			--m_nHistoryPos;
+	}
+	else
+	{
+		if (m_nHistoryPos < m_history.size())
+			++m_nHistoryPos;
+	}
+
+	if (m_nHistoryPos < m_history.size())
+	{
+		// Show history item
+		SetWindowTextW(hEdt2, m_history[m_nHistoryPos].c_str());
+		SendMessageW(hEdt2, EM_SETSEL, 0, -1); // select all
+	}
+	else
+	{
+		// Back to empty/new input
+		SetWindowTextW(hEdt2, L"");
+	}
+}
+
+// WM_GETMINMAXINFO
 void MEgaDlg::OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo)
 {
 	lpMinMaxInfo->ptMinTrackSize.x = 380;
-	lpMinMaxInfo->ptMinTrackSize.y = 210;
+	lpMinMaxInfo->ptMinTrackSize.y = 250;
+}
+
+void MEgaDlg::DoSelectAll(HWND hwndList)
+{
+	SendMessageW(hwndList, LB_SETSEL, TRUE, -1);
+}
+
+void MEgaDlg::DoCopyList(HWND hwndList)
+{
+	INT nSelCount = (INT)SendMessageW(hwndList, LB_GETSELCOUNT, 0, 0);
+	if (nSelCount <= 0)
+		return;
+
+	std::vector<int> selItems(nSelCount);
+	SendMessageW(hwndList, LB_GETSELITEMS, nSelCount, (LPARAM)selItems.data());
+
+	std::wstring text;
+	for (INT i = 0; i < nSelCount; ++i)
+	{
+		INT idx = selItems[i];
+		INT len = (INT)SendMessageW(hwndList, LB_GETTEXTLEN, idx, 0);
+		if (len > 0)
+		{
+			std::wstring line;
+			line.resize(len + 1);
+			SendMessageW(hwndList, LB_GETTEXT, idx, (LPARAM)&line[0]);
+			line.resize(len);
+			text += line;
+			text += L"\r\n";
+		}
+	}
+
+	if (text.empty())
+		return;
+
+	if (OpenClipboard(hwndList))
+	{
+		EmptyClipboard();
+		HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, (text.size() + 1) * sizeof(WCHAR));
+		if (hMem)
+		{
+			LPWSTR pMem = (LPWSTR)GlobalLock(hMem);
+			StringCchCopyW(pMem, text.size() + 1, text.c_str());
+			GlobalUnlock(hMem);
+			SetClipboardData(CF_UNICODETEXT, hMem);
+			SendMessageW(hwndList, LB_SETSEL, FALSE, -1);
+		}
+		CloseClipboard();
+	}
+}
+
+// WM_CONTEXTMENU
+void MEgaDlg::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+{
+	if (hwndContext == GetDlgItem(hwnd, lst1))
+	{
+		HMENU hMenu = LoadMenuW(GetModuleHandleW(NULL), MAKEINTRESOURCEW(IDR_POPUPMENUS));
+		if (!hMenu)
+			return;
+
+		HMENU hSubMenu = GetSubMenu(hMenu, 0);
+
+		if (ListBox_GetSelCount(hwndContext) == 0)
+			EnableMenuItem(hSubMenu, ID_COPY, MF_GRAYED);
+
+		if (xPos == -1 && yPos == -1)
+		{
+			RECT rc;
+			GetWindowRect(hwndContext, &rc);
+			xPos = rc.left;
+			yPos = rc.top;
+		}
+
+		::SetForegroundWindow(hwnd);
+		UINT cmd = (UINT)TrackPopupMenu(hSubMenu,
+			                            TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
+			                            xPos, yPos, 0, hwnd, nullptr);
+		::PostMessageW(hwnd, WM_NULL, 0, 0);
+
+		if (cmd == ID_COPY)
+		{
+			DoCopyList(GetDlgItem(hwnd, lst1));
+			return;
+		}
+		if (cmd == ID_SELECTALL)
+		{
+			DoSelectAll(GetDlgItem(hwnd, lst1));
+			return;
+		}
+	}
 }
 
 INT_PTR CALLBACK
@@ -364,21 +677,25 @@ MEgaDlg::DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 	HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 	HANDLE_MSG(hwnd, WM_CTLCOLOREDIT, OnCtlColor);
+	HANDLE_MSG(hwnd, WM_CTLCOLORLISTBOX, OnCtlColor);
 	HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, OnCtlColor);
 	HANDLE_MSG(hwnd, WM_MOVE, OnMove);
 	HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+	HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
 	HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
 	HANDLE_MSG(hwnd, WM_GETMINMAXINFO, OnGetMinMaxInfo);
+	HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 	case WM_EGA_DO_GETINPUT: // 入力を取得する。
 		OnEgaGetInput(hwnd);
-		return 0;
+		break;
 	case WM_EGA_DO_PRINT: // EGA出力を行う。
 		OnEgaPrint(hwnd);
-		return 0;
+		break;
 	case WM_EGA_DO_RUN_ON_UI: // UIタスクを実行。
 		EgaBridge::ExecuteUITask((void*)lParam);
-		return 0;
+		break;
 	default:
-		return DefaultProcDx();
+		break;
 	}
+	return 0;
 }

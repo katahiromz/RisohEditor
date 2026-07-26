@@ -6,6 +6,7 @@
     - Memperbaiki string sumber daya bahasa Portugis yang hilang.
     - IDD_EGA dikurangi.
     - Membuat pratinjau sumber daya menjadi lebih aman.
+    - Peningkatan output dialog EGA.
 - v.6.0.7 (2026-07-24)
     - Memperbaiki masalah lambatnya respons gulir roda pada tampilan sumber.
     - Memperbaiki pembuangan (dumping) gaya DIALOG.
