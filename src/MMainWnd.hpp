@@ -361,7 +361,6 @@ protected:
 	BOOL PreviewDialog(HWND hwnd, const EntryBase& entry);
 	BOOL PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon);
 	BOOL PreviewStringTable(HWND hwnd, const EntryBase& entry);
-	BOOL PreviewMessageTable(HWND hwnd, const EntryBase& entry);
 	BOOL PreviewRCData(HWND hwnd, const EntryBase& entry);
 	BOOL PreviewTypeLib(HWND hwnd, const EntryBase& entry);
 	BOOL PreviewDlgInit(HWND hwnd, const EntryBase& entry);

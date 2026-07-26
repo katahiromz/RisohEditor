@@ -448,30 +448,6 @@ BOOL MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 	return TRUE;
 }
 
-// preview the message table resource
-BOOL MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
-{
-	// dump the text to m_hCodeEditor
-	MString str = GetLanguageStatement(entry.m_lang);
-
-	// found --> msg_res
-	MessageRes msg_res;
-	MByteStreamEx stream(entry.m_data);
-	if (!msg_res.LoadFromStream(stream))
-		return FALSE;
-
-	str += L"#ifdef MCDX_INVOKED\r\n";
-	str += msg_res.Dump(entry.m_name);
-	str += L"#endif\r\n\r\n";
-
-	::SetWindowTextW(m_hCodeEditor, str.c_str());
-	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-
-	// show code only
-	SetShowMode(SHOW_CODEONLY);
-	return TRUE;
-}
-
 // close the preview
 VOID MMainWnd::HidePreview(STV stv)
 {
@@ -594,10 +570,6 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 		else if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
 		{
 			bEditable = PreviewDlgInit(hwnd, *entry);
-		}
-		else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
-		{
-			bEditable = PreviewMessageTable(hwnd, *entry);
 		}
 		else
 		{
