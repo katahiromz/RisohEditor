@@ -31,6 +31,9 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 		if (wVer != 1 || wWidth == 0 || wHeight == 0)
 			return false;
 
+		if (wWidth > 0x7FFF || wHeight > 0x7FFF || wCount > 0x7FFF)
+			return false;
+
 		for (DWORD i = 0; i < wCount; ++i)
 		{
 			WORD item;
@@ -57,6 +60,9 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 		}
 
 		if (wWidth == 0 || wHeight == 0)
+			return false;
+
+		if (wWidth > 0x7FFF || wHeight > 0x7FFF || dwCount > 0x7FFFFFFF)
 			return false;
 
 		for (DWORD i = 0; i < dwCount; ++i)

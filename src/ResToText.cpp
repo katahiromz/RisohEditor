@@ -1338,6 +1338,8 @@ MString ResToText::DumpEscapedName(const MIdOrString& name)
 HBITMAP
 CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 {
+	if (!hIcon)
+		return NULL;
 	HBITMAP hbm = Create24BppBitmapDx(width, height);
 	if (hbm == NULL)
 	{
@@ -1501,7 +1503,6 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const EntryBase& entry, BITMAP& bm)
 		HICON hIcon;
 		BITMAP bm;
 		hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
-		assert(hIcon);
 		hbmIcon = CreateBitmapFromIconDx(hIcon,
 										 bm.bmWidth, bm.bmHeight, FALSE);
 		DestroyIcon(hIcon);
@@ -1563,7 +1564,6 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 
 	if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
 	{
-		assert(0);
 		return NULL;
 	}
 
@@ -1671,7 +1671,6 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 
 	if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
 	{
-		assert(0);
 		return NULL;
 	}
 

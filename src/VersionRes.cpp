@@ -29,8 +29,12 @@ bool VersionRes::VarsFromStream(Vars& vars, const MByteStreamEx& stream)
 	if (var.head.wValueLength)
 	{
 		DWORD dwSize = var.head.wValueLength;
+		if (dwSize > 0x7FFFFFFF)
+			return false;
 		if (var.head.wType == 1)
 			dwSize *= 2;
+		if (dwSize > 0x7FFFFFFF)
+			return false;
 		var.value.resize(dwSize);
 		if (!stream.ReadData(&var.value[0], dwSize))
 			return false;
@@ -39,7 +43,8 @@ bool VersionRes::VarsFromStream(Vars& vars, const MByteStreamEx& stream)
 
 	while (stream.pos() < pos1)
 	{
-		VarsFromStream(var.vars, stream);
+		if (!VarsFromStream(var.vars, stream))
+			return false;
 	}
 
 	vars.push_back(var);

@@ -118,18 +118,8 @@ public:
 
 		// cmb1 --> (iType, type)
 		auto table = g_db.GetTable(L"RESOURCE");
-		INT iType = ComboBox_GetCurSel(m_cmb1);
-		if (iType != CB_ERR && iType < INT(table.size()))
-		{
-			type = WORD(table[iType].value);
-		}
-		else
-		{
-			if (!CheckTypeComboBox(m_cmb1, type))
-			{
-				return;
-			}
-		}
+		if (!CheckTypeComboBox(m_cmb1, type))
+			return;
 
 		if (type == RT_STRING)
 		{
@@ -142,15 +132,15 @@ public:
 				SetDlgItemTextW(hwnd, cmb2, NULL);
 		}
 
-		// if RT_VERSION, the name is one
 		if (type == RT_VERSION)
 		{
-			SetDlgItemTextW(hwnd, cmb2, L"1");
+			if (::GetWindowTextLengthW(GetDlgItem(hwnd, cmb2)) == 0)
+				SetDlgItemTextW(hwnd, cmb2, L"1");
 		}
-		// if RT_MESSAGETABLE, the name should be one
 		else if (type == RT_MESSAGETABLE)
 		{
-			SetDlgItemTextW(hwnd, cmb2, L"1");
+			if (::GetWindowTextLengthW(GetDlgItem(hwnd, cmb2)) == 0)
+				SetDlgItemTextW(hwnd, cmb2, L"1");
 		}
 
 		// check the name combobox cmb2

@@ -156,6 +156,9 @@ bool DialogItem::LoadFromStreamEx(const MByteStreamEx& stream)
 	if (!stream.ReadWord(extraCount))
 		return false;
 
+	if (extraCount > 0x7FFF)
+		return false;
+
 	if (extraCount)
 	{
 		m_extra.resize(extraCount);

@@ -83,7 +83,6 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 
 	if (HeaderSize < sizeof(bi))
 	{
-		assert(0);
 		return 0;       // failure
 	}
 
@@ -109,7 +108,6 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 	case 24:
 		break;
 	default:
-		assert(0);
 		return 0;   // failure
 	}
 

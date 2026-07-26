@@ -3694,17 +3694,15 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		// clean up m_hBmpView
 		m_hBmpView.DestroyView();
 
+		bEditable = TRUE;
 		if (stv != STV_DONTRESET)
 		{
 			// show the string table
-			PreviewStringTable(m_hwnd, *entry);
+			bEditable = PreviewStringTable(m_hwnd, *entry);
 		}
 
 		// hide the binary EDIT control
 		SetWindowTextW(m_hHexViewer, NULL);
-
-		// it's editable
-		bEditable = TRUE;
 		break;
 
 	default:

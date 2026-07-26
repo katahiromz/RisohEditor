@@ -26,7 +26,6 @@ bool DlgInitRes::LoadFromStream(const MByteStreamEx& stream)
 		if (dwLen > DWORD(LONG_MAX / sizeof(WCHAR)))
 			return false;
 
-		assert(dwLen);
 		if (dwLen)
 		{
 			entry.strText.resize(dwLen - 1);

@@ -5,6 +5,7 @@
     - Migliorati MAddCtrlDlg, MCtrlPropDlg e MDlgPropDlg.
     - Risolto problema relativo alla stringa risorsa mancante in portoghese.
     - Riduzione IDD_EGA.
+    - Resa più sicura l'anteprima delle risorse.
 - v.6.0.7 (24.07.2026)
     - Risolto problema lentezza scorrimento rotellina visualizzazione sorgente.
     - Corretto dumping in stile DIALOG.

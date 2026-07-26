@@ -32,9 +32,7 @@ bool IconFile::LoadFromStream(const MByteStreamEx& stream)
 
 		stream.pos(m_entries[i].dwImageOffset);
 		if (stream.remainder() < m_entries[i].dwBytesInRes)
-		{
 			return false;
-		}
 
 		LPBYTE pb = (LPBYTE)stream.ptr(stream.pos());
 		m_images[i].assign(&pb[0], &pb[m_entries[i].dwBytesInRes]);

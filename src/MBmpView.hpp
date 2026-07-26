@@ -127,7 +127,7 @@ public:
 		UpdateScrollInfo(m_hwnd);
 	}
 
-	void SetImage(const void *ptr, DWORD size)
+	BOOL SetImage(const void *ptr, DWORD size)
 	{
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
@@ -138,10 +138,12 @@ public:
 			m_hBitmap = m_bitmap.GetHBITMAP(cx, cy);
 			UpdateScrollInfo(m_hwnd);
 			SetTimer(m_hwnd, TIMER_ID, 0, NULL);
+			return TRUE;
 		}
+		return FALSE;
 	}
 
-	void SetMedia(const void *ptr, DWORD size, std::wstring type)
+	BOOL SetMedia(const void *ptr, DWORD size, std::wstring type)
 	{
 		DestroyView();
 		ShowWindow(m_hStatic, SW_HIDE);
@@ -149,9 +151,9 @@ public:
 
 		if (type == L"avi") {
 			ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
-			PlayAvi(m_hwnd, ptr, size);
-			return;
+			return PlayAvi(m_hwnd, ptr, size);
 		}
+		return FALSE;
 	}
 
 	void SetPlay()
