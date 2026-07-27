@@ -344,12 +344,6 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 	{
 		DoSetFileModified(TRUE);
 
-		// If this deletion emptied the entire resource tree, the treeview
-		// has no item left to select, so it won't necessarily send a
-		// TVN_SELCHANGED to tell us the previewed EntryBase is gone. Without
-		// this, the bitmap/code/hex preview panes would keep showing the
-		// content of an entry that EGA just deleted. Explicitly clear the
-		// preview in that case.
 		if (g_res.empty())
 		{
 			HidePreview(STV_RESETTEXTANDMODIFIED);
@@ -748,7 +742,12 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 		str_res.map()[str_id] = wide.c_str();
 	}
 
-	g_res.search_and_delete(ET_ANY, RT_STRING, BAD_NAME, lang);
+	EntrySet found;
+	g_res.search(found, ET_ANY, RT_STRING, BAD_NAME, lang);
+	for (auto entry : found)
+	{
+		entry->mark_invalid();
+	}
 
 	std::set<WORD> names;
 	for (auto& pair : str_res.map())
@@ -768,6 +767,12 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 				return make_arg<AstInt>(0); // failed
 		}
 	}
+
+	DoSetFileModified(TRUE);
+
+	g_res.delete_invalid();
+	if (g_res.empty())
+		HidePreview(STV_RESETTEXTANDMODIFIED);
 
 	return make_arg<AstInt>(1); // success
 }
@@ -810,10 +815,20 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 	}
 	else
 	{
-		g_res.search_and_delete(ET_ANY, RT_STRING, name, lang);
+		EntrySet found2;
+		g_res.search(found2, ET_ANY, RT_STRING, name, lang);
+		for (auto entry : found2)
+		{
+			entry->mark_invalid();
+		}
 	}
 
+
 	DoSetFileModified(TRUE);
+
+	g_res.delete_invalid();
+	if (g_res.empty())
+		HidePreview(STV_RESETTEXTANDMODIFIED);
 
 	return make_arg<AstInt>(1); // success
 }
