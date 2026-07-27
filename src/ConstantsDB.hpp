@@ -32,14 +32,13 @@ public:
 		NameType    name;
 		ValueType   value;
 		ValueType   mask;
-		bool        selected;
 
 		EntryType(NameType name_, ValueType value_)
-			: name(name_), value(value_), mask(value_), selected(false)
+			: name(name_), value(value_), mask(value_)
 		{
 		}
 		EntryType(NameType name_, ValueType value_, ValueType mask_)
-			: name(name_), value(value_), mask(mask_), selected(false)
+			: name(name_), value(value_), mask(mask_)
 		{
 		}
 	};
