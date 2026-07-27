@@ -2325,7 +2325,7 @@ BOOL CheckCommand(MString strCommand)
 
 void InitConstantComboBox(HWND hCmb)
 {
-	auto table = g_db.GetWholeTable();
+	auto table = g_db.GetConstantTable();
 
 	// add the resource IDs
 	for (auto& table_entry : table)

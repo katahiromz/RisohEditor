@@ -177,7 +177,7 @@ public:
 		return table1;
 	}
 
-	TableType GetWholeTable() const
+	TableType GetConstantTable() const
 	{
 		TableType table;
 		for (auto& pair : m_map)
@@ -192,13 +192,18 @@ public:
 
 	BOOL GetValueOfName(const NameType& name, ValueType& value) const
 	{
-		TableType table = GetWholeTable();
-		for (const auto& table_entry : table)
+		for (const auto& pair : m_map)
 		{
-			if (table_entry.name == name)
+			if (pair.first.find(L'.') != StringType::npos)
+				continue;
+
+			for (const auto& entry : pair.second)
 			{
-				value = table_entry.value;
-				return TRUE;
+				if (entry.name == name)
+				{
+					value = entry.value;
+					return TRUE;
+				}
 			}
 		}
 		return FALSE;
@@ -507,8 +512,6 @@ public:
 
 			NameType name = pch0;
 			mstr_trim(name);
-			//if (name.empty())
-			//    continue;
 
 			StringType value_str = pch1;
 			mstr_trim(value_str);
