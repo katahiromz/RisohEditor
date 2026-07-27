@@ -60,13 +60,15 @@ bool IDToPredefClass(WORD w, MStringW& name)
 void FixClassName(MStringW& cls)
 {
 #ifndef NO_CONSTANTS_DB
-	ConstantsDB::TableType table = g_db.GetTable(L"CONTROL.CLASSES");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"CONTROL.CLASSES"))
 	{
-		if (lstrcmpiW(table_entry.name.c_str(), cls.c_str()) == 0)
+		for (auto& table_entry : *table)
 		{
-			cls = table_entry.name;
-			break;
+			if (lstrcmpiW(table_entry.name.c_str(), cls.c_str()) == 0)
+			{
+				cls = table_entry.name;
+				break;
+			}
 		}
 	}
 #endif

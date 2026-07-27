@@ -63,32 +63,24 @@ public:
 
 	void InitTables(LPCTSTR pszClass)
 	{
-		ConstantsDB::TableType table;
-
 		m_style_table.clear();
 		if (pszClass && pszClass[0])
 		{
-			table = g_db.GetTable(pszClass);
-			if (table.size())
+			if (auto* table = g_db.GetTable(pszClass))
 			{
-				m_style_table.insert(m_style_table.end(),
-					table.begin(), table.end());
+				m_style_table.insert(m_style_table.end(), table->begin(), table->end());
 			}
 		}
-		table = g_db.GetTable(TEXT("STYLE"));
-		if (table.size())
+		if (auto* table = g_db.GetTable(TEXT("STYLE")))
 		{
-			m_style_table.insert(m_style_table.end(),
-				table.begin(), table.end());
+			m_style_table.insert(m_style_table.end(), table->begin(), table->end());
 		}
 		m_style_selection.resize(m_style_table.size());
 
 		m_exstyle_table.clear();
-		table = g_db.GetTable(TEXT("EXSTYLE"));
-		if (table.size())
+		if (auto* table = g_db.GetTable(TEXT("EXSTYLE")))
 		{
-			m_exstyle_table.insert(m_exstyle_table.end(),
-				table.begin(), table.end());
+			m_exstyle_table.insert(m_exstyle_table.end(), table->begin(), table->end());
 		}
 		m_exstyle_selection.resize(m_exstyle_table.size());
 	}
@@ -123,8 +115,8 @@ public:
 	{
 		std::vector<TBBUTTON> buttons;
 
-		ConstantsDB::TableType table = g_db.GetTable(TEXT("CONTROLS.ICONS"));
-		size_t count = table.size();
+		auto* table = g_db.GetTable(TEXT("CONTROLS.ICONS"));
+		size_t count = table ? table->size() : 0;
 		UINT nCount = UINT(count);
 
 		m_vecControls.clear();
@@ -146,7 +138,7 @@ public:
 			buttons[i].fsState = TBSTATE_ENABLED;
 			buttons[i].fsStyle = TBSTYLE_BUTTON;
 			buttons[i].iString = 0;
-			m_vecControls.push_back(table[i].name);
+			m_vecControls.push_back((*table)[i].name);
 		}
 		m_hTB.AddButtons(nCount, &buttons[0]);
 	}
@@ -433,11 +425,9 @@ public:
 		MString strSuper;
 		if (dwType >= 3)
 		{
-			ConstantsDB::TableType table;
-			table = g_db.GetTable(strClass + TEXT(".SUPERCLASS"));
-			if (table.size())
+			if (auto* table = g_db.GetTable(strClass + TEXT(".SUPERCLASS")))
 			{
-				strSuper = table[0].name;
+				strSuper = (*table)[0].name;
 			}
 		}
 

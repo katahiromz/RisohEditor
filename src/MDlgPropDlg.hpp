@@ -41,34 +41,34 @@ public:
 
 	void InitTables(LPCTSTR pszClass)
 	{
-		ConstantsDB::TableType table;
-
 		m_style_table.clear();
 		if (pszClass && pszClass[0])
 		{
-			table = g_db.GetTable(pszClass);
-			for (auto& item : table)
+			if (auto* table = g_db.GetTable(pszClass))
+			{
+				for (auto& item : *table)
+				{
+					if (item.name.find(L'|') != std::wstring::npos)
+						continue;
+					m_style_table.push_back(item);
+				}
+			}
+		}
+		if (auto* table = g_db.GetTable(TEXT("PARENT.STYLE")))
+		{
+			for (auto& item : *table)
 			{
 				if (item.name.find(L'|') != std::wstring::npos)
 					continue;
 				m_style_table.push_back(item);
 			}
 		}
-		table = g_db.GetTable(TEXT("PARENT.STYLE"));
-		for (auto& item : table)
-		{
-			if (item.name.find(L'|') != std::wstring::npos)
-				continue;
-			m_style_table.push_back(item);
-		}
 		m_style_selection.resize(m_style_table.size());
 
 		m_exstyle_table.clear();
-		table = g_db.GetTable(TEXT("EXSTYLE"));
-		if (table.size())
+		if (auto* table = g_db.GetTable(TEXT("EXSTYLE")))
 		{
-			m_exstyle_table.insert(m_exstyle_table.end(),
-				table.begin(), table.end());
+			m_exstyle_table.insert(m_exstyle_table.end(), table->begin(), table->end());
 		}
 		m_exstyle_selection.resize(m_exstyle_table.size());
 	}
@@ -78,12 +78,14 @@ public:
 		ComboBox_ResetContent(hCmb);
 
 		auto prefix = MapIDTypeToPrefix(IDTYPE_MENU);
-		auto table = g_db.GetTable(L"RESOURCE.ID");
-		for (auto& table_entry : table)
+		if (auto* table = g_db.GetTable(L"RESOURCE.ID"))
 		{
-			if (table_entry.name.find(prefix) == 0)
+			for (auto& table_entry : *table)
 			{
-				ComboBox_AddString(hCmb, table_entry.name.c_str());
+				if (table_entry.name.find(prefix) == 0)
+				{
+					ComboBox_AddString(hCmb, table_entry.name.c_str());
+				}
 			}
 		}
 	}

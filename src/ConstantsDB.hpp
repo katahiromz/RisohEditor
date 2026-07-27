@@ -144,16 +144,16 @@ public:
 
 	ConstantsDB() = default;
 
-	TableType GetTable(CategoryType category) const
+	const TableType* GetTable(const CategoryType& category) const
 	{
-		mstr_upper(category);
+		CategoryType upperCat = category;
+		mstr_upper(upperCat);
 
-		MapType::const_iterator it = m_map.find(category);
-		if (it == m_map.end())
-			return TableType();
+		auto it = m_map.find(upperCat);
+		if (it != m_map.end())
+			return &it->second;
 
-		TableType table = it->second;
-		return table;
+		return nullptr;
 	}
 
 	TableType GetTableByPrefix(CategoryType category, NameType prefix) const
@@ -230,27 +230,34 @@ public:
 		if (name == L"IDC_STATIC")
 			return true;
 
-		TableType table = GetTable(L"CTRLID");
-		for (auto& table_entry : table)
+		auto* table = GetTable(L"CTRLID");
+		if (table)
 		{
-			if (table_entry.name == name)
-				return true;
+			for (auto& table_entry : *table)
+			{
+				if (table_entry.name == name)
+					return true;
+			}
 		}
 		return false;
 	}
 	bool HasResID(const NameType& name) const
 	{
-		TableType table = GetTable(L"RESOURCE.ID");
-		for (auto& table_entry : table)
+		if (auto* table = GetTable(L"RESOURCE.ID"))
 		{
-			if (table_entry.name == name)
-				return true;
+			for (auto& table_entry : *table)
+			{
+				if (table_entry.name == name)
+					return true;
+			}
 		}
-		table = GetTable(L"CTRLID");
-		for (auto& table_entry : table)
+		if (auto* table = GetTable(L"CTRLID"))
 		{
-			if (table_entry.name == name)
-				return true;
+			for (auto& table_entry : *table)
+			{
+				if (table_entry.name == name)
+					return true;
+			}
 		}
 		return false;
 	}
@@ -391,50 +398,58 @@ public:
 
 	NameType GetName(const CategoryType& category, ValueType value) const
 	{
-		const TableType& table = GetTable(category);
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
+		if (auto* table = GetTable(category))
 		{
-			if (it->value == value)
-				return it->name;
+			TableType::const_iterator it, end = table->end();
+			for (it = table->begin(); it != end; ++it)
+			{
+				if (it->value == value)
+					return it->name;
+			}
 		}
 		return NameType();
 	}
 
 	NameType GetLangName(ValueType value) const
 	{
-		const TableType& table = GetTable(L"Languages");
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
+		if (auto* table = GetTable(L"Languages"))
 		{
-			if (it->name.size() != 5 || it->name[2] != L'_')
-				continue;
-			if (it->value == value)
-				return it->name;
+			TableType::const_iterator it, end = table->end();
+			for (it = table->begin(); it != end; ++it)
+			{
+				if (it->name.size() != 5 || it->name[2] != L'_')
+					continue;
+				if (it->value == value)
+					return it->name;
+			}
 		}
 		return mstr_dec_short((SHORT)value);
 	}
 
 	ValueType GetValue(const CategoryType& category, const NameType& name) const
 	{
-		const TableType& table = GetTable(category);
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
+		if (auto* table = GetTable(category))
 		{
-			if (it->name == name)
-				return it->value;
+			TableType::const_iterator it, end = table->end();
+			for (it = table->begin(); it != end; ++it)
+			{
+				if (it->name == name)
+					return it->value;
+			}
 		}
 		return (ValueType)mstr_parse_int(name.c_str());
 	}
 
 	ValueType GetValueI(const CategoryType& category, const NameType& name) const
 	{
-		const TableType& table = GetTable(category);
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
+		if (auto* table = GetTable(category))
 		{
-			if (lstrcmpiW(it->name.c_str(), name.c_str()) == 0)
-				return it->value;
+			TableType::const_iterator it, end = table->end();
+			for (it = table->begin(); it != end; ++it)
+			{
+				if (lstrcmpiW(it->name.c_str(), name.c_str()) == 0)
+					return it->value;
+			}
 		}
 		return (ValueType)mstr_parse_int(name.c_str());
 	}
@@ -442,13 +457,15 @@ public:
 	ValuesType GetValues(const CategoryType& category, const NameType& name) const
 	{
 		ValuesType ret;
-		const TableType& table = GetTable(category);
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
+		if (auto* table = GetTable(category))
 		{
-			if (it->name == name)
+			TableType::const_iterator it, end = table->end();
+			for (it = table->begin(); it != end; ++it)
 			{
-				ret.push_back(it->value);
+				if (it->name == name)
+				{
+					ret.push_back(it->value);
+				}
 			}
 		}
 		return ret;

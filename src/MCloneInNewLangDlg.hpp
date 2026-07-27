@@ -67,17 +67,8 @@ public:
 	{
 		MIdOrString type;
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-		const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
-		INT iType = ComboBox_GetCurSel(hCmb1);
-		if (iType != CB_ERR && iType < INT(table.size()))
-		{
-			type = WORD(table[iType].value);
-		}
-		else
-		{
-			if (!CheckTypeComboBox(hCmb1, type))
-				return;
-		}
+		if (!CheckTypeComboBox(hCmb1, type))
+			return;
 
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
 		LANGID lang;
