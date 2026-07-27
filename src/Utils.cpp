@@ -1745,14 +1745,15 @@ void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
 	// clear all the items of combobox
 	ComboBox_ResetContent(hCmb);
 
-	auto table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
-
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(TEXT("CONTROL.CLASSES")))
 	{
-		INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-		if (table_entry.name == pszClass)
+		for (auto& table_entry : *table)
 		{
-			ComboBox_SetCurSel(hCmb, i);
+			INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+			if (table_entry.name == pszClass)
+			{
+				ComboBox_SetCurSel(hCmb, i);
+			}
 		}
 	}
 }
@@ -1764,19 +1765,20 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 	ComboBox_ResetContent(hCmb);
 
 	// get the control classes
-	auto table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
-
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(TEXT("CONTROL.CLASSES")))
 	{
-		if (table_entry.value > 2)
-			continue;   // not a window class
-
-		// add the window class
-		INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-		if (table_entry.name == pszWndClass)
+		for (auto& table_entry : *table)
 		{
-			// matched. select
-			ComboBox_SetCurSel(hCmb, i);
+			if (table_entry.value > 2)
+				continue;   // not a window class
+
+			// add the window class
+			INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+			if (table_entry.name == pszWndClass)
+			{
+				// matched. select
+				ComboBox_SetCurSel(hCmb, i);
+			}
 		}
 	}
 }
@@ -1785,10 +1787,12 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 void InitCtrlIDComboBox(HWND hCmb)
 {
 	// add the control IDs
-	auto table = g_db.GetTable(TEXT("CTRLID"));
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
 	{
-		ComboBox_AddString(hCmb, table_entry.name.c_str());
+		for (auto& table_entry : *table)
+		{
+			ComboBox_AddString(hCmb, table_entry.name.c_str());
+		}
 	}
 
 	// get the prefix of Control.ID
@@ -1796,7 +1800,7 @@ void InitCtrlIDComboBox(HWND hCmb)
 	if (prefix.size())
 	{
 		// get the resource IDs by the prefix
-		table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
 			// add the resource IDs
@@ -1809,7 +1813,7 @@ void InitCtrlIDComboBox(HWND hCmb)
 	if (prefix.size())
 	{
 		// get the resource IDs by the prefix
-		table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
 			// add the resource IDs
@@ -1822,7 +1826,7 @@ void InitCtrlIDComboBox(HWND hCmb)
 	if (prefix.size())
 	{
 		// get the resource IDs by the prefix
-		table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
 			// add the resource IDs
@@ -2028,26 +2032,30 @@ void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type)
 {
 	InitComboBoxPlaceholder(hCmb1, IDS_INTEGERORIDENTIFIER);
 
-	auto table = g_db.GetTable(L"RESOURCE");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"RESOURCE"))
 	{
-		WCHAR sz[MAX_PATH];
-		StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-						 table_entry.name.c_str(), table_entry.value);
-		INT k = ComboBox_AddString(hCmb1, sz);
-		if (type == WORD(table_entry.value))
+		for (auto& table_entry : *table)
 		{
-			ComboBox_SetCurSel(hCmb1, k);
+			WCHAR sz[MAX_PATH];
+			StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+				table_entry.name.c_str(), table_entry.value);
+			INT k = ComboBox_AddString(hCmb1, sz);
+			if (type == WORD(table_entry.value))
+			{
+				ComboBox_SetCurSel(hCmb1, k);
+			}
 		}
 	}
 
-	table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"RESOURCE.STRING.TYPE"))
 	{
-		INT k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
-		if (type == table_entry.name.c_str())
+		for (auto& table_entry : *table)
 		{
-			ComboBox_SetCurSel(hCmb1, k);
+			INT k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
+			if (type == table_entry.name.c_str())
+			{
+				ComboBox_SetCurSel(hCmb1, k);
+			}
 		}
 	}
 }
@@ -2505,22 +2513,24 @@ void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
 		}
 	}
 
-	auto table = g_db.GetTable(L"LANGUAGES");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"LANGUAGES"))
 	{
-		if (bUILanguage && !IsValidUILang(LANGID(table_entry.value)))
-			continue;
+		for (auto& table_entry : *table)
+		{
+			if (bUILanguage && !IsValidUILang(LANGID(table_entry.value)))
+				continue;
 
-		// build the text
-		WCHAR sz[MAX_PATH];
-		StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table_entry.name.c_str(), table_entry.value);
+			// build the text
+			WCHAR sz[MAX_PATH];
+			StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table_entry.name.c_str(), table_entry.value);
 
-		// search the text
-		if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
-			continue;   // found
+			// search the text
+			if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
+				continue;   // found
 
-		// add the text as a new item to combobox
-		ComboBox_AddString(hCmb3, sz);
+			// add the text as a new item to combobox
+			ComboBox_AddString(hCmb3, sz);
+		}
 	}
 
 	if (langid == BAD_LANG)
@@ -2590,44 +2600,46 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 		++iItem;	// next item index
 	}
 
-	auto table = g_db.GetTable(L"LANGUAGES");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"LANGUAGES"))
 	{
-		// build two texts of an entry
-		StringCchPrintfW(sz1, _countof(sz1), L"%s", table_entry.name.c_str());
-		StringCchPrintfW(sz2, _countof(sz2), L"%lu", table_entry.value);
-
-		if (pszText)
+		for (auto& table_entry : *table)
 		{
-			// filtering by pszText
-			MString str = sz1;
-			if (str.find(pszText) == MString::npos)
+			// build two texts of an entry
+			StringCchPrintfW(sz1, _countof(sz1), L"%s", table_entry.name.c_str());
+			StringCchPrintfW(sz2, _countof(sz2), L"%lu", table_entry.value);
+
+			if (pszText)
 			{
-				str = sz2;
+				// filtering by pszText
+				MString str = sz1;
 				if (str.find(pszText) == MString::npos)
-					continue;
+				{
+					str = sz2;
+					if (str.find(pszText) == MString::npos)
+						continue;
+				}
 			}
+
+			// if it exists, don't add it
+			LV_FINDINFO find = { LVFI_STRING, sz1 };
+			INT iFound = ListView_FindItem(hLst1, -1, &find);
+			if (iFound != -1)
+				continue;
+
+			// add it
+			ZeroMemory(&item, sizeof(item));
+			item.iItem = iItem;
+			item.mask = LVIF_TEXT;
+			item.iSubItem = 0;
+			item.pszText = sz1;
+			ListView_InsertItem(hLst1, &item);
+
+			item.iSubItem = 1;
+			item.pszText = sz2;
+			ListView_SetItem(hLst1, &item);
+
+			++iItem;	// next item index
 		}
-
-		// if it exists, don't add it
-		LV_FINDINFO find = { LVFI_STRING, sz1 };
-		INT iFound = ListView_FindItem(hLst1, -1, &find);
-		if (iFound != -1)
-			continue;
-
-		// add it
-		ZeroMemory(&item, sizeof(item));
-		item.iItem = iItem;
-		item.mask = LVIF_TEXT;
-		item.iSubItem = 0;
-		item.pszText = sz1;
-		ListView_InsertItem(hLst1, &item);
-
-		item.iSubItem = 1;
-		item.pszText = sz2;
-		ListView_SetItem(hLst1, &item);
-
-		++iItem;	// next item index
 	}
 }
 
@@ -3164,11 +3176,13 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
 	ComboBox_ResetContent(hCmb1);
 
 	// add items to combobox
-	auto table = g_db.GetTable(L"VIRTUALKEYS");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"VIRTUALKEYS"))
 	{
-		// add an item to combobox
-		ComboBox_AddString(hCmb1, table_entry.name.c_str());
+		for (auto& table_entry : *table)
+		{
+			// add an item to combobox
+			ComboBox_AddString(hCmb1, table_entry.name.c_str());
+		}
 	}
 }
 

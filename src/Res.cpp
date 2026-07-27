@@ -42,12 +42,14 @@ Res_IsEntityType(const MIdOrString& type)
 		name = type.str();
 	}
 
-	auto table = g_db.GetTable(L"NON.ENTITY.RESOURCE.TYPE");
-	for (auto& table_entry : table)
+	if (auto* table = g_db.GetTable(L"NON.ENTITY.RESOURCE.TYPE"))
 	{
-		if (table_entry.name == name)
+		for (auto& table_entry : *table)
 		{
-			return FALSE;
+			if (table_entry.name == name)
+			{
+				return FALSE;
+			}
 		}
 	}
 
