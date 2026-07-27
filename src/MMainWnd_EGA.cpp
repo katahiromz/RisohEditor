@@ -337,7 +337,10 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	bool ret = g_res.search_and_delete(ET_ANY, type, name, lang);
+	EntrySet found;
+	bool ret = g_res.search(found, ET_ANY, type, name, lang);
+	for (auto entry : found)
+		entry->mark_invalid();
 	g_res.delete_invalid();
 
 	if (ret)
@@ -345,9 +348,7 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 		DoSetFileModified(TRUE);
 
 		if (g_res.empty())
-		{
 			HidePreview(STV_RESETTEXTANDMODIFIED);
-		}
 	}
 
 	return make_arg<AstInt>(ret);
