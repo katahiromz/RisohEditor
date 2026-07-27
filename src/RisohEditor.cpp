@@ -12462,6 +12462,9 @@ RisohEditor_Main(
 	g_settings.ui_lang = GetUILang();
 	SetThreadUILanguage(LANGID(g_settings.ui_lang));
 
+	// initialize ID Type mappings
+    InitIDTypeMaps();
+
 	// register MOleSite window class
 	MOleSite::RegisterDx();
 
@@ -12532,6 +12535,9 @@ RisohEditor_Main(
 	FreeLibrary(hinstUXTheme);
 	FreeWCLib();
 
+	// release ID Type mappings
+    UnloadIDTypeMaps();
+
 	// check object counts
 	assert(MacroParser::BaseAst::alive_count() == 0);
 
@@ -12564,11 +12570,7 @@ wWinMain(HINSTANCE   hInstance,
 
 	HRESULT hrOleInit = OleInitialize(NULL);
 
-    InitIDTypeMaps();
-
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
-
-    UnloadIDTypeMaps();
 
 	if (g_pNames)
 		delete g_pNames;
