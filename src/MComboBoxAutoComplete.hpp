@@ -101,7 +101,7 @@ public:
 		{
 			// Case-insensitive search for matching item
 			MString strInputUpper = strInput;
-			CharUpperW(&strInputUpper[0]);
+			mstr_upper(strInputUpper);
 
 			iItem = FindString(-1, strInput.c_str());
 			if (iItem == CB_ERR)
@@ -112,7 +112,7 @@ public:
 			for (INT i = iItem + 1; i < nCount; ++i)
 			{
 				MString strText = GetLBText(i);
-				CharUpperW(&strText[0]);
+				mstr_upper(strText);
 				if (strText.find(strInputUpper) == 0)
 				{
 					return;

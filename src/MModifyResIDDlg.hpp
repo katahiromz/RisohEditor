@@ -65,7 +65,7 @@ public:
 			ErrorBoxDx(IDS_ENTERTEXT);
 			return;
 		}
-		CharUpperW(&str1[0]);
+		mstr_upper(str1);
 		m_str1 = std::move(str1);
 
 		MString str3 = GetDlgItemText(hwnd, edt3);

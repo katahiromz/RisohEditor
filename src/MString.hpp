@@ -252,6 +252,44 @@ typename T_STR_CONTAINER::value_type
 mstr_join(const T_STR_CONTAINER& container,
 		  const typename T_STR_CONTAINER::value_type& sep);
 
+inline void mstr_upper(char* str)
+{
+	_strupr(str);
+}
+inline void mstr_upper(wchar_t* str)
+{
+	_wcsupr(str);
+}
+inline void mstr_upper(std::string& str)
+{
+	if (str.size())
+		_strupr(&str[0]);
+}
+inline void mstr_upper(std::wstring& str)
+{
+	if (str.size())
+		_wcsupr(&str[0]);
+}
+
+inline void mstr_lower(char* str)
+{
+	_strlwr(str);
+}
+inline void mstr_lower(wchar_t* str)
+{
+	_wcslwr(str);
+}
+inline void mstr_lower(std::string& str)
+{
+	if (str.size())
+		_strlwr(&str[0]);
+}
+inline void mstr_lower(std::wstring& str)
+{
+	if (str.size())
+		_wcslwr(&str[0]);
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // binary
 

@@ -15,7 +15,7 @@
 bool PredefClassToID(MStringW name, WORD& w)
 {
 	w = 0;
-	CharUpperW(&name[0]);
+	mstr_upper(name);
 	if (name == L"BUTTON")
 		w = 0x0080;
 	else if (name == L"EDIT")

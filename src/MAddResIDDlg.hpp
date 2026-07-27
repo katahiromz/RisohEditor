@@ -74,7 +74,7 @@ public:
 			ErrorBoxDx(IDS_ENTERTEXT);
 			return;
 		}
-		CharUpperW(&str1[0]);
+		mstr_upper(str1);
 		m_str1 = str1;
 
 		// Detect whether the selected type is Help ID

@@ -70,8 +70,7 @@ inline MIdOrString get_type_from_text(MString str)
 	}
 	else
 	{
-		if (str.size())
-			::CharUpperW(&str[0]);
+		mstr_upper(str);
 		type.m_str = std::move(str);
 	}
 	return type;

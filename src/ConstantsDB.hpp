@@ -146,7 +146,7 @@ public:
 
 	TableType GetTable(CategoryType category) const
 	{
-		::CharUpperW(&category[0]);
+		mstr_upper(category);
 
 		MapType::const_iterator it = m_map.find(category);
 		if (it == m_map.end())
@@ -158,7 +158,7 @@ public:
 
 	TableType GetTableByPrefix(CategoryType category, NameType prefix) const
 	{
-		::CharUpperW(&category[0]);
+		mstr_upper(category);
 
 		TableType table1;
 		MapType::const_iterator found = m_map.find(category);
@@ -478,7 +478,7 @@ public:
 				if (line[line.size() - 1] == L']')
 				{
 					category = line.substr(1, line.size() - 2);
-					::CharUpperW(&category[0]);
+					mstr_upper(category);
 					m_map[category];
 				}
 				continue;
@@ -673,7 +673,7 @@ public:
 
 	StringType DumpValue(CategoryType category, ValueType value, bool is_hex = false) const
 	{
-		::CharUpperW(&category[0]);
+		mstr_upper(category);
 
 		MapType::const_iterator found = m_map.find(category);
 		if (found != m_map.end())
@@ -699,7 +699,7 @@ public:
 	ParseBitField(CategoryType category, const StringType& str,
 				  ValueType default_value = 0) const
 	{
-		::CharUpperW(&category[0]);
+		mstr_upper(category);
 
 		std::vector<StringType> values;
 		mstr_split(values, str, L" \t\r\n|+");
@@ -740,7 +740,7 @@ protected:
 	{
 		StringType ret;
 
-		::CharUpperW(&category[0]);
+		mstr_upper(category);
 
 		MapType::const_iterator found = m_map.find(category);
 		if (found == m_map.end())

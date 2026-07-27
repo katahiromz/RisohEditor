@@ -303,7 +303,7 @@ public:
 		if (menu.is_str() && g_db.HasResID(menu.c_str()))
 			menu = (WORD)g_db.GetResIDValue(menu.c_str());
 		if (menu.is_str())
-			CharUpperW(&menu.m_str[0]);
+			mstr_upper(menu.m_str);
 
 		MString strStyle = GetDlgItemText(edt6);
 		ReplaceFullWithHalf(strStyle);
