@@ -102,9 +102,6 @@ MStringW EntryBase::get_name_label() const
 
 BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
 {
-	if (!this)
-		return FALSE;
-
 	const MIdOrString& type = m_type;
 	switch (m_et)
 	{
