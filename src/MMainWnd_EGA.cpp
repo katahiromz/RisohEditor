@@ -343,6 +343,17 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 	if (ret)
 	{
 		DoSetFileModified(TRUE);
+
+		// If this deletion emptied the entire resource tree, the treeview
+		// has no item left to select, so it won't necessarily send a
+		// TVN_SELCHANGED to tell us the previewed EntryBase is gone. Without
+		// this, the bitmap/code/hex preview panes would keep showing the
+		// content of an entry that EGA just deleted. Explicitly clear the
+		// preview in that case.
+		if (g_res.empty())
+		{
+			HidePreview(STV_RESETTEXTANDMODIFIED);
+		}
 	}
 
 	return make_arg<AstInt>(ret);
