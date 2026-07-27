@@ -804,13 +804,4 @@ protected:
 	}
 };
 
-#ifdef USE_GLOBALS
-	extern ConstantsDB g_db;
-#else
-	inline ConstantsDB& DB_GetMaster(void)
-	{
-		static ConstantsDB s_db;
-		return s_db;
-	}
-	#define g_db DB_GetMaster()
-#endif
+extern ConstantsDB g_db;

@@ -94,11 +94,9 @@ static const CODEPAGE_INFO g_codepage_info[] = {
 
 HWND g_hMainWnd = NULL;     // main window handle
 
-#ifdef USE_GLOBALS
-	ConstantsDB g_db;           // constants database
-	RisohSettings g_settings;   // settings
-	EntrySet g_res;             // the set of resource items
-#endif
+ConstantsDB g_db;           // constants database
+RisohSettings g_settings;   // settings
+EntrySet g_res;             // the set of resource items
 
 // contents modified?
 static BOOL s_bModified = FALSE;

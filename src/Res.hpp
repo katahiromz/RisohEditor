@@ -820,14 +820,4 @@ public:
 };
 
 // g_res
-#ifdef USE_GLOBALS
-	extern EntrySet g_res;
-#else
-	inline EntrySet&
-	Res_GetMaster(void)
-	{
-		static EntrySet eset;
-		return eset;
-	}
-	#define g_res   Res_GetMaster()
-#endif
+extern EntrySet g_res;
