@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM "导出(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "保存 resource.h(&S)...", ID_UPDATERESHBANG
+        MENUITEM "保存 resource.h(&H)...", ID_UPDATERESHBANG
         MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
         MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "添加字符串表(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "添加消息表(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "添加&HTML...", ID_ADDHTML
-            MENUITEM "添加加速器(&A)...", ID_ADDACCEL
+            MENUITEM "添加加速器(&L)...", ID_ADDACCEL
             MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
             MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
             MENUITEM "添加工具栏(&T)...", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "替换图标(&I)...", ID_REPLACEICON
             MENUITEM "替换光标(&C)...", ID_REPLACECURSOR
             MENUITEM "替换位图文件(&B)...", ID_REPLACEBITMAP
-            MENUITEM "替换二进制资源项目(&R)...", ID_REPLACEBIN
+            MENUITEM "替换二进制资源项目(&Y)...", ID_REPLACEBIN
         }
         POPUP "导出(&E)"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
             MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
             MENUITEM "导出 RC 文件(&A)...", ID_EXTRACTRC
-            MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
+            MENUITEM "导出二进制资源文件(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "更改名称/语言(&H)\tF2", ID_EDITLABEL
@@ -122,9 +122,9 @@ IDR_MAINMENU MENU
         MENUITEM "使用BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "资源项的编码(&E)...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "对话框字体替代(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "更新到最新信息(&F)", ID_REFRESHALL
+        MENUITEM "更新到最新信息(&U)", ID_REFRESHALL
     }
     POPUP "自动化(&A)"
     {
@@ -158,7 +158,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "剪切(&T)\tCtrl+X", ID_CUT
         MENUITEM "复制(&C)\tCtrl+C", ID_COPY
-        MENUITEM "黏贴(&P)\tCtrl+V", ID_PASTE
+        MENUITEM "粘贴(&P)\tCtrl+V", ID_PASTE
         MENUITEM "删除(&D)\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "索引位置(&I)"
@@ -166,7 +166,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "置顶(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "减1(&D)", ID_CTRLINDEXMINUS
-            MENUITEM "增1(&I)", ID_CTRLINDEXPLUS
+            MENUITEM "增1(&N)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "置底(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -182,9 +182,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "适应网格(&G)", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "刷新(&R)", ID_REFRESHDIALOG
+        MENUITEM "刷新(&W)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "控件属性(&P)...", ID_CTRLPROP
+        MENUITEM "控件属性(&R)...", ID_CTRLPROP
         MENUITEM "对话框属性(&O)...", ID_DLGPROP
     }
     POPUP "Popup #2"
@@ -200,11 +200,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "复制名称(&N)", ID_COPYRESIDNAME
         MENUITEM "复制值(&V)", ID_COPYRESIDVALUE
-        MENUITEM "复制定义(&D)\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "复制定义(&F)\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "删除ID(&D) \tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "十进制数字(&D)", ID_BASE10
+        MENUITEM "十进制数字(&E)", ID_BASE10
         MENUITEM "十六进制数字(&H)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "重新加载(&R)", ID_LOADRESH
@@ -1364,7 +1364,7 @@ STRINGTABLE
     IDS_EXTRACTCUR, "导出光标"
     IDS_CANTEXTRACTCUR, "导出光标失败。"
     IDS_RESFILTER, "二进制资源 (*.res)|*.res|全部文件 (*.*)|*.*|"
-    IDS_NEUTRAL, "十进制"
+    IDS_NEUTRAL, "中性"
     IDS_IMPORTRES, "导入"
     IDS_CANNOTIMPORT, "导入资源失败。"
     IDS_COMPILE, "编译 (F8)"
