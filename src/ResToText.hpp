@@ -98,5 +98,6 @@ public:
 	MString DumpName(const MIdOrString& type, const MIdOrString& name);
 	MString DumpEscapedName(const MIdOrString& name);
 
-	MString GetEntryFileName(const EntryBase& entry);
+	MStringW GetEntryFileName(const EntryBase& entry);
+	BOOL GetEntryFileNameEx(const EntryBase& entry, MStringW& str);
 };

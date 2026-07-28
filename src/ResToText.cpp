@@ -31,11 +31,9 @@ static inline MStringW generate_end(void)
 	return g_settings.bUseBeginEnd ? L"END" : L"}";
 }
 
-MString
-ResToText::GetEntryFileName(const EntryBase& entry)
+BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 {
-	MString ret;
-
+	BOOL ret = FALSE;
 	if (entry.m_type.is_int())
 	{
 		WORD wType = entry.m_type.m_id;
@@ -45,9 +43,10 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
 		{
-			ret += L"Bitmap_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".bmp";
+			str += L"Bitmap_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bmp";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ICON)
 		{
@@ -55,15 +54,24 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MENU)
 		{
-			// No output file
+			str += L"Menu_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = FALSE; // No output file
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_TOOLBAR)
 		{
-			// No output file
+			str += L"Toolbar_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = FALSE; // No output file
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
 		{
-			// No output file
+			str += L"Dialog_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = FALSE; // No output file
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_STRING)
 		{
@@ -84,59 +92,69 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 				if (memcmp(&entry.m_data[0], "OTTO", 4) == 0)
 				{
 					// OpenType
-					ret += L"Font_";
-					ret += DumpEscapedName(entry.m_name);
-					ret += L".otf";
+					str += L"Font_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".otf";
+					ret = TRUE;
 				}
 				else if (memcmp(&entry.m_data[0], "\x00\x01\x00\x00", 4) == 0)
 				{
 					// TrueType
-					ret += L"Font_";
-					ret += DumpEscapedName(entry.m_name);
-					ret += L".ttf";
+					str += L"Font_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".ttf";
+					ret = TRUE;
 				}
 				else if (memcmp(&entry.m_data[0], "ttcf", 4) == 0)
 				{
 					// TrueType Collection
-					ret += L"Font_";
-					ret += DumpEscapedName(entry.m_name);
-					ret += L".ttc";
+					str += L"Font_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".ttc";
+					ret = TRUE;
 				}
 				else
 				{
 					// otherwise
-					ret += L"Font_";
-					ret += DumpEscapedName(entry.m_name);
-					ret += L".fon";
+					str += L"Font_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".fon";
+					ret = TRUE;
 				}
 			}
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
 		{
-			// No output file
+			str += L"Accel_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = FALSE; // No output file
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
 		{
 			if (entry.is_delphi_dfm())
 			{
-				ret += L"Delphi_";
-				ret += DumpEscapedName(entry.m_name);
-				ret += L".dfm";
+				str += L"Delphi_";
+				str += DumpEscapedName(entry.m_name);
+				str += L".dfm";
+				ret = TRUE;
 			}
 			else
 			{
-				ret += L"RCData_";
-				ret += DumpEscapedName(entry.m_name);
-				ret += L".bin";
+				str += L"RCData_";
+				str += DumpEscapedName(entry.m_name);
+				str += L".bin";
+				ret = TRUE;
 			}
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
 		{
 			if (g_settings.bUseMSMSGTABLE)
 			{
-				ret += L"MessageTable_";
-				ret += DumpEscapedName(entry.m_name);
-				ret += L".bin";
+				str += L"MsgTable_";
+				str += DumpEscapedName(entry.m_name);
+				str += L".bin";
+				ret = TRUE;
 			}
 			else
 			{
@@ -145,19 +163,24 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
 		{
-			ret += L"Cursor_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".cur";
+			str += L"Cursor_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".cur";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
 		{
-			ret += L"Icon_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".ico";
+			str += L"Icon_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".ico";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_VERSION)
 		{
-			// No output file
+			str += L"Version_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = FALSE; // No output file
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_DLGINCLUDE)
 		{
@@ -173,121 +196,140 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
 		{
-			ret += L"AniCursor_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".ani";
+			str += L"AniCursor_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".ani";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
 		{
-			ret += L"AniIcon_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".ani";
+			str += L"AniIcon_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".ani";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_HTML)
 		{
-			ret += L"Html_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".html";
+			str += L"Html_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".html";
+			ret = TRUE;
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
 		{
-			ret += L"Manifest_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".manifest";
+			str += L"Manifest_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".manifest";
+			ret = TRUE;
 		}
 		else
 		{
-			ret += entry.m_type.str();
-			ret += L"_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".bin";
+			str += entry.m_type.str();
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = TRUE;
 		}
 	}
 	else
 	{
 		if (entry.m_type == L"AVI")
 		{
-			ret += L"Avi_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".avi";
+			str += L"Avi_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".avi";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"PNG")
 		{
-			ret += L"Png_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".png";
+			str += L"Png_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".png";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"GIF")
 		{
-			ret += L"Gif_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".gif";
+			str += L"Gif_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".gif";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"JPEG")
 		{
-			ret += L"Jpeg_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".jpg";
+			str += L"Jpeg_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".jpg";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"JPG")
 		{
-			ret += L"Jpg_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".jpg";
+			str += L"Jpg_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".jpg";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"TIFF")
 		{
-			ret += L"Tiff_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".tif";
+			str += L"Tiff_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".tif";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"TIF")
 		{
-			ret += L"Tif_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".tif";
+			str += L"Tif_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".tif";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"EMF")
 		{
-			ret += L"Emf_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".emf";
+			str += L"Emf_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".emf";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"ENHMETAFILE")
 		{
-			ret += L"EnhMetaFile_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".emf";
+			str += L"EnhMetaFile_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".emf";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"ENHMETAPICT")
 		{
-			ret += L"EnhMetaPict_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".emf";
+			str += L"EnhMetaPict_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".emf";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"WMF")
 		{
-			ret += L"Wmf_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".wmf";
+			str += L"Wmf_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".wmf";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"WAVE")
 		{
-			ret += L"Wave_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".wav";
+			str += L"Wave_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".wav";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"MP3")
 		{
-			ret += L"MP3_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".mp3";
+			str += L"MP3_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".mp3";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"TYPELIB")
 		{
-			ret += L"TYPELIB_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".tlb";
+			str += L"TYPELIB_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".tlb";
+			ret = TRUE;
 		}
 		else if (entry.m_type == L"TEXTINCLUDE")
 		{
@@ -301,59 +343,74 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 				{
 					if (memcmp(&entry[0], "BM", 2) == 0)
 					{
-						ret += L"Image_";
-						ret += DumpEscapedName(entry.m_name);
-						ret += L".bmp";
+						str += L"Image_";
+						str += DumpEscapedName(entry.m_name);
+						str += L".bmp";
+						ret = TRUE;
 					}
 					else if (memcmp(&entry[0], "GIF", 3) == 0)
 					{
-						ret += L"Image_";
-						ret += DumpEscapedName(entry.m_name);
-						ret += L".gif";
+						str += L"Image_";
+						str += DumpEscapedName(entry.m_name);
+						str += L".gif";
+						ret = TRUE;
 					}
 					else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
 					{
-						ret += L"Image_";
-						ret += DumpEscapedName(entry.m_name);
-						ret += L".png";
+						str += L"Image_";
+						str += DumpEscapedName(entry.m_name);
+						str += L".png";
+						ret = TRUE;
 					}
 					else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
 					{
-						ret += L"Image_";
-						ret += DumpEscapedName(entry.m_name);
-						ret += L".jpg";
+						str += L"Image_";
+						str += DumpEscapedName(entry.m_name);
+						str += L".jpg";
+						ret = TRUE;
 					}
 					else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
 							 memcmp(&entry[0], "\x49\x49", 2) == 0)
 					{
-						ret += L"Image_";
-						ret += DumpEscapedName(entry.m_name);
-						ret += L".tif";
+						str += L"Image_";
+						str += DumpEscapedName(entry.m_name);
+						str += L".tif";
+						ret = TRUE;
 					}
 				}
 			}
 		}
 		else
 		{
-			ret += entry.m_type.str();
-			ret += L"_";
-			ret += DumpEscapedName(entry.m_name);
-			ret += L".bin";
+			str += entry.m_type.str();
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".bin";
+			ret = TRUE;
 		}
 	}
 
-	if (ret.size())
+	if (str.size())
 	{
 		if (entry.m_lang != 0 && entry.m_lang != BAD_LANG)
 		{
 			WCHAR sz[MAX_PATH];
 			StringCchPrintfW(sz, _countof(sz), L"%u_", entry.m_lang);
-			ret = sz + ret;
+			str = sz + str;
 		}
-		ret = m_strFilePrefix + ret;
+		str = m_strFilePrefix + str;
 	}
 
 	return ret;
+}
+
+MStringW
+ResToText::GetEntryFileName(const EntryBase& entry)
+{
+	MStringW strFileName;
+	if (!GetEntryFileNameEx(entry, strFileName))
+		return L"";
+	return strFileName;
 }
 
 MString

@@ -693,8 +693,16 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 	if (e->m_type == L"TYPELIB")
 		return OnExtractTLB(hwnd);
 
-	// initialize OPENFILENAME structure
+	ResToText res2text;
+	MString filename;
+	res2text.GetEntryFileNameEx(*e, filename);
+
 	WCHAR szFile[MAX_PATH] = L"";
+	if (filename.size())
+		StringCchCopyW(szFile, _countof(szFile), filename.c_str());
+	PathRemoveExtensionW(szFile);
+
+	// initialize OPENFILENAME structure
 	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = _countof(szFile);
