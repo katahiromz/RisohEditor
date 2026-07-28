@@ -120,6 +120,7 @@ Source: "EGA-samples\DeleteKorean.ega"; DestDir: "{app}\EGA"; Flags: ignoreversi
 Source: "EGA-samples\DeleteNonEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\DeleteRussian.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\DeleteSimplifiedChinese.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\ExtractBitmaps.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\ExtractCursors.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\ExtractIcons.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\FindTarget.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
