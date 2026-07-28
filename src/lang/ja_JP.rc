@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM "エクスポート(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH
-        MENUITEM "resource.h を保存する(&S)...", ID_UPDATERESHBANG
+        MENUITEM "resource.h を保存する(&H)...", ID_UPDATERESHBANG
         MENUITEM "resource.h の変更を助言する(&V)...", ID_ADVICERESH
         MENUITEM "resource.h のアンロード(&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "文字列テーブルを追加(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "メッセージ テーブルを追加(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "&HTMLを追加...", ID_ADDHTML
-            MENUITEM "アクセラレータを追加(&A)...", ID_ADDACCEL
+            MENUITEM "アクセラレータを追加(&L)...", ID_ADDACCEL
             MENUITEM "バージョン情報を追加(&V)...", ID_ADDVERINFO
             MENUITEM "マニフェストを追加(&F)...", ID_ADDMANIFEST
             MENUITEM "ツールバーを追加(&T)...", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "アイコンを置き換え(&I)...", ID_REPLACEICON
             MENUITEM "カーソルを置き換え(&C)...", ID_REPLACECURSOR
             MENUITEM "ビットマップを置き換え(&B)...", ID_REPLACEBITMAP
-            MENUITEM "バイナリ リソース項目を置き換え(&R)...", ID_REPLACEBIN
+            MENUITEM "バイナリ リソース項目を置き換え(&Y)...", ID_REPLACEBIN
         }
         POPUP "抽出(&E)"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "カーソルを抽出(&C)...", ID_EXTRACTCURSOR
             MENUITEM "ビットマップを抽出(&B)...", ID_EXTRACTBITMAP
             MENUITEM "RC ファイルとして抽出(&A)...", ID_EXTRACTRC
-            MENUITEM "バイナリ リソース項目を抽出(&R)...", ID_EXTRACTBIN
+            MENUITEM "バイナリ リソース項目を抽出(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "名前/言語を変更(&H)\tF2", ID_EDITLABEL
@@ -124,7 +124,7 @@ IDR_MAINMENU MENU
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "ダイアログ フォント代替(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "最新の情報に更新(&F)", ID_REFRESHALL
+        MENUITEM "最新の情報に更新(&U)", ID_REFRESHALL
     }
     POPUP "自動化(&A)"
     {
@@ -136,7 +136,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&README.txtを開く", ID_OPENREADME
         MENUITEM "README_ja.txtを開く", ID_OPENREADMEJP
-        MENUITEM "&HYOJUNKA.mdを開く", ID_OPENHYOJUNKA
+        MENUITEM "HYOJUNKA.mdを開く(&Y)", ID_OPENHYOJUNKA
         MENUITEM "ChangeLog.txtを開く", ID_OPENHISTORY
         MENUITEM "ChangeLog_ja.txtを開く", ID_OPENHISTORYJPN
         MENUITEM "&LICENSE.txtを開く", ID_OPENLICENSE
@@ -170,7 +170,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "先頭へ(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "1減らす(&D)", ID_CTRLINDEXMINUS
-            MENUITEM "1増やす(&I)", ID_CTRLINDEXPLUS
+            MENUITEM "1増やす(&N)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -186,9 +186,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "グリッドに合わせる(&G)", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "再描画(&R)", ID_REFRESHDIALOG
+        MENUITEM "再描画(&W)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
+        MENUITEM "コントロールのプロパティ(&R)...", ID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP
     }
     POPUP "ポップアップ #2"
@@ -204,11 +204,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "名前をコピー(&N)", ID_COPYRESIDNAME
         MENUITEM "値をコピー(&V)", ID_COPYRESIDVALUE
-        MENUITEM "定義をコピー(&D)\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "定義をコピー(&F)\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "削除(&D)\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "10進数(&D)", ID_BASE10
+        MENUITEM "10進数(&E)", ID_BASE10
         MENUITEM "16進数(&H)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "再読み込み(&R)", ID_LOADRESH
