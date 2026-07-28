@@ -10,7 +10,7 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_DEFAULT
 
 IDR_MAINMENU MENU
 {
-    POPUP "&Arquivo"
+    POPUP "Arquivo"
     {
         MENUITEM "&Novo\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
@@ -22,7 +22,7 @@ IDR_MAINMENU MENU
         MENUITEM "Im&portar...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportar...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "&Recarregar resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "Recarregar resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Salvar reso&urce.h...", ID_UPDATERESHBANG
         MENUITEM "C&onselho de Modificação em resource.h...", ID_ADVICERESH
         MENUITEM "&Descarregar resource.h", ID_UNLOADRESH
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "Adicionar Tabela de &String...", ID_ADDSTRINGTABLE
             MENUITEM "Adicionar Tabela de M&ensagem...", ID_ADDMESSAGETABLE
             MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar &Aceleradores...", ID_ADDACCEL
+            MENUITEM "Adicionar Aceleradores...", ID_ADDACCEL
             MENUITEM "Adicionar Informação da &Versão...", ID_ADDVERINFO
             MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
             MENUITEM "Adicionar Barra de Ferramen&tas...", ID_ADDTOOLBAR
@@ -105,26 +105,26 @@ IDR_MAINMENU MENU
     }
     POPUP "E&xibir"
     {
-        MENUITEM "Barra de &Status", ID_STATUSBAR
-        MENUITEM "Barra de &Ferramentas", ID_SHOWHIDETOOLBAR
+        MENUITEM "Barra de Statu&s", ID_STATUSBAR
+        MENUITEM "Barra de Ferra&mentas", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binário", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "E&xpandir Todos\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "Expandir Todos\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Rec&olher Todos\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "IDs de &recurso", ID_IDLIST
-        MENUITEM "Lista de &Idiomas...", ID_SHOWLANGS
+        MENUITEM "IDs de recu&rso", ID_IDLIST
+        MENUITEM "Lista de idiomas...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Sempre Declarar &CONTROLE", ID_ALWAYSCONTROL
-        MENUITEM "Não Usar &ID de Macros", ID_HIDEIDMACROS
+        MENUITEM "Sempre declarar CONTRO&LE", ID_ALWAYSCONTROL
+        MENUITEM "Não usar macros de ID", ID_HIDEIDMACROS
         MENUITEM "Usar IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Quebra de &Palavra", ID_WORD_WRAP
-        MENUITEM "Usar BE&GIN/END", ID_USEBEGINEND
+        MENUITEM "Usar BEGIN/EN&D", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "&Codificação do Item de Recurso...", ID_ENCODING
-        MENUITEM "Substituir &Fontes de Diálogo...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Codifica&ção do item de recurso...", ID_ENCODING
+        MENUITEM "Substituir fontes de diálogo...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "&Atualizar", ID_REFRESHALL
+        MENUITEM "Atuali&zar", ID_REFRESHALL
     }
     POPUP "A&utomação"
     {
@@ -171,7 +171,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "&Decrementar Índice", ID_CTRLINDEXMINUS
             MENUITEM "&Incrementar Índice", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "Ir para I&nferior", ID_CTRLINDEXBOTTOM
+            MENUITEM "Ir para in&ferior", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "Mostrar/Ocultar Índices\tCtrl+D", ID_SHOWHIDEINDEX
         }
@@ -185,7 +185,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Ajustar à &Grade", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "A&tualizar", ID_REFRESHDIALOG
+        MENUITEM "Atua&lizar", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "&Propriedades do Controle...", ID_CTRLPROP
         MENUITEM "Prop&riedades do Diálogo...", ID_DLGPROP
@@ -1457,7 +1457,7 @@ STRINGTABLE
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH, "Caminho inválido."
-    IDS_DATATOOLONG, "Data is too long."
+    IDS_DATATOOLONG, "Os dados são demasiado longos."
     IDS_ALL, "(Todos)"
     IDS_UNKNOWNFORMAT, "(Formato de Dados Desconhecido)\r\n"
     IDS_LANGUAGE, "Idiomas"
@@ -1579,27 +1579,27 @@ STRINGTABLE
     IDS_MP3SOUND, "(Som MP3)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
     IDS_INVALIDCODEPAGE, "Página de código inválida."
-    IDS_UNKNOWN_ID, "Unknown.ID"
-    IDS_CURSOR_ID, "Cursor.ID"
-    IDS_BITMAP_ID, "Bitmap.ID"
-    IDS_MENU_ID, "Menu.ID"
-    IDS_DIALOG_ID, "Dialog.ID"
-    IDS_STRING_ID, "String.ID"
-    IDS_ACCEL_ID, "Accel.ID"
-    IDS_ICON_ID, "Icon.ID"
-    IDS_ANICURSOR_ID, "AniCursor.ID"
-    IDS_ANIICON_ID, "AniIcon.ID"
-    IDS_HTML_ID, "Html.ID"
-    IDS_HELP_ID, "Help.ID"
-    IDS_COMMAND_ID, "Command.ID"
-    IDS_CONTROL_ID, "Control.ID"
-    IDS_RESOURCE_ID, "Resource.ID"
-    IDS_MESSAGE_ID, "Message.ID"
-    IDS_WINDOW_ID, "Window.ID"
-    IDS_NEWCOMMAND_ID, "New.Command.ID"
-    IDS_PROMPT_ID, "Prompt.ID"
-    IDS_RCDATA_ID, "RCData.ID"
-    IDS_MSGTABLE_ID, "MsgTable.ID"
+    IDS_UNKNOWN_ID, "ID Desconhecido"
+    IDS_CURSOR_ID, "ID do Cursor"
+    IDS_BITMAP_ID, "ID do Bitmap"
+    IDS_MENU_ID, "ID do Menu"
+    IDS_DIALOG_ID, "ID do Diálogo"
+    IDS_STRING_ID, "ID da String"
+    IDS_ACCEL_ID, "ID do Acelerador"
+    IDS_ICON_ID, "ID do Ícone"
+    IDS_ANICURSOR_ID, "ID do Cursor Animado"
+    IDS_ANIICON_ID, "ID do Ícone Animado"
+    IDS_HTML_ID, "ID HTML"
+    IDS_HELP_ID, "ID de Ajuda"
+    IDS_COMMAND_ID, "ID de Comando"
+    IDS_CONTROL_ID, "ID de Controle"
+    IDS_RESOURCE_ID, "ID de Recurso"
+    IDS_MESSAGE_ID, "ID de Mensagem"
+    IDS_WINDOW_ID, "ID de Janela"
+    IDS_NEWCOMMAND_ID, "ID de Novo Comando"
+    IDS_PROMPT_ID, "ID de Prompt"
+    IDS_RCDATA_ID, "ID RCData"
+    IDS_MSGTABLE_ID, "ID da Tabela de Mensagens"
     IDS_ADDCTRL, "Adicionar Controle"
     IDS_SEARCHURL, "https://duckduckgo.com/?q=%s&t=h_&ia=web"
 }
