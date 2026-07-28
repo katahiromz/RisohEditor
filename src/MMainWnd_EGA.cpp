@@ -1088,18 +1088,18 @@ void EGA_extension(void)
 {
 	EGA_add_fn("RES_clone_by_lang", 4, 4, EGA_RES_clone_by_lang, "RES_clone_by_lang(type, name, src_lang, dest_lang)");
 	EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
-	EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
-	EGA_add_fn("RES_get_binary", 0, 3, EGA_RES_get_binary, "RES_get_binary([type[, name[, lang]]])");
-	EGA_add_fn("RES_set_binary", 4, 4, EGA_RES_set_binary, "RES_set_binary(type, name, lang, bin)");
 	EGA_add_fn("RES_const", 1, 1, EGA_RES_const, "RES_const(name)");
+	EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
+	EGA_add_fn("RES_extract", 3, 4, EGA_RES_extract, "RES_extract(type, name, lang[, filename])");
+	EGA_add_fn("RES_get_binary", 0, 3, EGA_RES_get_binary, "RES_get_binary([type[, name[, lang]]])");
+	EGA_add_fn("RES_get_text", 3, 3, EGA_RES_get_text, "RES_get_text(type, name, lang)");
 	EGA_add_fn("RES_load", 1, 2, EGA_RES_load, "RES_load(filename[, options])");
 	EGA_add_fn("RES_save", 1, 2, EGA_RES_save, "RES_save(filename[, options])");
 	EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
 	EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
-	EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
+	EGA_add_fn("RES_set_binary", 4, 4, EGA_RES_set_binary, "RES_set_binary(type, name, lang, bin)");
+	EGA_add_fn("RES_set_text", 4, 4, EGA_RES_set_text, "RES_set_text(type, name, lang, text)");
 	EGA_add_fn("RES_str_get", 1, 2, EGA_RES_str_get, "RES_str_get(lang[, str_id])");
 	EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, ary)");
-	EGA_add_fn("RES_get_text", 3, 3, EGA_RES_get_text, "RES_get_text(type, name, lang)");
-	EGA_add_fn("RES_set_text", 4, 4, EGA_RES_set_text, "RES_set_text(type, name, lang, text)");
-	EGA_add_fn("RES_extract", 3, 4, EGA_RES_extract, "RES_extract(type, name, lang[, filename])");
+	EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
 }
