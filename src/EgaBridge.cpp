@@ -338,8 +338,17 @@ namespace EgaBridge
 		if (!::PostMessageW(hwnd, WM_EGA_DO_RUN_ON_UI, 0, 0))
 			return false;
 
+		// NOTE: this must NOT use a short arbitrary timeout. A caller
+		// (e.g. RES_load/RES_save) treats a `false` return here as
+		// "control break", which EGA_interactive/EGA_eval_text_ex
+		// propagates as a request to abort the *entire* interactive
+		// session, not just this one statement. A slow-but-legitimate
+		// UI operation (loading a large file, a dialog the user is
+		// looking at, a busy message pump, ...) must not be confused
+		// with an actual stop request. So we wait indefinitely and
+		// only give up when the real stop event (s_hStopEvent) fires.
 		HANDLE waitHandles[2] = { s_hUIDone, s_hStopEvent };
-		DWORD wait = WaitForMultipleObjects(2, waitHandles, FALSE, 500);  // 500ms
+		DWORD wait = WaitForMultipleObjects(2, waitHandles, FALSE, INFINITE);
 
 		if (wait == WAIT_OBJECT_0 + 1)  // StopEvent
 			return false;

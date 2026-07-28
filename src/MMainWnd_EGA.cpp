@@ -5,6 +5,7 @@
 // License: GPL-3 or later
 
 #include "MMainWnd.hpp"
+#include <memory>
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
@@ -234,15 +235,22 @@ EGA::arg_t MMainWnd::RES_load(const EGA::args_t& args)
 		options = str1.c_str();
 	}
 
-	bool ret = false;
-	bool completed = EgaBridge::RunOnUIThread([this, &ret, filename, options](void*)
+	// NOTE: ret must NOT be captured by reference. RunOnUIThread can time
+	// out (500ms) and return false while the task is still sitting in
+	// the UI queue; when the UI thread eventually runs it, it must not
+	// write into a stack frame that RES_load has already unwound past
+	// (via the EGA_control_break thrown below). Keeping ret on the heap
+	// via shared_ptr, captured by value, keeps the write target valid
+	// for as long as the queued task might outlive this function.
+	auto ret = std::make_shared<bool>(false);
+	bool completed = EgaBridge::RunOnUIThread([this, ret, filename, options](void*)
 	{
-		ret = DoResLoad(filename, options);
+		*ret = DoResLoad(filename, options);
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_save(const EGA::args_t& args)
@@ -271,15 +279,18 @@ EGA::arg_t MMainWnd::RES_save(const EGA::args_t& args)
 		options = str1.c_str();
 	}
 
-	bool ret = false;
-	bool completed = EgaBridge::RunOnUIThread([this, &ret, filename, options](void*)
+	// See the comment in RES_load: ret must live on the heap (not the
+	// stack) because the queued UI task may still run after this
+	// function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<bool>(false);
+	bool completed = EgaBridge::RunOnUIThread([this, ret, filename, options](void*)
 	{
-		ret = DoResSave(filename, options);
+		*ret = DoResSave(filename, options);
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_unload_resh(const EGA::args_t& args)

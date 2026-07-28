@@ -9,6 +9,7 @@
     - Peningkatan output dialog EGA.
     - Memperbaiki fungsi "load" dan "save" EGA.
     - Menambahkan fungsi EGA "RES_extract".
+    - Memperbaiki fungsi EGA "RES_load" dan "RES_save".
 - v.6.0.7 (2026-07-24)
     - Memperbaiki masalah lambatnya respons gulir roda pada tampilan sumber.
     - Memperbaiki pembuangan (dumping) gaya DIALOG.

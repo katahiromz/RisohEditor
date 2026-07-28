@@ -9,6 +9,7 @@
     - Migliorato l'output della finestra di dialogo EGA.
     - Corrette le funzioni EGA di "load" e "save".
     - Aggiunta la funzione EGA "RES_extract".
+    - Memperbaiki fungsi EGA "RES_load" dan "RES_save".
 - v.6.0.7 (24.07.2026)
     - Risolto problema lentezza scorrimento rotellina visualizzazione sorgente.
     - Corretto dumping in stile DIALOG.

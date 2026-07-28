@@ -9,6 +9,7 @@
     - Saída da caixa de diálogo EGA aprimorada.
     - Corrigidas as funções de "load" e "save" do EGA.
     - Adicionada a função EGA "RES_extract".
+    - Corrigidas as funções EGA "RES_load" e "RES_save".
 - v.6.0.7 (2026-07-24)
     - Corrigida a lentidão da rolagem do mouse na visualização do código-fonte.
     - Corrigido o dump do estilo DIALOG.
