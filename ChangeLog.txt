@@ -7,6 +7,7 @@
     - Reduced the size of IDD_EGA.
     - Made resource preview safer.
     - Improved EGA dialog output.
+    - Fixed EGA load function.
 - v.6.0.7 (2026-07-24)
     - Fixed source view wheel scroll slowness.
     - Fixed DIALOG style dumping.

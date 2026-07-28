@@ -473,6 +473,11 @@ namespace EgaBridge
 		return !outText.empty();
 	}
 
+	bool FileSecurity0(std::string& filename, const char* tag)
+	{
+		return EGA_file_security_0(filename, tag);
+	}
+
 	bool FileSecurity(std::string& filename)
 	{
 		return EGA_file_security(filename);
