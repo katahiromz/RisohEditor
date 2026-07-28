@@ -106,11 +106,11 @@ hungarian.LicenseEnglish=Engedély
 hungarian.AssociateRcFiles=*.rc fájlok társítása
 hungarian.AssociateResFiles=*.res fájlok társítása
 
-italian.ReadmeEnglish=Leggimi (Inglese)
-italian.ReadmeJapanese=Leggimi (Giapponese)
+italian.ReadmeEnglish=File Leggimi (Inglese)
+italian.ReadmeJapanese=File Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
-italian.AssociateRcFiles=Associa file *.rc
-italian.AssociateResFiles=Associa file *.res
+italian.AssociateRcFiles=Associa file *.rc a RisohEditor
+italian.AssociateResFiles=Associa file *.res a RisohEditor
 italian.LaunchProgram=Esegui %1
 
 korean.ReadmeEnglish=ReadMe (영어)
