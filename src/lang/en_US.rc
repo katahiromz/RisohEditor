@@ -23,8 +23,8 @@ IDR_MAINMENU MENU
         MENUITEM "&Export...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Save re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Ad&vice resource.h Modification...", ID_ADVICERESH
+        MENUITEM "Save resour&ce.h...", ID_UPDATERESHBANG
+        MENUITEM "Ad&vise resource.h Modification...", ID_ADVICERESH
         MENUITEM "&Unload resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Load &Window Class Library...", ID_LOADWCLIB
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "Add &String Table...", ID_ADDSTRINGTABLE
             MENUITEM "Add M&essage Table...", ID_ADDMESSAGETABLE
             MENUITEM "Add &HTML...", ID_ADDHTML
-            MENUITEM "Add &Accelerators...", ID_ADDACCEL
+            MENUITEM "Add Acce&lerators...", ID_ADDACCEL
             MENUITEM "Add &Version Info...", ID_ADDVERINFO
             MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
             MENUITEM "Add &Toolbar", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "Replace &Icon...", ID_REPLACEICON
             MENUITEM "Replace &Cursor...", ID_REPLACECURSOR
             MENUITEM "Replace &Bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Replace Binary &Resource Item...", ID_REPLACEBIN
+            MENUITEM "Replace Binar&y Resource Item...", ID_REPLACEBIN
         }
         POPUP "&Extract"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extract &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Extract &Bitmap...", ID_EXTRACTBITMAP
             MENUITEM "Extract &as RC file...", ID_EXTRACTRC
-            MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
+            MENUITEM "Extract Binar&y Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "C&hange Name/Language\tF2", ID_EDITLABEL
@@ -78,7 +78,7 @@ IDR_MAINMENU MENU
         MENUITEM "Clone In New &Language...", ID_COPYASNEWLANG
         MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", ID_TEST
+        MENUITEM "&Test", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Delete\tDel", ID_DELETERES
         MENUITEM SEPARATOR
@@ -122,7 +122,7 @@ IDR_MAINMENU MENU
         MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Encoding of resource item...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Dialog fo&nt substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Re&fresh", ID_REFRESHALL
     }
@@ -167,11 +167,11 @@ IDR_POPUPMENUS MENU
             MENUITEM "Go &Top", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "&Decrement Index", ID_CTRLINDEXMINUS
-            MENUITEM "&Increment Index", ID_CTRLINDEXPLUS
+            MENUITEM "I&ncrement Index", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "Go &Bottom", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Show/Hide Indeces\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Show/Hide Indices\tCtrl+D", ID_SHOWHIDEINDEX
         }
         POPUP "&Alignment"
         {
@@ -183,9 +183,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "Fit To &Grid", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Refresh", ID_REFRESHDIALOG
+        MENUITEM "R&efresh", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "&Properties for Control...", ID_CTRLPROP
+        MENUITEM "P&roperties for Control...", ID_CTRLPROP
         MENUITEM "Pr&operties for Dialog...", ID_DLGPROP
     }
     POPUP "Popup #2"
@@ -201,11 +201,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Copy &Name", ID_COPYRESIDNAME
         MENUITEM "Copy &Value", ID_COPYRESIDVALUE
-        MENUITEM "Copy &Definition\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "Copy De&finition\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Delete ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "&Decimal Numbers", ID_BASE10
+        MENUITEM "De&cimal Numbers", ID_BASE10
         MENUITEM "&Hexadecimal Numbers", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Reload", ID_LOADRESH
@@ -1387,7 +1387,7 @@ STRINGTABLE
     IDS_HELPID, "Help ID"
     IDS_INDENT, "» "
     IDS_DATAISEMPTY, "Data is empty."
-    IDS_TEST, "Do Test"
+    IDS_TEST, "Test"
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "Data has been changed. Compile now?"
     IDS_RADWINDOW, "Edit Dialog"
@@ -1481,7 +1481,7 @@ STRINGTABLE
     IDS_RUSSIAN, "Russian"
     IDS_WANNAGENRESH, "Do you wanna generate file 'resource.h'?"
     IDS_EXEFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|All Files (*.*)|*.*|"
-    IDS_SAVEASCOMPRESS, "Save With Compressed"
+    IDS_SAVEASCOMPRESS, "Save With Compression"
     IDS_TOOL_NEW, "New"
     IDS_TOOL_OPEN, "Open..."
     IDS_TOOL_SAVE, "Save As..."
