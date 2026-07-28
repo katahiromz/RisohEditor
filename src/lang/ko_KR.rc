@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM "내보내기(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "resource.h 다시 불러오기(&R)...\tCtrl+R", ID_LOADRESH
-        MENUITEM "resource.h 저장(&S)...", ID_UPDATERESHBANG
+        MENUITEM "resource.h 저장(&H)...", ID_UPDATERESHBANG
         MENUITEM "resource.h 수정 알림(&V)...", ID_ADVICERESH
         MENUITEM "resource.h 불러오기 해제(&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "문자열 테이블 추가(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "메시지 테이블 추가(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "HTML 추가(&H)...", ID_ADDHTML
-            MENUITEM "액세스 키 추가(&A)...", ID_ADDACCEL
+            MENUITEM "액세스 키 추가(&L)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
             MENUITEM "도구모음 추가(&T)...", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "아이콘 바꾸기(&I)...", ID_REPLACEICON
             MENUITEM "커서 바꾸기(&C)...", ID_REPLACECURSOR
             MENUITEM "비트맵 바꾸기(&B)...", ID_REPLACEBITMAP
-            MENUITEM "바이너리 리소스 항목 바꾸기(&R)...", ID_REPLACEBIN
+            MENUITEM "바이너리 리소스 항목 바꾸기(&Y)...", ID_REPLACEBIN
         }
         POPUP "추출(&E)"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "커서 추출(&C)...", ID_EXTRACTCURSOR
             MENUITEM "비트맵 추출(&B)...", ID_EXTRACTBITMAP
             MENUITEM "RC 파일로 추출(&A)...", ID_EXTRACTRC
-            MENUITEM "바이너리 리소스 항목 추출(&R)...", ID_EXTRACTBIN
+            MENUITEM "바이너리 리소스 항목 추출(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "이름/언어 변경(&H)\tF2", ID_EDITLABEL
@@ -124,7 +124,7 @@ IDR_MAINMENU MENU
         MENUITEM "리소스 항목의 인코딩(&E)...", ID_ENCODING
         MENUITEM "대화상자 글꼴 대체(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "새로 고침(&F)", ID_REFRESHALL
+        MENUITEM "새로 고침(&U)", ID_REFRESHALL
     }
     POPUP "자동화(&A)"
     {
@@ -167,9 +167,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "위로 이동(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "색인 감소(&D)", ID_CTRLINDEXMINUS
-            MENUITEM "색인 증가(&I)", ID_CTRLINDEXPLUS
+            MENUITEM "색인 증가(&N)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "아래로 이동((&B)", ID_CTRLINDEXBOTTOM
+            MENUITEM "아래로 이동(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "색인 표시/숨기기\tCtrl+D", ID_SHOWHIDEINDEX
         }
@@ -183,9 +183,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "안내선에 맞추기(&G)", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "새로 고침(&R)", ID_REFRESHDIALOG
+        MENUITEM "새로 고침(&W)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "제어 속성(&P)...", ID_CTRLPROP
+        MENUITEM "제어 속성(&R)...", ID_CTRLPROP
         MENUITEM "대화상자 속성(&O)...", ID_DLGPROP
     }
     POPUP "Popup #2"
@@ -201,11 +201,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "이름 복사(&N)", ID_COPYRESIDNAME
         MENUITEM "값 복사(&V)", ID_COPYRESIDVALUE
-        MENUITEM "정의 복사(&D)\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "정의 복사(&F)\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "ID 삭제(&D)\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "10진수(&D)", ID_BASE10
+        MENUITEM "10진수(&E)", ID_BASE10
         MENUITEM "16진수(&H)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "디시 불러오기(&R)", ID_LOADRESH
@@ -1486,7 +1486,7 @@ STRINGTABLE
     IDS_TOOL_OPEN, "열기..."
     IDS_TOOL_SAVE, "다른 이름으로 저장..."
     IDS_TOOL_EXPAND, "모두 확장"
-    IDS_TOOL_COLLAPSE, "모드 축소"
+    IDS_TOOL_COLLAPSE, "모두 축소"
     IDS_TOOL_PLUS, "항목 추가..."
     IDS_TOOL_MINUS, "항목 삭제"
     IDS_TOOL_CHANGE, "이름/언어 변경"
