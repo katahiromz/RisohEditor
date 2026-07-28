@@ -6,8 +6,8 @@ foreach(item, res, (
     =(type, [](item, 0)),
     =(name, [](item, 1)),
     =(lang, [](item, 2)),
-    @ Extract RT_BITMAP (2)
-    if(==(type, 2), println(RES_extract(type, name, lang)))
+    @ Extract RT_BITMAP (2), PNG, JPEG, GIF, and TIFF
+    if(||(==(type, 2), ==(type, "PNG"), ==(type, "JPEG"), ==(type, "GIF"), ==(type, "TIFF")), println(RES_extract(type, name, lang)))
 ));
 
 println("Done.");
