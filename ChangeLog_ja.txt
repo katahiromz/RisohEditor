@@ -7,8 +7,8 @@
     - IDD_EGAを小さくした。
     - リソースプレビューの安全性を向上。
     - EGAダイアログの出力を改善。
-    - EGA load と save 関数を修正。
-    - EGA「RES_extract」機能を追加。
+    - EGA「load」と「save」関数を修正。
+    - EGA「RES_extract」関数を追加。
     - EGAの「RES_load」および「RES_save」関数を修正。
     - 翻訳とアクセスキーを改善。
 - v.6.0.7 (2026-07-24)
