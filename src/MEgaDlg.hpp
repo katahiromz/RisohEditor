@@ -73,6 +73,7 @@ protected:
 	std::deque<std::wstring> m_lines;  // 確定済みの行(各行末尾に"\r\n"を含む)。古い順
 	std::wstring m_openLine;           // まだ改行されていない末尾の行
 	size_t m_cchLines = 0;             // m_lines + m_openLine の合計文字数
+	INT m_nLst1MaxExtent = 0;          // lst1の水平スクロール範囲(LB_SETHORIZONTALEXTENT用の最大行幅px)
 
 	// History for edt2 input (command history with Up/Down arrows)
 	std::vector<std::wstring> m_history;
@@ -96,6 +97,7 @@ protected:
 	void AppendEgaOutput(HWND hwnd, const std::wstring& text);
 	void DoCopyList(HWND hwndList);
 	void DoSelectAll(HWND hwndList);
+	void UpdateLst1HorizontalExtent(HWND hwndLst1, const std::wstring& text, bool bReset = false);
 
 	static LRESULT CALLBACK Edt2WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK Lst1WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

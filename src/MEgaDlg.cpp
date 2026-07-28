@@ -239,6 +239,8 @@ BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	m_lines.clear();
 	m_openLine.clear();
 	m_cchLines = 0;
+	m_nLst1MaxExtent = 0;
+	SendDlgItemMessageW(hwnd, lst1, LB_SETHORIZONTALEXTENT, 0, 0);
 
 	// Move and resize
 	if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
@@ -484,10 +486,12 @@ void MEgaDlg::AppendEgaOutput(HWND hwnd, const std::wstring& text)
 		// 全体再構築 (eviction occurred)
 		SendMessageW(hLst1, LB_RESETCONTENT, 0, 0);
 		SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)L"[... truncated ...]");
+		UpdateLst1HorizontalExtent(hLst1, L"[... truncated ...]", /*bReset=*/true);
 		for (const auto& line : m_lines)
 		{
 			std::wstring display = line.substr(0, line.size() - 2); // remove \r\n for clean display
 			SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)display.c_str());
+			UpdateLst1HorizontalExtent(hLst1, display);
 		}
 		// m_openLine (not yet terminated by \r\n) is intentionally NOT
 		// shown here. It used to be added as a preview item, but the
@@ -504,6 +508,7 @@ void MEgaDlg::AppendEgaOutput(HWND hwnd, const std::wstring& text)
 		{
 			std::wstring display = line.substr(0, line.size() - 2);
 			SendMessageW(hLst1, LB_ADDSTRING, 0, (LPARAM)display.c_str());
+			UpdateLst1HorizontalExtent(hLst1, display);
 		}
 		// openLineは次回に持ち越し
 	}
@@ -515,6 +520,32 @@ void MEgaDlg::AppendEgaOutput(HWND hwnd, const std::wstring& text)
 
 	SendMessageW(hLst1, WM_SETREDRAW, TRUE, 0);
 	InvalidateRect(hLst1, NULL, FALSE);
+}
+
+// lst1にWS_HSCROLLを付けたので、追加した行の中で一番長い行の
+// ピクセル幅をLB_SETHORIZONTALEXTENTに反映し、水平スクロールで
+// 全文を読めるようにする。bReset=trueのときは最大幅をtextの幅で
+// 上書きする(全体再構築の先頭で使用)。
+void MEgaDlg::UpdateLst1HorizontalExtent(HWND hwndLst1, const std::wstring& text, bool bReset)
+{
+	HDC hdc = GetDC(hwndLst1);
+	HFONT hFontOld = (HFONT)SelectObject(hdc, m_hFont);
+
+	SIZE size;
+	GetTextExtentPoint32W(hdc, text.c_str(), (INT)text.size(), &size);
+
+	SelectObject(hdc, hFontOld);
+	ReleaseDC(hwndLst1, hdc);
+
+	if (bReset)
+		m_nLst1MaxExtent = size.cx;
+	else if (size.cx <= m_nLst1MaxExtent)
+		return;
+	else
+		m_nLst1MaxExtent = size.cx;
+
+	// 少し余白を足しておく。
+	SendMessageW(hwndLst1, LB_SETHORIZONTALEXTENT, m_nLst1MaxExtent + 8, 0);
 }
 
 // WM_TIMER: 定期的にEGA出力バッファをpullする。
