@@ -22,9 +22,9 @@ IDR_MAINMENU MENU
         MENUITEM "&Importar...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportar...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Recarregar &resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "Recarregar resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Guardar re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Or&ientação de modificações do resource.h...", ID_ADVICERESH
+        MENUITEM "Orienta&ção de modificações do resource.h...", ID_ADVICERESH
         MENUITEM "&Descarregar resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Carregar biblioteca de classes de &janela...", ID_LOADWCLIB
@@ -34,7 +34,7 @@ IDR_MAINMENU MENU
             MENUITEM "(Nenhum)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "S&air\tAlt+F4", ID_EXIT
+        MENUITEM "Sai&r\tAlt+F4", ID_EXIT
     }
     POPUP "&Editar"
     {
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "Adicionar Tabela de cadeia&s...", ID_ADDSTRINGTABLE
             MENUITEM "Adicionar Tabela de m&ensagens...", ID_ADDMESSAGETABLE
             MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar &Aceleradores...", ID_ADDACCEL
+            MENUITEM "Adicionar Aceleradores...", ID_ADDACCEL
             MENUITEM "Adicionar Info da &versão...", ID_ADDVERINFO
             MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
             MENUITEM "Adicionar Barra de ferramen&tas", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "Substituir Íco&ne...", ID_REPLACEICON
             MENUITEM "Substituir &Cursor...", ID_REPLACECURSOR
             MENUITEM "Substituir &Bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Substituir Item de &recurso binário...", ID_REPLACEBIN
+            MENUITEM "Substituir Item de recurso binar&io...", ID_REPLACEBIN
         }
         POPUP "&Extrair"
         {
@@ -69,10 +69,10 @@ IDR_MAINMENU MENU
             MENUITEM "Extrair &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Extrair &Bitmap...", ID_EXTRACTBITMAP
             MENUITEM "Extr&air como ficheiro RC...", ID_EXTRACTRC
-            MENUITEM "Extrair item de &recurso binário...", ID_EXTRACTBIN
+            MENUITEM "Extrair item de recurso binar&io...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Al&terar nome/idioma\tF2", ID_EDITLABEL
+        MENUITEM "Alterar nome/idiom&a\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clonar com novo &nome...", ID_COPYASNEWNAME
         MENUITEM "C&lonar em novo idioma...", ID_COPYASNEWLANG
@@ -80,10 +80,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Fazer &teste", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Eliminar\tDel", ID_DELETERES
+        MENUITEM "Eliminar\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "Associação de &ID...", ID_IDASSOC
-        MENUITEM "&Macros predefinidas...", ID_PREDEFMACROS
+        MENUITEM "Macros &predefinidas...", ID_PREDEFMACROS
         MENUITEM "&Definições de tipo de letra...", ID_FONTS
         MENUITEM "Definir ca&minhos...", ID_SETPATHS
         MENUITEM SEPARATOR
@@ -113,16 +113,16 @@ IDR_MAINMENU MENU
         MENUITEM "C&olapsar tudo\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "IDs de &recursos", ID_IDLIST
-        MENUITEM "&Lista de idiomas...", ID_SHOWLANGS
+        MENUITEM "Lista de &idiomas...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Sempre instrução de &CONTROL", ID_ALWAYSCONTROL
-        MENUITEM "Não usar macros de &ID", ID_HIDEIDMACROS
+        MENUITEM "Não usar macros de I&D", ID_HIDEIDMACROS
         MENUITEM "Usar IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Quebra de linha", ID_WORD_WRAP
         MENUITEM "Usar BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Codificação do it%em do recurso...", ID_ENCODING
-        MENUITEM "Substitutos de &tipos de letra dos diálogos...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Codificação do item do recurso...", ID_ENCODING
+        MENUITEM "Substitutos de tipos de &letra dos diálogos...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Act&ualizar", ID_REFRESHALL
     }
@@ -141,7 +141,7 @@ IDR_MAINMENU MENU
         MENUITEM "Um &Guia do RisohEditor", ID_GUIDE
         MENUITEM "Procurar act&ualizações do RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
-        MENUITEM "&Acerca...", ID_ABOUT
+        MENUITEM "Acer&ca...", ID_ABOUT
     }
 }
 
@@ -160,14 +160,14 @@ IDR_POPUPMENUS MENU
         MENUITEM "Cor&tar\tCtrl+X", ID_CUT
         MENUITEM "&Copiar\tCtrl+C", ID_COPY
         MENUITEM "Co&lar\tCtrl+V", ID_PASTE
-        MENUITEM "&Eliminar\tDel", ID_DELCTRL
+        MENUITEM "Eliminar\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "Índ&ice"
         {
             MENUITEM "Ir para o &topo", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "&Diminuir índice", ID_CTRLINDEXMINUS
-            MENUITEM "Aumentar índ&ice", ID_CTRLINDEXPLUS
+            MENUITEM "Aumentar í&ndice", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "Ir para a &base", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -190,18 +190,18 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #2"
     {
-        MENUITEM "&Modicar...", ID_MODIFYASSOC
+        MENUITEM "&Modificar...", ID_MODIFYASSOC
     }
     POPUP "Popup #3"
     {
         MENUITEM "&Ir para!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Adicionar ID...", ID_ADDRESID
-        MENUITEM "&Modificar ID...", ID_MODIFYRESID
+        MENUITEM "Modi&ficar ID...", ID_MODIFYRESID
         MENUITEM SEPARATOR
         MENUITEM "Copiar &nome", ID_COPYRESIDNAME
         MENUITEM "Copiar &valor", ID_COPYRESIDVALUE
-        MENUITEM "Copiar &definição\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "Copiar definiçã&o\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Eliminar ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
@@ -217,7 +217,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "Alterar &nome...\tF2", ID_RENAME
         MENUITEM "Alterar &valor...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "&Eliminar\tDel", ID_DELETE
+        MENUITEM "Eliminar\tDel", ID_DELETE
     }
     POPUP "Popup #5"
     {
@@ -233,7 +233,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Esquerda", psh6
         MENUITEM "Di&reita", psh7
         MENUITEM SEPARATOR
-        MENUITEM "Eli&minar\tDel", psh3
+        MENUITEM "Elimi&nar\tDel", psh3
     }
     POPUP "Popup #7"
     {
@@ -243,14 +243,14 @@ IDR_POPUPMENUS MENU
         MENUITEM "A&cima", psh4
         MENUITEM "A&baixo", psh5
         MENUITEM SEPARATOR
-        MENUITEM "Eli&minar\tDel", psh3
+        MENUITEM "Elimi&nar\tDel", psh3
     }
     POPUP "Popup #8"
     {
         MENUITEM "&Adicionar...", ID_ADD
         MENUITEM "&Modificar...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "&Eliminar\tDel", ID_DELETE
+        MENUITEM "Eliminar\tDel", ID_DELETE
     }
 }
 
@@ -723,7 +723,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "Perguntar para actualizar ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Comprimir EXE por &UPX ao guardá-lo", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Tipos de letra...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "&Macros predefinidas...", psh1, 5, 205, 93, 14
+    PUSHBUTTON "Macros &predefinidas...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Definir camin&hos...", psh2, 107, 205, 98, 14
     RTEXT "Nome dos controlos &OLE:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -905,7 +905,7 @@ CAPTION "Macros predefinidas"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "&Macros predefinidas:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "Macros &predefinidas... -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
     PUSHBUTTON "&Adicionar...", psh1, 200, 15, 60, 14
     PUSHBUTTON "&Editar...", psh2, 200, 35, 60, 14
@@ -959,7 +959,7 @@ CAPTION "Definir caminhos"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "&Incluir directórios:", -1, 5, 5, 102, 12
+    LTEXT "&Incluir diretórios:", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     PUSHBUTTON "&Adicionar...", psh1, 230, 20, 60, 14
     PUSHBUTTON "&Editar...", psh2, 230, 40, 60, 14
@@ -1450,8 +1450,8 @@ STRINGTABLE
     IDS_MACRONAME, "Nome da Macro"
     IDS_MACROVALUE, "Valor da Macro"
     IDS_OPTIONAL, "(Opcional)"
-    IDS_ADDINCLUDE, "Adicionar directório de inclusão"
-    IDS_EDITINCLUDE, "Editar  directório de inclusão"
+    IDS_ADDINCLUDE, "Adicionar diretório de inclusão"
+    IDS_EDITINCLUDE, "Editar  diretório de inclusão"
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH, "Caminho inválido."
@@ -1504,7 +1504,7 @@ STRINGTABLE
     IDS_GERMANY, "Alemanha"
     IDS_GERMAN, "Alemão"
     IDS_SPAIN, "Espanha"
-    IDS_SPANISH, "Espqnhol"
+    IDS_SPANISH, "Espanhol"
     IDS_INVALIDLANG, "Idioma irreconhecível."
     IDS_INVALIDNAME, "Nome de recurso inválido."
     IDS_PNGRESBINFILTER, "Imagem PNG (*.png)|*.png|Recursos binários (*.res)|*.res|Ficheiros binários (*.bin)|*.bin|Todos os ficheiros (*.*)|*.*|"
@@ -1516,7 +1516,7 @@ STRINGTABLE
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Este ficheiro foi gerado automaticamente pelo RisohEditor 6.0.8.\r\n"
-    IDS_DAGGER, "// † <-- Esta adaga auxilia na deteção de UTF-8.\r\n"
+    IDS_DAGGER, "// † <-- Esta adaga auxilia na detecção de UTF-8.\r\n"
     IDS_IMPORTFILTER, "Ficheiros importáveis|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Ficheiros RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos binários (*.res)|*.res|Ficheiros de imagem|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Ficheiros de cursor (*.cur;*.ani)|*.cur;*.ani|Ficheiros de ícone (*.ico)|*.ico|Ficheiros áudio WAVE (*.wav)|*.wav|MP3 Sound (*.mp3)|*.mp3|Ficheiros HTML (*.html;*.htm)|*.html;*.htm|Ficheiros de manifesto (*.manifest)|*.manifest|Ficheiros DFM Delphi (*.dfm)|*.dfm|Ficheiros TYPELIB (*.tlb)|*.tlb|Todos os ficheiros (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Não foi possível escrever o ficheiro porque o ficheiro seguinte está bloqueado.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
@@ -1554,7 +1554,7 @@ STRINGTABLE
     IDS_CODEPAGE1251, "1251 (Cirílico)"
     IDS_CODEPAGE1253, "1253 (Grego)"
     IDS_CODEPAGE1254, "1254 (Turco)"
-    IDS_CODEPAGE1255, "1255 (Hebráico)"
+    IDS_CODEPAGE1255, "1255 (Hebraico)"
     IDS_CODEPAGE1256, "1256 (Árabe)"
     IDS_CODEPAGE1257, "1257 (Báltico)"
     IDS_CODEPAGE874, "874 (Tailandês)"
@@ -1566,9 +1566,9 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Extrair dados TYPELIB"
     IDS_CANTEXTRACTTLB, "Não foi possível extrair dados TYPELIB."
     IDS_TLBRESBINFILTER, "Dados TYPELIB (*.tlb)|*.tlb|Recursos binários (*.res)|*.res|Ficheiros de texto (*.txt)|*.txt|Ficheiros MIDL (*.idl)|*.idl|Todos os ficheiros (*.*)|*.*|"
-    IDS_USAGE, "Utilização: RisohEditor [opções | ""ficheiro""]\n\nOpções:\n--help  Mostra esta mensagem.\n--version  Mostra informação da versão.\n--load ""o seu ficheiro.rc""  Carrega o ficheiro (sem GUI)\n--save ""o seu ficheiro.res""  Guarda o ficheiro (sem GUI)\n--log-file ""ficheiro de registo.txt""  Especifica o ficheiro de registo.\n--load-options OPÇÕES  Define opções de carregamento.\n--save-options OPÇÕESS  Define opções de guardar.\n\nOpções de carregar: (no-load-res-h)\nOpções de guardar: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(bom)(backup)(ms-msgtbl)"
-    IDS_NOSELECTION, "Não existe selecção."
-    IDS_TRANSLATORS, "[Tradutores]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese (Brasil): JNylson\r\nPortuguese (Portugal): Luis Neves\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL\\Potuguese_Portugal: Luis Neves\r\nUkrainian (Ukraine): Volodymyr Paliy"
+    IDS_USAGE, "Utilização: RisohEditor [opções | ""ficheiro""]\n\nOpções:\n--help  Mostra esta mensagem.\n--version  Mostra informação da versão.\n--load ""o seu ficheiro.rc""  Carrega o ficheiro (sem GUI)\n--save ""o seu ficheiro.res""  Guarda o ficheiro (sem GUI)\n--log-file ""ficheiro de registo.txt""  Especifica o ficheiro de registo.\n--load-options OPÇÕES  Define opções de carregamento.\n--save-options OPÇÕES  Define opções de guardar.\n\nOpções de carregar: (no-load-res-h)\nOpções de guardar: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(bom)(backup)(ms-msgtbl)"
+    IDS_NOSELECTION, "Não existe seleção."
+    IDS_TRANSLATORS, "[Tradutores]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese (Brasil): JNylson\r\nPortuguese (Portugal): Luis Neves\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL\r\nUkrainian (Ukraine): Volodymyr Paliy"
     IDS_EXPORTFILTER, "Ficheiros RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos binários (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Gerado por TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Este ficheiro está protegido contra escrita pelo TEXTINCLUDE 1.\r\n\r\nAinda deseja escrever para o ficheiro?"
@@ -1577,27 +1577,27 @@ STRINGTABLE
     IDS_MP3SOUND, "(Áudio MP3)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
     IDS_INVALIDCODEPAGE, "Página de código inválida."
-    IDS_UNKNOWN_ID, "Unknown.ID"
-    IDS_CURSOR_ID, "Cursor.ID"
-    IDS_BITMAP_ID, "Bitmap.ID"
-    IDS_MENU_ID, "Menu.ID"
-    IDS_DIALOG_ID, "Dialog.ID"
-    IDS_STRING_ID, "String.ID"
-    IDS_ACCEL_ID, "Accel.ID"
-    IDS_ICON_ID, "Icon.ID"
-    IDS_ANICURSOR_ID, "AniCursor.ID"
-    IDS_ANIICON_ID, "AniIcon.ID"
-    IDS_HTML_ID, "Html.ID"
-    IDS_HELP_ID, "Help.ID"
-    IDS_COMMAND_ID, "Command.ID"
-    IDS_CONTROL_ID, "Control.ID"
-    IDS_RESOURCE_ID, "Resource.ID"
-    IDS_MESSAGE_ID, "Message.ID"
-    IDS_WINDOW_ID, "Window.ID"
-    IDS_NEWCOMMAND_ID, "New.Command.ID"
-    IDS_PROMPT_ID, "Prompt.ID"
-    IDS_RCDATA_ID, "RCData.ID"
-    IDS_MSGTABLE_ID, "MsgTable.ID"
+    IDS_UNKNOWN_ID, "ID Desconhecido"
+    IDS_CURSOR_ID, "ID do Cursor"
+    IDS_BITMAP_ID, "ID do Bitmap"
+    IDS_MENU_ID, "ID do Menu"
+    IDS_DIALOG_ID, "ID do Diálogo"
+    IDS_STRING_ID, "ID da Cadeia"
+    IDS_ACCEL_ID, "ID do Acelerador"
+    IDS_ICON_ID, "ID do Ícone"
+    IDS_ANICURSOR_ID, "ID do Cursor Animado"
+    IDS_ANIICON_ID, "ID do Ícone Animado"
+    IDS_HTML_ID, "ID HTML"
+    IDS_HELP_ID, "ID de Ajuda"
+    IDS_COMMAND_ID, "ID de Comando"
+    IDS_CONTROL_ID, "ID de Controlo"
+    IDS_RESOURCE_ID, "ID de Recurso"
+    IDS_MESSAGE_ID, "ID de Mensagem"
+    IDS_WINDOW_ID, "ID de Janela"
+    IDS_NEWCOMMAND_ID, "ID de Novo Comando"
+    IDS_PROMPT_ID, "ID de Prompt"
+    IDS_RCDATA_ID, "ID RCData"
+    IDS_MSGTABLE_ID, "ID da Tabela de Mensagens"
     IDS_ADDCTRL, "Adicionar controlo"
     IDS_SEARCHURL, "https://duckduckgo.com/?q=%s&t=h_&ia=web"
 }
