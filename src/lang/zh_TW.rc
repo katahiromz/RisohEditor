@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM "導出(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "重新載入 &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "保存 resource.h(&S)...", ID_UPDATERESHBANG
+        MENUITEM "保存 resource.h(&H)...", ID_UPDATERESHBANG
         MENUITEM "修改記錄(&V) resource.h ...", ID_ADVICERESH
         MENUITEM "卸載 resource.h (&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "新增字串表(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "新增訊息表(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "新增&HTML...", ID_ADDHTML
-            MENUITEM "新增加速器(&A)...", ID_ADDACCEL
+            MENUITEM "新增加速器(&L)...", ID_ADDACCEL
             MENUITEM "新增版本資訊(&V)...", ID_ADDVERINFO
             MENUITEM "新增清單(&F)...", ID_ADDMANIFEST
             MENUITEM "新增工具欄(&T)...", ID_ADDTOOLBAR
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "替換圖示(&I)...", ID_REPLACEICON
             MENUITEM "替換游標(&C)...", ID_REPLACECURSOR
             MENUITEM "替換點陣圖文件(&B)...", ID_REPLACEBITMAP
-            MENUITEM "替換二進位制資源項目(&R)...", ID_REPLACEBIN
+            MENUITEM "替換二進位制資源項目(&Y)...", ID_REPLACEBIN
         }
         POPUP "導出(&E)"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "導出游標(&C)...", ID_EXTRACTCURSOR
             MENUITEM "導出點陣圖文件(&B)...", ID_EXTRACTBITMAP
             MENUITEM "導出 RC 文件(&A)...", ID_EXTRACTRC
-            MENUITEM "導出二進位制資源檔(&R)...", ID_EXTRACTBIN
+            MENUITEM "導出二進位制資源檔(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "更改名稱/語言(&H)\tF2", ID_EDITLABEL
@@ -124,7 +124,7 @@ IDR_MAINMENU MENU
         MENUITEM "資源項的編碼(&E)...", ID_ENCODING
         MENUITEM "對話框字型替換(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "更新到最新資訊(&F)", ID_REFRESHALL
+        MENUITEM "更新到最新資訊(&U)", ID_REFRESHALL
     }
     POPUP "自動化(&A)"
     {
@@ -135,7 +135,7 @@ IDR_MAINMENU MENU
     POPUP "幫助(&H)"
     {
         MENUITEM "開啟 README.txt(&R)", ID_OPENREADME
-        MENUITEM "開啟 HYOJUNKA.md(&H)", ID_OPENHYOJUNKA
+        MENUITEM "開啟 HYOJUNKA.md(&Y)", ID_OPENHYOJUNKA
         MENUITEM "開啟 ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "開啟 LICENSE.txt(&L)", ID_OPENLICENSE
         MENUITEM SEPARATOR
@@ -160,7 +160,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "剪切(&T)\tCtrl+X", ID_CUT
         MENUITEM "複製(&C)\tCtrl+C", ID_COPY
-        MENUITEM "黏貼(&P)\tCtrl+V", ID_PASTE
+        MENUITEM "貼上(&P)\tCtrl+V", ID_PASTE
         MENUITEM "刪除(&D)\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "索引位置(&I)"
@@ -168,7 +168,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "置頂(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "減1(&D)", ID_CTRLINDEXMINUS
-            MENUITEM "增1(&I)", ID_CTRLINDEXPLUS
+            MENUITEM "增1(&N)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "置底(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -184,9 +184,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "適應網格(&G)", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "刷新(&R)", ID_REFRESHDIALOG
+        MENUITEM "刷新(&W)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "控制項屬性(&P)...", ID_CTRLPROP
+        MENUITEM "控制項屬性(&R)...", ID_CTRLPROP
         MENUITEM "對話框屬性(&O)...", ID_DLGPROP
     }
     POPUP "Popup #2"
@@ -202,11 +202,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "複製名稱(&N)", ID_COPYRESIDNAME
         MENUITEM "複製值(&V)", ID_COPYRESIDVALUE
-        MENUITEM "複制定義(&D)\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "複制定義(&F)\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "刪除ID(&D) \tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "十進位制數位(&D)", ID_BASE10
+        MENUITEM "十進位制數位(&E)", ID_BASE10
         MENUITEM "十六進位制數位(&H)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "重新載入(&R)", ID_LOADRESH
