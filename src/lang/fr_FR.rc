@@ -17,14 +17,14 @@ IDR_MAINMENU MENU
         MENUITEM "&Ouvert...\tCtrl+O", ID_OPEN
         MENUITEM "&Sauver...\tCtrl+S", ID_SAVE
         MENUITEM "Enregistrer sous...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Économisez avec la compression...", ID_SAVEASCOMPRESS
+        MENUITEM "Enregistrer avec &compression...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Importation...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportation...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Recharger &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Sauver re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Conseil resource.h Modification...", ID_ADVICERESH
+        MENUITEM "Enregistrer resource.h...", ID_UPDATERESHBANG
+        MENUITEM "Conseil de modification de resource.h...", ID_ADVICERESH
         MENUITEM "&Décharger resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Charger la bibliothèque de classes de fenêtre...", ID_LOADWCLIB
@@ -78,7 +78,7 @@ IDR_MAINMENU MENU
         MENUITEM "Cloner dans une nouvelle langue...", ID_COPYASNEWLANG
         MENUITEM "Copier dans plusieurs langues...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "Faire un test", ID_TEST
+        MENUITEM "Faire un &test", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "Supprimer\tDel", ID_DELETERES
         MENUITEM SEPARATOR
@@ -89,7 +89,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "&Paramètres Delphi DFM...", ID_DFMSETTINGS
+        MENUITEM "Paramètres Delphi DF&M...", ID_DFMSETTINGS
         MENUITEM "&Configuration...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Chercher"
@@ -99,15 +99,15 @@ IDR_MAINMENU MENU
         MENUITEM "Rechercher vers le haut\tShift+F3", ID_FINDUPWARD
         MENUITEM "Recherche vers le bas\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "&Constante de requête...", ID_QUERYCONSTANT
+        MENUITEM "Constante de &requête...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
         MENUITEM "&Aller à la ligne spécifiée...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Vue"
     {
         MENUITEM "&Barre d'état", ID_STATUSBAR
-        MENUITEM "&Barre d'outils", ID_SHOWHIDETOOLBAR
-        MENUITEM "&Binaire", ID_BINARYPANE
+        MENUITEM "Barre d'ou&tils", ID_SHOWHIDETOOLBAR
+        MENUITEM "Binaire", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "Développer tout\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Réduire tout\tCtrl+L", ID_COLLAPSE_ALL
@@ -122,9 +122,9 @@ IDR_MAINMENU MENU
         MENUITEM "Utilisez BEGIN / END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Encodage de l'élément de ressource...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Substituts de police de &dialogue...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "Rafraîchir", ID_REFRESHALL
+        MENUITEM "&Rafraîchir", ID_REFRESHALL
     }
     POPUP "&Automatisation"
     {
@@ -132,7 +132,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Exécuter le programme EGA...", ID_EGA_PROGRAM
         MENUITEM "Ouvrir le manuel EGA", ID_OPEN_EGA_MANUAL
     }
-    POPUP "&Aidez-moi"
+    POPUP "&Aide"
     {
         MENUITEM "Ouvrez README.txt (Anglais)", ID_OPENREADME
         MENUITEM "Ouvrez LICENSE.txt", ID_OPENLICENSE
@@ -146,13 +146,13 @@ IDR_MAINMENU MENU
 
 IDR_POPUPMENUS MENU
 {
-    POPUP "Apparaitre #0"
+    POPUP "Popup #0"
     {
         MENUITEM "&Copier\tCtrl+C", ID_COPY
         MENUITEM SEPARATOR
         MENUITEM "Sélectionner &tout\tCtrl+A", ID_SELECTALL
     }
-    POPUP "Apparaitre #1"
+    POPUP "Popup #1"
     {
         MENUITEM "&Ajouter un contrôle...", ID_ADDCTRL
         MENUITEM SEPARATOR
@@ -182,18 +182,18 @@ IDR_POPUPMENUS MENU
             MENUITEM "Ajuster à la grille", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Rafraîchir", ID_REFRESHDIALOG
+        MENUITEM "&&Rafraîchir", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "&Propriétés de contrôle...", ID_CTRLPROP
         MENUITEM "Propriétés de la boîte de dialogue...", ID_DLGPROP
     }
-    POPUP "Apparaitre #2"
+    POPUP "Popup #2"
     {
         MENUITEM "&Modifier...", ID_MODIFYASSOC
     }
-    POPUP "Apparaitre #3"
+    POPUP "Popup #3"
     {
-        MENUITEM "&Saut!", ID_IDJUMP
+        MENUITEM "Sau&t!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Ajouter un identifiant...", ID_ADDRESID
         MENUITEM "&Modifier l'ID...", ID_MODIFYRESID
@@ -205,11 +205,11 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Supprimer l'ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
         MENUITEM "&Nombres décimaux", ID_BASE10
-        MENUITEM "&Nombres hexadécimaux", ID_BASE16
+        MENUITEM "Nombres he&xadécimaux", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Recharger", ID_LOADRESH
     }
-    POPUP "Apparaitre #4"
+    POPUP "Popup #4"
     {
         MENUITEM "&Ajouter...", ID_ADD
         MENUITEM SEPARATOR
@@ -218,11 +218,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Supprimer\tDel", ID_DELETE
     }
-    POPUP "Apparaitre #5"
+    POPUP "Popup #5"
     {
         MENUITEM "&Copier la valeur entière", ID_COPY
     }
-    POPUP "Apparaitre #6"
+    POPUP "Popup #6"
     {
         MENUITEM "&Ajouter...", psh1
         MENUITEM "&Modifier...", psh2
@@ -230,11 +230,11 @@ IDR_POPUPMENUS MENU
         MENUITEM "&En haut", psh4
         MENUITEM "&Vers le bas", psh5
         MENUITEM "&Gauche", psh6
-        MENUITEM "&Droit", psh7
+        MENUITEM "&Droite", psh7
         MENUITEM SEPARATOR
         MENUITEM "Delete\tDel", psh3
     }
-    POPUP "Apparaitre #7"
+    POPUP "Popup #7"
     {
         MENUITEM "&Ajouter...", psh1
         MENUITEM "&Modifier...", psh2
@@ -244,7 +244,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Supprimer\tDel", psh3
     }
-    POPUP "Apparaitre #8"
+    POPUP "Popup #8"
     {
         MENUITEM "&Ajouter...", ID_ADD
         MENUITEM "&Modifier...", ID_MODIFY
@@ -267,7 +267,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Langue de la ressource :", -1, 5, 57, 80, 12
     COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Binaire et fichier :", -1, 5, 85, 100, 12
+    LTEXT "Binaire et fichier :", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
@@ -358,7 +358,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "", stc1, 75, 43, 115, 10
     LTEXT "&Langue de la ressource :", -1, 5, 57, 80, 12
     COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Binaire et fichier :", -1, 5, 85, 100, 12
+    LTEXT "Binaire et fichier :", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
@@ -577,7 +577,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&En haut", psh4, 5, 140, 40, 14
     PUSHBUTTON "&Vers le bas", psh5, 50, 140, 40, 14
     PUSHBUTTON "&Gauche", psh6, 95, 140, 40, 14
-    PUSHBUTTON "&Droit", psh7, 140, 140, 41, 14
+    PUSHBUTTON "&Droite", psh7, 140, 140, 41, 14
     AUTOCHECKBOX "Élargi", chx1, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 260, 140, 60, 14
@@ -888,7 +888,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "&La source :", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh1, 170, 5, 19, 14
-    RTEXT "&Binaire :", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "Binaire :", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
     GROUPBOX "Preview", -1, 5, 45, 185, 39
@@ -971,7 +971,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Feuilleter...", psh7, 230, 155, 60, 14
     RTEXT "&cpp.exe :", stc2, 5, 177, 55, 12
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "Feuilleter...", psh8, 230, 175, 60, 14
+    PUSHBUTTON "Parcourir...", psh8, 230, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 230, 200, 60, 14
     PUSHBUTTON "Effacer tout", psh9, 5, 200, 95, 14
@@ -1459,7 +1459,7 @@ STRINGTABLE
     IDS_UNKNOWNFORMAT, "(Format de données inconnu)\r\n"
     IDS_LANGUAGE, "Langue"
     IDS_INTVALUE, "Valeur entière"
-    IDS_PARENTWND, "Fenêtre de test des parents"
+    IDS_PARENTWND, "Fenêtre de test parent"
     IDS_CHOOSE_OLE_CLSID, "Choisissez OLE CLSID"
     IDS_CONTROL, "Contrôle"
     IDS_MESSAGE, "Message"
@@ -1477,23 +1477,23 @@ STRINGTABLE
     IDS_CHINA, "Chine"
     IDS_CHINESE, "Chinois"
     IDS_RUSSIA, "Russie"
-    IDS_RUSSIAN, "russe"
+    IDS_RUSSIAN, "Russe"
     IDS_WANNAGENRESH, "Voulez-vous générer le fichier 'resource.h'?"
     IDS_EXEFILTER, "Exécutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Tous les fichiers (*.*)|*.*|"
-    IDS_SAVEASCOMPRESS, "Économisez avec compressé"
+    IDS_SAVEASCOMPRESS, "Enregistrer avec compression"
     IDS_TOOL_NEW, "Nouveau"
-    IDS_TOOL_OPEN, "Ouvert..."
+    IDS_TOOL_OPEN, "Ouvrir..."
     IDS_TOOL_SAVE, "Enregistrer sous..."
     IDS_TOOL_EXPAND, "Développer tout"
     IDS_TOOL_COLLAPSE, "Réduire tout"
     IDS_TOOL_PLUS, "Ajouter un item..."
-    IDS_TOOL_MINUS, "Effacer l'article"
+    IDS_TOOL_MINUS, "Supprimer l'élément"
     IDS_TOOL_CHANGE, "Changer le nom / la langue"
     IDS_TOOL_CLONE, "Cloner dans un autre nom / langue"
     IDS_TOOL_RECOMPILE, "Recompiler"
     IDS_TOOL_CANCELEDIT, "Annuler la modification"
-    IDS_TOOL_IMPORT, "Importation..."
-    IDS_TOOL_EXTRACT, "Extrait..."
+    IDS_TOOL_IMPORT, "Importer..."
+    IDS_TOOL_EXTRACT, "Extraire..."
     IDS_TOOL_GUIEDIT, "Modifier par GUI"
     IDS_UNITEDKINGDOM, "Royaume-Uni"
     IDS_GREATBRITAIN, "Grande Bretagne"
@@ -1540,7 +1540,7 @@ STRINGTABLE
     IDS_FILESAVED, "Fichier enregistré."
     IDS_RECOMPILEOK, "Recompilation effectuée."
     IDS_RECOMPILEFAILED, "La recompilation a échoué (erreur de syntaxe)."
-    IDS_TOOL_EXPORT, "Exportation..."
+    IDS_TOOL_EXPORT, "Exporter..."
     IDS_CODEEDITOR, "Éditeur de code"
     IDS_HEXVIEWER, "Visionneuse hexadécimale"
     IDS_INTEGERORIDENTIFIER, "(entier ou identifiant)"
