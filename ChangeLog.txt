@@ -8,6 +8,7 @@
     - Made resource preview safer.
     - Improved EGA dialog output.
     - Fixed EGA "load" and "save" functions.
+    - Added EGA "RES_extract" function.
 - v.6.0.7 (2026-07-24)
     - Fixed source view wheel scroll slowness.
     - Fixed DIALOG style dumping.

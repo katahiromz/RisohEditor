@@ -1,0 +1,13 @@
+println("Extracting all icons...");
+
+=(res, RES_search());
+
+foreach(item, res, (
+    =(type, [](item, 0)),
+    =(name, [](item, 1)),
+    =(lang, [](item, 2)),
+    @ Extract RT_GROUP_ICON (14) and RT_ANIICON (22)
+    if(||(==(type, 14), ==(type, 22)), println(RES_extract(type, name, lang)))
+));
+
+println("Done.");

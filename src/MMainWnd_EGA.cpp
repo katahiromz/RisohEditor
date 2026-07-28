@@ -172,6 +172,11 @@ EGA::arg_t EGA_FN EGA_RES_str_set(const EGA::args_t& args)
 		return s_pMainWnd->RES_str_set(args[0], args[1], args[2]);
 }
 
+EGA::arg_t EGA_FN EGA_RES_extract(const EGA::args_t& args)
+{
+	return s_pMainWnd->RES_extract(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
 	MIdOrString ret;
@@ -958,6 +963,125 @@ void MMainWnd::OnAskEgaProgramAndExecute(HWND hwnd)
 	}
 }
 
+MStringA MMainWnd::ExtractEntry(EntryBase *entry, PCSTR u8_filename)
+{
+	if (!entry)
+		return "";
+
+	MStringA fname;
+	if (u8_filename && u8_filename[0])
+	{
+		fname = u8_filename;
+	}
+	else
+	{
+		ResToText res2text;
+		MStringW wide_filename;
+		res2text.GetEntryFileNameEx(*entry, wide_filename);
+		if (wide_filename.empty())
+		{
+			if (entry->m_lang)
+			{
+				wide_filename += std::to_wstring(entry->m_lang);
+				wide_filename += L"_";
+			}
+			wide_filename += entry->m_type.str();
+			wide_filename += L"_";
+			wide_filename += entry->m_name.str();
+			wide_filename += L".bin";
+		}
+		MWideToAnsi utf8(CP_UTF8, wide_filename.c_str());
+		fname = utf8.c_str();
+	}
+
+	if (!EgaBridge::FileSecurity1(fname, "RES_extract"))
+	{
+		EgaBridge::HitSecurity();
+		return "";
+	}
+
+	MAnsiToWide wide(CP_UTF8, fname.c_str());
+	MStringW wide_fname = wide.c_str();
+
+	BOOL ret = FALSE;
+	switch (entry->m_et)
+	{
+	case ET_TYPE:
+	case ET_NAME:
+	case ET_STRING:
+		ret = !!g_res.extract_bin(wide_fname.c_str(), entry);
+		break;
+
+	case ET_LANG:
+		if (entry->m_type == RT_ICON || entry->m_type == RT_GROUP_ICON ||
+			entry->m_type == RT_ANIICON)
+		{
+			ret = g_res.extract_icon(wide_fname.c_str(), entry);
+		}
+		else if (entry->m_type == RT_CURSOR || entry->m_type == RT_GROUP_CURSOR ||
+				 entry->m_type == RT_ANICURSOR)
+		{
+			ret = g_res.extract_cursor(wide_fname.c_str(), entry);
+		}
+		else if (entry->m_type == RT_BITMAP)
+		{
+			ret = PackedDIB_Extract(wide_fname.c_str(), &(*entry)[0], (*entry).size(), FALSE);
+		}
+		else
+		{
+			ret = g_res.extract_bin(wide_fname.c_str(), entry);
+		}
+	}
+
+	if (!ret)
+		return "";
+
+	return fname;
+}
+
+EGA::arg_t MMainWnd::RES_extract(const EGA::args_t& args)
+{
+	using namespace EGA;
+	arg_t arg0, arg1, arg2, arg3;
+
+	arg0 = EGA_eval_arg(args[0], true);
+	arg1 = EGA_eval_arg(args[1], true);
+	arg2 = EGA_eval_arg(args[2], true);
+	if (args.size() == 4)
+		arg3 = EGA_eval_arg(args[3], true);
+
+	MIdOrString type = BAD_TYPE, name = BAD_NAME;
+	LANGID lang = BAD_LANG;
+
+	type = EGA_get_id_or_str(arg0);
+	name = EGA_get_id_or_str(arg1);
+	lang = (WORD)EGA_get_int(arg2);
+
+	auto* entry = g_res.find(ET_LANG, type, name, lang);
+	if (entry)
+	{
+		if (args.size() == 3)
+		{
+			auto ret = ExtractEntry(entry, nullptr);
+			if (ret.size())
+			{
+				return make_arg<AstStr>(ret.c_str());
+			}
+		}
+		else
+		{
+			std::string filename = EGA_get_str(arg3);
+			auto ret = ExtractEntry(entry, filename.c_str());
+			if (ret.size())
+			{
+				return make_arg<AstStr>(ret.c_str());
+			}
+		}
+	}
+
+	return make_arg<AstInt>(0);
+}
+
 ////////////////////////////////////////////////////////////////////////////
 
 void EGA_extension(void)
@@ -977,4 +1101,5 @@ void EGA_extension(void)
 	EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, ary)");
 	EGA_add_fn("RES_get_text", 3, 3, EGA_RES_get_text, "RES_get_text(type, name, lang)");
 	EGA_add_fn("RES_set_text", 4, 4, EGA_RES_set_text, "RES_set_text(type, name, lang, text)");
+	EGA_add_fn("RES_extract", 3, 4, EGA_RES_extract, "RES_extract(type, name, lang[, filename])");
 }

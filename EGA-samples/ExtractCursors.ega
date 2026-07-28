@@ -1,0 +1,13 @@
+println("Extracting all cursors...");
+
+=(res, RES_search());
+
+foreach(item, res, (
+    =(type, [](item, 0)),
+    =(name, [](item, 1)),
+    =(lang, [](item, 2)),
+    @ Extract RT_GROUP_CURSOR (12) and RT_ANICURSOR (21)
+    if(||(==(type, 12), ==(type, 21)), println(RES_extract(type, name, lang)))
+));
+
+println("Done.");

@@ -309,6 +309,8 @@ public:
 	EGA::arg_t RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1);
 	EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1);
 	EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2);
+	EGA::arg_t RES_extract(const EGA::args_t& args);
+	MStringA ExtractEntry(EntryBase *entry, PCSTR u8_filename);
 
 	LRESULT CALLBACK TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
