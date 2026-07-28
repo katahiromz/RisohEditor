@@ -478,9 +478,9 @@ namespace EgaBridge
 		return EGA_file_security_0(filename, tag);
 	}
 
-	bool FileSecurity(std::string& filename)
+	bool FileSecurity1(std::string& filename, const char* tag)
 	{
-		return EGA_file_security(filename);
+	    return EGA_file_security_1(filename, tag);
 	}
 
 	void HitSecurity(void)

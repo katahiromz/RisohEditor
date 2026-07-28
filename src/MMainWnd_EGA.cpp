@@ -250,7 +250,14 @@ EGA::arg_t MMainWnd::RES_save(const EGA::args_t& args)
 	if (args.size() >= 2)
 		arg1 = EGA_eval_arg(args[1], false);
 
-	MAnsiToWide str0(CP_UTF8, EGA_get_str(arg0));
+	auto utf8_filename = EGA_get_str(arg0);
+	if (!EgaBridge::FileSecurity1(utf8_filename, "RES_save"))
+	{
+		EgaBridge::HitSecurity();
+		return make_arg<AstInt>(0);
+	}
+
+	MAnsiToWide str0(CP_UTF8, utf8_filename.c_str());
 	MStringW filename = str0.c_str();
 	MStringW options;
 	if (args.size() >= 2)
