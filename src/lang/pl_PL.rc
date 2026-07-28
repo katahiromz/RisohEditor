@@ -22,23 +22,23 @@ IDR_MAINMENU MENU
         MENUITEM "&Importuj...\tCtrl+I", ID_IMPORT
         MENUITEM "&Eksportuj...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Przeładuj &zasób.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Zapisz z&asób.h...", ID_UPDATERESHBANG
-        MENUITEM "Zasób porad.h modyfikacji...", ID_ADVICERESH
-        MENUITEM "&Wypakuj zasób.h", ID_UNLOADRESH
+        MENUITEM "Przeładuj &resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "Zapisz re&source.h...", ID_UPDATERESHBANG
+        MENUITEM "Porada modyfikacji reso&urce.h...", ID_ADVICERESH
+        MENUITEM "Wypakuj resour&ce.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Załaduj &Window Class Library...", ID_LOADWCLIB
+        MENUITEM "Załaduj bibliotekę klas o&kien...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "Ostatnio używane pliki"
         {
-            MENUITEM "(None)", -1, GRAYED
+            MENUITEM "(Brak)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "W&yjście\tAlt+F4", ID_EXIT
     }
     POPUP "&Edycja"
     {
-        MENUITEM "Edytuj przez &GUI...\tCtrl+U", ID_GUIEDIT
+        MENUITEM "Edytuj przez GUI...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Dodaj"
         {
@@ -47,11 +47,11 @@ IDR_MAINMENU MENU
             MENUITEM "Dodaj &Bitmapę...", ID_ADDBITMAP
             MENUITEM "Dodaj &Okno dialogowe...", ID_ADDDIALOG
             MENUITEM "Dodaj &Menu...", ID_ADDMENU
-            MENUITEM "Dodaj C&iąg...", ID_ADDSTRINGTABLE
+            MENUITEM "Dodaj &ciąg...", ID_ADDSTRINGTABLE
             MENUITEM "Dodaj &Tablicę komunikatów...", ID_ADDMESSAGETABLE
             MENUITEM "Dodaj &HTML...", ID_ADDHTML
             MENUITEM "Dodaj &Skróty klawiaturowe...", ID_ADDACCEL
-            MENUITEM "Dodaj &Informacja o wersji...", ID_ADDVERINFO
+            MENUITEM "Dodaj i&nformację o wersji...", ID_ADDVERINFO
             MENUITEM "Dodaj Mani&fest...", ID_ADDMANIFEST
             MENUITEM "Dodaj &Pasek narzędzi...", ID_ADDTOOLBAR
             MENUITEM "Dodaj Element &zasobów...", ID_ADDRES
@@ -61,7 +61,7 @@ IDR_MAINMENU MENU
             MENUITEM "Zamień &Ikonę...", ID_REPLACEICON
             MENUITEM "Zamień &Kursor...", ID_REPLACECURSOR
             MENUITEM "Zamień &Bitmapę...", ID_REPLACEBITMAP
-            MENUITEM "Zamień Element &Zasobu Binarnego...", ID_REPLACEBIN
+            MENUITEM "Zamień element zasobu bina&rnego...", ID_REPLACEBIN
         }
         POPUP "&Wypakuj"
         {
@@ -69,7 +69,7 @@ IDR_MAINMENU MENU
             MENUITEM "Wypakuj &Kursor...", ID_EXTRACTCURSOR
             MENUITEM "Wypakuj &Bitmapę...", ID_EXTRACTBITMAP
             MENUITEM "Wypakuj &jako plik RC...", ID_EXTRACTRC
-            MENUITEM "Wypakuj Element &Zasobu Binarnego...", ID_EXTRACTBIN
+            MENUITEM "Wypakuj element zasobu bina&rnego...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "Z&mień Nazwę/Języka\tF2", ID_EDITLABEL
@@ -84,44 +84,44 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Skojarzenia ID...", ID_IDASSOC
         MENUITEM "Predefiniowane Mak&ra...", ID_PREDEFMACROS
-        MENUITEM "Ustawienia &Czcionki...", ID_FONTS
+        MENUITEM "Ustawienia c&zcionki...", ID_FONTS
         MENUITEM "Ustawienia &Katalogów...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Ustawienia Delphi D&FM...", ID_DFMSETTINGS
-        MENUITEM "Konfi&guracja...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Konfigura&cja...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Szukaj"
     {
-        MENUITEM "&Szukaj...\tCtrl+F", ID_FIND
+        MENUITEM "Szukaj...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Szukaj &do góry\tShift+F3", ID_FINDUPWARD
-        MENUITEM "Szukaj &do dołu\tF3", ID_FINDDOWNWARD
+        MENUITEM "Szukaj do &góry\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Szukaj do d&ołu\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "&Stała zapytania...", ID_QUERYCONSTANT
+        MENUITEM "Stała &zapytania...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
         MENUITEM "&Przejdź do określonego wiersza...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Widok"
     {
-        MENUITEM "Pasek &stanu", ID_STATUSBAR
+        MENUITEM "Pasek stanu", ID_STATUSBAR
         MENUITEM "Pasek &narzędzi", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binarny", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "Roz&wiń wszystko\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "Rozwiń wszy&stko\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "&Zwiń wszystko\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Lista &ID Zasobów", ID_IDLIST
+        MENUITEM "Lista ID zasobów...", ID_IDLIST
         MENUITEM "Lista &języków...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Zawsze &CONTROL statement", ID_ALWAYSCONTROL
-        MENUITEM "Nie używaj &ID Makra", ID_HIDEIDMACROS
+        MENUITEM "Nie używaj makrosów ID", ID_HIDEIDMACROS
         MENUITEM "Użyj IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
-        MENUITEM "Użyj POCZĄTEK/KONIEC", ID_USEBEGINEND
+        MENUITEM "Użyj BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "&Kodowanie elementu zasobu...", ID_ENCODING
+        MENUITEM "Kodowanie &elementu zasobu...", ID_ENCODING
         MENUITEM "Okno dialogowe zastępczych czcionek...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "O&dśwież", ID_REFRESHALL
@@ -155,7 +155,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #1"
     {
-        MENUITEM "&Dodaj &format (Control)...", ID_ADDCTRL
+        MENUITEM "Dodaj kontrolkę...", ID_ADDCTRL
         MENUITEM SEPARATOR
         MENUITEM "Wyt&nij\tCtrl+X", ID_CUT
         MENUITEM "&Kopiuj\tCtrl+C", ID_COPY
@@ -185,8 +185,8 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Odśwież", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "Właściwości &formatu (Control)...", ID_CTRLPROP
-        MENUITEM "Właściwości Okna &Dialogowego...", ID_DLGPROP
+        MENUITEM "Właściwości kontro&lki...", ID_CTRLPROP
+        MENUITEM "Właściwości okna dialogowe&go...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -194,7 +194,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "&Skok!", ID_IDJUMP
+        MENUITEM "Sk&ok!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Dodaj ID...", ID_ADDRESID
         MENUITEM "&Modyfikuj ID...", ID_MODIFYRESID
@@ -206,7 +206,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Usuń ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
         MENUITEM "Liczby dziesię&tne (Dec)", ID_BASE10
-        MENUITEM "Liczby &szesnastkowe (Hex)", ID_BASE16
+        MENUITEM "Liczby szesnastkow&e (Hex)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Przeładuj", ID_LOADRESH
     }
@@ -229,7 +229,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Modyfikuj...", psh2
         MENUITEM SEPARATOR
         MENUITEM "&Góra", psh4
-        MENUITEM "&Dół", psh5
+        MENUITEM "D&ół", psh5
         MENUITEM "&Lewa", psh6
         MENUITEM "&Prawa", psh7
         MENUITEM SEPARATOR
@@ -241,7 +241,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Modyfikuj...", psh2
         MENUITEM SEPARATOR
         MENUITEM "&Góra", psh4
-        MENUITEM "&Dół", psh5
+        MENUITEM "D&ół", psh5
         MENUITEM SEPARATOR
         MENUITEM "&Usuń\tDel", psh3
     }
@@ -458,7 +458,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Modyfikuj...", psh2, 220, 40, 60, 14
     PUSHBUTTON "&Usuń", psh3, 220, 60, 60, 14
     PUSHBUTTON "&Góra", psh4, 220, 100, 60, 14
-    PUSHBUTTON "&Dół", psh5, 220, 120, 60, 14
+    PUSHBUTTON "D&ół", psh5, 220, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 155, 145, 60, 14
     PUSHBUTTON "Anuluj", IDCANCEL, 220, 145, 60, 14
     PUSHBUTTON "Usuń &wszystko", psh6, 5, 145, 79, 14
@@ -576,7 +576,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Modyfikuj...", psh2, 150, 3, 50, 14
     PUSHBUTTON "&Usuń", psh3, 205, 3, 50, 14
     PUSHBUTTON "&Góra", psh4, 5, 140, 40, 14
-    PUSHBUTTON "&Dół", psh5, 50, 140, 40, 14
+    PUSHBUTTON "D&ół", psh5, 50, 140, 40, 14
     PUSHBUTTON "&Lewa", psh6, 95, 140, 40, 14
     PUSHBUTTON "&Prawa", psh7, 140, 140, 41, 14
     AUTOCHECKBOX "Ro&zszerzone", chx1, 260, 3, 60, 14
@@ -821,7 +821,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     AUTOCHECKBOX "&Uwzględnij wielkość liter", chx1, 5, 45, 120, 18
     GROUPBOX "Kierunek", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Góra", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "&Dół", rad2, 90, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "D&ół", rad2, 90, 80, 60, 14, WS_TABSTOP
     ICON 0, ico1, 10, 110, 0, 0
     DEFPUSHBUTTON "&Znajdź", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Anuluj", IDCANCEL, 105, 115, 60, 14
@@ -965,7 +965,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Edytuj...", psh2, 230, 40, 60, 14
     PUSHBUTTON "&Usuń", psh3, 230, 60, 60, 14
     PUSHBUTTON "&Góra", psh4, 230, 80, 60, 14
-    PUSHBUTTON "&Dół", psh5, 230, 100, 60, 14
+    PUSHBUTTON "D&ół", psh5, 230, 100, 60, 14
     PUSHBUTTON "Usuń &wszystko", psh6, 5, 130, 95, 14
     RTEXT "&windres.exe:", stc1, 5, 157, 55, 12
     COMBOBOX cmb1, 70, 155, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1032,7 +1032,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Modyfikuj...", psh2, 260, 40, 60, 14
     PUSHBUTTON "&Usuń", psh3, 260, 60, 60, 14
     PUSHBUTTON "&Góra", psh4, 260, 100, 60, 14
-    PUSHBUTTON "&Dół", psh5, 260, 120, 60, 14
+    PUSHBUTTON "D&ół", psh5, 260, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 145, 60, 14
     PUSHBUTTON "Anuluj", IDCANCEL, 260, 145, 60, 14
     PUSHBUTTON "Usuń &wszystko", psh6, 5, 145, 79, 14
@@ -1484,7 +1484,7 @@ STRINGTABLE
     IDS_SAVEASCOMPRESS, "Zapisz z kompresją"
     IDS_TOOL_NEW, "Nowy"
     IDS_TOOL_OPEN, "Otwórz..."
-    IDS_TOOL_SAVE, "Zapisy jako..."
+    IDS_TOOL_SAVE, "Zapisz jako..."
     IDS_TOOL_EXPAND, "Rozwiń wszystko"
     IDS_TOOL_COLLAPSE, "Zwiń wszystko"
     IDS_TOOL_PLUS, "Dodaj element..."
@@ -1577,27 +1577,27 @@ STRINGTABLE
     IDS_MP3SOUND, "(Dźwięk typu MP3)\r\n"
     IDS_CODEPAGE1200, "1200 (UTF-16)"
     IDS_INVALIDCODEPAGE, "Nieprawidłowa strona kodowa."
-    IDS_UNKNOWN_ID, "Unknown.ID"
-    IDS_CURSOR_ID, "Cursor.ID"
-    IDS_BITMAP_ID, "Bitmap.ID"
-    IDS_MENU_ID, "Menu.ID"
-    IDS_DIALOG_ID, "Dialog.ID"
-    IDS_STRING_ID, "String.ID"
-    IDS_ACCEL_ID, "Accel.ID"
-    IDS_ICON_ID, "Icon.ID"
-    IDS_ANICURSOR_ID, "AniCursor.ID"
-    IDS_ANIICON_ID, "AniIcon.ID"
-    IDS_HTML_ID, "Html.ID"
-    IDS_HELP_ID, "Help.ID"
-    IDS_COMMAND_ID, "Command.ID"
-    IDS_CONTROL_ID, "Control.ID"
-    IDS_RESOURCE_ID, "Resource.ID"
-    IDS_MESSAGE_ID, "Message.ID"
-    IDS_WINDOW_ID, "Window.ID"
-    IDS_NEWCOMMAND_ID, "New.Command.ID"
-    IDS_PROMPT_ID, "Prompt.ID"
-    IDS_RCDATA_ID, "RCData.ID"
-    IDS_MSGTABLE_ID, "MsgTable.ID"
+    IDS_UNKNOWN_ID, "Nieznane ID"
+    IDS_CURSOR_ID, "ID kursora"
+    IDS_BITMAP_ID, "ID bitmapy"
+    IDS_MENU_ID, "ID menu"
+    IDS_DIALOG_ID, "ID dialogu"
+    IDS_STRING_ID, "ID ciągu"
+    IDS_ACCEL_ID, "ID skrótu"
+    IDS_ICON_ID, "ID ikony"
+    IDS_ANICURSOR_ID, "ID kursora anim."
+    IDS_ANIICON_ID, "ID ikony anim."
+    IDS_HTML_ID, "ID HTML"
+    IDS_HELP_ID, "ID pomocy"
+    IDS_COMMAND_ID, "ID polecenia"
+    IDS_CONTROL_ID, "ID kontrolki"
+    IDS_RESOURCE_ID, "ID zasobu"
+    IDS_MESSAGE_ID, "ID komunikatu"
+    IDS_WINDOW_ID, "ID okna"
+    IDS_NEWCOMMAND_ID, "ID nowego polecenia"
+    IDS_PROMPT_ID, "ID monitu"
+    IDS_RCDATA_ID, "ID RCData"
+    IDS_MSGTABLE_ID, "ID tabeli komunikatów"
     IDS_ADDCTRL, "Dodawanie formantu (Control)"
     IDS_SEARCHURL, "https://duckduckgo.com/?q=%s&t=h_&ia=web"
 }

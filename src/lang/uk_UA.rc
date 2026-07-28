@@ -87,7 +87,7 @@ IDR_MAINMENU MENU
         MENUITEM "Налаштування &шрифта...", ID_FONTS
         MENUITEM "Задати ш&ляхи...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "&Вибір мови інтерфейсу (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Налаштування Delphi DFM...", ID_DFMSETTINGS
         MENUITEM "&Конфігурація...\tAlt+Enter", ID_CONFIG
