@@ -86,7 +86,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Yazı Tipi Ayarları...", ID_FONTS
         MENUITEM "&Yolları Ayarla...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "&UI Dili Seç (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI語言選擇)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM &Ayarları...", ID_DFMSETTINGS
         MENUITEM "&Yapılandırma...\tAlt+Enter", ID_CONFIG
