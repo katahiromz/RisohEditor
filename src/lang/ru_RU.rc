@@ -136,6 +136,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "О&ткрыть файл README.txt (английский)", ID_OPENREADME
         MENUITEM "О&ткрыть файл README_ru.txt", ID_OPENREADMERU
+        MENUITEM "Открыть файл ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Руководство пользователя RisohEditor", ID_GUIDE
