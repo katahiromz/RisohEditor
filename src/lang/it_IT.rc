@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "Aggiungi tabella &stringhe...", ID_ADDSTRINGTABLE
             MENUITEM "Aggiungi tabella m&essaggi...", ID_ADDMESSAGETABLE
             MENUITEM "Aggiungi &HTML...", ID_ADDHTML
-            MENUITEM "Aggiungi &acceleratori...", ID_ADDACCEL
+            MENUITEM "Aggiungi acce&leratori...", ID_ADDACCEL
             MENUITEM "Aggiungi info &versione...", ID_ADDVERINFO
             MENUITEM "Aggiungi info mani&fest...", ID_ADDMANIFEST
             MENUITEM "Aggiungi barra s&trumenti...", ID_ADDTOOLBAR
@@ -78,7 +78,7 @@ IDR_MAINMENU MENU
         MENUITEM "Clona con nuova &lingua...", ID_COPYASNEWLANG
         MENUITEM "Clona in più lingue...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "Effettua &test", ID_TEST
+        MENUITEM "&Test", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Elimina\tCanc", ID_DELETERES
         MENUITEM SEPARATOR
@@ -122,7 +122,7 @@ IDR_MAINMENU MENU
         MENUITEM "Usa BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "Codifica &elementi risorse...", ID_ENCODING
-        MENUITEM "Sostituzione &font finestra...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Sostituzione fo&nt finestra...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "A&ggiorna", ID_REFRESHALL
     }
@@ -167,7 +167,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Vai all'&inizio", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "&Decrementa indice", ID_CTRLINDEXMINUS
-            MENUITEM "&Incrementa indice", ID_CTRLINDEXPLUS
+            MENUITEM "I&ncrementa indice", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "Vai alla &fine", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -183,10 +183,10 @@ IDR_POPUPMENUS MENU
             MENUITEM "Adatta alla &griglia", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Aggiorna", ID_REFRESHDIALOG
+        MENUITEM "A&ggiorna", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "&Proprietà controllo...", ID_CTRLPROP
-        MENUITEM "Pr&oprietà finestra...", ID_DLGPROP
+        MENUITEM "P&roprietà finestra...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -201,11 +201,11 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Copia &nome", ID_COPYRESIDNAME
         MENUITEM "Copia &valore", ID_COPYRESIDVALUE
-        MENUITEM "Copia &definizione\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "Copia de&finizione\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Elimina ID\tCanc", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "Numeri &decimali", ID_BASE10
+        MENUITEM "Numeri de&cimali", ID_BASE10
         MENUITEM "Numeri &esadecimali", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Ricarica", ID_LOADRESH
@@ -1387,7 +1387,7 @@ STRINGTABLE
     IDS_HELPID, "ID guida"
     IDS_INDENT, "» "
     IDS_DATAISEMPTY, "Dati vuoti."
-    IDS_TEST, "Effettua test"
+    IDS_TEST, "Test"
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "I dati sono stati modificati.\r\nVuoi compilare ora?"
     IDS_RADWINDOW, "Modifica finestra dialogo"
