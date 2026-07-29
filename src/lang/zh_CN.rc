@@ -135,6 +135,7 @@ IDR_MAINMENU MENU
     POPUP "帮助(&H)"
     {
         MENUITEM "打开英文 &README.txt", ID_OPENREADME
+        MENUITEM "打开更新日志 ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "打开 &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "RisohEditor指南(&G)", ID_GUIDE
