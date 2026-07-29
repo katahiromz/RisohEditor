@@ -122,7 +122,7 @@ IDR_MAINMENU MENU
         MENUITEM "Gunakan BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Enkoding Item Sumber Daya...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Pengganti &font dialog...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Muat &Ulang", ID_REFRESHALL
     }
@@ -1477,7 +1477,7 @@ STRINGTABLE
     IDS_CANTSTARTSEARCH, "Tidak bisa memulai pencarian."
     IDS_AMERICA, "Amerika"
     IDS_ENGLISH, "Inggris"
-    IDS_CHINA, "China"
+    IDS_CHINA, "Tiongkok"
     IDS_CHINESE, "China"
     IDS_RUSSIA, "Rusia"
     IDS_RUSSIAN, "Rusia"
@@ -1498,7 +1498,7 @@ STRINGTABLE
     IDS_TOOL_IMPORT, "Impor..."
     IDS_TOOL_EXTRACT, "Ekstrak..."
     IDS_TOOL_GUIEDIT, "Edit dengan GUI"
-    IDS_UNITEDKINGDOM, "United Kingdom"
+    IDS_UNITEDKINGDOM, "Britania Raya"
     IDS_GREATBRITAIN, "Britain Raya"
     IDS_BRITISH, "Britis"
     IDS_FRANCE, "Prancis"
