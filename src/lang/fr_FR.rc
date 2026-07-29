@@ -16,25 +16,25 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Ouvert...\tCtrl+O", ID_OPEN
         MENUITEM "&Sauver...\tCtrl+S", ID_SAVE
-        MENUITEM "Enregistrer sous...\tShift+Ctrl+S", ID_SAVEAS
+        MENUITEM "&Enregistrer sous...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM "Enregistrer avec &compression...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Importation...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportation...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Recharger &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Enregistrer resource.h...", ID_UPDATERESHBANG
-        MENUITEM "Conseil de modification de resource.h...", ID_ADVICERESH
+        MENUITEM "Enregistrer resource.&h...", ID_UPDATERESHBANG
+        MENUITEM "Conseil &de modification de resource.h...", ID_ADVICERESH
         MENUITEM "&Décharger resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Charger la bibliothèque de classes de fenêtre...", ID_LOADWCLIB
+        MENUITEM "Charger &la bibliothèque de classes de fenêtre...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "Fichiers récemment utilisés"
         {
             MENUITEM "(Aucun)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "Sortie\tAlt+F4", ID_EXIT
+        MENUITEM "Sor&tie\tAlt+F4", ID_EXIT
     }
     POPUP "&Éditer"
     {
@@ -42,50 +42,50 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "&Ajouter"
         {
-            MENUITEM "Ajouter une icône...", ID_ADDICON
-            MENUITEM "Ajouter un curseur...", ID_ADDCURSOR
-            MENUITEM "Ajouter un bitmap...", ID_ADDBITMAP
-            MENUITEM "Ajouter une boîte de dialogue...", ID_ADDDIALOG
-            MENUITEM "Ajouter un menu...", ID_ADDMENU
-            MENUITEM "Ajouter une table de chaînes...", ID_ADDSTRINGTABLE
-            MENUITEM "Ajouter une table de messages...", ID_ADDMESSAGETABLE
-            MENUITEM "Ajouter du HTML...", ID_ADDHTML
-            MENUITEM "Ajouter des accélérateurs...", ID_ADDACCEL
-            MENUITEM "Ajouter des informations sur la version...", ID_ADDVERINFO
-            MENUITEM "Ajouter un manifeste...", ID_ADDMANIFEST
+            MENUITEM "&Ajouter une icône...", ID_ADDICON
+            MENUITEM "Ajo&uter un curseur...", ID_ADDCURSOR
+            MENUITEM "Ajouter un &bitmap...", ID_ADDBITMAP
+            MENUITEM "Ajouter une boîte &de dialogue...", ID_ADDDIALOG
+            MENUITEM "Ajouter un &menu...", ID_ADDMENU
+            MENUITEM "Ajou&ter une table de chaînes...", ID_ADDSTRINGTABLE
+            MENUITEM "A&jouter une table de messages...", ID_ADDMESSAGETABLE
+            MENUITEM "Ajouter du &HTML...", ID_ADDHTML
+            MENUITEM "Aj&outer des accélérateurs...", ID_ADDACCEL
+            MENUITEM "Ajouter des &informations sur la version...", ID_ADDVERINFO
+            MENUITEM "Ajout&er un manifeste...", ID_ADDMANIFEST
             MENUITEM "Ajouter une barre d'ou&tils...", ID_ADDTOOLBAR
-            MENUITEM "Ajouter un élément de ressource...", ID_ADDRES
+            MENUITEM "Ajoute&r un élément de ressource...", ID_ADDRES
         }
         POPUP "&Remplacer"
         {
-            MENUITEM "Remplacer l'icône...", ID_REPLACEICON
-            MENUITEM "Remplacer le curseur...", ID_REPLACECURSOR
-            MENUITEM "Remplacer le bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Remplacer l'élément de ressource binaire...", ID_REPLACEBIN
+            MENUITEM "&Remplacer l'icône...", ID_REPLACEICON
+            MENUITEM "Remp&lacer le curseur...", ID_REPLACECURSOR
+            MENUITEM "Remplacer le &bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Remplacer l'&élément de ressource binaire...", ID_REPLACEBIN
         }
-        POPUP "&Extraire"
+        POPUP "&Extrait"
         {
-            MENUITEM "Extraire l'icône...", ID_EXTRACTICON
-            MENUITEM "Extraire le curseur...", ID_EXTRACTCURSOR
-            MENUITEM "Extraire le bitmap...", ID_EXTRACTBITMAP
-            MENUITEM "Extraire en tant que fichier RC...", ID_EXTRACTRC
-            MENUITEM "Extraire l'élément de ressource binaire...", ID_EXTRACTBIN
+            MENUITEM "&Extraire l'icône...", ID_EXTRACTICON
+            MENUITEM "Extraire &le curseur...", ID_EXTRACTCURSOR
+            MENUITEM "Extraire le &bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Ex&traire en tant que fichier RC...", ID_EXTRACTRC
+            MENUITEM "Extraire l'élément &de ressource binaire...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Changer le nom / la langue\tF2", ID_EDITLABEL
+        MENUITEM "&Changer le nom / la langue\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Cloner sous un nouveau nom...", ID_COPYASNEWNAME
-        MENUITEM "Cloner dans une nouvelle langue...", ID_COPYASNEWLANG
-        MENUITEM "Copier dans plusieurs langues...", ID_COPYTOMULTILANG
+        MENUITEM "Cloner &sous un nouveau nom...", ID_COPYASNEWNAME
+        MENUITEM "Cloner &dans une nouvelle langue...", ID_COPYASNEWLANG
+        MENUITEM "Co&pier dans plusieurs langues...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Faire un &test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "Supprimer\tDel", ID_DELETERES
+        MENUITEM "S&upprimer\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&Association ID...", ID_IDASSOC
-        MENUITEM "Macros prédéfinies...", ID_PREDEFMACROS
+        MENUITEM "&Macros prédéfinies...", ID_PREDEFMACROS
         MENUITEM "&Paramètres de police...", ID_FONTS
-        MENUITEM "Définir les chemins...", ID_SETPATHS
+        MENUITEM "Définir &les chemins...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
@@ -96,8 +96,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Trouver...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Rechercher vers le haut\tShift+F3", ID_FINDUPWARD
-        MENUITEM "Recherche vers le bas\tF3", ID_FINDDOWNWARD
+        MENUITEM "&Rechercher vers le haut\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Recherche &vers le bas\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "Constante de &requête...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
@@ -107,19 +107,19 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Barre d'état", ID_STATUSBAR
         MENUITEM "Barre d'ou&tils", ID_SHOWHIDETOOLBAR
-        MENUITEM "Binaire", ID_BINARYPANE
+        MENUITEM "B&inaire", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "Développer tout\tCtrl+K", ID_EXPAND_ALL
-        MENUITEM "Réduire tout\tCtrl+L", ID_COLLAPSE_ALL
+        MENUITEM "&Développer tout\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "&Réduire tout\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Identifiants de ressource", ID_IDLIST
-        MENUITEM "Liste des langues...", ID_SHOWLANGS
+        MENUITEM "Id&entifiants de ressource", ID_IDLIST
+        MENUITEM "&Liste des langues...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Instruction Always CONTROL", ID_ALWAYSCONTROL
-        MENUITEM "N'utilisez pas de macros d'identification", ID_HIDEIDMACROS
-        MENUITEM "Utilisez IDC_STATIC", ID_USEIDC_STATIC
+        MENUITEM "Instruction &Always CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "&N'utilisez pas de macros d'identification", ID_HIDEIDMACROS
+        MENUITEM "&Utilisez IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "&Habillage de mots", ID_WORD_WRAP
-        MENUITEM "Utilisez BEGIN / END", ID_USEBEGINEND
+        MENUITEM "Utili&sez BEGIN / END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Encodage de l'élément de ressource...", ID_ENCODING
         MENUITEM "Substituts de police de &dialogue...", ID_DIALOG_FONT_SUBSTITUTES
@@ -128,17 +128,17 @@ IDR_MAINMENU MENU
     }
     POPUP "&Automatisation"
     {
-        MENUITEM "Le langage de programmation EGA...", ID_EGA
+        MENUITEM "&Le langage de programmation EGA...", ID_EGA
         MENUITEM "&Exécuter le programme EGA...", ID_EGA_PROGRAM
-        MENUITEM "Ouvrir le manuel EGA", ID_OPEN_EGA_MANUAL
+        MENUITEM "&Ouvrir le manuel EGA", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Aide"
     {
-        MENUITEM "Ouvrez README.txt (Anglais)", ID_OPENREADME
-        MENUITEM "Ouvrez LICENSE.txt", ID_OPENLICENSE
+        MENUITEM "&Ouvrez README.txt (Anglais)", ID_OPENREADME
+        MENUITEM "Ouvrez &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Un &guide pour RisohEditor", ID_GUIDE
-        MENUITEM "Vérifier la mise à jour de RisohEditor...", ID_CHECKUPDATE
+        MENUITEM "&Vérifier la mise à jour de RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&À propos de...", ID_ABOUT
     }
@@ -156,21 +156,21 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Ajouter un contrôle...", ID_ADDCTRL
         MENUITEM SEPARATOR
-        MENUITEM "Couper\tCtrl+X", ID_CUT
-        MENUITEM "Copie\tCtrl+C", ID_COPY
-        MENUITEM "Coller\tCtrl+V", ID_PASTE
-        MENUITEM "Supprimer\tDel", ID_DELCTRL
+        MENUITEM "&Couper\tCtrl+X", ID_CUT
+        MENUITEM "Copie\&tCtrl+C", ID_COPY
+        MENUITEM "Pâte\tCtrl+V", ID_PASTE
+        MENUITEM "&Supprimer\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "&Indice"
         {
-            MENUITEM "Aller en haut", ID_CTRLINDEXTOP
+            MENUITEM "&Aller en haut", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "Index de décrémentation", ID_CTRLINDEXMINUS
-            MENUITEM "Indice d'incrément", ID_CTRLINDEXPLUS
+            MENUITEM "&Index de décrémentation", ID_CTRLINDEXMINUS
+            MENUITEM "In&dice d'incrément", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "Aller en bas", ID_CTRLINDEXBOTTOM
+            MENUITEM "All&er en bas", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Afficher / masquer les index\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Afficher / &masquer les index\tCtrl+D", ID_SHOWHIDEINDEX
         }
         POPUP "&Alignement"
         {
@@ -179,13 +179,13 @@ IDR_POPUPMENUS MENU
             MENUITEM "&Left-Align", ID_LEFTALIGN
             MENUITEM "&Right-Align", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Ajuster à la grille", ID_FITTOGRID
+            MENUITEM "&Ajuster à la grille", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
         MENUITEM "&&Rafraîchir", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "&Propriétés de contrôle...", ID_CTRLPROP
-        MENUITEM "Propriétés de la boîte de dialogue...", ID_DLGPROP
+        MENUITEM "Propriétés &de la boîte de dialogue...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -198,9 +198,9 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Ajouter un identifiant...", ID_ADDRESID
         MENUITEM "&Modifier l'ID...", ID_MODIFYRESID
         MENUITEM SEPARATOR
-        MENUITEM "Copier le nom", ID_COPYRESIDNAME
-        MENUITEM "Copier la valeur", ID_COPYRESIDVALUE
-        MENUITEM "Copier la définition\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "&Copier le nom", ID_COPYRESIDNAME
+        MENUITEM "Copier &la valeur", ID_COPYRESIDVALUE
+        MENUITEM "Copier la &définition\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Supprimer l'ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
@@ -213,8 +213,8 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Ajouter...", ID_ADD
         MENUITEM SEPARATOR
-        MENUITEM "Changer de nom...\tF2", ID_RENAME
-        MENUITEM "Changer la valeur...", ID_MODIFY
+        MENUITEM "&Changer de nom...\tF2", ID_RENAME
+        MENUITEM "Changer &la valeur...", ID_MODIFY
         MENUITEM SEPARATOR
         MENUITEM "&Supprimer\tDel", ID_DELETE
     }
@@ -232,7 +232,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Gauche", psh6
         MENUITEM "&Droite", psh7
         MENUITEM SEPARATOR
-        MENUITEM "Delete\tDel", psh3
+        MENUITEM "Dele&te\tDel", psh3
     }
     POPUP "Popup #7"
     {
@@ -242,7 +242,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&En haut", psh4
         MENUITEM "&Vers le bas", psh5
         MENUITEM SEPARATOR
-        MENUITEM "Supprimer\tDel", psh3
+        MENUITEM "&Supprimer\tDel", psh3
     }
     POPUP "Popup #8"
     {
