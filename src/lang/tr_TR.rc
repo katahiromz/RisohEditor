@@ -23,9 +23,9 @@ IDR_MAINMENU MENU
         MENUITEM "&Dışa Aktar...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "&resource.h Kaynağını Yeniden Yükle ...\tCtrl+R", ID_LOADRESH
-        MENUITEM "&resource.h Kaynağını Kaydet...", ID_UPDATERESHBANG
+        MENUITEM "r&esource.h Kaynağını Kaydet...", ID_UPDATERESHBANG
         MENUITEM "Resource.h Değişikliği İçin &Tavsiye...", ID_ADVICERESH
-        MENUITEM "&resource.h'yi Boşalt", ID_UNLOADRESH
+        MENUITEM "re&source.h'yi Boşalt", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "&Pencere Sınıfı Kütüphanesini Yükle...", ID_LOADWCLIB
         MENUITEM SEPARATOR
@@ -47,34 +47,34 @@ IDR_MAINMENU MENU
             MENUITEM "&Bitmap Ekle...", ID_ADDBITMAP
             MENUITEM "&Diyalog Ekle...", ID_ADDDIALOG
             MENUITEM "&Menü Ekle...", ID_ADDMENU
-            MENUITEM "&Dize Tablosu Ekle...", ID_ADDSTRINGTABLE
-            MENUITEM "&Mesaj Tablosu Ekle...", ID_ADDMESSAGETABLE
+            MENUITEM "D&ize Tablosu Ekle...", ID_ADDSTRINGTABLE
+            MENUITEM "M&esaj Tablosu Ekle...", ID_ADDMESSAGETABLE
             MENUITEM "&HTML Ekle...", ID_ADDHTML
             MENUITEM "&Kısayol Tuşları Ekle...", ID_ADDACCEL
-            MENUITEM "&Sürüm Bilgisi Ekle...", ID_ADDVERINFO
-            MENUITEM "&Manifesto Ekle...", ID_ADDMANIFEST
-            MENUITEM "&Araç Çubuğu Ekle", ID_ADDTOOLBAR
-            MENUITEM "&Kaynak Öğesi Ekle...", ID_ADDRES
+            MENUITEM "S&ürüm Bilgisi Ekle...", ID_ADDVERINFO
+            MENUITEM "M&anifesto Ekle...", ID_ADDMANIFEST
+            MENUITEM "A&raç Çubuğu Ekle", ID_ADDTOOLBAR
+            MENUITEM "Ka&ynak Öğesi Ekle...", ID_ADDRES
         }
         POPUP "&Değiştir"
         {
             MENUITEM "Simgeyi &Değiştir...", ID_REPLACEICON
-            MENUITEM "İmleci &Değiştir...", ID_REPLACECURSOR
-            MENUITEM "Bitmap’i &Değiştir...", ID_REPLACEBITMAP
+            MENUITEM "&İmleci Değiştir...", ID_REPLACECURSOR
+            MENUITEM "&Bitmap’i Değiştir...", ID_REPLACEBITMAP
             MENUITEM "İkili &Kaynak Öğesini Değiştir...", ID_REPLACEBIN
         }
         POPUP "&Çıkart"
         {
             MENUITEM "Simgeyi &Çıkart...", ID_EXTRACTICON
-            MENUITEM "İmleci &Çıkart...", ID_EXTRACTCURSOR
-            MENUITEM "Bitmap’i &Çıkart...", ID_EXTRACTBITMAP
-            MENUITEM "RC dosyası olarak &Çıkart...", ID_EXTRACTRC
+            MENUITEM "&İmleci Çıkart...", ID_EXTRACTCURSOR
+            MENUITEM "&Bitmap’i Çıkart...", ID_EXTRACTBITMAP
+            MENUITEM "&RC dosyası olarak Çıkart...", ID_EXTRACTRC
             MENUITEM "İkili &Kaynak Öğesini Çıkart...", ID_EXTRACTBIN
         }
         MENUITEM "Adı/Dili &Değiştir\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Yeni &Adla Klonla...", ID_COPYASNEWNAME
-        MENUITEM "Yeni &Dille Klonla...", ID_COPYASNEWLANG
+        MENUITEM "&Yeni Dille Klonla...", ID_COPYASNEWLANG
         MENUITEM "Birden Çok Dile Kopyala...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Test Et", ID_TEST
@@ -83,24 +83,24 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&ID Eşlemesi...", ID_IDASSOC
         MENUITEM "Ön Tanımlı &Makrolar...", ID_PREDEFMACROS
-        MENUITEM "&Yazı Tipi Ayarları...", ID_FONTS
-        MENUITEM "&Yolları Ayarla...", ID_SETPATHS
+        MENUITEM "Ya&zı Tipi Ayarları...", ID_FONTS
+        MENUITEM "Y&olları Ayarla...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI語言選擇)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Delphi DFM &Ayarları...", ID_DFMSETTINGS
-        MENUITEM "&Yapılandırma...\tAlt+Enter", ID_CONFIG
+        MENUITEM "D&elphi DFM Ayarları...", ID_DFMSETTINGS
+        MENUITEM "Ya&pılandırma...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Ara"
     {
         MENUITEM "&Bul...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
         MENUITEM "Yukarı &Ara\tShift+F3", ID_FINDUPWARD
-        MENUITEM "Aşağı &Ara\tF3", ID_FINDDOWNWARD
+        MENUITEM "A&şağı Ara\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Sabit Sorgula...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
-        MENUITEM "&Belirtilen satıra git...\tCtrl+G", ID_GOTOLINE
+        MENUITEM "B&elirtilen satıra git...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Görüntüle"
     {
@@ -109,32 +109,32 @@ IDR_MAINMENU MENU
         MENUITEM "&İkili", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "Tümünü G&enişlet\tCtrl+K", ID_EXPAND_ALL
-        MENUITEM "Tümünü D&aralt\tCtrl+L", ID_COLLAPSE_ALL
+        MENUITEM "&Tümünü Daralt\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "&Kaynak Kimlikleri", ID_IDLIST
-        MENUITEM "&Diller Listesi...", ID_SHOWLANGS
+        MENUITEM "D&iller Listesi...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Her Zaman &CONTROL ifadesi", ID_ALWAYSCONTROL
-        MENUITEM "&ID Makrolarını Kullanma", ID_HIDEIDMACROS
-        MENUITEM "IDC_ST&ATIC Kullan", ID_USEIDC_STATIC
-        MENUITEM "&Sözcük Kaydırma", ID_WORD_WRAP
+        MENUITEM "ID &Makrolarını Kullanma", ID_HIDEIDMACROS
+        MENUITEM "IDC_&STATIC Kullan", ID_USEIDC_STATIC
+        MENUITEM "S&özcük Kaydırma", ID_WORD_WRAP
         MENUITEM "BE&GIN/END Kullan", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "&Kaynak ögesi kodlaması...", ID_ENCODING
-        MENUITEM "İletişim kutusu &yazı tipi yerine geçerleri...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Ka&ynak ögesi kodlaması...", ID_ENCODING
+        MENUITEM "İ&letişim kutusu yazı tipi yerine geçerleri...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "&Yenile", ID_REFRESHALL
+        MENUITEM "Ye&nile", ID_REFRESHALL
     }
     POPUP "&Otomatikleştirme"
     {
         MENUITEM "Programlama Dili &EGA...", ID_EGA
-        MENUITEM "&EGA programını çalıştır...", ID_EGA_PROGRAM
+        MENUITEM "E&GA programını çalıştır...", ID_EGA_PROGRAM
         MENUITEM "EGA &Kılavuzunu Aç", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Yardım"
     {
         MENUITEM "&README.txt Dosyasını Aç (İngilizce)", ID_OPENREADME
-        MENUITEM "&README_tr.txt Dosyasını Aç", ID_OPENREADMETR
+        MENUITEM "R&EADME_tr.txt Dosyasını Aç", ID_OPENREADMETR
         MENUITEM "ChangeLog.txt Dosyasını Aç", ID_OPENHISTORY
         MENUITEM "&LICENSE.txt Dosyasını Aç", ID_OPENLICENSE
         MENUITEM SEPARATOR
@@ -158,7 +158,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Kontrol Ekle...", ID_ADDCTRL
         MENUITEM SEPARATOR
         MENUITEM "Kes\tCtrl+X", ID_CUT
-        MENUITEM "&Kopyala\tCtrl+C", ID_COPY
+        MENUITEM "K&opyala\tCtrl+C", ID_COPY
         MENUITEM "&Yapıştır\tCtrl+V", ID_PASTE
         MENUITEM "&Sil\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
@@ -167,9 +167,9 @@ IDR_POPUPMENUS MENU
             MENUITEM "En Üst'e &Git", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "&İndeksi Azalt", ID_CTRLINDEXMINUS
-            MENUITEM "&İndeksi Artır", ID_CTRLINDEXPLUS
+            MENUITEM "İ&ndeksi Artır", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "En Alt'a &Git", ID_CTRLINDEXBOTTOM
+            MENUITEM "&En Alt'a Git", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "İndeksleri Göster/Gizle\tCtrl+D", ID_SHOWHIDEINDEX
         }
@@ -178,14 +178,14 @@ IDR_POPUPMENUS MENU
             MENUITEM "&Üste-Hizala", ID_TOPALIGN
             MENUITEM "&Alta-Hizala", ID_BOTTOMALIGN
             MENUITEM "&Sola-Hizala", ID_LEFTALIGN
-            MENUITEM "&Sağa-Hizala", ID_RIGHTALIGN
+            MENUITEM "Sa&ğa-Hizala", ID_RIGHTALIGN
             MENUITEM SEPARATOR
             MENUITEM "Izgara'ya &Uydur", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Yenile", ID_REFRESHDIALOG
+        MENUITEM "Y&enile", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "&Kontrol Özellikleri...", ID_CTRLPROP
+        MENUITEM "Ko&ntrol Özellikleri...", ID_CTRLPROP
         MENUITEM "D&iyalog Özellikleri...", ID_DLGPROP
     }
     POPUP "Açılır Pencere #2"
@@ -197,16 +197,16 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Atla!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&ID Ekle...", ID_ADDRESID
-        MENUITEM "&ID Düzenle...", ID_MODIFYRESID
+        MENUITEM "I&D Düzenle...", ID_MODIFYRESID
         MENUITEM SEPARATOR
-        MENUITEM "&Adı Kopyala", ID_COPYRESIDNAME
-        MENUITEM "&Değeri Kopyala", ID_COPYRESIDVALUE
+        MENUITEM "Adı &Kopyala", ID_COPYRESIDNAME
+        MENUITEM "D&eğeri Kopyala", ID_COPYRESIDVALUE
         MENUITEM "&Tanımı Kopyala\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
-        MENUITEM "&ID Sil\tDel", ID_DELETERESID
+        MENUITEM "ID &Sil\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
         MENUITEM "&Ondalık Sayılar", ID_BASE10
-        MENUITEM "&Onaltılık Sayılar", ID_BASE16
+        MENUITEM "O&naltılık Sayılar", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Yeniden Yükle", ID_LOADRESH
     }
@@ -231,7 +231,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Yukarı", psh4
         MENUITEM "&Aşağı", psh5
         MENUITEM "&Sola", psh6
-        MENUITEM "&Sağa", psh7
+        MENUITEM "Sa&ğa", psh7
         MENUITEM SEPARATOR
         MENUITEM "Sİl", psh3
     }
@@ -264,9 +264,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     LTEXT "&Kaynak Türü:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Kaynak Adı:", -1, 5, 32, 70, 12
+    LTEXT "K&aynak Adı:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Kaynak Dili:", -1, 5, 57, 70, 12
+    LTEXT "Ka&ynak Dili:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Binary Dosyası:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
@@ -359,7 +359,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     LTEXT "", stc1, 75, 43, 115, 10
     LTEXT "Kaynak &Dili:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Binary &Dosyası:", -1, 5, 85, 100, 12
+    LTEXT "&Binary Dosyası:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Gözat...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
@@ -423,7 +423,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&NOINVERT", chx2, 70, 60, 60, 14
     AUTOCHECKBOX "&CONTROL", chx3, 5, 75, 60, 14
     AUTOCHECKBOX "&SHIFT", chx4, 70, 75, 60, 14
-    AUTOCHECKBOX "&ALT", chx5, 140, 75, 45, 14
+    AUTOCHECKBOX "A&LT", chx5, 140, 75, 45, 14
     DEFPUSHBUTTON "Tamam", IDOK, 60, 100, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 125, 100, 60, 14
 }
@@ -442,7 +442,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&NOINVERT", chx2, 70, 60, 60, 14
     AUTOCHECKBOX "&CONTROL", chx3, 5, 75, 60, 14
     AUTOCHECKBOX "&SHIFT", chx4, 70, 75, 60, 14
-    AUTOCHECKBOX "&ALT", chx5, 140, 75, 45, 14
+    AUTOCHECKBOX "A&LT", chx5, 140, 75, 45, 14
     DEFPUSHBUTTON "Tamam", IDOK, 60, 100, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 125, 100, 60, 14
 }
@@ -461,7 +461,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Aşağı", psh5, 220, 120, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 155, 145, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 220, 145, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh6, 5, 145, 79, 14
+    PUSHBUTTON "&Tümünü Sil", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDSTR DIALOGEX 0, 0, 255, 115
@@ -506,7 +506,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Sil", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 195, 140, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh4, 5, 140, 75, 14
+    PUSHBUTTON "&Tümünü Sil", psh4, 5, 140, 75, 14
 }
 
 IDD_ADDMITEM DIALOGEX 0, 0, 210, 200
@@ -524,14 +524,14 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
     AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "M&ENUBARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
     AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "Ya&rdım ID:", -1, 5, 162, 45, 12
+    LTEXT "&Yardım ID:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "Tamam", IDOK, 80, 180, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 145, 180, 60, 14
@@ -552,14 +552,14 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
     AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "M&ENUBARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
     AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "Yar&dım ID:", -1, 5, 162, 45, 12
+    LTEXT "&Yardım ID:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "Tamam", IDOK, 80, 180, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 145, 180, 60, 14
@@ -576,9 +576,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Değiştir...", psh2, 150, 3, 50, 14
     PUSHBUTTON "S&il", psh3, 205, 3, 50, 14
     PUSHBUTTON "&Yukarı", psh4, 5, 140, 40, 14
-    PUSHBUTTON "&Aşağı", psh5, 50, 140, 40, 14
+    PUSHBUTTON "A&şağı", psh5, 50, 140, 40, 14
     PUSHBUTTON "&Sola", psh6, 95, 140, 40, 14
-    PUSHBUTTON "&Sağa", psh7, 140, 140, 41, 14
+    PUSHBUTTON "Sa&ğa", psh7, 140, 140, 41, 14
     AUTOCHECKBOX "Geniş&letilmiş", chx1, 260, 3, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 195, 140, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 260, 140, 60, 14
@@ -606,9 +606,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 162, 53, 12, 20
     LTEXT "Sınıf &Adı:", -1, 5, 73, 85, 11
     COMBOBOX cmb2, 5, 88, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Yardım &ID:", -1, 125, 73, 64, 11
+    LTEXT "Yar&dım ID:", -1, 125, 73, 64, 11
     COMBOBOX cmb3, 125, 88, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Yazı Tipi &Adı:", -1, 5, 105, 80, 11
+    LTEXT "&Yazı Tipi Adı:", -1, 5, 105, 80, 11
     COMBOBOX cmb4, 6, 118, 100, 200, CBS_HASSTRINGS | CBS_SORT | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Boyut:", -1, 110, 105, 38, 12
     EDITTEXT edt5, 110, 118, 25, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
@@ -616,7 +616,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&I", chx3, 165, 118, 20, 14
     LTEXT "Karakter Kümesi:", -1, 5, 138, 80, 11
     COMBOBOX cmb5, 5, 148, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Menü &Adı:", -1, 110, 138, 55, 11
+    LTEXT "&Menü Adı:", -1, 110, 138, 55, 11
     COMBOBOX cmb6, 110, 148, 99, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Stil:", -1, 5, 168, 45, 11
     EDITTEXT edt6, 67, 165, 45, 14, ES_AUTOHSCROLL
@@ -639,7 +639,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     LTEXT "Başlık:", -1, 5, 55, 75, 12
     COMBOBOX cmb2, 5, 65, 195, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 205, 65, 25, 14
-    LTEXT "S&ol:", -1, 5, 85, 33, 11
+    LTEXT "&Sol:", -1, 5, 85, 33, 11
     EDITTEXT edt1, 5, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 20, 99, 12, 20
     LTEXT "Üst:", -1, 40, 85, 33, 11
@@ -655,7 +655,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     COMBOBOX cmb3, 150, 99, 80, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Pencere Sınıfı &Adı:", -1, 5, 119, 100, 12
     COMBOBOX cmb4, 5, 133, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Yardım &ID:", -1, 125, 119, 70, 12
+    LTEXT "&Yardım ID:", -1, 125, 119, 70, 12
     COMBOBOX cmb5, 125, 133, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Stil:", -1, 5, 153, 45, 12
     EDITTEXT edt6, 70, 151, 45, 14, ES_AUTOHSCROLL
@@ -666,7 +666,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     DEFPUSHBUTTON "Tamam", IDOK, 170, 293, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 170, 309, 60, 14
     PUSHBUTTON "&Veri...", psh1, 5, 293, 90, 14
-    PUSHBUTTON "Dize l&isti...", psh3, 5, 309, 90, 14
+    PUSHBUTTON "&Dize listi...", psh3, 5, 309, 90, 14
 }
 
 IDD_IDASSOC DIALOGEX 0, 0, 200, 220
@@ -689,7 +689,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     RTEXT "&ID Türü:", -1, 5, 7, 65, 12
     EDITTEXT edt1, 80, 5, 80, 14, WS_DISABLED
-    RTEXT "&ID Öneki:", -1, 5, 32, 65, 12
+    RTEXT "I&D Öneki:", -1, 5, 32, 65, 12
     EDITTEXT edt2, 80, 28, 80, 14, ES_AUTOHSCROLL
     DEFPUSHBUTTON "Tamam", IDOK, 35, 50, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 100, 50, 60, 14
@@ -719,15 +719,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     RTEXT "Combo&Box Yüksekliği:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Kelime kaydırma", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "K&elime kaydırma", chx9, 135, 125, 70, 14
     AUTOCHECKBOX """&resource.h"" güncellemesini sor", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "EXE'yi kaydederken &UPX ile sıkıştır", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Yazı Tipleri...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Önceden Tanımlı &Makrolar...", psh1, 5, 205, 93, 14
+    PUSHBUTTON "&Önceden Tanımlı Makrolar...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Yol &Ayarlarını Yap...", psh2, 107, 205, 98, 14
     RTEXT "&OLE denetimlerinin adı:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Yedek oluştur", chx10, 5, 245, 75, 15
+    AUTOCHECKBOX "Ye&dek oluştur", chx10, 5, 245, 75, 15
     RTEXT "Yedek Soneki:", -1, 90, 245, 60, 15
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Kaynak d&ili:", -1, 5, 265, 110, 10
@@ -745,7 +745,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     RTEXT "&ID Türü:", -1, 10, 7, 50, 14
     COMBOBOX cmb1, 65, 5, 95, 300, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&ID Adı:", -1, 10, 27, 50, 14
+    RTEXT "I&D Adı:", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14, ES_AUTOHSCROLL
     RTEXT "&Tamsayı değeri:", -1, 10, 47, 50, 14
     EDITTEXT edt2, 65, 45, 48, 14, ES_AUTOHSCROLL
@@ -762,7 +762,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     RTEXT "&ID Adı:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
-    RTEXT "&ID Türü:", -1, 10, 32, 50, 14
+    RTEXT "I&D Türü:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
     RTEXT "&Tamsayı değeri:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_AUTOHSCROLL
@@ -821,9 +821,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&Büyük/küçük harfe duyarlı", chx1, 5, 45, 120, 18
     GROUPBOX "Yön", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Yukarı", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "&Aşağı", rad2, 90, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "A&şağı", rad2, 90, 80, 60, 14, WS_TABSTOP
     ICON 0, ico1, 10, 110, 0, 0
-    DEFPUSHBUTTON "&Bul", IDOK, 40, 115, 60, 14
+    DEFPUSHBUTTON "B&ul", IDOK, 40, 115, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 105, 115, 60, 14
 }
 
@@ -878,7 +878,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Sil", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 195, 140, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh4, 5, 140, 75, 14
+    PUSHBUTTON "&Tümünü Sil", psh4, 5, 140, 75, 14
 }
 
 IDD_FONTS DIALOGEX 0, 0, 195, 110
@@ -910,10 +910,10 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Ekle...", psh1, 200, 15, 60, 14
     PUSHBUTTON "&Düzenle...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Sil", psh3, 200, 55, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh7, 200, 105, 60, 14
+    PUSHBUTTON "&Tümünü Sil", psh7, 200, 105, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 135, 145, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 200, 145, 60, 14
-    PUSHBUTTON "&Tümünü Sıfırla", psh6, 5, 145, 60, 14
+    PUSHBUTTON "T&ümünü Sıfırla", psh6, 5, 145, 60, 14
 }
 
 IDD_ADDMACRO DIALOGEX 0, 0, 190, 80
@@ -962,11 +962,11 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     LTEXT "&Dahil Etme Dizinleri:", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     PUSHBUTTON "&Ekle...", psh1, 230, 20, 60, 14
-    PUSHBUTTON "&Düzenle...", psh2, 230, 40, 60, 14
+    PUSHBUTTON "D&üzenle...", psh2, 230, 40, 60, 14
     PUSHBUTTON "&Sil", psh3, 230, 60, 60, 14
     PUSHBUTTON "&Yukarı", psh4, 230, 80, 60, 14
     PUSHBUTTON "&Aşağı", psh5, 230, 100, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh6, 5, 130, 95, 14
+    PUSHBUTTON "&Tümünü Sil", psh6, 5, 130, 95, 14
     RTEXT "&windres.exe:", stc1, 5, 157, 55, 12
     COMBOBOX cmb1, 70, 155, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Gözat...", psh7, 230, 155, 60, 14
@@ -975,7 +975,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "Gözat&...", psh8, 230, 175, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 165, 200, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 230, 200, 60, 14
-    PUSHBUTTON "Tümünü &Sıfırla", psh9, 5, 200, 95, 14
+    PUSHBUTTON "Tü&münü Sıfırla", psh9, 5, 200, 95, 14
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225
@@ -992,7 +992,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&Yedek oluştur", chx4, 5, 120, 110, 14
     RTEXT "Yedek Soneki:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Yinelenen yorumları çıkışa aktar", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Y&inelenen yorumları çıkışa aktar", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif ile manifest ifadelerini sar", chx6, 5, 160, 240, 14
     RTEXT "&Kod sayfası:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1035,7 +1035,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Aşağı", psh5, 260, 120, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 195, 145, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 260, 145, 60, 14
-    PUSHBUTTON "Tümünü &Sil", psh6, 5, 145, 79, 14
+    PUSHBUTTON "&Tümünü Sil", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDDLGINIT DIALOGEX 0, 0, 184, 137
@@ -1093,7 +1093,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     AUTOCHECKBOX "&Yedek oluştur", chx4, 5, 120, 110, 14
     RTEXT "Soneki yedekle:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Fazla &yorumları çıktıya al", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "&Fazla yorumları çıktıya al", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Manifest ifadelerini #ifndef MSVC ... #endif ile sarmala", chx6, 5, 160, 240, 14
     RTEXT "&Kod sayfası:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1113,7 +1113,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Sil", psh3, 135, 125, 60, 14
     DEFPUSHBUTTON "Tamam", IDOK, 70, 150, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 135, 150, 60, 14
-    PUSHBUTTON "&Sıfırla", psh5, 5, 149, 60, 14
+    PUSHBUTTON "S&ıfırla", psh5, 5, 149, 60, 14
 }
 
 IDD_ADDENC DIALOGEX 0, 0, 215, 80
@@ -1241,7 +1241,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Ekle...", psh1, 150, 40, 75, 15
     PUSHBUTTON "&Düzenle...", psh2, 150, 60, 75, 15
     PUSHBUTTON "&Sil", psh3, 150, 80, 75, 15
-    PUSHBUTTON "&Yukarı", psh4, 150, 135, 75, 15
+    PUSHBUTTON "Y&ukarı", psh4, 150, 135, 75, 15
     PUSHBUTTON "Aşağı", psh5, 150, 155, 75, 15
     DEFPUSHBUTTON "Tamam", IDOK, 5, 175, 60, 15
     PUSHBUTTON "İptal", IDCANCEL, 70, 175, 60, 15
@@ -1254,7 +1254,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     LTEXT "&Araç çubuğu düğmesinin Komut ID'si:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Ayrıcı", chx1, 5, 45, 90, 15
+    AUTOCHECKBOX "A&yrıcı", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "Tamam", IDOK, 45, 70, 60, 15
     PUSHBUTTON "İptal", IDCANCEL, 110, 70, 60, 15
 }
@@ -1266,7 +1266,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     LTEXT "&Araç çubuğu düğmesinin Komut ID'si:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Ayrıcı", chx1, 5, 45, 90, 15
+    AUTOCHECKBOX "A&yrıcı", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "Tamam", IDOK, 45, 70, 60, 15
     PUSHBUTTON "İptal", IDCANCEL, 110, 70, 60, 15
 }
