@@ -16,16 +16,16 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Avaa...\tCtrl+O", ID_OPEN
         MENUITEM "&Tallenna...\tCtrl+S", ID_SAVE
-        MENUITEM "Tallenn&a nimellä...\tShift+Ctrl+S", ID_SAVEAS
+        MENUITEM "Ta&llenna nimellä...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM "Tallenna &pakattuna...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
-        MENUITEM "&Tuo...\tCtrl+I", ID_IMPORT
+        MENUITEM "Tu&o...\tCtrl+I", ID_IMPORT
         MENUITEM "&Vie...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Lataa resource.h uudelleen...\tCtrl+R", ID_LOADRESH
         MENUITEM "Tallenna re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Neu&voja resource.h muuttamiseen...", ID_ADVICERESH
-        MENUITEM "&Poista resource.h muistista", ID_UNLOADRESH
+        MENUITEM "&Neuvoja resource.h muuttamiseen...", ID_ADVICERESH
+        MENUITEM "Po&ista resource.h muistista", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Lataa &Windowsin luokkakirjasto...", ID_LOADWCLIB
         MENUITEM SEPARATOR
@@ -34,7 +34,7 @@ IDR_MAINMENU MENU
             MENUITEM "(Ei mitään)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "P&oistu\tAlt+F4", ID_EXIT
+        MENUITEM "Poistu\tAlt+&F4", ID_EXIT
     }
     POPUP "&Muokkaus"
     {
@@ -43,15 +43,15 @@ IDR_MAINMENU MENU
         POPUP "&Lisää"
         {
             MENUITEM "Lisää &kuvake...", ID_ADDICON
-            MENUITEM "Lisää &kursori...", ID_ADDCURSOR
+            MENUITEM "&Lisää kursori...", ID_ADDCURSOR
             MENUITEM "Lisää &bittikartta...", ID_ADDBITMAP
             MENUITEM "Lisää &dialogi...", ID_ADDDIALOG
             MENUITEM "Lisää &Valikko...", ID_ADDMENU
             MENUITEM "Lisää &merkkijonotaulukko...", ID_ADDSTRINGTABLE
-            MENUITEM "Lisää &viestitaulukko...", ID_ADDMESSAGETABLE
+            MENUITEM "L&isää viestitaulukko...", ID_ADDMESSAGETABLE
             MENUITEM "Lisää &HTML...", ID_ADDHTML
             MENUITEM "Lisää &pikatoimintoja...", ID_ADDACCEL
-            MENUITEM "Lisää &versiotiedot...", ID_ADDVERINFO
+            MENUITEM "Li&sää versiotiedot...", ID_ADDVERINFO
             MENUITEM "Lisää mani&festi...", ID_ADDMANIFEST
             MENUITEM "Lisää &työkalupalkki...", ID_ADDTOOLBAR
             MENUITEM "Lisää &Resurssikohde...", ID_ADDRES
@@ -59,17 +59,17 @@ IDR_MAINMENU MENU
         POPUP "&Korvaus"
         {
             MENUITEM "Korvaa &kuvake...", ID_REPLACEICON
-            MENUITEM "Korvaa &kursori...", ID_REPLACECURSOR
+            MENUITEM "K&orvaa kursori...", ID_REPLACECURSOR
             MENUITEM "Korvaa &bittikartta...", ID_REPLACEBITMAP
             MENUITEM "Korvaa binaa&riresurssi...", ID_REPLACEBIN
         }
         POPUP "&Poiminta"
         {
             MENUITEM "Pura &kuvake...", ID_EXTRACTICON
-            MENUITEM "Pura &kursori...", ID_EXTRACTCURSOR
+            MENUITEM "&Pura kursori...", ID_EXTRACTCURSOR
             MENUITEM "Pura &bittikartta...", ID_EXTRACTBITMAP
             MENUITEM "Pura &RC-tiedostona...", ID_EXTRACTRC
-            MENUITEM "Pura binaa&riresurssi...", ID_EXTRACTBIN
+            MENUITEM "P&ura binaariresurssi...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "Vai&hda nimi/kieli\tF2", ID_EDITLABEL
@@ -85,11 +85,11 @@ IDR_MAINMENU MENU
         MENUITEM "&ID assosiaatio...", ID_IDASSOC
         MENUITEM "Ennalta määritetyt &makrot...", ID_PREDEFMACROS
         MENUITEM "&Fonttiasetukset...", ID_FONTS
-        MENUITEM "Aseta &polut...", ID_SETPATHS
+        MENUITEM "&Aseta polut...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Delphi DFM &asetukset...", ID_DFMSETTINGS
+        MENUITEM "&Delphi DFM asetukset...", ID_DFMSETTINGS
         MENUITEM "&Konfiguraatio...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Haku"
@@ -106,17 +106,17 @@ IDR_MAINMENU MENU
     POPUP "&Näkymä"
     {
         MENUITEM "&Tilapalkki", ID_STATUSBAR
-        MENUITEM "&Työkalupalkki", ID_SHOWHIDETOOLBAR
+        MENUITEM "T&yökalupalkki", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binaari", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "&Laajenna kaikki\tCtrl+K", ID_EXPAND_ALL
-        MENUITEM "&Tiivistä kaikki\tCtrl+L", ID_COLLAPSE_ALL
+        MENUITEM "T&iivistä kaikki\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "&Resurssi-ID:t", ID_IDLIST
-        MENUITEM "Kie&liluettelo...", ID_SHOWLANGS
+        MENUITEM "&Kieliluettelo...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "&CONTROL-lauseke aina", ID_ALWAYSCONTROL
-        MENUITEM "Älä käytä &ID-makroja", ID_HIDEIDMACROS
+        MENUITEM "&Älä käytä ID-makroja", ID_HIDEIDMACROS
         MENUITEM "Käytä IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Sanan rivitys", ID_WORD_WRAP
         MENUITEM "Käytä BE&GIN/END", ID_USEBEGINEND
@@ -137,7 +137,7 @@ IDR_MAINMENU MENU
         MENUITEM "Avaa &README.txt (English)", ID_OPENREADME
         MENUITEM "Avaa &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "Opas &RisohEditorille", ID_GUIDE
+        MENUITEM "&Opas RisohEditorille", ID_GUIDE
         MENUITEM "Tarkista RisohEditor-p&äivitykset...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "Tietoj&a...", ID_ABOUT
@@ -166,7 +166,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Siirry y&lös", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "Vähennä in&deksiä", ID_CTRLINDEXMINUS
-            MENUITEM "Lisää in&deksiä", ID_CTRLINDEXPLUS
+            MENUITEM "L&isää indeksiä", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "Siirry &alas", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -182,7 +182,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Sovita &ruudukkoon", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Päivitä", ID_REFRESHDIALOG
+        MENUITEM "P&äivitä", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "Ohjauso&bjektin ominaisuudet...", ID_CTRLPROP
         MENUITEM "Dial&ogin ominaisuudet...", ID_DLGPROP
@@ -200,14 +200,14 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Kopioi &nimi", ID_COPYRESIDNAME
         MENUITEM "Kopioi &arvo", ID_COPYRESIDVALUE
-        MENUITEM "Kopioi &määritelmä\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "&Kopioi määritelmä\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Poista ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
         MENUITEM "&Desimaalinumerot", ID_BASE10
         MENUITEM "&Hexadecimal Numbers", ID_BASE16
         MENUITEM SEPARATOR
-        MENUITEM "&Lataa uudelleen", ID_LOADRESH
+        MENUITEM "La&taa uudelleen", ID_LOADRESH
     }
     POPUP "Popup #4"
     {
@@ -267,7 +267,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Reurssin kie&li:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Binaari&tiedosto:", -1, 5, 85, 100, 12
+    LTEXT "&Binaaritiedosto:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Selaa...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
@@ -358,7 +358,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "", stc1, 75, 43, 115, 10
     LTEXT "Resurssin kie&li:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Binaari&tiedosto:", -1, 5, 85, 100, 12
+    LTEXT "&Binaaritiedosto:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Selaa...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
@@ -422,7 +422,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "&NOINVERT", chx2, 70, 60, 60, 14
     AUTOCHECKBOX "&CONTROL", chx3, 5, 75, 60, 14
     AUTOCHECKBOX "&SHIFT", chx4, 70, 75, 60, 14
-    AUTOCHECKBOX "&ALT", chx5, 140, 75, 45, 14
+    AUTOCHECKBOX "A&LT", chx5, 140, 75, 45, 14
     DEFPUSHBUTTON "OK", IDOK, 60, 100, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 125, 100, 60, 14
 }
@@ -441,7 +441,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "&NOINVERT", chx2, 70, 60, 60, 14
     AUTOCHECKBOX "&CONTROL", chx3, 5, 75, 60, 14
     AUTOCHECKBOX "&SHIFT", chx4, 70, 75, 60, 14
-    AUTOCHECKBOX "&ALT", chx5, 140, 75, 45, 14
+    AUTOCHECKBOX "A&LT", chx5, 140, 75, 45, 14
     DEFPUSHBUTTON "OK", IDOK, 60, 100, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 125, 100, 60, 14
 }
@@ -453,14 +453,14 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Avain&luettelo:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 210, 120
-    PUSHBUTTON "&Lisää...", psh1, 220, 20, 60, 14
+    PUSHBUTTON "L&isää...", psh1, 220, 20, 60, 14
     PUSHBUTTON "&Muokkaa...", psh2, 220, 40, 60, 14
     PUSHBUTTON "&Poista", psh3, 220, 60, 60, 14
     PUSHBUTTON "&Ylös", psh4, 220, 100, 60, 14
     PUSHBUTTON "&Alas", psh5, 220, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 155, 145, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 220, 145, 60, 14
-    PUSHBUTTON "Poista k&aikki", psh6, 5, 145, 79, 14
+    PUSHBUTTON "P&oista kaikki", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDSTR DIALOGEX 0, 0, 255, 115
@@ -520,17 +520,17 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "O&WNERDRAW", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
     AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "M&ENUBARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
     AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "O&hjeen ID:", -1, 5, 162, 45, 12
+    LTEXT "Ohjee&n ID:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 145, 180, 60, 14
@@ -548,17 +548,17 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "O&WNERDRAW", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
     AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "M&ENUBARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
     AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "O&hjeen ID:", -1, 5, 162, 45, 12
+    LTEXT "Ohjee&n ID:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 145, 180, 60, 14
@@ -597,13 +597,13 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "&Ylä:", -1, 50, 40, 33, 10
     EDITTEXT edt2, 50, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 53, 53, 12, 20
-    LTEXT "&Leveys:", -1, 95, 40, 33, 10
+    LTEXT "L&eveys:", -1, 95, 40, 33, 10
     EDITTEXT edt3, 95, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 56, 12, 20
-    LTEXT "&Korkeus:", -1, 142, 40, 33, 10
+    LTEXT "Korkeu&s:", -1, 142, 40, 33, 10
     EDITTEXT edt4, 142, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 162, 53, 12, 20
-    LTEXT "&Luokan nimi:", -1, 5, 73, 85, 11
+    LTEXT "L&uokan nimi:", -1, 5, 73, 85, 11
     COMBOBOX cmb2, 5, 88, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "O&hjeen ID:", -1, 125, 73, 64, 11
     COMBOBOX cmb3, 125, 88, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -615,12 +615,12 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "&I", chx3, 165, 118, 20, 14
     LTEXT "Me&rkistö:", -1, 5, 138, 80, 11
     COMBOBOX cmb5, 5, 148, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Valikon nimi:", -1, 110, 138, 55, 11
+    LTEXT "V&alikon nimi:", -1, 110, 138, 55, 11
     COMBOBOX cmb6, 110, 148, 99, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Tyyli:", -1, 5, 168, 45, 11
     EDITTEXT edt6, 67, 165, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 183, 110, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    LTEXT "&ExTyyli:", -1, 120, 168, 48, 11
+    LTEXT "E&xTyyli:", -1, 120, 168, 48, 11
     EDITTEXT edt7, 185, 165, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst2, 120, 183, 110, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 106, 298, 60, 14
@@ -637,14 +637,14 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
     LTEXT "&Otsikko:", -1, 5, 55, 75, 12
     COMBOBOX cmb2, 5, 65, 195, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&OLE...", psh2, 205, 65, 25, 14
+    PUSHBUTTON "O&LE...", psh2, 205, 65, 25, 14
     LTEXT "&Vasen:", -1, 5, 85, 33, 11
     EDITTEXT edt1, 5, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 20, 99, 12, 20
     LTEXT "&Ylä:", -1, 40, 85, 33, 11
     EDITTEXT edt2, 40, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 55, 99, 12, 20
-    LTEXT "&Leveys:", -1, 75, 85, 33, 11
+    LTEXT "L&eveys:", -1, 75, 85, 33, 11
     EDITTEXT edt3, 75, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 90, 99, 12, 20
     LTEXT "&Korkeus:", -1, 111, 85, 33, 11
@@ -652,20 +652,20 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 125, 99, 12, 20
     LTEXT "&ID:", -1, 150, 85, 70, 12
     COMBOBOX cmb3, 150, 99, 80, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Ikkunaluo&kan nimi:", -1, 5, 119, 100, 12
+    LTEXT "Ikk&unaluokan nimi:", -1, 5, 119, 100, 12
     COMBOBOX cmb4, 5, 133, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "O&hjeen ID:", -1, 125, 119, 70, 12
     COMBOBOX cmb5, 125, 133, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Tyyli:", -1, 5, 153, 45, 12
     EDITTEXT edt6, 70, 151, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 167, 110, 120, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    LTEXT "&ExTyyli:", -1, 120, 153, 50, 12
+    LTEXT "E&xTyyli:", -1, 120, 153, 50, 12
     EDITTEXT edt7, 185, 151, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst2, 120, 167, 110, 120, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 170, 293, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 170, 309, 60, 14
     PUSHBUTTON "&Data...", psh1, 5, 293, 90, 14
-    PUSHBUTTON "Merkk&ijonoluettelo...", psh3, 5, 309, 90, 14
+    PUSHBUTTON "&Merkkijonoluettelo...", psh3, 5, 309, 90, 14
 }
 
 IDD_IDASSOC DIALOGEX 0, 0, 200, 220
@@ -718,18 +718,18 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "Yhdistelmäruudun kork:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Sanan rivitys", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "S&anan rivitys", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Kysy ""&resource.h"" päivityksestä", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Pakkaa EXE-tiedosto &UPX:llä tallennuksessa", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Fontit...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Esimääritetyt &makrot...", psh1, 5, 205, 93, 14
+    PUSHBUTTON "&Esimääritetyt makrot...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Aseta polu&t...", psh2, 107, 205, 98, 14
     RTEXT "&OLE-ohjauksien nimet:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Luo &varmuuskopio", chx10, 5, 245, 75, 15
     RTEXT "Kopion loppuliite:", -1, 90, 245, 60, 15
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "St&andardressourcensprache:", -1, 5, 265, 110, 10
+    LTEXT "Sta&ndardressourcensprache:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Käytä &WonResiä (alkuperäinen resurssien käsittelytyökalu)", chx11, 5, 285, 200, 14
     DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
@@ -907,12 +907,12 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "Esimääritetyt &makrot:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
     PUSHBUTTON "&Lisää...", psh1, 200, 15, 60, 14
-    PUSHBUTTON "&Muokkaa...", psh2, 200, 35, 60, 14
+    PUSHBUTTON "M&uokkaa...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Poista", psh3, 200, 55, 60, 14
     PUSHBUTTON "Poista k&aikki", psh7, 200, 105, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 200, 145, 60, 14
-    PUSHBUTTON "&Palauta kaikki", psh6, 5, 145, 60, 14
+    PUSHBUTTON "Palau&ta kaikki", psh6, 5, 145, 60, 14
 }
 
 IDD_ADDMACRO DIALOGEX 0, 0, 190, 80
@@ -922,7 +922,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     RTEXT "&Avain:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Arvo:", -1, 5, 37, 60, 14
+    RTEXT "A&rvo:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 125, 60, 60, 14
@@ -935,7 +935,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     RTEXT "&Avain:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Arvo:", -1, 5, 37, 60, 14
+    RTEXT "A&rvo:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 125, 60, 60, 14
@@ -974,7 +974,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "S&elaa...", psh8, 230, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 230, 200, 60, 14
-    PUSHBUTTON "Palauta k&aikki", psh9, 5, 200, 95, 14
+    PUSHBUTTON "Pala&uta kaikki", psh9, 5, 200, 95, 14
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225
@@ -993,7 +993,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    RTEXT "&Koodisivu:", -1, 7, 181, 78, 14
+    RTEXT "K&oodisivu:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
@@ -1094,7 +1094,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    RTEXT "&Koodisivu:", -1, 7, 181, 78, 14
+    RTEXT "K&oodisivu:", -1, 7, 181, 78, 14
     COMBOBOX cmb2, 95, 180, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
@@ -1112,7 +1112,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Poista", psh3, 135, 125, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 135, 150, 60, 14
-    PUSHBUTTON "&Palauta", psh5, 5, 149, 60, 14
+    PUSHBUTTON "P&alauta", psh5, 5, 149, 60, 14
 }
 
 IDD_ADDENC DIALOGEX 0, 0, 215, 80
@@ -1237,7 +1237,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 190, 5, 30, 15
     LTEXT "&Työkalupalkin painikkeet:", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
     LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_OWNERDRAWFIXED | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Lisätä...", psh1, 150, 40, 75, 15
+    PUSHBUTTON "L&isätä...", psh1, 150, 40, 75, 15
     PUSHBUTTON "&Muuttaa...", psh2, 150, 60, 75, 15
     PUSHBUTTON "&Poistaa", psh3, 150, 80, 75, 15
     PUSHBUTTON "&Ylös", psh4, 150, 135, 75, 15
