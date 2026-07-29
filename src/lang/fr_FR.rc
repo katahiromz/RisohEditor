@@ -63,7 +63,7 @@ IDR_MAINMENU MENU
             MENUITEM "Remplacer le bitmap...", ID_REPLACEBITMAP
             MENUITEM "Remplacer l'élément de ressource binaire...", ID_REPLACEBIN
         }
-        POPUP "&Extrait"
+        POPUP "&Extraire"
         {
             MENUITEM "Extraire l'icône...", ID_EXTRACTICON
             MENUITEM "Extraire le curseur...", ID_EXTRACTCURSOR
@@ -158,7 +158,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Couper\tCtrl+X", ID_CUT
         MENUITEM "Copie\tCtrl+C", ID_COPY
-        MENUITEM "Pâte\tCtrl+V", ID_PASTE
+        MENUITEM "Coller\tCtrl+V", ID_PASTE
         MENUITEM "Supprimer\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "&Indice"
