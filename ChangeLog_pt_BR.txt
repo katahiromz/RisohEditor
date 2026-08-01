@@ -1,6 +1,6 @@
 ﻿## HISTÓRICO
 
-- v.6.0.8 (2026-XX-YY)
+- v.6.0.8 (2026-08-01)
     - MConstantDlg aprimorado.
     - MAddCtrlDlg, MCtrlPropDlg e MDlgPropDlg aprimorados.
     - Corrigida uma string de recurso em português que estava faltando.
