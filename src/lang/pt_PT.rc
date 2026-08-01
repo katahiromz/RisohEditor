@@ -905,7 +905,7 @@ CAPTION "Macros predefinidas"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Macros &predefinidas..." -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "Macros &predefinidas...", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
     PUSHBUTTON "&Adicionar...", psh1, 200, 15, 60, 14
     PUSHBUTTON "&Editar...", psh2, 200, 35, 60, 14
