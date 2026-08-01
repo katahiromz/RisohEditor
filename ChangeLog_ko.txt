@@ -2,16 +2,16 @@
 // 업데이트 내역
 
 - v.6.0.8 (2026-08-01)
-    - MConstantDlg를 개선했습니다.
-    - MAddCtrlDlg, MCtrlPropDlg 및 MDlgPropDlg를 개선했습니다.
-    - 포르투갈어 자원 문자열이 부족하여 수정.
-    - IDD_EGA를 줄였다.
-    - 리소스 미리보기 기능을 더 안전하게 개선했습니다.
-    - EGA 대화 상자 출력 개선.
-    - EGA "load" 및 "save" 기능을 수정했습니다.
+    - MConstantDlg 기능이 개선되었습니다.
+    - MAddCtrlDlg, MCtrlPropDlg 및 MDlgPropDlg 기능이 개선되었습니다.
+    - 누락된 포르투갈어 리소스 문자열이 수정되었습니다.
+    - IDD_EGA 파일 크기가 줄어들었습니다.
+    - 리소스 미리보기가 더 안전해졌습니다.
+    - EGA 대화 상자 출력이 개선되었습니다.
+    - EGA "로드" 및 "저장" 기능이 수정되었습니다.
     - EGA "RES_extract" 기능이 추가되었습니다.
-    - EGA "RES_load" 및 "RES_save" 함수를 수정했습니다.
-    - 번역 및 단축키 개선.
+    - EGA "RES_load" 및 "RES_save" 기능이 수정되었습니다.
+    - 번역 및 접근 키가 개선되었습니다.
 - v.6.0.7 (2026-07-24)
     - 소스 보기에서 휠 스크롤이 느리던 문제를 수정했습니다.
     - DIALOG 스타일 덤프 문제를 수정했습니다.
