@@ -157,7 +157,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Ajouter un contrôle...", ID_ADDCTRL
         MENUITEM SEPARATOR
         MENUITEM "&Couper\tCtrl+X", ID_CUT
-        MENUITEM "Copie\&tCtrl+C", ID_COPY
+        MENUITEM "C&opie&tCtrl+C", ID_COPY
         MENUITEM "Pâte\tCtrl+V", ID_PASTE
         MENUITEM "&Supprimer\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
