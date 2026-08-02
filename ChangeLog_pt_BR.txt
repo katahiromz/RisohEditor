@@ -1,6 +1,6 @@
 ﻿## HISTÓRICO
 
-- v.6.0.9 (2026-XX-YY)
+- v.6.0.9 (2026-08-02)
     - Manual da EGA atualizado.
     - Corrigido o atraso na exibição da visualização em árvore (treeview).
 - v.6.0.8 (2026-08-01)
