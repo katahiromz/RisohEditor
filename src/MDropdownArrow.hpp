@@ -28,7 +28,7 @@ public:
 	HWND m_arrow;
 	ARROW_TARGET_TYPE m_target_type = TARGET_TYPE_LANG;
 
-	MDropdownListDlg() : MDialogBase(IDD_DROPDOWNPOPUP)
+	MDropdownListDlg() : MDialogBase(IDD_DROPDOWNPOPUP), m_lst1(NULL), m_arrow(NULL)
 	{
 	}
 
@@ -44,10 +44,17 @@ public:
 	{
 		if (m_target_type == target_type)
 			return;
-		if (m_target_type == TARGET_TYPE_LANG)
-			InitLangListBox(m_lst1);
-		else
-			ListBox_ResetContent(m_lst1);
+		// Only manipulate the list box when the dialog is active and m_lst1 is valid.
+		// Using a stale (destroyed) m_lst1 handle is dangerous: Windows may recycle the
+		// handle value for an unrelated window, causing SendMessage to block for seconds.
+		if (m_lst1 != NULL)
+		{
+			if (target_type == TARGET_TYPE_LANG)
+				InitLangListBox(m_lst1);
+			else
+				ListBox_ResetContent(m_lst1);
+		}
+		m_target_type = target_type;
 	}
 
 	void InitList(HWND hwnd)
@@ -222,6 +229,10 @@ public:
 		if (IsWindow(m_dialog))
 		{
 			DestroyWindow(m_dialog);
+			// Clear stale handles so SetTargetType cannot accidentally send messages
+			// to a recycled (foreign) window and block the UI thread for seconds.
+			m_dialog.m_lst1 = NULL;
+			m_dialog.m_arrow = NULL;
 		}
 
 		if (bShow)
