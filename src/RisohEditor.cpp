@@ -9904,7 +9904,7 @@ BOOL MMainWnd::ShowTreeViewArrow(BOOL bShow, HTREEITEM hItem)
 	}
 	else
 	{
-		if (IsWindow(m_arrow))
+		if (IsWindow(m_arrow) && IsWindowVisible(m_arrow))
 		{
 			ShowWindow(m_arrow, SW_HIDE);
 			InvalidateRect(m_hwndTV, &rc, TRUE);

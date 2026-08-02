@@ -9,6 +9,7 @@
 
 #include <shldisp.h>
 #include <shlguid.h>
+#include <unordered_set>
 
 class MRisohAutoComplete : public IEnumString
 {
@@ -23,15 +24,17 @@ public:
 
 	void push_back(const std::wstring& text)
 	{
-		auto it = std::find(m_list.begin(), m_list.end(), text);
-		if (it == m_list.end())
+		if (m_set.insert(text).second)
 			m_list.push_back(text);
 	}
 	void erase(const std::wstring& text)
 	{
-		auto it = std::find(m_list.begin(), m_list.end(), text);
-		if (it != m_list.end())
-			m_list.erase(it);
+		if (m_set.erase(text))
+		{
+			auto it = std::find(m_list.begin(), m_list.end(), text);
+			if (it != m_list.end())
+				m_list.erase(it);
+		}
 	}
 	size_t size() const
 	{
@@ -171,6 +174,7 @@ public:
 
 		cloned->AddRef();
 		cloned->m_list = m_list;
+		cloned->m_set = std::unordered_set<std::wstring>(m_list.begin(), m_list.end());
 		*ppenum = cloned;
 
 		return S_OK;
@@ -179,6 +183,7 @@ public:
 protected:
 	IAutoComplete *m_pAC;
 	std::vector<std::wstring> m_list;
+	std::unordered_set<std::wstring> m_set;
 	ULONG m_nCurrentElement;
 	ULONG m_nRefCount;
 	BOOL m_fBound;
