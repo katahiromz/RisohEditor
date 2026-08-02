@@ -1,6 +1,7 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.1.0 (2026-XX-YY)
+    - Traduzione polacca migliorata.
 - v.6.0.9 (02.08.2026)
     - Manuale EGA aggiornato.
     - Risolto il ritardo nella visualizzazione della treeview.

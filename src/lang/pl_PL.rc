@@ -23,11 +23,11 @@ IDR_MAINMENU MENU
         MENUITEM "&Eksportuj...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Przeładuj &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Zapisz re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Porada modyfikacji reso&urce.h...", ID_ADVICERESH
-        MENUITEM "Wypakuj resour&ce.h", ID_UNLOADRESH
+        MENUITEM "Zapisz r&esource.h...", ID_UPDATERESHBANG
+        MENUITEM "Porada modyfikacji r&esource.h...", ID_ADVICERESH
+        MENUITEM "Wypakuj r&esource", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Załaduj bibliotekę klas o&kien...", ID_LOADWCLIB
+        MENUITEM "Załaduj bibliotekę &klas okien...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "Ostatnio używane pliki"
         {
@@ -47,7 +47,7 @@ IDR_MAINMENU MENU
             MENUITEM "Dodaj &Bitmapę...", ID_ADDBITMAP
             MENUITEM "Dodaj &Okno dialogowe...", ID_ADDDIALOG
             MENUITEM "Dodaj &Menu...", ID_ADDMENU
-            MENUITEM "Dodaj &ciąg...", ID_ADDSTRINGTABLE
+            MENUITEM "Dodaj &Ciąg...", ID_ADDSTRINGTABLE
             MENUITEM "Dodaj &Tablicę komunikatów...", ID_ADDMESSAGETABLE
             MENUITEM "Dodaj &HTML...", ID_ADDHTML
             MENUITEM "Dodaj &Skróty klawiaturowe...", ID_ADDACCEL
@@ -84,7 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Skojarzenia ID...", ID_IDASSOC
         MENUITEM "Predefiniowane Mak&ra...", ID_PREDEFMACROS
-        MENUITEM "Ustawienia c&zcionki...", ID_FONTS
+        MENUITEM "Ustawienia C&zcionki...", ID_FONTS
         MENUITEM "Ustawienia &Katalogów...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
@@ -116,7 +116,7 @@ IDR_MAINMENU MENU
         MENUITEM "Lista &języków...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Zawsze &CONTROL statement", ID_ALWAYSCONTROL
-        MENUITEM "Nie używaj makrosów ID", ID_HIDEIDMACROS
+        MENUITEM "Nie używaj ID makra", ID_HIDEIDMACROS
         MENUITEM "Użyj IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
         MENUITEM "Użyj BEGIN/END", ID_USEBEGINEND
@@ -128,7 +128,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Automatyzacja"
     {
-        MENUITEM "Język Programowania &EGA...", ID_EGA
+        MENUITEM "Język programowania &EGA...", ID_EGA
         MENUITEM "&Uruchom program EGA...", ID_EGA_PROGRAM
         MENUITEM "Otwórz &Przewodnik EGA", ID_OPEN_EGA_MANUAL
     }
@@ -180,7 +180,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Wyrównaj do &lewej", ID_LEFTALIGN
             MENUITEM "Wyrównaj do &prawej", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Dopasuj do &Siatki", ID_FITTOGRID
+            MENUITEM "Dopasuj do &siatki", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
         MENUITEM "&Odśwież", ID_REFRESHDIALOG
@@ -205,8 +205,8 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Usuń ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "Liczby dziesię&tne (Dec)", ID_BASE10
-        MENUITEM "Liczby szesnastkow&e (Hex)", ID_BASE16
+        MENUITEM "Liczby Dziesię&tne (Dec)", ID_BASE10
+        MENUITEM "Liczby Szesnastkow&e (Hex)", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Przeładuj", ID_LOADRESH
     }
@@ -403,7 +403,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_MENUTEST DIALOGEX 0, 0, 215, 135
-CAPTION "Test menu"
+CAPTION "Test Menu"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
@@ -448,11 +448,11 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_EDITACCEL DIALOGEX 0, 0, 285, 165
-CAPTION "Edycja skrótów klawiaturowych"
+CAPTION "Edycja Skrótów Klawiaturowych"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
-    LTEXT "&Lista kluczy:", -1, 5, 7, 100, 12
+    LTEXT "&Lista Kluczy:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 210, 120
     PUSHBUTTON "D&odaj...", psh1, 220, 20, 60, 14
     PUSHBUTTON "&Modyfikuj...", psh2, 220, 40, 60, 14
@@ -566,7 +566,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_EDITMENU DIALOGEX 0, 0, 325, 160
-CAPTION "Edytowanie Zasobu Menu"
+CAPTION "Edytowanie zasobu Menu"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
@@ -629,7 +629,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_CTRLPROP DIALOGEX 0, 0, 235, 330
-CAPTION "Właściwości formantu (Control)"
+CAPTION "Właściwości Kontrolki (Control)"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
@@ -683,7 +683,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_MODIFYASSOC DIALOGEX 0, 0, 165, 68
-CAPTION "ID modyfikowanie skojarzeń"
+CAPTION "Modyfikowanie ID skojarzeń"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
@@ -711,17 +711,17 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
     AUTOCHECKBOX "P&okaż pełną ścieżkę do pliku na pasku tytułu", chx1, 5, 5, 200, 14
-    AUTOCHECKBOX "Nie używaj identyfikatoró&w makr", chx2, 5, 25, 200, 14
+    AUTOCHECKBOX "Nie używaj makr ID", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "Przywróć poprzednią pozyc&ję okna", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "Automatyczne załaduj najbliższy ""&resource.h""", chx4, 5, 65, 200, 14
-    AUTOCHECKBOX "Automatycznie wyświetl &listę identyfikatorów zasobów", chx5, 5, 85, 200, 14
+    AUTOCHECKBOX "Automatycznie wyświetl &listę ID zasobów", chx5, 5, 85, 200, 14
     AUTOCHECKBOX "Pokaż kro&pki w oknie edycji", chx6, 5, 105, 200, 14
     RTEXT "Wysokość PolaKombi:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     AUTOCHECKBOX "Zawijanie &wyrazów", chx9, 130, 125, 75, 14
-    AUTOCHECKBOX "Pytaj ""&resource.h""'s aktualizacje", chx7, 5, 145, 200, 14
-    AUTOCHECKBOX "Skompresuj EXE przez &UPX podczas zapisywania", chx8, 5, 165, 200, 14
+    AUTOCHECKBOX "Pytaj o aktualizacje ""&resource.h""", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "Skompresuj EXE z &UPX podczas zapisywania", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Czcionki...", psh4, 5, 185, 200, 14
     PUSHBUTTON "Predefiniowane &makra...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Ustaw &katalogi...", psh2, 107, 205, 98, 14
@@ -895,7 +895,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     GROUPBOX "Podgląd", -1, 5, 45, 185, 39
     CTEXT "Źródło", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Binarny", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
-    PUSHBUTTON "&Nastawić", psh3, 5, 90, 50, 14
+    PUSHBUTTON "&Ustaw", psh3, 5, 90, 50, 14
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "Anuluj", IDCANCEL, 130, 90, 60, 14
 }
@@ -1419,9 +1419,9 @@ STRINGTABLE
     IDS_ENTERINT, "Wprowadź prawidłową liczbę całkowitą."
     IDS_ENTERTEXT, "Wprowadź prawidłowy tekst."
     IDS_ENTERID, "Podaj prawidłowe ID."
-    IDS_ADDNEXTIDS, "Dodaj następujące ID-y do ""resource.h"":\r\n\r\n"
-    IDS_DELETENEXTIDS, "Usuń następujące ID-y z ""resource.h"":\r\n\r\n"
-    IDS_NOCHANGE, "Brak zmian ID-y zasobów."
+    IDS_ADDNEXTIDS, "Dodaj następujące ID do ""resource.h"":\r\n\r\n"
+    IDS_DELETENEXTIDS, "Usuń następujące ID z ""resource.h"":\r\n\r\n"
+    IDS_NOCHANGE, "Brak zmian ID zasobów."
     IDS_DLGFAIL, "Ups, nie udało mi się utworzyć okna dialogowego RAD."
     IDS_LOADWCLIB, "Załaduj bibliotekę klas okien (Window Class Library)"
     IDS_AVIMOVIE, "(Film AVI)\r\n"
