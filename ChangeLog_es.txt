@@ -1,6 +1,7 @@
 ﻿## HISTORIA
 
-- v.6.1.0 (2026-XX-YY)
+- v.6.1.0 (2026-08-03)
+    - Se corrigió el manejador no inicializado en la flecha del control de vista de árbol (treeview).
     - Traducción al polaco mejorada.
 - v.6.0.9 (2026-08-02)
     - Manual de EGA actualizado.
