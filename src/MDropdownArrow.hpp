@@ -52,7 +52,7 @@ public:
 			if (target_type == TARGET_TYPE_LANG)
 				InitLangListBox(m_lst1);
 			else
-				ListBox_ResetContent(m_lst1);
+				InitNameListBox(m_lst1);
 		}
 		m_target_type = target_type;
 	}
@@ -61,6 +61,8 @@ public:
 	{
 		if (m_target_type == TARGET_TYPE_LANG)
 			InitLangListBox(m_lst1);
+		else
+			InitNameListBox(m_lst1);
 
 		INT nCount = ListBox_GetCount(m_lst1);
 

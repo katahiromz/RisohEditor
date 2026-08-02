@@ -4874,6 +4874,20 @@ BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId)
 	return TRUE;
 }
 
+BOOL InitNameListBox(HWND hwnd)
+{
+	ListBox_ResetContent(hwnd);
+
+    InitNames();
+
+	for (auto& name : *g_pNames)
+	{
+		ListBox_AddString(hwnd, name.c_str());
+	}
+
+	return TRUE;
+}
+
 BOOL InitLangListBox(HWND hwnd)
 {
 	ListBox_ResetContent(hwnd);
