@@ -2135,10 +2135,8 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 
 	// get the selected type entry
 	auto entry = g_res.get_entry();
-	if (!entry || entry->m_et == ET_TYPE)
-	{
+	if (!entry)
 		return;
-	}
 
 	if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 	{
@@ -3259,11 +3257,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
 	// get the selected entry
 	auto entry = g_res.get_entry();
-	if (!entry || entry->m_et == ET_TYPE)
-	{
-		bCanEditLabel = FALSE;
-	}
-
 	if (bCanEditLabel)
 	{
 		if (entry)

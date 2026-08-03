@@ -1602,6 +1602,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "MsgTable.ID"
     IDS_ADDCTRL "Tambah Kontrol"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "Mengubah jenis sumber daya dapat merusak data Anda.\r\n\r\nApakah Anda ingin melanjutkan?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

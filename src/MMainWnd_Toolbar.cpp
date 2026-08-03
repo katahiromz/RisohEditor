@@ -166,12 +166,8 @@ void MMainWnd::UpdateToolBarStatus()
 	auto entry = g_res.get_entry();
 	if (entry && !entry->valid())
 		entry = NULL;
-	if (!entry || entry->m_et == ET_TYPE)
-	{
-		bCanEditLabel = FALSE;
-	}
 
-	if (bCanEditLabel)
+    if (bCanEditLabel)
 	{
 		if (entry)
 		{
@@ -189,10 +185,7 @@ void MMainWnd::UpdateToolBarStatus()
 		}
 	}
 
-	if (bCanEditLabel)
-		SendMessageW(m_hToolBar, TB_SETSTATE, ID_EDITLABEL, TBSTATE_ENABLED);
-	else
-		SendMessageW(m_hToolBar, TB_SETSTATE, ID_EDITLABEL, 0);
+	SendMessageW(m_hToolBar, TB_SETSTATE, ID_EDITLABEL, (bCanEditLabel ? TBSTATE_ENABLED : 0));
 
 	if (!entry || !entry->m_hItem)
 	{

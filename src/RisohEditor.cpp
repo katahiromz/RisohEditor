@@ -798,17 +798,53 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	INT index = (INT)wParam;
 
-	if (index >= (INT)g_langs.size())
-		return FALSE; // reject
-
 	switch (m_arrow.m_target_type)
 	{
 	case TARGET_TYPE_TYPE:
-		return FALSE;
+		if (g_pTypes)
+		{
+			if (index >= (INT)g_pTypes->size())
+				return FALSE;   // reject
+
+			MIdOrString new_type = (*g_pTypes)[index].c_str();
+
+			auto entry = g_res.get_entry();
+			if (!entry || entry->m_et != ET_TYPE)
+				return FALSE;   // reject
+
+			INT value1 = g_db.GetValue(L"RESOURCE", new_type.str());
+			if (value1)
+				new_type = (WORD)value1;
+
+			auto old_type = entry->m_type;
+			if (old_type == BAD_TYPE || old_type.str() == new_type.str())
+				return FALSE;   // reject
+
+			// check if it already exists
+			if (g_res.find(ET_LANG, new_type))
+			{
+				ErrorBoxDx(IDS_ALREADYEXISTS);
+				return FALSE;   // reject
+			}
+
+			PostUpdateArrow(hwnd);
+
+			WCHAR szText[MAX_PATH];
+			StringCchCopyW(szText, _countof(szText), new_type.c_str());
+
+			if (!DoRetypeEntry(szText, entry, old_type, new_type))
+				return FALSE; // reject
+
+			DoSetFileModified(TRUE);
+		}
+		return TRUE; // accepted
 
 	case TARGET_TYPE_NAME:
 		if (g_pNames)
 		{
+			if (index >= (INT)g_pNames->size())
+				return FALSE;   // reject
+
 			MIdOrString new_name = (*g_pNames)[index].c_str();
 
 			auto entry = g_res.get_entry();
@@ -842,6 +878,8 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	case TARGET_TYPE_LANG:
 		{
+			if (index >= (INT)g_langs.size())
+				return FALSE; // reject
 			LANGID wNewLang = g_langs[index].LangID;
 
 			auto entry = g_res.get_entry();
@@ -2676,27 +2714,33 @@ BOOL InitNames(void)
 	return TRUE;
 }
 
+BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type)
+{
+	InitTypes();
+
+	ListBox_ResetContent(hwnd);
+
+	for (auto& item : *g_pTypes)
+	{
+		INT index = ListBox_AddString(hwnd, item.c_str());
+		if (index != LB_ERR && item == type.str())
+		{
+			ListBox_SetCurSel(hwnd, index);
+			ListBox_SetTopIndex(hwnd, index);
+		}
+	}
+
+	return TRUE;
+}
+
 BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString& name)
 {
-	if (g_pNames)
-		delete g_pNames;
-	g_pNames = new std::vector<MString>();
+	InitNames();
 
 	ListBox_ResetContent(hwnd);
 
 	if (g_settings.bHideID)
 		return TRUE;
-
-	auto nIDTYPE_ = g_db.IDTypeFromResType(type);
-	auto prefix = MapIDTypeToPrefix(nIDTYPE_);
-	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-	auto end = table.end();
-	for (auto it = table.begin(); it != end; ++it)
-	{
-		g_pNames->push_back(it->name);
-	}
-
-	std::sort(g_pNames->begin(), g_pNames->end());
 
 	for (auto& item : *g_pNames)
 	{
@@ -2739,9 +2783,9 @@ BOOL InitTypeListBox(HWND hwnd)
 
     InitTypes();
 
-	for (auto& name : *g_pTypes)
+	for (auto& type : *g_pTypes)
 	{
-		ListBox_AddString(hwnd, name.c_str());
+		ListBox_AddString(hwnd, type.c_str());
 	}
 
 	return TRUE;
@@ -5905,6 +5949,24 @@ void MMainWnd::UpdateNames(BOOL bModified)
 		DoSetFileModified(TRUE);
 }
 
+void MMainWnd::UpdateEntryType(EntryBase *e, LPWSTR pszText)
+{
+	// update name label
+	e->m_strLabel = e->get_type_label();
+
+	// set the label text
+	TV_ITEM item;
+	ZeroMemory(&item, sizeof(item));
+	item.mask = TVIF_TEXT | TVIF_HANDLE;
+	item.hItem = e->m_hItem;
+	item.pszText = &e->m_strLabel[0];
+	TreeView_SetItem(m_hwndTV, &item);
+
+	// update pszText if any
+	if (pszText)
+		StringCchCopyW(pszText, MAX_PATH, item.pszText);
+}
+
 void MMainWnd::UpdateEntryName(EntryBase *e, LPWSTR pszText)
 {
 	// update name label
@@ -6072,14 +6134,17 @@ void MMainWnd::UpdateArrow()
 
 	switch (entry->m_et)
 	{
+	case ET_TYPE:
+		ShowTreeViewArrow(TRUE, hItem);
+		break;
+	case ET_NAME:
+		ShowTreeViewArrow(TRUE, hItem);
+		break;
 	case ET_LANG:
 		if (entry->m_type != RT_STRING)
 			ShowTreeViewArrow(TRUE, hItem);
 		else
 			ShowTreeViewArrow(FALSE, hItem);
-		break;
-	case ET_NAME:
-		ShowTreeViewArrow(TRUE, hItem);
 		break;
 	case ET_STRING:
 		ShowTreeViewArrow(TRUE, hItem);
@@ -6102,6 +6167,59 @@ void MMainWnd::Collapse(HTREEITEM hItem)
 		Collapse(hItem);
 		hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
 	} while (hItem);
+}
+
+// get the resource type from text
+MIdOrString GetTypeFromText(const WCHAR *pszText)
+{
+	// pszText --> szText
+	WCHAR szText[MAX_PATH];
+	StringCchCopyW(szText, _countof(szText), pszText);
+	mstr_trim(szText, L" \t\r\n　");
+
+	// replace the fullwidth characters with halfwidth characters
+	ReplaceFullWithHalf(szText);
+
+	if (szText[0] == 0)
+	{
+		return (WORD)0;     // empty
+	}
+	else if (mchr_is_digit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
+	{
+		// numeric
+		return WORD(mstr_parse_int(szText));
+	}
+	else
+	{
+		// string value
+		MStringW str = szText;
+
+		// is there parenthesis?
+		size_t i = str.rfind(L'('); // ')'
+		if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
+		{
+			// parse the text after the last parenthesis
+			return WORD(mstr_parse_int(&str[i + 1]));
+		}
+
+		INT value1 = g_db.GetValue(L"RESOURCE", str);
+		if (value1)
+			return (WORD)value1;
+
+		// Make it Uppercase
+		mstr_upper(str);
+
+		// Retry
+		INT value2 = g_db.GetValue(L"RESOURCE", str);
+		if (value2)
+			return (WORD)value2;
+
+		if (str[0] == L'"') // Quoted?
+			mstr_unquote(str); // Unquote
+
+		// string
+		return MIdOrString(str.c_str());
+	}
 }
 
 // get the resource name from text
@@ -6212,12 +6330,15 @@ BOOL MMainWnd::ShowTreeViewArrow(BOOL bShow, HTREEITEM hItem)
 		ShowWindowAsync(m_arrow, SW_SHOWNOACTIVATE);
 		switch (entry->m_et)
 		{
-		case ET_LANG:
-		case ET_STRING:
-			m_arrow.ChooseLang(entry->m_lang);
+		case ET_TYPE:
+			m_arrow.ChooseType();
 			break;
 		case ET_NAME:
 			m_arrow.ChooseName(entry->m_type, entry->m_name);
+			break;
+		case ET_LANG:
+		case ET_STRING:
+			m_arrow.ChooseLang(entry->m_lang);
 			break;
 		}
 	}
@@ -6250,10 +6371,24 @@ void MMainWnd::DoTVEditAutoComplete(HWND hwnd, HWND hwndEdit)
 	DoTVEditAutoCompleteRelease(hwnd);
 
 	auto entry = g_res.get_entry();
-
-	m_pAutoComplete = new MRisohAutoComplete((entry && entry->m_et == ET_NAME) ? 1 : 2);
-	if (!m_pAutoComplete)
+	if (!entry)
 		return;
+
+	switch (entry->m_et)
+	{
+	case ET_TYPE:
+		m_pAutoComplete = new MRisohAutoComplete(0);
+		break;
+	case ET_NAME:
+		m_pAutoComplete = new MRisohAutoComplete(1);
+		break;
+	case ET_LANG:
+	case ET_STRING:
+		m_pAutoComplete = new MRisohAutoComplete(2);
+		break;
+	default:
+		return;
+	}
 
 	m_pAutoComplete->bind(hwndEdit);
 	m_auto_comp_edit.hook(hwndEdit, m_hwndTV);
@@ -6411,10 +6546,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 				// get the selected type entry
 				auto entry = g_res.get_entry();
-				if (!entry || entry->m_et == ET_TYPE)
-				{
+				if (!entry)
 					return TRUE;
-				}
 
 				if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 				{
@@ -6461,12 +6594,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			if (IsWindow(m_arrow.m_dialog))
 				return TRUE;    // prevent
 
-			auto entry = (EntryBase *)lParam;
-
-			if (entry->m_et == ET_TYPE)
+			auto entry = (EntryBase*)lParam;
+			if (!entry)
 				return TRUE;    // prevent
 
-			if (entry->m_et == ET_NAME || entry->m_et== ET_LANG)
+			if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 			{
 				if (entry->m_type == RT_STRING)
 					return TRUE;    // prevent
@@ -6490,7 +6622,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			switch (entry->m_et)
 			{
 			case ET_TYPE:
-				break;
 			case ET_NAME:
 			case ET_LANG:
 			case ET_STRING:
@@ -6507,10 +6638,13 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			LPARAM lParam = pInfo->item.lParam;
 			LPWSTR pszNewText = pInfo->item.pszText;
 
-			auto entry = (EntryBase *)lParam;
+			auto entry = (EntryBase*)lParam;
+			if (!entry)
+				return FALSE;   // reject
 
 			switch (entry->m_et)
 			{
+			case ET_TYPE:
 			case ET_NAME:
 			case ET_LANG:
 			case ET_STRING:
@@ -6524,9 +6658,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 				return FALSE;   // reject
 			}
 
-			if (!entry || entry->m_et == ET_TYPE)
-				return FALSE;   // reject
-
 			if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
 			{
 				if (entry->m_type == RT_STRING)
@@ -6536,13 +6667,53 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			WCHAR szNewText[MAX_PATH];
 			StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
 			mstr_trim(szNewText);
+
+			if (entry->m_et == ET_TYPE && !szNewText[0])
+			{
+				ErrorBoxDx(IDS_INVALIDRESTYPE);
+				return FALSE;   // reject
+			}
+
 			if (entry->m_et == ET_NAME && !szNewText[0])
 			{
 				ErrorBoxDx(IDS_INVALIDNAME);
 				return FALSE;   // reject
 			}
 
-			if (entry->m_et == ET_NAME)
+			if (entry->m_et == ET_TYPE)
+			{
+				WCHAR ch = szNewText[0];
+				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
+				{
+					INT value = mstr_parse_int(szNewText);
+					if (value < SHRT_MIN || USHRT_MAX < value)
+					{
+						ErrorBoxDx(IDS_ENTERINT);
+						return FALSE; // failure
+					}
+				}
+
+				MIdOrString old_type = GetTypeFromText(szOldText);
+				MIdOrString new_type = GetTypeFromText(szNewText);
+
+				if (old_type == new_type)
+					return FALSE;   // reject
+
+				// check if it already exists
+				if (g_res.find(ET_LANG, new_type))
+				{
+					ErrorBoxDx(IDS_ALREADYEXISTS);
+					return FALSE;   // reject
+				}
+
+				if (!DoRetypeEntry(pszNewText, entry, old_type, new_type))
+					return FALSE;   // reject
+
+				m_arrow.ChooseType();
+				DoSetFileModified(TRUE);
+				return TRUE;   // accept
+			}
+			else if (entry->m_et == ET_NAME)
 			{
 				WCHAR ch = szNewText[0];
 				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
@@ -6652,6 +6823,49 @@ TreeViewCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	if (*entry1 == *entry2)
 		return 0;
 	return 1;
+}
+
+// change the type of the resource entries
+BOOL MMainWnd::DoRetypeEntry(LPWSTR pszText, EntryBase *entry, MIdOrString& old_type, MIdOrString& new_type)
+{
+	if (!entry)
+		return FALSE;
+
+	if (MsgBoxDx(LoadStringDx(IDS_RETYPEWARNING), MB_ICONWARNING | MB_YESNOCANCEL) != IDYES)
+		return FALSE;
+
+	EntrySet found;
+	g_res.search(found, ET_ANY, old_type, BAD_NAME, BAD_LANG);
+
+	for (auto e : found)
+	{
+		assert(e->m_type == old_type);
+		if (e->m_et == ET_LANG)
+			g_res.add_lang_entry(new_type, e->m_name, e->m_lang, e->m_data);
+		e->mark_invalid();
+	}
+
+	g_res.delete_invalid();
+
+	entry = g_res.find(ET_TYPE, new_type, BAD_NAME, BAD_LANG);
+	if (!entry)
+		return FALSE;
+
+	UpdateEntryType(entry, pszText);
+	DoRefreshIDList(m_hwnd);
+	Expand(entry->m_hItem);
+
+	// select the entry to update the text
+	SelectTV(entry, FALSE);
+
+	DoSetFileModified(TRUE);
+
+	// sort
+	HTREEITEM hParent = TreeView_GetParent(m_hwndTV, entry->m_hItem);
+	TV_SORTCB cb = { hParent, TreeViewCompare };
+	TreeView_SortChildrenCB(m_hwndTV, &cb, 0);
+
+	return TRUE;
 }
 
 // change the name of the resource entries

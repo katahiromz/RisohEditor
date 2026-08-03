@@ -1600,6 +1600,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "ID tabella messaggi"
     IDS_ADDCTRL "Aggiungi controllo"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "La modifica del tipo di risorsa potrebbe corrompere i dati.\r\n\r\nSi desidera continuare?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

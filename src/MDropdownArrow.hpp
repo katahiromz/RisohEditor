@@ -49,20 +49,26 @@ public:
 		// handle value for an unrelated window, causing SendMessage to block for seconds.
 		if (m_lst1 != NULL)
 		{
-			if (target_type == TARGET_TYPE_LANG)
-				InitLangListBox(m_lst1);
-			else
+			if (target_type == TARGET_TYPE_TYPE)
+				InitTypeListBox(m_lst1);
+			else if (target_type == TARGET_TYPE_NAME)
 				InitNameListBox(m_lst1);
+			else if (target_type == TARGET_TYPE_LANG)
+				InitLangListBox(m_lst1);
 		}
 		m_target_type = target_type;
 	}
 
 	void InitList(HWND hwnd)
 	{
-		if (m_target_type == TARGET_TYPE_LANG)
+		if (m_target_type == TARGET_TYPE_TYPE)
+			InitTypeListBox(m_lst1);
+		else if (m_target_type == TARGET_TYPE_NAME)
+			InitNameListBox(m_lst1);
+		else if (m_target_type == TARGET_TYPE_LANG)
 			InitLangListBox(m_lst1);
 		else
-			InitNameListBox(m_lst1);
+			return;
 
 		INT nCount = ListBox_GetCount(m_lst1);
 
@@ -169,6 +175,15 @@ public:
 		return TEXT("MZC4 Dropdown Arrow");
 	}
 
+	BOOL ChooseType()
+	{
+		m_target_type = TARGET_TYPE_TYPE;
+		m_dialog.SetTargetType(TARGET_TYPE_TYPE);
+		m_type = BAD_TYPE;
+		m_name = BAD_NAME;
+		return TRUE;
+	}
+
 	BOOL ChooseName(const MIdOrString& type, const MIdOrString& name)
 	{
 		m_target_type = TARGET_TYPE_NAME;
@@ -269,7 +284,7 @@ public:
 			switch (m_target_type)
 			{
 			case TARGET_TYPE_TYPE:
-				assert(0);
+				ChooseTypeListBoxType(m_dialog.m_lst1, m_type);
 				break;
 			case TARGET_TYPE_NAME:
 				ChooseNameListBoxName(m_dialog.m_lst1, m_type, m_name);

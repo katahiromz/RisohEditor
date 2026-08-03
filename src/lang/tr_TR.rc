@@ -1600,6 +1600,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "MsgTable.ID"
     IDS_ADDCTRL "Denetim Ekle"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "Kaynak türünü değiştirmek verilerinizi bozabilir.\r\n\r\nDevam etmek istiyor musunuz?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

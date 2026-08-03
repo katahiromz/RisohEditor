@@ -1598,6 +1598,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "訊息表ID"
     IDS_ADDCTRL "增加控制項"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "更改資源類型可能會損壞您的資料。\r\n\r\n是否繼續？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

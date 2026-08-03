@@ -1600,6 +1600,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "메시지 테이블 ID"
     IDS_ADDCTRL "제어 추가"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "자원 유형을 변경하면 데이터가 손상될 수 있습니다.\r\n\r\n계속하시겠습니까?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

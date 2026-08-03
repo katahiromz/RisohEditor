@@ -1600,6 +1600,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "ID tabeli komunikatów"
     IDS_ADDCTRL "Dodawanie formantu (Control)"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "Zmiana typu zasobu może spowodować uszkodzenie danych.\r\n\r\nCzy chcesz kontynuować?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

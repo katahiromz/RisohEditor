@@ -1599,6 +1599,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "MsgTable.ID"
     IDS_ADDCTRL "Lisää ohjaus"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "Resurssityypin muuttaminen voi vioittaa tietojasi.\r\n\r\nHaluatko jatkaa?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

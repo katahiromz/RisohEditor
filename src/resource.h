@@ -379,6 +379,7 @@
 #define IDS_MSGTABLE_ID                     378
 #define IDS_ADDCTRL                         379
 #define IDS_SEARCHURL                       380
+#define IDS_RETYPEWARNING                   381
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

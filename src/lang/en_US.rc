@@ -1600,6 +1600,7 @@ STRINGTABLE
     IDS_MSGTABLE_ID "MsgTable ID"
     IDS_ADDCTRL "Add Control"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
+    IDS_RETYPEWARNING "Changing the resource type may result in data corruption.\r\n\r\nDo you want to continue?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

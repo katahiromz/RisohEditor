@@ -2,6 +2,7 @@
 
 - v.6.1.2 (2026-XX-YY)
     - Possibilidade de compilar novamente com MinGW ou RosBE.
+    - Capacidade de alterar o tipo de recurso.
 - v.6.1.1 (2026-08-03)
     - Refatoração.
 - v.6.1.0 (2026-08-03)
