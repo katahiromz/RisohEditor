@@ -265,11 +265,11 @@ CAPTION "リソースの置き換え"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの名前(&N):", -1, 5, 32, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの言語(&L):", -1, 5, 57, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "バイナリーファイル(&F):", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
@@ -290,10 +290,10 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -308,9 +308,9 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -324,10 +324,10 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     LTEXT "ビットマップ ファイル(&B):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -341,9 +341,9 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     LTEXT "ビットマップ ファイル(&B):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -354,13 +354,13 @@ CAPTION "リソースの追加"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの名前(&N):", -1, 5, 32, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 30, 15, 14
     LTEXT "", stc1, 75, 43, 115, 10
-    LTEXT "リソースの言語(&L):", -1, 5, 57, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "バイナリーファイル(&F):", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
@@ -379,10 +379,10 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -397,9 +397,9 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 115, 60, 14
@@ -790,9 +790,9 @@ CAPTION "別の名前で複製"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの名前(&N):", -1, 5, 32, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 30, 15, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 55, 60, 14
@@ -804,11 +804,11 @@ CAPTION "別の言語で複製"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの名前(&N):", -1, 5, 32, 70, 12
+    LTEXT "リソース名(&N):", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "リソースの言語(&L):", -1, 5, 57, 70, 12
+    LTEXT "リソース言語(&L):", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 85, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 85, 60, 14
@@ -1124,7 +1124,7 @@ CAPTION "リソース エンコーディングを追加"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "エンコーディング(&E):", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -1137,7 +1137,7 @@ CAPTION "リソース エンコーディングを変更"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
 {
-    LTEXT "リソースの種類(&T):", -1, 5, 7, 70, 12
+    LTEXT "リソース型(&T):", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "エンコーディング(&E):", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -1333,9 +1333,9 @@ STRINGTABLE
     IDS_CANNOTSAVE "保存できませんでした。"
     IDS_REPLACERES "リソースの置き換え"
     IDS_ALLFILES "すべてのファイル (*.*)|*.*|"
-    IDS_ENTERTYPE "リソースの種類を入力して下さい。"
-    IDS_ENTERNAME "リソースの名前を入力して下さい。"
-    IDS_ENTERLANG "リソースの言語を入力して下さい。"
+    IDS_ENTERTYPE "リソース型を入力して下さい。"
+    IDS_ENTERNAME "リソース名を入力して下さい。"
+    IDS_ENTERLANG "リソース言語を入力して下さい。"
     IDS_FILENOTFOUND "ファイルが見つかりません。"
     IDS_CANNOTREPLACE "リソースの置き換えができませんでした。"
     IDS_EXERESFILTER "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|RC ファイル (*.rc;*.rc2)|*.rc;*.rc2|バイナリ リソース (*.res)|*.res|すべてのファイル (*.*)|*.*|"
@@ -1376,7 +1376,7 @@ STRINGTABLE
     IDS_CANCELEDIT "編集をキャンセル (Ctrl+E)"
     IDS_GUIEDIT "GUI編集 (Ctrl+G)"
     IDS_CANNOTSTARTUP "リソースコンパイラが起動できませんでした。"
-    IDS_RESMISMATCH "リソースの種類が一致しません。"
+    IDS_RESMISMATCH "リソース型が一致しません。"
     IDS_SAMPLETEXT "これはサンプルです。"
     IDS_ALREADYEXISTS "すでに存在します。"
     IDS_KEY "キー"
@@ -1528,9 +1528,9 @@ STRINGTABLE
     IDS_UTF8N "UTF-8 without BOM"
     IDS_SJIS "シフトJIS"
     IDS_BINARY "バイナリ データ"
-    IDS_RESTYPE "リソースの種類"
+    IDS_RESTYPE "リソース型"
     IDS_ENCODING "エンコーディング"
-    IDS_INVALIDRESTYPE "無効なリソースの種類です。"
+    IDS_INVALIDRESTYPE "無効なリソース型です。"
     IDS_PATHSPACEERROR "スペース文字がある場所に間違ってインストールされました。リソース コンパイラはスペースを受け付けません。\n\n""C:\\Program Files""を避けて下さい。"
     IDS_LOADEGAPROGRAM "EGAプログラムを読み込む..."
     IDS_EGAFILTER "EGA プログラム (*.ega)|*.ega|すべてのファイル (*.*)|*.*|"
@@ -1539,7 +1539,7 @@ STRINGTABLE
     IDS_CANTEXTRACTDFM "DFM データを抽出できません。"
     IDS_EXTRACTDFM "DFM データを抽出する"
     IDS_ENTERNONZERONAME "ゼロではないリソース名を指定して下さい。"
-    IDS_ENTERNONZEROTYPE "ゼロではないリソースの種類を指定して下さい。"
+    IDS_ENTERNONZEROTYPE "ゼロではないリソース型を指定して下さい。"
     IDS_HOMEPAGE "https://katahiromz.fc2.page/risoheditor/"
     IDS_FILESAVED "ファイルを保存しました。"
     IDS_RECOMPILEOK "再コンパイルしました。"
