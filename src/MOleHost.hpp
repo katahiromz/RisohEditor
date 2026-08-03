@@ -24,11 +24,11 @@ public:
 	}
 
 	// MWindowBase interface
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("MOleSite");
 	}
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		wcx.hbrBackground = NULL;
 	}
@@ -85,8 +85,8 @@ protected:
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 	void OnDestroy(HWND hwnd);
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

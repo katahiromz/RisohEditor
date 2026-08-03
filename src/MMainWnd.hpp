@@ -152,7 +152,7 @@ public:
 	BOOL SaveSettings(HWND hwnd);
 	BOOL ReCreateSrcEdit(HWND hwnd);
 
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		MWindowBase::ModifyWndClassDx(wcx);
 
@@ -164,7 +164,7 @@ public:
 		wcx.hIconSm = m_hIconSm;
 	}
 
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		// the window class name of the main window
 		return TEXT("katahiromz's RisohEditor");
@@ -175,8 +175,8 @@ public:
 	void DoEvents();
 	void DoMsg(MSG& msg);
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 	//////////////////////////////////////////////////////////////////////
 

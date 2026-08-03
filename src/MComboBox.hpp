@@ -16,7 +16,7 @@ class MComboBox : public MWindowBase
 public:
 	MComboBox();
 
-	virtual LPCTSTR GetWndClassNameDx() const;
+	LPCTSTR GetWndClassNameDx() const override;
 
 	INT GetCount() const;
 	INT GetCurSel() const;

@@ -123,8 +123,8 @@ public:
 		}
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -273,8 +273,8 @@ public:
 		SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -571,8 +571,8 @@ public:
 		return 0;
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

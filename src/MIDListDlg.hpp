@@ -31,8 +31,8 @@ void Res_ReplaceResTypeString(MString& str, bool bRevert);
 class MSubclassedListView : public MWindowBase
 {
 public:
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 struct RowKey {
@@ -103,8 +103,8 @@ public:
 
 	void RebuildNumericColumn();
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 protected:
 	void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu);

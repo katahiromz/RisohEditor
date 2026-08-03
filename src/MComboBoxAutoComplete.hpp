@@ -36,8 +36,8 @@ public:
 		}
 	}
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -61,7 +61,7 @@ public:
 	{
 	}
 
-	virtual void PostSubclassDx(HWND hwnd)
+	void PostSubclassDx(HWND hwnd) override
 	{
 		HWND hEdit = FindWindowEx(hwnd, NULL, TEXT("EDIT"), NULL);
 		m_edit.SubclassDx(hEdit);

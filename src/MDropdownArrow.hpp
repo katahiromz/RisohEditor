@@ -136,8 +136,8 @@ public:
 		return 0;
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -164,7 +164,7 @@ public:
 	MIdOrString m_name;
 	LANGID m_wLangId = 0;
 
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("MZC4 Dropdown Arrow");
 	}
@@ -202,8 +202,8 @@ public:
 		return FALSE;
 	}
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

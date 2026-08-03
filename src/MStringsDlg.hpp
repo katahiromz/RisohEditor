@@ -139,8 +139,8 @@ public:
 		m_resizable.OnSize();
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -249,8 +249,8 @@ public:
 		m_resizable.OnSize();
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -602,8 +602,8 @@ public:
 		EnableMenuItem(hMenu, ID_RENAME, MF_BYCOMMAND | MF_GRAYED);
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

@@ -94,8 +94,8 @@ public:
 		}
 	}
 
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

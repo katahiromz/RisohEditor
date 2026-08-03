@@ -16,7 +16,7 @@ class MEditCtrl : public MWindowBase
 public:
 	MEditCtrl();
 
-	virtual LPCTSTR GetWndClassNameDx() const;
+	LPCTSTR GetWndClassNameDx() const override;
 
 	BOOL CanUndo() const;
 	INT GetLineCount() const;

@@ -430,8 +430,8 @@ public:
 	}
 
 	// the window procedure of MRadCtrl
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -1009,8 +1009,8 @@ public:
 	}
 
 	// the dialog procedure of MRadDialog
-	virtual INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -1233,8 +1233,8 @@ public:
 	}
 
 	// the window procedure of MRadDialog
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -1718,12 +1718,12 @@ public:
 	}
 
 	// the window class name
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("katahiromz's MRadWindow Class");
 	}
 
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		// no class icon
 		wcx.hIcon = NULL;
@@ -1955,8 +1955,8 @@ public:
 	}
 
 	// the window procedure of MRadWindow
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

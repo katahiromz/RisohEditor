@@ -95,12 +95,12 @@ public:
 		m_hPlayButton = NULL;
 	}
 
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("RisohEditor MBmpView Class");
 	}
 
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		wcx.hIcon = NULL;
 		wcx.hCursor = LoadCursor(NULL, IDC_CROSS);
@@ -412,8 +412,8 @@ public:
 		}
 	}
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

@@ -90,8 +90,8 @@ public:
 		return HTTRANSPARENT;
 	}
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -103,12 +103,12 @@ public:
 		}
 	}
 
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("katahiromz's Index Labels Class");
 	}
 
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		wcx.hIcon = NULL;
 		wcx.hbrBackground = GetStockBrush(NULL_BRUSH);

@@ -22,7 +22,7 @@ class MScrollBar : public MWindowBase
 public:
 	MScrollBar();
 
-	virtual LPCTSTR GetWndClassNameDx() const;
+	LPCTSTR GetWndClassNameDx() const override;
 
 	INT GetScrollPos() const;
 	INT SetScrollPos(INT nPos, BOOL bRedraw = TRUE);

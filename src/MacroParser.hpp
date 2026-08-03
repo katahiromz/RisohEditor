@@ -256,7 +256,7 @@ namespace MacroParser
 		IdentAst(const string_type& name) : BaseAst(ASTID_IDENT), m_name(name)
 		{
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%s.", m_name.c_str());
@@ -270,7 +270,7 @@ namespace MacroParser
 		IntegerAst(int value) : BaseAst(ASTID_INTEGER), m_value(value)
 		{
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%d.", m_value);
@@ -284,7 +284,7 @@ namespace MacroParser
 		StringAst(const string_type& str) : BaseAst(ASTID_STRING), m_str(str)
 		{
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%s.", m_str.c_str());
@@ -304,7 +304,7 @@ namespace MacroParser
 		{
 			delete m_arg;
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%s;", m_str.c_str());
@@ -327,7 +327,7 @@ namespace MacroParser
 			delete m_left;
 			delete m_right;
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%s<", m_str.c_str());
@@ -357,7 +357,7 @@ namespace MacroParser
 			delete m_second;
 			delete m_third;
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf(":%s<", m_str.c_str());
@@ -388,7 +388,7 @@ namespace MacroParser
 		{
 			m_args.push_back(ast);
 		}
-		virtual void print() const
+		void print() const override
 		{
 			BaseAst::print();
 			std::printf("<");

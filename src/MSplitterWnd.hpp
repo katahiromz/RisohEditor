@@ -61,13 +61,13 @@ public:
 
 	void UpdatePanes();
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 	void OnSysColorChange(HWND hwnd);
 
-	virtual LPCTSTR GetWndClassNameDx() const;
-	virtual VOID ModifyWndClassDx(WNDCLASSEX& wcx);
+	LPCTSTR GetWndClassNameDx() const override;
+	VOID ModifyWndClassDx(WNDCLASSEX& wcx) override;
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 	LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr);

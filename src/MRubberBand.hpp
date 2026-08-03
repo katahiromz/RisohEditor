@@ -73,8 +73,8 @@ public:
 	}
 
 	// the window procedure of MRubberBand
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{
@@ -344,12 +344,12 @@ public:
 	}
 
 	// the window class name of MRubberBand
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("katahiromz's Rubber Band Class");
 	}
 
-	virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
+	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 		// no class icon
 		wcx.hIcon = NULL;

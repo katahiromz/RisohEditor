@@ -39,12 +39,12 @@ public:
 		delete this;
 	}
 
-	virtual LPCTSTR GetWndClassNameDx() const
+	LPCTSTR GetWndClassNameDx() const override
 	{
 		return TEXT("MZC4 MTestParentWnd Class");
 	}
 
-	virtual VOID ModifyWndClassDx(WNDCLASSEX& wcx)
+	VOID ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{
 	}
 
@@ -79,8 +79,8 @@ public:
 		}
 	}
 
-	virtual LRESULT CALLBACK
-	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK
+	WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		switch (uMsg)
 		{

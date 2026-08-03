@@ -15,7 +15,7 @@ class MTabCtrl : public MWindowBase
 {
 public:
 	MTabCtrl();
-	virtual LPCTSTR GetWndClassNameDx() const;
+	LPCTSTR GetWndClassNameDx() const override;
 
 	HIMAGELIST GetImageList() const;
 	HIMAGELIST SetImageList(HIMAGELIST hImageList);
