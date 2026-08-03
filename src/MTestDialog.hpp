@@ -263,7 +263,7 @@ public:
 			}
 			break;
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 
 	INT_PTR DialogBoxIndirectDx(HWND hwndOwner, const VOID* ptr)

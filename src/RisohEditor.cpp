@@ -7599,7 +7599,6 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DO_MESSAGE(MYWM_UPDATEARROW, OnUpdateArrow);
 		DO_MESSAGE(MYWM_RADDBLCLICK, OnRadDblClick);
 		DO_MESSAGE(WM_EGA_FINISH, OnEgaFinish);
-
 	default:
 		return DefaultProcDx();
 	}

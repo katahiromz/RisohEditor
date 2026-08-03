@@ -40,7 +40,7 @@ public:
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+		return 0;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)

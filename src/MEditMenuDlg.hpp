@@ -62,7 +62,7 @@ public:
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };
 
@@ -97,7 +97,7 @@ public:
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };
 
@@ -154,7 +154,7 @@ public:
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 
 	void OnSize(HWND hwnd, UINT state, int cx, int cy)

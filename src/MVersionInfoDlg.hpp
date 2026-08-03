@@ -77,7 +77,7 @@ public:
 		HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		default:
-			return DefaultProcDx();
+			return 0;
 		}
 	}
 

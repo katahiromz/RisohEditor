@@ -214,6 +214,6 @@ public:
 			DO_MSG(WM_INITDIALOG, OnInitDialog);
 			DO_MSG(WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };

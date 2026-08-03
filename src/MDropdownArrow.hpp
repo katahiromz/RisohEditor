@@ -147,7 +147,7 @@ public:
 		HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
 		HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVKeyToItem);
 		default:
-			return DefaultProcDx();
+			return 0;
 		}
 	}
 };

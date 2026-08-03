@@ -207,7 +207,7 @@ public:
 		HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 		HANDLE_MSG(hwnd, WM_SIZE, OnSize);
 		default:
-			return DefaultProcDx();
+			return 0;
 		}
 	}
 };

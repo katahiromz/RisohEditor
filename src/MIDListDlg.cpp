@@ -910,7 +910,7 @@ MIDListDlg::DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		OnRefreshList(hwnd);
 		break;
 	default:
-		return DefaultProcDx();
+		return 0;
 	}
 	return 0;
 }

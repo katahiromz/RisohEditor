@@ -258,7 +258,7 @@ public:
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 			HANDLE_MSG(hwnd, WM_SIZE, OnSize);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };
 
@@ -614,6 +614,6 @@ public:
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };

@@ -199,7 +199,7 @@ public:
 		HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 		HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 		default:
-			return DefaultProcDx();
+			return 0;
 		}
 	}
 };

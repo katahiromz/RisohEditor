@@ -55,7 +55,7 @@ public:
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVKeyToItem);
 		}
-		return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+		return 0;
 	}
 
 	int OnVKeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)

@@ -362,7 +362,7 @@ public:
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 
 	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)

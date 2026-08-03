@@ -221,6 +221,6 @@ public:
 			HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };

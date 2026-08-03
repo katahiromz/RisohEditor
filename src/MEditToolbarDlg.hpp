@@ -142,7 +142,7 @@ public:
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };
 
@@ -430,6 +430,6 @@ public:
 			HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
 			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVkeyToItem);
 		}
-		return DefaultProcDx();
+		return 0;
 	}
 };
