@@ -10,7 +10,7 @@
 #include "ToolbarRes.hpp"
 #include "Utils.h"
 #include "resource.h"
-#include <thread>
+#include <process.h>   // _beginthreadex
 
 LPWSTR g_pszLogFile = NULL;
 
@@ -907,9 +907,18 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
 	return FALSE;
 }
 
-void search_worker_thread(MMainWnd* pThis, HWND hwnd, MItemSearchDlg* pDialog)
+struct SEARCH_THREAD_PARAM
 {
-	pThis->search_worker_thread_outer(hwnd, pDialog);
+	MMainWnd* pThis;
+	HWND hwnd;
+	MItemSearchDlg* pDialog;
+};
+
+unsigned __stdcall search_worker_thread(void* pv)
+{
+	std::unique_ptr<SEARCH_THREAD_PARAM> param(static_cast<SEARCH_THREAD_PARAM*>(pv));
+	param->pThis->search_worker_thread_outer(param->hwnd, param->pDialog);
+	return 0;
 }
 
 void MMainWnd::DoEnableControls(BOOL bEnable)
@@ -996,8 +1005,17 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 		pDialog = NULL;
 	}
 
-	std::thread t1(::search_worker_thread, this, hwnd, pDialog);
-	t1.detach();
+	auto param = std::make_unique<SEARCH_THREAD_PARAM>();
+	param->pThis = this;
+	param->hwnd = hwnd;
+	param->pDialog = pDialog;
+
+	uintptr_t hThread = _beginthreadex(nullptr, 0, ::search_worker_thread, param.get(), 0, nullptr);
+	if (hThread)
+	{
+		param.release(); // ownership passed to the thread
+		CloseHandle(reinterpret_cast<HANDLE>(hThread));
+	}
 
 	return FALSE;
 }
