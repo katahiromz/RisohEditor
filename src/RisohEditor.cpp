@@ -7,7 +7,6 @@
 #include "MMainWnd.hpp"
 #define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
-#include "MChooseLangDlg.hpp"
 #include "ToolbarRes.hpp"
 #include "Utils.h"
 #include "resource.h"
