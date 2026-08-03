@@ -4,7 +4,6 @@
 // Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
-#include "RisohEditor.hpp"
 #include "MMainWnd.hpp"
 #include "Utils.h"
 #include "resource.h"

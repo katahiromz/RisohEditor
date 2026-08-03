@@ -5,9 +5,6 @@
 // License: GPL-3 or later
 
 #include "MMainWnd.hpp"
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
 #include "RisohEditor.hpp"
 #include "MString.hpp"
 #include "MIdOrString.hpp"
