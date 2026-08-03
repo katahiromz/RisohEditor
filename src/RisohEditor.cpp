@@ -16,6 +16,7 @@ LPWSTR g_pszLogFile = NULL;
 
 std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized = NULL;
 std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
+std::vector<MString> *g_pTypes = NULL;
 std::vector<MString> *g_pNames = NULL;
 HWND s_hwndEga = NULL;
 
@@ -2622,6 +2623,36 @@ void MMainWnd::DoLoadLangInfo(VOID)
 	std::sort(g_langs.begin(), g_langs.end());
 }
 
+BOOL InitTypes(void)
+{
+	if (g_pTypes)
+		delete g_pTypes;
+
+	g_pTypes = new std::vector<MString>();
+	if (auto table1 = g_db.GetTable(L"RESOURCE"))
+	{
+		for (auto& entry : *table1)
+		{
+			g_pTypes->push_back(entry.name);
+		}
+	}
+
+	if (auto table2 = g_db.GetTable(L"RESOURCE.STRING.TYPE"))
+	{
+		for (auto& entry : *table2)
+		{
+			g_pTypes->push_back(entry.name);
+			MString str = L"\"";
+			str += entry.name;
+			str += L"\"";
+			g_pTypes->push_back(std::move(str));
+		}
+	}
+
+	std::sort(g_pTypes->begin(), g_pTypes->end());
+	return TRUE;
+}
+
 BOOL InitNames(void)
 {
 	if (g_pNames)
@@ -2699,6 +2730,20 @@ BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId)
 
 	ListBox_SetCurSel(hwnd, index);
 	ListBox_SetTopIndex(hwnd, index);
+	return TRUE;
+}
+
+BOOL InitTypeListBox(HWND hwnd)
+{
+	ListBox_ResetContent(hwnd);
+
+    InitTypes();
+
+	for (auto& name : *g_pTypes)
+	{
+		ListBox_AddString(hwnd, name.c_str());
+	}
+
 	return TRUE;
 }
 
@@ -8266,6 +8311,8 @@ wWinMain(HINSTANCE   hInstance,
 
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
+	if (g_pTypes)
+		delete g_pTypes;
 	if (g_pNames)
 		delete g_pNames;
 

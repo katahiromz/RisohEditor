@@ -673,7 +673,7 @@ void MEgaDlg::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 		if (ListBox_GetSelCount(hwndContext) == 0)
 			EnableMenuItem(hSubMenu, ID_COPY, MF_GRAYED);
 
-		if (xPos == -1 && yPos == -1)
+		if ((INT(xPos) == -1 && INT(yPos) == -1) || (xPos == 0xFFFF && yPos == 0xFFFF))
 		{
 			RECT rc;
 			GetWindowRect(hwndContext, &rc);

@@ -117,7 +117,6 @@ public:
 		MIdOrString type;
 
 		// cmb1 --> (iType, type)
-		auto table = g_db.GetTable(L"RESOURCE");
 		if (!CheckTypeComboBox(m_cmb1, type))
 			return;
 
