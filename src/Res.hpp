@@ -8,6 +8,7 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include <cassert>
 #include <cctype>
 #include <cwchar>
 #include <set>
@@ -101,10 +102,18 @@ typedef std::shared_ptr<EntryBase> EntryPtr;
 struct EntryBaseBase
 {
 #ifndef NDEBUG
-    static LONG s_alive_count;
-    static bool is_alive_zero() { return s_alive_count == 0; }
-             EntryBaseBase() { InterlockedIncrement(&s_alive_count); }
-    virtual ~EntryBaseBase() { InterlockedDecrement(&s_alive_count); }
+	static LONG s_alive_count;
+	static bool is_alive_zero() { return s_alive_count == 0; }
+	EntryBaseBase() { InterlockedIncrement(&s_alive_count); }
+	EntryBaseBase(const EntryBaseBase&) { InterlockedIncrement(&s_alive_count); }
+	EntryBaseBase(EntryBaseBase&&) { InterlockedIncrement(&s_alive_count); }
+	EntryBaseBase& operator=(const EntryBaseBase&) = default;
+	EntryBaseBase& operator=(EntryBaseBase&&) = default;
+	virtual ~EntryBaseBase()
+	{
+		assert(s_alive_count > 0);
+		InterlockedDecrement(&s_alive_count);
+	}
 #endif
 };
 
