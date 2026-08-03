@@ -74,8 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "C&ambiar tipo/nombre/idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clonar con nuevo &Nombre...", ID_COPYASNEWNAME
-        MENUITEM "Clonar en nuevo &Idioma...", ID_COPYASNEWLANG
+        MENUITEM "C&lon...", ID_CLONE
         MENUITEM "Copiar en varios idiomas...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Hacer &Test", ID_TEST

@@ -2126,7 +2126,7 @@ void MMainWnd::OnDfmSettings(HWND hwnd)
 	}
 }
 
-// ID_EDITLABEL: start changing the resource name/language
+// ID_EDITLABEL: start changing the resource type/name/language
 void MMainWnd::OnEditLabel(HWND hwnd)
 {
 	// compile if necessary
