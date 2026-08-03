@@ -1,7 +1,7 @@
 ﻿## HISTORIA
 
-- v.6.1.1 (2026-XX-YY)
-    - Refactoring.
+- v.6.1.1 (2026-08-03)
+    - Refactorización.
 - v.6.1.0 (2026-08-03)
     - Se corrigió el manejador no inicializado en la flecha del control de vista de árbol (treeview).
     - Traducción al polaco mejorada.

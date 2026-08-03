@@ -1,6 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.1.1 (2026-XX-YY)
+- v.6.1.1 (03.08.2026)
     - Refactoring.
 - v.6.1.0 (03.08.2026)
     - Corretto handle non inizializzato sulla freccia della treeview.
