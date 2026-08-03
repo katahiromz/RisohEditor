@@ -1,5 +1,7 @@
 ﻿## SEJARAH
 
+- v.6.1.1 (2026-XX-YY)
+    - Refactoring.
 - v.6.1.0 (2026-08-03)
     - Memperbaiki *handle* yang belum diinisialisasi pada panah *treeview*.
     - Terjemahan bahasa Polandia telah disempurnakan.

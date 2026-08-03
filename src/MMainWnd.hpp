@@ -30,6 +30,15 @@ enum IMPORT_RESULT
 	NOT_IMPORTABLE
 };
 
+enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
+{
+	RFFI_NONE = 0,
+	RFFI_EXECUTABLE = 1,
+	RFFI_RC = 2,
+	RFFI_RES = 3,
+	RFFI_ALL = 4,
+};
+
 class MMainWnd : public MWindowBase
 {
 protected:

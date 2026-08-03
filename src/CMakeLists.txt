@@ -10,7 +10,9 @@ add_library(libRisohEditor STATIC
     MEgaDlg.cpp
     MenuRes.cpp
     MIDListDlg.cpp
+    MMainWnd_Command.cpp
     MMainWnd_Preview.cpp
+    MMainWnd_Toolbar.cpp
     MMainWnd_EGA.cpp
     MMainWnd_Tests.cpp
     MOleHost.cpp

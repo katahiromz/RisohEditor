@@ -1,5 +1,7 @@
 ﻿## HISTORY (ChangeLog)
 
+- v.6.1.1 (2026-XX-YY)
+    - Refactoring.
 - v.6.1.0 (2026-08-03)
     - Fixed uninitialized handle on treeview arrow.
     - Improved Polish translation.
