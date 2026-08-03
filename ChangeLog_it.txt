@@ -1,6 +1,7 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.1.2 (2026-XX-YY)
+    - Possibilità di effettuare nuovamente la compilazione con MinGW o RosBE.
 - v.6.1.1 (03.08.2026)
     - Refactoring.
 - v.6.1.0 (03.08.2026)

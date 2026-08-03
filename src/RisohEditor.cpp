@@ -19,6 +19,11 @@ std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
 std::vector<MString> *g_pNames = NULL;
 HWND s_hwndEga = NULL;
 
+#ifndef _MSC_VER
+	typedef int (WINAPI *FN_GetMenuPosFromID)(HMENU hmenu, UINT id);
+	static FN_GetMenuPosFromID g_fnGetMenuPosFromID = nullptr;
+#endif
+
 void InitIDTypeMaps()
 {
 	g_pmapIDTypeToLocalized = new std::unordered_map<INT, MStringW>();
@@ -1426,7 +1431,18 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 	if (hMenu == NULL || hSubMenu == NULL)
 		return;
 
+#ifdef _MSC_VER
 	UINT iItem = GetMenuPosFromID(hSubMenu, ID_DELETERES);
+#else
+	if (!g_fnGetMenuPosFromID)
+	{
+		HINSTANCE hSHLWAPI = GetModuleHandleA("shlwapi");
+		FARPROC fn = GetProcAddress(hSHLWAPI, "GetMenuPosFromID");
+		CopyMemory(&g_fnGetMenuPosFromID, &fn, sizeof(fn));
+		assert(g_fnGetMenuPosFromID);
+	}
+	UINT iItem = g_fnGetMenuPosFromID(hSubMenu, ID_DELETERES);
+#endif
 	while (DeleteMenu(hSubMenu, iItem + 1, MF_BYPOSITION))
 		;
 

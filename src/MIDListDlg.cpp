@@ -4,8 +4,6 @@
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
-#pragma once
-
 #include "resource.h"
 #include "MIDListDlg.hpp"
 
