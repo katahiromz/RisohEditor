@@ -1487,7 +1487,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "新增項目..."
     IDS_TOOL_MINUS "刪除項目"
     IDS_TOOL_CHANGE "更改類型/名稱/語言"
-    IDS_TOOL_CLONE "複製為其他名稱/語言"
+    IDS_TOOL_CLONE "複製..."
     IDS_TOOL_RECOMPILE "重新編譯"
     IDS_TOOL_CANCELEDIT "取消修改"
     IDS_TOOL_IMPORT "導入..."

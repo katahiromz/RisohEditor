@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Змінити тип/назву/мову\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "кло&н...", ID_CLONE
+        MENUITEM "Кло&н...", ID_CLONE
         MENUITEM "Копиювати на декілька мов ......", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "В&ипробувати", ID_TEST
@@ -1491,7 +1491,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "Додати елемент..."
     IDS_TOOL_MINUS "Видалити елемент"
     IDS_TOOL_CHANGE "Змінити тип/назву/мову"
-    IDS_TOOL_CLONE "Клонувати з іншим ім'ям/мовою"
+    IDS_TOOL_CLONE "Клон..."
     IDS_TOOL_RECOMPILE "Перекомпілювати"
     IDS_TOOL_CANCELEDIT "Скасування змін"
     IDS_TOOL_IMPORT "Імпорт..."

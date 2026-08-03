@@ -1489,7 +1489,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "Öğe Ekle..."
     IDS_TOOL_MINUS "Öğe Sil"
     IDS_TOOL_CHANGE "Türü/adı/dili değiştir"
-    IDS_TOOL_CLONE "Başka Bir Ad/Dil ile Klonla"
+    IDS_TOOL_CLONE "Klon..."
     IDS_TOOL_RECOMPILE "Tekrar Derle"
     IDS_TOOL_CANCELEDIT "Düzenlemeyi İptal Et"
     IDS_TOOL_IMPORT "İçe Aktar..."

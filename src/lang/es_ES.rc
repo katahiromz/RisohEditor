@@ -1491,7 +1491,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "Añadir Elemento..."
     IDS_TOOL_MINUS "Eliminar Elemento"
     IDS_TOOL_CHANGE "Cambiar tipo/nombre/idioma"
-    IDS_TOOL_CLONE "Clonar en otro Nombre/Idioma"
+    IDS_TOOL_CLONE "Clon..."
     IDS_TOOL_RECOMPILE "Recompilar"
     IDS_TOOL_CANCELEDIT "Cancelar Edición"
     IDS_TOOL_IMPORT "Importar..."

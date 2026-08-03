@@ -1491,7 +1491,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "Tambah Item..."
     IDS_TOOL_MINUS "Hapus Item"
     IDS_TOOL_CHANGE "Ubah tipe/nama/bahasa"
-    IDS_TOOL_CLONE "Duplikat dalam Nama/Bahasa Lain"
+    IDS_TOOL_CLONE "Klon..."
     IDS_TOOL_RECOMPILE "Susun kembali"
     IDS_TOOL_CANCELEDIT "Batal Edit"
     IDS_TOOL_IMPORT "Impor..."
