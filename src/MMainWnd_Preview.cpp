@@ -5,8 +5,14 @@
 // License: GPL-3 or later
 
 #include "MMainWnd.hpp"
-#include "ToolbarRes.hpp"
+#define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
+
+#include "AccelRes.hpp"
+#include "MenuRes.hpp"
+#include "ToolbarRes.hpp"
+#include "VersionRes.hpp"
+
 #include "Utils.h"
 #include "MStrBin.hpp"
 

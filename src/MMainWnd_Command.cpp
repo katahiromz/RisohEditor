@@ -1,13 +1,23 @@
-// MMainWnd_Command.cpp --- RisohEditor
+// MMainWnd_Command.cpp --- RisohEditor commands
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
 #include "RisohEditor.hpp"
 #include "MMainWnd.hpp"
 #define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
+
+#include "AccelRes.hpp"
+#include "DialogRes.hpp"
+#include "DlgInitRes.hpp"
+#include "IconRes.hpp"
+#include "MenuRes.hpp"
+#include "MessageRes.hpp"
+#include "StringRes.hpp"
+#include "ToolbarRes.hpp"
+#include "VersionRes.hpp"
 
 #include "MAddBitmapDlg.hpp"
 #include "MAddCursorDlg.hpp"
@@ -44,8 +54,8 @@
 #include "MTestParentWnd.hpp"
 #include "MVersionInfoDlg.hpp"
 
-#include "ToolbarRes.hpp"
 #include "Utils.h"
+#include "resource.h"
 
 extern BOOL s_bModified;
 extern INT s_ret;

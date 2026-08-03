@@ -1,7 +1,7 @@
 // Utils.h --- RisohEditor
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2025 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
 #pragma once
@@ -11,6 +11,8 @@
 #include <vector>
 #include <windows.h>
 #include <unordered_map>
+#include "StringRes.hpp"
+#include "MessageRes.hpp"
 
 void ReplaceFullWithHalf(wchar_t* pszText);
 void ReplaceFullWithHalf(std::wstring& strText);

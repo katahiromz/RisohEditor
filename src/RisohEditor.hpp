@@ -46,7 +46,6 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
 #include "WonSetThreadUILanguage.h"
 
-#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
@@ -56,10 +55,6 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 #include "MacroParser.hpp"
 #include "MWaitCursor.hpp"
 #include "RisohSettings.hpp"
-
-// RisohEditor.cpp
-BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
-HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 #define _CP_UTF16 1200
 
@@ -90,15 +85,6 @@ struct LANG_ENTRY
 	}
 };
 extern std::vector<LANG_ENTRY> g_langs;
-
-#include "AccelRes.hpp"
-#include "IconRes.hpp"
-#include "MenuRes.hpp"
-#include "MessageRes.hpp"
-#include "StringRes.hpp"
-#include "DialogRes.hpp"
-#include "VersionRes.hpp"
-#include "DlgInitRes.hpp"
 
 #include "ConstantsDB.hpp"
 #include "PackedDIB.hpp"

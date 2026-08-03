@@ -13,6 +13,7 @@
 #include "MIdOrString.hpp"
 #include "ConstantsDB.hpp"
 #include "Utils.h"
+#include "MenuRes.hpp"
 #include "Common.hpp"
 #include "MString.hpp"
 #include "resource.h"

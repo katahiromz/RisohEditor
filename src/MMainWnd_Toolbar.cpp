@@ -1,17 +1,13 @@
-// MMainWnd_Toolbar.cpp --- RisohEditor
+// MMainWnd_Toolbar.cpp --- RisohEditor toolbar
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
 #include "RisohEditor.hpp"
 #include "MMainWnd.hpp"
-#define LINENUMEDIT_IMPL
-#include "LineNumEdit.hpp"
-#include "MChooseLangDlg.hpp"
-#include "MGoToLineDlg.hpp"
-#include "ToolbarRes.hpp"
 #include "Utils.h"
+#include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
