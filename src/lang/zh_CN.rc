@@ -1488,7 +1488,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "全部折叠"
     IDS_TOOL_PLUS "新增项目..."
     IDS_TOOL_MINUS "删除项目"
-    IDS_TOOL_CHANGE "更改名称/语言"
+    IDS_TOOL_CHANGE "更改类型/名称/语言"
     IDS_TOOL_CLONE "复制为其他名称/语言"
     IDS_TOOL_RECOMPILE "重新编译"
     IDS_TOOL_CANCELEDIT "取消修改"

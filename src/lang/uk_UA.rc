@@ -1491,7 +1491,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "Згорнути все"
     IDS_TOOL_PLUS "Додати елемент..."
     IDS_TOOL_MINUS "Видалити елемент"
-    IDS_TOOL_CHANGE "Змінити ім'я/мову"
+    IDS_TOOL_CHANGE "Змінити тип/назву/мову"
     IDS_TOOL_CLONE "Клонувати з іншим ім'ям/мовою"
     IDS_TOOL_RECOMPILE "Перекомпілювати"
     IDS_TOOL_CANCELEDIT "Скасування змін"

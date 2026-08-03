@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extraire l'élément &de ressource binaire...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Modi&fier le type/nom/langue\tF2", ID_EDITLABEL
+        MENUITEM "Modi&fier le type / nom / langue\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Cloner &sous un nouveau nom...", ID_COPYASNEWNAME
         MENUITEM "Cloner &dans une nouvelle langue...", ID_COPYASNEWLANG
@@ -1488,7 +1488,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "Réduire tout"
     IDS_TOOL_PLUS "Ajouter un item..."
     IDS_TOOL_MINUS "Supprimer l'élément"
-    IDS_TOOL_CHANGE "Changer le nom / la langue"
+    IDS_TOOL_CHANGE "Modifier le type / nom / langue"
     IDS_TOOL_CLONE "Cloner dans un autre nom / langue"
     IDS_TOOL_RECOMPILE "Recompiler"
     IDS_TOOL_CANCELEDIT "Annuler la modification"

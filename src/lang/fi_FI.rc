@@ -1488,7 +1488,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "Tiivistä kaikki"
     IDS_TOOL_PLUS "Lisää kohde..."
     IDS_TOOL_MINUS "Poista kohde"
-    IDS_TOOL_CHANGE "Vaihda nimi/kieli"
+    IDS_TOOL_CHANGE "Vaihda tyyppiä/nimeä/kieltä"
     IDS_TOOL_CLONE "Kloonaa toisella nimellä/kielellä"
     IDS_TOOL_RECOMPILE "Käännä uudelleen"
     IDS_TOOL_CANCELEDIT "Peruuta muokkaus"

@@ -1489,7 +1489,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "Collapse All"
     IDS_TOOL_PLUS "Add Item..."
     IDS_TOOL_MINUS "Delete Item"
-    IDS_TOOL_CHANGE "Change Name/Language"
+    IDS_TOOL_CHANGE "Change Type/Name/Language"
     IDS_TOOL_CLONE "Clone In Another Name/Language"
     IDS_TOOL_RECOMPILE "Recompile"
     IDS_TOOL_CANCELEDIT "Cancel Edit"

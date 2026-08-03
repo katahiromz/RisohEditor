@@ -1489,7 +1489,7 @@ STRINGTABLE
     IDS_TOOL_COLLAPSE "Zwiń wszystko"
     IDS_TOOL_PLUS "Dodaj element..."
     IDS_TOOL_MINUS "Usuń element"
-    IDS_TOOL_CHANGE "Zmień Nazwę/Język"
+    IDS_TOOL_CHANGE "Zmień typ/nazwę/język"
     IDS_TOOL_CLONE "Klonuj w innej Nazwie/Języku"
     IDS_TOOL_RECOMPILE "Rekompiluj"
     IDS_TOOL_CANCELEDIT "Anuluj edycję"
