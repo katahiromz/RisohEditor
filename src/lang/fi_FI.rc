@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "P&ura binaariresurssi...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Vai&hda nimi/kieli\tF2", ID_EDITLABEL
+        MENUITEM "Vai&hda tyyppiä/nimeä/kieltä\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Klooni uudessa &nimessä...", ID_COPYASNEWNAME
         MENUITEM "Klooni uudessa kie&lessä...", ID_COPYASNEWLANG

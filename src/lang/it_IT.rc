@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Estrai &risorsa binaria...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Modifica nome/Lingua\tF2", ID_EDITLABEL
+        MENUITEM "Ca&mbia tipo/nome/lingua\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clona con &nuovo nome...", ID_COPYASNEWNAME
         MENUITEM "Clona con nuova &lingua...", ID_COPYASNEWLANG

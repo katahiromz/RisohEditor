@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extrair Item de &Recurso Binário...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "A&lterar Nome/Idioma\tF2", ID_EDITLABEL
+        MENUITEM "A&lterar tipo/nome/idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clonar Para Um Novo &Nome...", ID_COPYASNEWNAME
         MENUITEM "Clonar Para Um Novo &Idioma...", ID_COPYASNEWLANG

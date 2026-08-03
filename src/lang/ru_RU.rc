@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Двоичный ресурсный элемент...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "И&зменить имя/язык\tF2", ID_EDITLABEL
+        MENUITEM "И&зменить тип/название/язык\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Клонировать с новым &именем...", ID_COPYASNEWNAME
         MENUITEM "Клонировать с новым &языком...", ID_COPYASNEWLANG

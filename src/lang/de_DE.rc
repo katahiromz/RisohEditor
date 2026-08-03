@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Binäres Ressourcenelement e&xtrahieren...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "&Name/Sprache ändern\tF2", ID_EDITLABEL
+        MENUITEM "Typ/&Name/Sprache ändern\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "In neuem Namen klonen...", ID_COPYASNEWNAME
         MENUITEM "In neuer Spr&ache klonen...", ID_COPYASNEWLANG

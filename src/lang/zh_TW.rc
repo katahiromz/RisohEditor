@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "導出二進位制資源檔(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "更改名稱/語言(&H)\tF2", ID_EDITLABEL
+        MENUITEM "更改類型/名稱/語言(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "複製為其他名稱(&N)...", ID_COPYASNEWNAME
         MENUITEM "複製為其他語言(&L)...", ID_COPYASNEWLANG

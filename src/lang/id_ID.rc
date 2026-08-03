@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Ekstrak Item Sumber Daya Bina&ry...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Uba&h Nama/Bahasa\tF2", ID_EDITLABEL
+        MENUITEM "Uba&h tipe/nama/bahasa\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Duplikat dengan &Nama Baru...", ID_COPYASNEWNAME
         MENUITEM "Duplikat dengan &Bahasa Baru...", ID_COPYASNEWLANG

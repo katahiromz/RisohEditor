@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "Wypakuj element zasobu bina&rnego...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Z&mień Nazwę/Języka\tF2", ID_EDITLABEL
+        MENUITEM "Z&mień typ/nazwę/język\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Klonuj w Nowej &Nazwie...", ID_COPYASNEWNAME
         MENUITEM "Klonuj w Nowym &Języku...", ID_COPYASNEWLANG

@@ -72,7 +72,7 @@ IDR_MAINMENU MENU
             MENUITEM "바이너리 리소스 항목 추출(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "이름/언어 변경(&H)\tF2", ID_EDITLABEL
+        MENUITEM "유형/이름/언어 변경(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "새 이름으로 복제(&N)...", ID_COPYASNEWNAME
         MENUITEM "새 언어로 복제(&L)...", ID_COPYASNEWLANG
