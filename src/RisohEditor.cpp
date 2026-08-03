@@ -2687,7 +2687,23 @@ BOOL InitTypes(void)
 		}
 	}
 
-	std::sort(g_pTypes->begin(), g_pTypes->end());
+	std::sort(g_pTypes->begin(), g_pTypes->end(), [](const MString& x, const MString& y){
+		if (x.empty() && y.empty())
+			return false;
+		if (x.empty())
+			return true;
+		if (y.empty())
+			return false;
+		bool quote0 = (x[0] == '"');
+		bool quote1 = (y[0] == '"');
+		if (quote0 && quote1)
+			return lstrcmpiW(&x.c_str()[1], &y.c_str()[1]) < 0;
+		if (quote0)
+			return false;
+		if (quote1)
+			return true;
+		return lstrcmpiW(x.c_str(), y.c_str()) < 0;
+	});
 	return TRUE;
 }
 
@@ -2781,7 +2797,7 @@ BOOL InitTypeListBox(HWND hwnd)
 {
 	ListBox_ResetContent(hwnd);
 
-    InitTypes();
+	InitTypes();
 
 	for (auto& type : *g_pTypes)
 	{
@@ -2795,7 +2811,7 @@ BOOL InitNameListBox(HWND hwnd)
 {
 	ListBox_ResetContent(hwnd);
 
-    InitNames();
+	InitNames();
 
 	for (auto& name : *g_pNames)
 	{
