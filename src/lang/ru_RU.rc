@@ -1282,6 +1282,19 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     PUSHBUTTON "Отмена", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "Клонировать в новый тип"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
+{
+    RTEXT "&Более старые типы ресурсов:", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "&Новый тип ресурса:", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "Отмена", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1601,6 +1614,7 @@ STRINGTABLE
     IDS_ADDCTRL "Добавить элемент управления"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Изменение типа ресурса может привести к повреждению ваших данных.\r\n\r\nВы хотите продолжить?"
+    IDS_SAMETYPE "Это ресурсы одного типа."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@
 - v.6.1.2 (2026-XX-YY)
     - Se puede compilar de nuevo con MinGW o RosBE.
     - Capaz de cambiar el tipo de recurso.
+    - Capaz de clonar el tipo de recurso.
 - v.6.1.1 (2026-08-03)
     - Refactorización.
 - v.6.1.0 (2026-08-03)

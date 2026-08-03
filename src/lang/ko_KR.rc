@@ -1281,6 +1281,19 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     PUSHBUTTON "취소", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "새로운 유형으로 복제"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
+{
+    RTEXT "이전 리소스 유형(&O):", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "새로운 자원 유형(&N):", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "확인", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "취소", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1600,6 +1613,7 @@ STRINGTABLE
     IDS_ADDCTRL "제어 추가"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "자원 유형을 변경하면 데이터가 손상될 수 있습니다.\r\n\r\n계속하시겠습니까?"
+    IDS_SAMETYPE "동일한 자원 유형입니다."
 }
 
 //////////////////////////////////////////////////////////////////////////////

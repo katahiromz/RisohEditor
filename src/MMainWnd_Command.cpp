@@ -25,6 +25,7 @@
 #include "MChooseLangDlg.hpp"
 #include "MCloneInNewLangDlg.hpp"
 #include "MCloneInNewNameDlg.hpp"
+#include "MCloneInNewTypeDlg.hpp"
 #include "MConfigDlg.hpp"
 #include "MConstantDlg.hpp"
 #include "MCopyToMultiLangDlg.hpp"
@@ -1191,6 +1192,40 @@ void MMainWnd::OnExport(HWND hwnd)
 	}
 }
 
+void MMainWnd::OnCopyAsNewType(HWND hwnd)
+{
+	// compile if necessary
+	if (!CompileIfNecessary(FALSE))
+		return;
+
+	// get the selected type entry
+	auto entry = g_res.get_entry();
+	if (!entry || entry->m_et != ET_TYPE)
+		return;
+
+	// show the dialog
+	MCloneInNewTypeDlg dialog(entry);
+	if (dialog.DialogBoxDx(hwnd) == IDOK)
+	{
+		// search the ET_LANG entries
+		EntrySet found;
+		g_res.search(found, ET_LANG, dialog.m_old_type, BAD_NAME, BAD_LANG);
+
+		for (auto e : found)
+		{
+			g_res.add_lang_entry(dialog.m_new_type, e->m_name, e->m_lang, e->m_data);
+		}
+
+		SelectTV(ET_TYPE, dialog.m_new_type, BAD_NAME, BAD_LANG, FALSE);
+
+		auto entry = g_res.find(ET_TYPE, dialog.m_new_type);
+		if (entry)
+			Expand(entry->m_hItem);
+
+		DoSetFileModified(TRUE);
+	}
+}
+
 // ID_COPYASNEWNAME: clone the resource item in new name
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
@@ -2237,6 +2272,7 @@ void MMainWnd::OnClone(HWND hwnd)
 	switch (entry->m_et)
 	{
 	case ET_TYPE:
+		OnCopyAsNewType(hwnd);
 		break;
 
 	case ET_NAME:
@@ -3361,8 +3397,10 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_ENABLED);
 		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		break;
+
 	case ET_NAME:
 		EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -3376,6 +3414,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_ENABLED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_ENABLED);
 		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		break;
 
@@ -3443,11 +3482,13 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		if (entry->m_type == RT_STRING)
 		{
 			EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+			EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
 			EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		}
 		else
 		{
 			EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
+			EnableMenuItem(hMenu, ID_CLONE, MF_ENABLED);
 			EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_ENABLED);
 		}
 		break;
@@ -3465,6 +3506,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		break;
 
@@ -3480,6 +3522,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		break;
 	}

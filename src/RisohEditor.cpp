@@ -806,7 +806,11 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 			if (index >= (INT)g_pTypes->size())
 				return FALSE;   // reject
 
-			MIdOrString new_type = (*g_pTypes)[index].c_str();
+			MString str = (*g_pTypes)[index];
+			if (str.size() && str[0] == '"')
+				mstr_unquote(str);
+
+			MIdOrString new_type = str.c_str();
 
 			auto entry = g_res.get_entry();
 			if (!entry || entry->m_et != ET_TYPE)

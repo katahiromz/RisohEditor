@@ -1280,6 +1280,19 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "Abbrechen", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "Als neuen Typ klonen"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    RTEXT "Ältere &Ressourcentypen:", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "&Neuer Ressourcentyp:", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "Abbrechen", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1599,6 +1612,7 @@ STRINGTABLE
     IDS_ADDCTRL "Kontrolle hinzufügen"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Durch die Änderung des Ressourcentyps können Ihre Daten beschädigt werden.\r\n\r\nMöchten Sie fortfahren?"
+    IDS_SAMETYPE "Es handelt sich um denselben Ressourcentyp."
 }
 
 //////////////////////////////////////////////////////////////////////////////

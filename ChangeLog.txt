@@ -3,6 +3,7 @@
 - v.6.1.2 (2026-XX-YY)
     - Able to build with MinGW or RosBE again.
     - Able to change resource type.
+    - Able to clone resource type.
 - v.6.1.1 (2026-08-03)
     - Refactoring.
 - v.6.1.0 (2026-08-03)

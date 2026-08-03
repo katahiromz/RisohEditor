@@ -1284,6 +1284,19 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     PUSHBUTTON "キャンセル", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "別のリソース型で複製"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
+{
+    RTEXT "古いリソース型(&O):", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "新しいリソース型(&N):", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1603,6 +1616,7 @@ STRINGTABLE
     IDS_ADDCTRL "コントロールの追加"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "リソース型を変更すると、データが壊れる恐れがあります。\r\n\r\n続けますか？"
+    IDS_SAMETYPE "同じリソース型です。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

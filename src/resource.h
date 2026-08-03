@@ -77,6 +77,7 @@
 #define IDD_ADDTBBTN                        169
 #define IDD_MODIFYTBBTN                     170
 #define IDD_GOTOLINE                        171
+#define IDD_CLONEINNEWTYPE                  172
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -380,6 +381,7 @@
 #define IDS_ADDCTRL                         379
 #define IDS_SEARCHURL                       380
 #define IDS_RETYPEWARNING                   381
+#define IDS_SAMETYPE                        382
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

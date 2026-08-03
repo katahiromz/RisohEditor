@@ -1281,6 +1281,19 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "İptal", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "Yeni Türde Klonla"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
+{
+    RTEXT "&Eski kaynak türleri:", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "&Yeni kaynak türü:", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "Tamam", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "İptal", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1600,6 +1613,7 @@ STRINGTABLE
     IDS_ADDCTRL "Denetim Ekle"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Kaynak türünü değiştirmek verilerinizi bozabilir.\r\n\r\nDevam etmek istiyor musunuz?"
+    IDS_SAMETYPE "Bunlar aynı kaynak türüdür."
 }
 
 //////////////////////////////////////////////////////////////////////////////

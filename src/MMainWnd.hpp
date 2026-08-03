@@ -400,6 +400,7 @@ protected:
 	void OnCompile(HWND hwnd);
 	void OnGuiEdit(HWND hwnd);
 	void OnEdit(HWND hwnd);
+	void OnCopyAsNewType(HWND hwnd);
 	void OnCopyAsNewName(HWND hwnd);
 	void OnCopyAsNewLang(HWND hwnd);
 	void OnCopyToMultiLang(HWND hwnd);

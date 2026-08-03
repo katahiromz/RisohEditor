@@ -1281,6 +1281,19 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "Anuluj", IDCANCEL, 70, 25, 60, 15
 }
 
+IDD_CLONEINNEWTYPE DIALOGEX 0, 0, 219, 83
+CAPTION "Sklonuj w nowym typie"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
+{
+    RTEXT "&Starsze typy zasobów:", -1, 6, 9, 88, 14
+    COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    RTEXT "&Nowy typ zasobu:", -1, 6, 31, 88, 14
+    COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
+    PUSHBUTTON "Anuluj", IDCANCEL, 121, 55, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
@@ -1600,6 +1613,7 @@ STRINGTABLE
     IDS_ADDCTRL "Dodawanie formantu (Control)"
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Zmiana typu zasobu może spowodować uszkodzenie danych.\r\n\r\nCzy chcesz kontynuować?"
+    IDS_SAMETYPE "Są to te same typy zasobów."
 }
 
 //////////////////////////////////////////////////////////////////////////////

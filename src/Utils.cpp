@@ -19,6 +19,7 @@
 
 extern INT g_bNoGuiMode; // No-GUI mode
 extern LPWSTR g_pszLogFile;
+extern std::vector<MString> *g_pTypes;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -2464,7 +2465,17 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage)
 	m_fBound = FALSE;
 	m_pAC = NULL;
 
-	if (type == 1) // Names
+	if (type == 0) // Types
+	{
+		if (InitTypes() && g_pTypes)
+		{
+			for (auto& type : *g_pTypes)
+			{
+				push_back(type);
+			}
+		}
+	}
+	else if (type == 1) // Names
 	{
 		if (InitNames() && g_pNames)
 		{
@@ -2474,7 +2485,7 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage)
 			}
 		}
 	}
-	if (type == 2) // Languages
+	else if (type == 2) // Languages
 	{
 		for (auto& lang : g_langs)
 		{
