@@ -25,12 +25,14 @@ public:
 	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
-	MRisohAutoComplete *m_pAutoComplete;
+	MRisohAutoComplete *m_pAutoComplete1;
+	MRisohAutoComplete *m_pAutoComplete2;
 
 	MAddBitmapDlg()
 		: MDialogBase(IDD_ADDBITMAP)
 		, m_file(NULL)
-		, m_pAutoComplete(new MRisohAutoComplete(2))
+		, m_pAutoComplete1(new MRisohAutoComplete(1, FALSE, RT_BITMAP))
+		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
 		m_cmb3.m_bIgnoreCase = TRUE;
@@ -38,9 +40,13 @@ public:
 
 	~MAddBitmapDlg()
 	{
-		m_pAutoComplete->unbind();
-		m_pAutoComplete->Release();
-		m_pAutoComplete = NULL;
+		m_pAutoComplete1->unbind();
+		m_pAutoComplete1->Release();
+		m_pAutoComplete1 = NULL;
+
+		m_pAutoComplete2->unbind();
+		m_pAutoComplete2->Release();
+		m_pAutoComplete2 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -60,9 +66,14 @@ public:
 
 		// auto complete
 		COMBOBOXINFO info = { sizeof(info) };
-		GetComboBoxInfo(m_cmb3, &info);
+		GetComboBoxInfo(m_cmb2, &info);
 		HWND hwndEdit = info.hwndItem;
-		m_pAutoComplete->bind(hwndEdit);
+		m_pAutoComplete1->bind(hwndEdit);
+
+		info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb3, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete2->bind(hwndEdit);
 
 		FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
 
