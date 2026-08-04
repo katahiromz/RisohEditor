@@ -1440,7 +1440,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "由於對話被分類, 所以不能被測試。"
     IDS_FILEISUPXED "文件\r\n\r\n'%s'\r\n\r\n被UPX壓縮. 你想使用臨時文件解壓縮嗎?\r\n\r\n如果你沒有擴展它, 閱讀可能會失敗。"
     IDS_CANTUPXEXTRACT "無法由UPX提取。"
-    IDS_CANTSAVEUPXED "無法保存文件, 因為它是由UPX壓縮的。"
     IDS_MESSAGEID "訊息 ID"
     IDS_MESSAGEVALUE "訊息值"
     IDS_RCFILTER "RC 文件 (*.rc;*.rc2)|*.rc;*.rc2|"

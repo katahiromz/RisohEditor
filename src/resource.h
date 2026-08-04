@@ -206,7 +206,6 @@
 #define IDS_CANTTESTCLASSDLG                216
 #define IDS_FILEISUPXED                     217
 #define IDS_CANTUPXEXTRACT                  218
-#define IDS_CANTSAVEUPXED                   219
 #define IDS_MESSAGEID                       220
 #define IDS_MESSAGEVALUE                    221
 #define IDS_RCFILTER                        222

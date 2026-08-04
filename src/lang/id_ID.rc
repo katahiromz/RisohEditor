@@ -1445,7 +1445,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Tidak dapat menguji dialog karena telah digolongkan."
     IDS_FILEISUPXED "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak memperluasnya, berkas mungkin akan gagal terbaca."
     IDS_CANTUPXEXTRACT "Tidak bisa mengekstrak dengan UPX."
-    IDS_CANTSAVEUPXED "Tidak bisa menyimpan berkas karena berupa berkas kompres oleh UPX."
     IDS_MESSAGEID "ID Pesan"
     IDS_MESSAGEVALUE "Nilai Pesan"
     IDS_RCFILTER "Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|"

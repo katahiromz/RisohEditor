@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "대화상자가 분류 되었기 때문에 테스트할 수 없습니다."
     IDS_FILEISUPXED "'%s'\r\n\r\n파일\r\n\r\n이 UPX로 압축되었습니다. 임시 파일을 사용하여 추출하시겠습니까?\r\n\r\n확장하지 않으면 읽기가 실패할 수 있습니다."
     IDS_CANTUPXEXTRACT "UPX로 추출할 수 없습니다."
-    IDS_CANTSAVEUPXED "파일이 UPX로 압축 되었기 때문에 저장할 수 없습니다."
     IDS_MESSAGEID "메시지 ID"
     IDS_MESSAGEVALUE "메시지 값"
     IDS_RCFILTER "RC 파일 (*.rc;*.rc2)|*.rc;*.rc2|"

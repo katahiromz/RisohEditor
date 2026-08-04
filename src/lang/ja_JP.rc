@@ -1445,7 +1445,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "ダイアログがクラス付きのため、テストできません。"
     IDS_FILEISUPXED "ファイル\r\n\r\n'%s'\r\n\r\nは、UPXで圧縮されています。一時ファイルを使って展開しますか？\r\n\r\n展開しなければ正しく読み込めないことがあります。"
     IDS_CANTUPXEXTRACT "UPXで展開できませんでした。"
-    IDS_CANTSAVEUPXED "UPXで圧縮されたデータがあるので、保存できません。"
     IDS_MESSAGEID "メッセージID"
     IDS_MESSAGEVALUE "メッセージの値"
     IDS_RCFILTER "RC ファイル (*.rc;*.rc2)|*.rc;*.rc2|"

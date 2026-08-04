@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Diyalog test edilemiyor çünkü sınıflandırılmış."
     IDS_FILEISUPXED "Dosya\r\n\r\n'%s'\r\n\r\nUPX ile sıkıştırılmış. Geçici bir dosya kullanarak çıkartılmasını ister misiniz?\r\n\r\nEğer genişletmediyseniz, okuma başarısız olabilir."
     IDS_CANTUPXEXTRACT "UPX ile çıkartılamıyor."
-    IDS_CANTSAVEUPXED "Dosya, UPX ile sıkıştırıldığı için kaydedilemiyor."
     IDS_MESSAGEID "Mesaj ID"
     IDS_MESSAGEVALUE "Mesaj Değeri"
     IDS_RCFILTER "RC Dosyaları (*.rc;*.rc2)|*.rc;*.rc2|"

@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Não foi possível testar o diálogo porque está classificado."
     IDS_FILEISUPXED "Ficheiro\r\n\r\n'%s'\r\n\r\nis comprimido por UPX. Deseja extrair utilizando um ficheiro temporário?\r\n\r\nSe não o expandir, a leitura poderá falhar."
     IDS_CANTUPXEXTRACT "Não foi possível extrair por UPX."
-    IDS_CANTSAVEUPXED "Não foi possível guardar o ficheiro porque foi comprimido por UPX."
     IDS_MESSAGEID "ID da mensagem"
     IDS_MESSAGEVALUE "Valor da mensagem"
     IDS_RCFILTER "Ficheiros RC (*.rc;*.rc2)|*.rc;*.rc2|"

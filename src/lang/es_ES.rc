@@ -1444,7 +1444,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "No se puede testear el diálogo porque tiene clases (classed)."
     IDS_FILEISUPXED "Archivo\r\n\r\n'%s'\r\n\r\nestá comprimido por UPX. ¿Quiere extraerlo utilizando un archivo temporal?\r\n\r\nSi no lo extrae, la lectura puede fallar."
     IDS_CANTUPXEXTRACT "No se puede extraer por UPX."
-    IDS_CANTSAVEUPXED "No se puede guardar el archivo porque fue comprimido por UPX."
     IDS_MESSAGEID "ID de Mensaje"
     IDS_MESSAGEVALUE "Valor del Mensaje"
     IDS_RCFILTER "Archivos RC (*.rc;*.rc2)|*.rc;*.rc2|"

@@ -1441,7 +1441,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Dialogia ei voi testata, koska se on luokiteltu."
     IDS_FILEISUPXED "Tiedosto\r\n\r\n'%s'\r\n\r\non UPX pakattu. Haluatko purkaa sen käyttämällä väliaikaista tiedostoa?\r\n\r\nJos et laajentanut sitä, lukeminen voi epäonnistua.."
     IDS_CANTUPXEXTRACT "UPX ei pysty purkamaan."
-    IDS_CANTSAVEUPXED "Tiedostoa ei voitu tallentaa, koska UPX on pakannut sen."
     IDS_MESSAGEID "Viestin ID"
     IDS_MESSAGEVALUE "Viestin arvo"
     IDS_RCFILTER "RC tiedostot (*.rc;*.rc2)|*.rc;*.rc2|"

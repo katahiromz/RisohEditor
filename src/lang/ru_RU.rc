@@ -1443,7 +1443,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Невозможно протестировать диалог из-за его класса."
     IDS_FILEISUPXED "Файл\r\n\r\n'%s'\r\n\r\nсжат с помощью UPX. Распаковать его во временный файл?\r\n\r\nЕсли этого не сделать, возможна ошибка при чтении."
     IDS_CANTUPXEXTRACT "Невозможно распаковать с помощью UPX."
-    IDS_CANTSAVEUPXED "Невозможно сохранить файл, так как он сжат с помощью UPX."
     IDS_MESSAGEID "ID сообщения"
     IDS_MESSAGEVALUE "Значение сообщения"
     IDS_RCFILTER "RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|"

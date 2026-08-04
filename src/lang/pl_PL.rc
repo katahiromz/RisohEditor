@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Nie można przetestować okna dialogowego, ponieważ jest sklasyfikowane."
     IDS_FILEISUPXED "Plik\r\n\r\n'%s'\r\n\r\njest kompresowany przez UPX. Czy chcesz go wyodrębnić przy użyciu pliku tymczasowego?\r\n\r\nJeśli go nie rozwiniesz, czytanie może się nie powieść."
     IDS_CANTUPXEXTRACT "Nie można wypakować przez UPX."
-    IDS_CANTSAVEUPXED "Nie można zapisać pliku, ponieważ został skompresowany przez UPX."
     IDS_MESSAGEID "ID Wiadomości"
     IDS_MESSAGEVALUE "Wartość Wiadomości"
     IDS_RCFILTER "Pliki RC (*.rc;*.rc2)|*.rc;*.rc2|"

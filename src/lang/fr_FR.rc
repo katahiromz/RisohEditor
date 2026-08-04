@@ -1441,7 +1441,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Impossible de tester la boîte de dialogue car elle est classée."
     IDS_FILEISUPXED "Fichier\r\n\r\n'%s'\r\n\r\nest compressé par UPX. Voulez-vous l'extraire à l'aide d'un fichier temporaire?\r\n\r\nSi vous ne l'avez pas développé, la lecture peut échouer."
     IDS_CANTUPXEXTRACT "Impossible d'extraire par UPX."
-    IDS_CANTSAVEUPXED "Impossible d'enregistrer le fichier car il a été compressé par UPX."
     IDS_MESSAGEID "ID du message"
     IDS_MESSAGEVALUE "Valeur du message"
     IDS_RCFILTER "Fichiers RC (*.rc;*.rc2)|*.rc;*.rc2|"

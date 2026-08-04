@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG "Impossibile provare la finestra di dialogo poiché è una classe."
     IDS_FILEISUPXED "Il file\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
     IDS_CANTUPXEXTRACT "Estrazione con UPX fallita."
-    IDS_CANTSAVEUPXED "Impossibile salvare il file poiché è compresso con UPX."
     IDS_MESSAGEID "ID messaggio"
     IDS_MESSAGEVALUE "Valore messaggio"
     IDS_RCFILTER "File RC (*.rc;*.rc2)|*.rc;*.rc2|"
