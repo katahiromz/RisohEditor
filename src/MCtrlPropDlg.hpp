@@ -67,8 +67,9 @@ public:
 	MComboBoxAutoComplete m_cmb5;
 
 	MCtrlPropDlg(DialogRes& dialog_res, const std::unordered_set<INT>& indeces)
-		: MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-		  m_indeces(indeces)
+		: MDialogBase(IDD_CTRLPROP)
+		, m_dialog_res(dialog_res)
+		, m_indeces(indeces)
 	{
 		m_himlControls = NULL;
 		m_cmb2.m_bAcceptSpace = TRUE;
@@ -561,9 +562,6 @@ public:
 			}
 			SetDlgItemText(hwnd, cmb2, strCaption.c_str());
 		}
-
-		if (!m_dialog_res.IsExtended())
-			EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
 
 		SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
 		SendDlgItemMessage(hwnd, scr2, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));

@@ -18,7 +18,8 @@ public:
 	std::vector<BYTE>& m_data;
 
 	MCtrlDataDlg(std::vector<BYTE>& data)
-		: MDialogBase(IDD_CTRLDATA), m_data(data)
+		: MDialogBase(IDD_CTRLDATA)
+		, m_data(data)
 	{
 	}
 

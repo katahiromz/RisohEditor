@@ -44,8 +44,10 @@ public:
 	std::vector<MStringA> m_str_list;
 
 	MAddCtrlDlg(DialogRes& dialog_res, POINT pt)
-		: MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-		  m_bUpdating(FALSE), m_pt(pt)
+		: MDialogBase(IDD_CTRLPROP)
+		, m_dialog_res(dialog_res)
+		, m_bUpdating(FALSE)
+		, m_pt(pt)
 	{
 		m_himlControls = NULL;
 		m_cmb2.m_bAcceptSpace = TRUE;
