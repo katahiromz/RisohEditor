@@ -145,7 +145,14 @@ namespace MacroParser
 		bool match_get(const char *psz, string_type& str)
 		{
 			size_t len = strlen(psz);
-			if (memcmp(peek(), psz, len) == 0)
+			// NOTE: don't memcmp() past the end of m_str. m_index == size()
+			// (or size() - 1 with a 2-char pattern) is a valid position
+			// pointing at the string's implicit NUL terminator, but reading
+			// `len` bytes from there can go one or more bytes past the
+			// buffer -- reachable via malformed input such as an
+			// unterminated quoted string reaching end-of-input.
+			if (m_index + len <= m_str.size() &&
+				memcmp(peek(), psz, len) == 0)
 			{
 				str = psz;
 				skip(len);
