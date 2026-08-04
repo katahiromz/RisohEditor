@@ -1429,7 +1429,6 @@ STRINGTABLE
     IDS_IMAGEINFO "幅 %u、高さ %u、ビットの深さ %u\r\n"
     IDS_ENTERINT "正当な整数を入力して下さい。"
     IDS_ENTERTEXT "正当なテキストを入力して下さい。"
-    IDS_ENTERID "正当なIDを入力して下さい。"
     IDS_ADDNEXTIDS "次のリソースIDを""resource.h""に追加して下さい。:\r\n\r\n"
     IDS_DELETENEXTIDS "次のリソースIDを""resource.h""から削除して下さい。:\r\n\r\n"
     IDS_NOCHANGE "リソースIDの変更点はありません。"

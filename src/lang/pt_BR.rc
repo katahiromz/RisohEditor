@@ -1428,7 +1428,6 @@ STRINGTABLE
     IDS_IMAGEINFO "Largura %u, Altura %u, BitsPixel %u\r\n"
     IDS_ENTERINT "Por favor, insira um inteiro válido."
     IDS_ENTERTEXT "Por favor, insira um texto válido."
-    IDS_ENTERID "Por favor, insira um ID válido."
     IDS_ADDNEXTIDS "Por favor, adicione os seguintes IDs para ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS "Por favor, exclua os seguintes IDs de ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE "Não há alteração de IDs de Recursos."

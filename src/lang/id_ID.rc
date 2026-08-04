@@ -1429,7 +1429,6 @@ STRINGTABLE
     IDS_IMAGEINFO "Lebar %u, Tinggi %u, BitsPixel %u\r\n"
     IDS_ENTERINT "Mohon masukkan integer yang sah."
     IDS_ENTERTEXT "Mohon masukkan teks yang sah."
-    IDS_ENTERID "Mohon masukkan ID yang sah."
     IDS_ADDNEXTIDS "Mohon masukkan ID berikut ke ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS "Mohon hapus ID berikut dari ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE "Tidak ada perubahan dari ID Sumber Daya."

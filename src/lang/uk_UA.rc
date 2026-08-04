@@ -1428,7 +1428,6 @@ STRINGTABLE
     IDS_IMAGEINFO "Ширина %u, висота %u, біт %u\r\n"
     IDS_ENTERINT "Введіть правильне ціле число."
     IDS_ENTERTEXT "Введіть правильний текст."
-    IDS_ENTERID "Введіть правильний ID."
     IDS_ADDNEXTIDS "Додайте наступні ID до ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS "Видаліть такі ID з ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE "Немає змін у ID ресурсів."

@@ -1426,7 +1426,6 @@ STRINGTABLE
     IDS_IMAGEINFO "Genişlik %u, Yükseklik %u, BitsPixel %u\r\n"
     IDS_ENTERINT "Lütfen geçerli bir tamsayı girin."
     IDS_ENTERTEXT "Lütfen geçerli bir metin girin."
-    IDS_ENTERID "Lütfen geçerli bir ID girin."
     IDS_ADDNEXTIDS """resource.h"" dosyasına şu ID'leri ekleyin:\r\n\r\n"
     IDS_DELETENEXTIDS """resource.h"" dosyasından şu ID'leri silin:\r\n\r\n"
     IDS_NOCHANGE "Kaynak ID'lerinde değişiklik yok."

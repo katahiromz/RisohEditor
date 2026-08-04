@@ -1425,7 +1425,6 @@ STRINGTABLE
     IDS_IMAGEINFO "宽度 %u, 高度 %u, 二进制像素 %u\r\n"
     IDS_ENTERINT "请输入有效整数。"
     IDS_ENTERTEXT "请输入有效文本。"
-    IDS_ENTERID "请输入有效 ID。"
     IDS_ADDNEXTIDS "请添加下面ID到 ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS "请从这里删除ID ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE "资源ID没有改变。"

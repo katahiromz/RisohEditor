@@ -1425,7 +1425,6 @@ STRINGTABLE
     IDS_IMAGEINFO "Leveys %u, Korkeus %u, BitsPixel %u\r\n"
     IDS_ENTERINT "Kirjoita kelvollinen kokonaisluku."
     IDS_ENTERTEXT "Kirjoita kelvollinen teksti."
-    IDS_ENTERID "Kirjoita kelvollinen ID."
     IDS_ADDNEXTIDS "Lisää seuraavat ID:t tiedostoon ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS "Poista seuraavat ID:t tiedostosta ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE "Resurssitunnuksia ei ole muutettu."

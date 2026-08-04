@@ -1426,7 +1426,6 @@ STRINGTABLE
     IDS_IMAGEINFO "너비 %u, 높이 %u, 비트픽셀 %u\r\n"
     IDS_ENTERINT "유효한 정수를 입력하세요."
     IDS_ENTERTEXT "유효한 텍스트를 입력하세요."
-    IDS_ENTERID "유효한 ID를 입력하세요."
     IDS_ADDNEXTIDS """resource.h""에 다음 ID를 추가하세요:\r\n\r\n"
     IDS_DELETENEXTIDS """resource.h""에서 다음 ID를 삭제하세요:\r\n\r\n"
     IDS_NOCHANGE "리소스 ID는 변경되지 않습니다."

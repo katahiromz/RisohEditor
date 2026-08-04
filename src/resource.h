@@ -190,7 +190,6 @@
 #define IDS_IMAGEINFO                       194
 #define IDS_ENTERINT                        195
 #define IDS_ENTERTEXT                       196
-#define IDS_ENTERID                         197
 #define IDS_ADDNEXTIDS                      198
 #define IDS_DELETENEXTIDS                   199
 #define IDS_NOCHANGE                        200
