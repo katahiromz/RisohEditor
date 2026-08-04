@@ -28,7 +28,7 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 			return false;
 		}
 
-		if (wVer != 1 || wWidth == 0 || wHeight == 0)
+		if (wVer != 1 || wWidth < 3 || wHeight < 3)
 			return false;
 
 		if (wWidth > 0x7FFF || wHeight > 0x7FFF || wCount > 0x7FFF)
@@ -59,7 +59,7 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 			return false;
 		}
 
-		if (wWidth == 0 || wHeight == 0)
+		if (wWidth < 3 || wHeight < 3)
 			return false;
 
 		if (wWidth > 0x7FFF || wHeight > 0x7FFF || dwCount > 0x7FFFFFFF)
@@ -91,7 +91,7 @@ bool ToolbarRes::SaveToStream(MByteStreamEx& stream) const
 	if (!stream.WriteWord(WORD(1)) ||
 		!stream.WriteWord(WORD(m_width)) ||
 		!stream.WriteWord(WORD(m_height)) ||
-		!stream.WriteWord(WORD(m_items.size())))
+		!stream.WriteWord(WORD(m_items.size() > 0xFFFF ? 0xFFFF : m_items.size())))
 	{
 		return false;
 	}
