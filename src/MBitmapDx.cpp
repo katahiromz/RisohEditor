@@ -108,7 +108,16 @@ BOOL MBitmapDx::SetBitmap(Gdiplus::Bitmap *pBitmap)
 	Destroy();
 
 	m_pBitmap = pBitmap;
-	return m_pBitmap && CreateInternal();
+	if (!m_pBitmap)
+		return FALSE;
+
+	if (!CreateInternal())
+	{
+		delete m_pBitmap;
+		m_pBitmap = NULL;
+		return FALSE;
+	}
+	return TRUE;
 }
 
 BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
@@ -128,7 +137,17 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 			IStream *pStream = NULL;
 			if (CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
 			{
-				pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+				try
+				{
+					pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+				}
+				catch (...)
+				{
+#ifndef NDEBUG
+					DebugBreak();
+#endif
+					pBitmap = nullptr;
+				}
 				pStream->Release();
 			}
 		}
@@ -138,7 +157,12 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 	{
 		m_hGlobal = hGlobal;
 		m_pBitmap = pBitmap;
-		return CreateInternal();
+		if (!CreateInternal())
+		{
+			Destroy();
+			return FALSE;
+		}
+		return TRUE;
 	}
 	else
 	{
