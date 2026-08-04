@@ -89,7 +89,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 		}
 
 		DWORD wItemCount = pData1->wItemCount;
-		size_t cbExpect = sizeof(TOOLBARDATA) + (wItemCount - 1) * sizeof(WORD);
+		size_t cbExpect = (sizeof(TOOLBARDATA) - sizeof(WORD)) + wItemCount * sizeof(WORD);
 		if (cbReal < cbExpect)
 		{
 			assert(0);
@@ -150,7 +150,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 		}
 
 		DWORD wItemCount = pData2->wItemCount;
-		size_t cbExpect = sizeof(TOOLBARDATAWINDRES) + (wItemCount - 1) * sizeof(DWORD);
+		size_t cbExpect = (sizeof(TOOLBARDATAWINDRES) - sizeof(DWORD)) + wItemCount * sizeof(DWORD);
 		if (cbReal < cbExpect)
 		{
 			assert(0);
