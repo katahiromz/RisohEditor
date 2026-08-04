@@ -37,6 +37,7 @@ public:
 
 	~MCloneInNewNameDlg()
 	{
+		m_pAutoComplete1->unbind();
 		m_pAutoComplete1->Release();
 	}
 

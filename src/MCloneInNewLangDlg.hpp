@@ -39,6 +39,7 @@ public:
 
 	~MCloneInNewLangDlg()
 	{
+		m_pAutoComplete2->unbind();
 		m_pAutoComplete2->Release();
 	}
 

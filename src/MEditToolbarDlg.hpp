@@ -35,6 +35,7 @@ public:
 
 	~MModifyTBBtnDlg()
 	{
+		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
 	}
 

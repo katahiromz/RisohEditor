@@ -40,7 +40,9 @@ public:
 
 	~MAddKeyDlg()
 	{
+		m_pAutoComplete3->unbind();
 		m_pAutoComplete3->Release();
+		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
 	}
 
@@ -178,7 +180,9 @@ public:
 
 	~MModifyKeyDlg()
 	{
+		m_pAutoComplete3->unbind();
 		m_pAutoComplete3->Release();
+		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
 	}
 

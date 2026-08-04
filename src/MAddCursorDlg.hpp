@@ -42,7 +42,9 @@ public:
 
 	~MAddCursorDlg()
 	{
+		m_pAutoComplete1->unbind();
 		m_pAutoComplete1->Release();
+		m_pAutoComplete2->unbind();
 		m_pAutoComplete2->Release();
 		DestroyCursor(m_hCursor);
 	}

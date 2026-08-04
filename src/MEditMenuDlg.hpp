@@ -37,6 +37,7 @@ public:
 
 	~MAddMItemDlg()
 	{
+		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
 	}
 
@@ -98,6 +99,7 @@ public:
 
 	~MModifyMItemDlg()
 	{
+		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
 	}
 
