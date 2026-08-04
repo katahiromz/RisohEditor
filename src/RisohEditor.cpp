@@ -16,7 +16,7 @@ LPWSTR g_pszLogFile = NULL;
 
 std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized = NULL;
 std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
-std::vector<MString> *g_pTypes = NULL;
+std::vector<MString> g_types;
 std::vector<MString> *g_pNames = NULL;
 std::vector<MString> *g_pKeys = NULL;
 std::vector<MString> *g_pCtrlIDs = NULL;
@@ -804,12 +804,12 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	switch (m_arrow.m_target_type)
 	{
 	case TARGET_TYPE_TYPE:
-		if (g_pTypes)
+		if (g_types.size())
 		{
-			if (index >= (INT)g_pTypes->size())
+			if (index >= (INT)g_types.size())
 				return FALSE;   // reject
 
-			MString str = (*g_pTypes)[index];
+			MString str = g_types[index];
 			if (str.size() && str[0] == '"')
 				mstr_unquote(str);
 
@@ -2670,15 +2670,12 @@ void MMainWnd::DoLoadLangInfo(VOID)
 
 BOOL InitTypes(void)
 {
-	if (g_pTypes)
-		delete g_pTypes;
-
-	g_pTypes = new std::vector<MString>();
+	g_types.clear();
 	if (auto table1 = g_db.GetTable(L"RESOURCE"))
 	{
 		for (auto& entry : *table1)
 		{
-			g_pTypes->push_back(entry.name);
+			g_types.push_back(entry.name);
 		}
 	}
 
@@ -2686,15 +2683,15 @@ BOOL InitTypes(void)
 	{
 		for (auto& entry : *table2)
 		{
-			g_pTypes->push_back(entry.name);
+			g_types.push_back(entry.name);
 			MString str = L"\"";
 			str += entry.name;
 			str += L"\"";
-			g_pTypes->push_back(std::move(str));
+			g_types.push_back(std::move(str));
 		}
 	}
 
-	std::sort(g_pTypes->begin(), g_pTypes->end(), [](const MString& x, const MString& y){
+	std::sort(g_types.begin(), g_types.end(), [](const MString& x, const MString& y){
 		if (x.empty() && y.empty())
 			return false;
 		if (x.empty())
@@ -2843,7 +2840,7 @@ BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type)
 
 	ListBox_ResetContent(hwnd);
 
-	for (auto& item : *g_pTypes)
+	for (auto& item : g_types)
 	{
 		INT index = ListBox_AddString(hwnd, item.c_str());
 		if (index != LB_ERR && item == type.str())
@@ -2906,7 +2903,7 @@ BOOL InitTypeListBox(HWND hwnd)
 
 	InitTypes();
 
-	for (auto& type : *g_pTypes)
+	for (auto& type : g_types)
 	{
 		ListBox_AddString(hwnd, type.c_str());
 	}
@@ -8647,8 +8644,7 @@ wWinMain(HINSTANCE   hInstance,
 
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
-	if (g_pTypes)
-		delete g_pTypes;
+	g_types.clear();
 	if (g_pNames)
 		delete g_pNames;
 	if (g_pKeys)
