@@ -23,9 +23,9 @@ INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
 	if (cbItem == 0)
 		return -1;  // Failure
 
-	Gdiplus::ImageCodecInfo *pInfo = NULL;
+	Gdiplus::ImageCodecInfo *pInfo = nullptr;
 	pInfo = (Gdiplus::ImageCodecInfo *)std::malloc(cbItem);
-	if (pInfo == NULL)
+	if (pInfo == nullptr)
 		return -1;  // Failure
 
 	GetImageEncoders(nCount, cbItem, pInfo);
@@ -35,7 +35,7 @@ INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
 		if (lstrcmpW(pInfo[k].MimeType, format) == 0)
 		{
 			*pClsid = pInfo[k].Clsid;
-			free(pInfo);
+			std::free(pInfo);
 			return k;  // Success
 		}
 	}
@@ -51,7 +51,7 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 	BITMAPINFOHEADER bi;
 	DWORD Ret;
 
-	if (pPackedDIB == NULL || dwSize < sizeof(bc))
+	if (pPackedDIB == nullptr || dwSize < sizeof(bc))
 	{
 		assert(0);
 		return 0;   // failure
@@ -164,7 +164,7 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 {
 	DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
 	if (Offset == 0)
-		return NULL;
+		return nullptr;
 
 	LPBYTE pb = (LPBYTE)pPackedDIB + Offset;
 	dwSize -= Offset;
@@ -178,8 +178,10 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 	LPVOID pBits;
 
 	HBITMAP hbm;
-	HDC hDC = CreateCompatibleDC(NULL);
-	hbm = CreateDIBSection(hDC, pbi, DIB_RGB_COLORS, &pBits, NULL, 0);
+	HDC hDC = CreateCompatibleDC(nullptr);
+	if (!hDC)
+		return nullptr;
+	hbm = CreateDIBSection(hDC, pbi, DIB_RGB_COLORS, &pBits, nullptr, 0);
 	DeleteDC(hDC);
 
 	if (hbm)
@@ -211,7 +213,7 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIco
 	if (!bIcon)
 	{
 		if (dwSize < 2 * sizeof(WORD))
-			return NULL;
+			return nullptr;
 		//xHotSpot = ((LPWORD)pb)[0];
 		//yHotSpot = ((LPWORD)pb)[1];
 		pb += 2 * sizeof(WORD);
@@ -220,7 +222,7 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIco
 
 	if (!PackedDIB_GetInfo(pb, dwSize, bm))
 	{
-		return NULL;
+		return nullptr;
 	}
 	bm.bmHeight /= 2;
 
@@ -273,8 +275,8 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
 	cbColors = cColors * sizeof(RGBQUAD);
 
 	std::vector<BYTE> Bits(pbmih->biSizeImage);
-	HDC hDC = CreateCompatibleDC(NULL);
-	if (hDC == NULL)
+	HDC hDC = CreateCompatibleDC(nullptr);
+	if (hDC == nullptr)
 		return FALSE;
 
 	LPBITMAPINFO pbi = LPBITMAPINFO(&bi);
@@ -306,16 +308,16 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 	{
 		BOOL ret = FALSE;
 		HBITMAP hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
-		if (hbm == NULL)
+		if (hbm == nullptr)
 			return FALSE;
 
-		Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
+		Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, nullptr);
 		if (pBitmap && pBitmap->GetLastStatus() == Gdiplus::Ok)
 		{
 			CLSID cls;
 			if (GetEncoderClsid(L"image/png", &cls) != -1)
 			{
-				ret = pBitmap->Save(FileName, &cls, NULL) == Gdiplus::Ok;
+				ret = pBitmap->Save(FileName, &cls, nullptr) == Gdiplus::Ok;
 			}
 		}
 		delete pBitmap;
@@ -343,7 +345,7 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 {
-	HBITMAP hbm = NULL;
+	HBITMAP hbm = nullptr;
 
 	// Try a dirty hack for BI_RLE4, BI_RLE8, ...
 	WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
@@ -352,13 +354,13 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 
 	if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
 	{
-		hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
+		hbm = (HBITMAP)LoadImageW(nullptr, szTempFile, IMAGE_BITMAP, 0, 0,
 								  LR_LOADFROMFILE | LR_COLOR);
 	}
 
 	DeleteFileW(szTempFile);
 
-	if (hbm == NULL)
+	if (hbm == nullptr)
 		hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
 
 	return hbm;
