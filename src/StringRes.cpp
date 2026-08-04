@@ -47,11 +47,20 @@ StringRes::SaveToStream(MByteStreamEx& stream, WORD wName)
 
 	for (UINT i = first; i <= last; ++i)
 	{
-		const string_type& str = m_map[i];
-		WORD wLen = WORD(str.size());
+		WORD wLen = 0;
+		const WCHAR *pch = NULL;
+		auto it = m_map.find(static_cast<WORD>(i));
+		if (it != m_map.end())
+		{
+			wLen = WORD(it->second.size());
+			if (wLen)
+				pch = it->second.c_str();
+		}
 		if (!stream.WriteWord(wLen) ||
-			!stream.WriteData(&str[0], wLen * sizeof(WCHAR)))
+			(wLen && !stream.WriteData(pch, wLen * sizeof(WCHAR))))
+		{
 			return false;
+		}
 	}
 
 	return true;
@@ -72,7 +81,8 @@ StringRes::Dump(WORD wName)
 	IdRangeFromName(wName, first, last);
 	for (UINT i = first; i <= last; ++i)
 	{
-		if (m_map[i].empty())
+		auto it = m_map.find(static_cast<WORD>(i));
+		if (it == m_map.end() || it->second.empty())
 			continue;
 
 		ret += L"    ";
@@ -89,8 +99,8 @@ StringRes::Dump(WORD wName)
 #endif
 		}
 
-		ret += L", \"";
-		ret += mstr_escape_with_wrap(m_map[i]);
+		ret += L" \"";
+		ret += mstr_escape_with_wrap(it->second);
 		ret += L"\"\r\n";
 	}
 
