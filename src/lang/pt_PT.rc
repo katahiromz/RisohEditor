@@ -1346,7 +1346,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Não foi possível guardar."
     IDS_REPLACERES "Substituir recurso"
     IDS_ALLFILES "Todos os ficheiros (*.*)|*.*|"
-    IDS_ENTERNAME "Por favor, introduza um nome de recurso."
     IDS_ENTERLANG "Por favor, introduza um idioma de recurso."
     IDS_FILENOTFOUND "Não foi possível encontrar o recurso."
     IDS_CANNOTREPLACE "Não foi possível substituir."

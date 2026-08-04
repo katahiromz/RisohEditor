@@ -1347,7 +1347,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Невозможно сохранить."
     IDS_REPLACERES "Заменить ресурс"
     IDS_ALLFILES "Все файлы (*.*)|*.*|"
-    IDS_ENTERNAME "Укажите имя ресурса."
     IDS_ENTERLANG "Укажите язык ресурса."
     IDS_FILENOTFOUND "Файл не найден."
     IDS_CANNOTREPLACE "Невозможно заменить."

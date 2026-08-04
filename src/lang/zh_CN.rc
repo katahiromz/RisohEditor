@@ -1345,7 +1345,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "无法保存。"
     IDS_REPLACERES "替换资源"
     IDS_ALLFILES "全部文件 (*.*)|*.*|"
-    IDS_ENTERNAME "请输入资源名称。"
     IDS_ENTERLANG "请输入资源语言类型。"
     IDS_FILENOTFOUND "未找到文件。"
     IDS_CANNOTREPLACE "替换失败。"

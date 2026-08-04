@@ -1345,7 +1345,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Speichern nicht möglich."
     IDS_REPLACERES "Ressource ersetzen"
     IDS_ALLFILES "Alle Dateien (*.*)|*.*|"
-    IDS_ENTERNAME "Bitte geben Sie einen Ressourcennamen ein."
     IDS_ENTERLANG "Bitte geben Sie eine Ressourcensprache ein."
     IDS_FILENOTFOUND "Datei konnte nicht gefunden werden."
     IDS_CANNOTREPLACE "Nicht ersetzbar."

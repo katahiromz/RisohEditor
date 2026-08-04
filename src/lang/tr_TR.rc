@@ -1346,7 +1346,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Kaydedilemiyor."
     IDS_REPLACERES "Kaynağı Değiştir"
     IDS_ALLFILES "Tüm Dosyalar (*.*)|*.*|"
-    IDS_ENTERNAME "Lütfen bir kaynak adı girin."
     IDS_ENTERLANG "Lütfen bir kaynak dili girin."
     IDS_FILENOTFOUND "Dosya bulunamadı."
     IDS_CANNOTREPLACE "Değiştirilemiyor."

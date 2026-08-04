@@ -1346,7 +1346,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Unable to save."
     IDS_REPLACERES "Replace Resource"
     IDS_ALLFILES "All Files (*.*)|*.*|"
-    IDS_ENTERNAME "Please enter a resource name."
     IDS_ENTERLANG "Please enter a resource language."
     IDS_FILENOTFOUND "File could not be found."
     IDS_CANNOTREPLACE "Unable to replace."

@@ -110,7 +110,6 @@
 #define IDS_CANNOTSAVE                      105
 #define IDS_REPLACERES                      106
 #define IDS_ALLFILES                        107
-#define IDS_ENTERNAME                       109
 #define IDS_ENTERLANG                       110
 #define IDS_FILENOTFOUND                    111
 #define IDS_CANNOTREPLACE                   112
