@@ -18,7 +18,7 @@ std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized = NULL;
 std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
 std::vector<MString> g_types;
 std::vector<MString> g_names;
-std::vector<MString> *g_pKeys = NULL;
+std::vector<MString> g_keys;
 std::vector<MString> *g_pCtrlIDs = NULL;
 std::vector<MString> *g_pStringIDs = NULL;
 HWND s_hwndEga = NULL;
@@ -2741,15 +2741,13 @@ BOOL InitNames(const MIdOrString& res_type)
 
 BOOL InitKeys(void)
 {
-	if (g_pKeys)
-		delete g_pKeys;
-	g_pKeys = new std::vector<MString>();
+	g_keys.clear();
 
 	if (auto* table = g_db.GetTable(L"VIRTUALKEYS"))
 	{
 		for (auto& table_entry : *table)
 		{
-			g_pKeys->push_back(table_entry.name);
+			g_keys.push_back(table_entry.name);
 		}
 	}
 
@@ -8643,8 +8641,7 @@ wWinMain(HINSTANCE   hInstance,
 
 	g_types.clear();
 	g_names.clear();
-	if (g_pKeys)
-		delete g_pKeys;
+	g_keys.clear();
 	if (g_pCtrlIDs)
 		delete g_pCtrlIDs;
 	if (g_pStringIDs)

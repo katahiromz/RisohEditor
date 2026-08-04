@@ -20,7 +20,7 @@
 extern INT g_bNoGuiMode; // No-GUI mode
 extern LPWSTR g_pszLogFile;
 extern std::vector<MString> g_types;
-extern std::vector<MString> *g_pKeys;
+extern std::vector<MString> g_keys;
 extern std::vector<MString> *g_pCtrlIDs;
 extern std::vector<MString> *g_pStringIDs;
 
@@ -2436,9 +2436,9 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 	}
 	else if (type == 3) // Keys
 	{
-		if (InitKeys() && g_pKeys)
+		if (InitKeys())
 		{
-			for (auto& key : *g_pKeys)
+			for (auto& key : g_keys)
 			{
 				push_back(key);
 			}
