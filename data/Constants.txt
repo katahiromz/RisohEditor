@@ -1,7 +1,7 @@
 ; Constants.txt --- RisohEditor constants database
 ; Copyright (C) 2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 
-[CLASS.STYLE]
+[CLASS_STYLE]
 CS_VREDRAW, 0x1
 CS_HREDRAW, 0x2
 CS_DBLCLKS, 0x8
