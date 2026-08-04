@@ -5,6 +5,7 @@
     - Capacidade de alterar o tipo de recurso.
     - Capacidade de clonar o tipo de recurso.
     - Pequenas melhorias na interface do usuário/experiência do usuário.
+    - Corrigido o tratamento de DLGITEMTEMPLATE.
 - v.6.1.1 (2026-08-03)
     - Refatoração.
 - v.6.1.0 (2026-08-03)

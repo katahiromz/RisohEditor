@@ -5,6 +5,7 @@
     - Able to change resource type.
     - Able to clone resource type.
     - Minor UI/UX improvements.
+    - Fixed the handling of DLGITEMTEMPLATE.
 - v.6.1.1 (2026-08-03)
     - Refactoring.
 - v.6.1.0 (2026-08-03)

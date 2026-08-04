@@ -114,14 +114,24 @@ bool DialogItem::LoadFromStream(const MByteStreamEx& stream, bool extended)
 		return false;
 	}
 
-	BYTE b;
-	if (!stream.ReadByte(b))
+	// NOTE: Per the Win32 DLGITEMTEMPLATE spec, the creation-data size
+	// field is a WORD whose value includes the size word itself (unlike
+	// DLGITEMTEMPLATEEX's extraCount, which excludes it). Reading this
+	// as a BYTE desyncs the stream for any item that has creation data.
+	WORD cbExtra;
+	if (!stream.ReadWord(cbExtra))
 		return false;
 
-	if (b)
+	if (cbExtra > 0x7FFF)
+		return false;
+
+	if (cbExtra)
 	{
-		m_extra.resize(b);
-		if (!stream.ReadData(&m_extra[0], b))
+		if (cbExtra < sizeof(WORD))
+			return false;
+		size_t cb = cbExtra - sizeof(WORD);
+		m_extra.resize(cb);
+		if (cb && !stream.ReadData(&m_extra[0], cb))
 			return false;
 	}
 
@@ -207,14 +217,14 @@ bool DialogItem::SaveToStream(MByteStreamEx& stream, bool extended) const
 	if (!stream.WriteString(m_title.ptr()))
 		return false;
 
-	BYTE b = BYTE(m_extra.size());
-	if (!stream.WriteRaw(b))
+	// NOTE: must match LoadFromStream: this WORD includes its own 2 bytes.
+	WORD cbExtra = m_extra.empty() ? 0 : WORD(m_extra.size() + sizeof(WORD));
+	if (!stream.WriteWord(cbExtra))
 		return false;
 
-	if (b)
+	if (m_extra.size())
 	{
-		stream.WriteDwordAlignment();
-		if (!stream.WriteData(&m_extra[0], b))
+		if (!stream.WriteData(&m_extra[0], m_extra.size()))
 			return false;
 	}
 
