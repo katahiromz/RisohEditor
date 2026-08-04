@@ -251,6 +251,10 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "삭제(&D)\tDel", ID_DELETE
     }
+    POPUP "Popup #9"
+    {
+        MENUITEM "삭제(&D)\tDel", ID_DELETE
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1217,7 +1221,7 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
 {
     LTEXT "리소스를 복사할 언어를 추가하세요:", -1, 5, 5, 190, 22
     LTEXT "언어(&L):", -1, 5, 35, 82, 12
-    LISTBOX lst1, 5, 50, 190, 100, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    LISTBOX lst1, 5, 50, 190, 100, LBS_EXTENDEDSEL | LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "추가(&A)", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "확인", IDOK, 5, 175, 60, 14

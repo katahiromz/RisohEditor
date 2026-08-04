@@ -25,12 +25,15 @@ public:
 	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb3;
 	std::vector<LANGID> m_langs;
-	MRisohAutoComplete *m_pAutoComplete;
+	MRisohAutoComplete *m_pAutoComplete2;
 
 	MCopyToMultiLangDlg(EntryBase* entry)
-		: MDialogBase(IDD_COPYTOMULTILANG), m_entry(g_res.get_shared(entry)),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang),
-		  m_pAutoComplete(new MRisohAutoComplete(2))
+		: MDialogBase(IDD_COPYTOMULTILANG)
+		, m_entry(g_res.get_shared(entry))
+		, m_type(entry->m_type)
+		, m_name(entry->m_name)
+		, m_lang(entry->m_lang)
+		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
 		m_cmb3.m_bIgnoreCase = TRUE;
@@ -38,24 +41,12 @@ public:
 
 	~MCopyToMultiLangDlg()
 	{
-		if (m_pAutoComplete)
+		if (m_pAutoComplete2)
 		{
-			m_pAutoComplete->unbind();
-			m_pAutoComplete->Release();
-			m_pAutoComplete = NULL;
+			m_pAutoComplete2->unbind();
+			m_pAutoComplete2->Release();
+			m_pAutoComplete2 = NULL;
 		}
-	}
-
-	INT_PTR CALLBACK
-	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
-	{
-		switch (uMsg)
-		{
-			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVKeyToItem);
-		}
-		return 0;
 	}
 
 	int OnVKeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)
@@ -63,6 +54,10 @@ public:
 		if (vk == VK_DELETE)
 		{
 			OnDelete(hwnd);
+		}
+		if (GetKeyState(VK_CONTROL) < 0 && vk == 'A')
+		{
+			OnSelectAll(hwnd);
 		}
 		return SetDlgMsgResult(hwnd, WM_VKEYTOITEM, -1);
 	}
@@ -78,7 +73,7 @@ public:
 		COMBOBOXINFO info = { sizeof(info) };
 		GetComboBoxInfo(m_cmb3, &info);
 		HWND hwndEdit = info.hwndItem;
-		m_pAutoComplete->bind(hwndEdit);
+		m_pAutoComplete2->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -153,6 +148,7 @@ public:
 			{
 				iItem = ListBox_AddString(hLst1, str.c_str());
 			}
+			::SendMessageW(hLst1, LB_SETSEL, FALSE, -1);
 			ListBox_SelItemRange(hLst1, TRUE, iItem, iItem);
 			SetDlgItemTextW(hwnd, cmb3, NULL);
 		}
@@ -162,21 +158,28 @@ public:
 		}
 	}
 
+	void OnSelectAll(HWND hwnd)
+	{
+		HWND hLst1 = GetDlgItem(hwnd, lst1);
+		SendMessageW(hLst1, LB_SETSEL, TRUE, -1);
+	}
+
 	void OnDelete(HWND hwnd)
 	{
 		HWND hLst1 = GetDlgItem(hwnd, lst1);
 
-		INT iItem = ListBox_GetCurSel(hLst1);
-		if (iItem == LB_ERR)
+		INT cSelections = (INT)::SendMessage(hLst1, LB_GETSELCOUNT, 0, 0);
+		if (cSelections <= 0)
 			return;
 
-		ListBox_DeleteString(hLst1, iItem);
+		INT selections[128];
+		if (cSelections > _countof(selections))
+			cSelections = _countof(selections);
 
-		INT nCount = ListBox_GetCount(hLst1);
-		if (iItem == nCount)
-			--iItem;
+		::SendMessageW(hLst1, LB_GETSELITEMS, cSelections, (LPARAM)selections);
 
-		ListBox_SetCurSel(hLst1, iItem);
+		for (INT i = cSelections - 1; i >= 0; --i)
+			ListBox_DeleteString(hLst1, selections[i]);
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -189,6 +192,9 @@ public:
 		case IDCANCEL:
 			EndDialog(IDCANCEL);
 			break;
+		case ID_DELETE:
+			OnDelete(hwnd);
+			break;
 		case psh1:
 			OnAddItem(hwnd);
 			break;
@@ -199,5 +205,27 @@ public:
 			}
 			break;
 		}
+	}
+
+	void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+	{
+		HWND hLst1 = GetDlgItem(hwnd, lst1);
+		if (hwndContext == hLst1)
+		{
+			PopupMenuDx(hwnd, hLst1, IDR_POPUPMENUS, 9, xPos, yPos);
+		}
+	}
+
+	INT_PTR CALLBACK
+	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
+	{
+		switch (uMsg)
+		{
+			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVKeyToItem);
+		}
+		return 0;
 	}
 };

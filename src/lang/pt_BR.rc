@@ -253,6 +253,10 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Excluir\tDel", ID_DELETE
     }
+    POPUP "Popup #9"
+    {
+        MENUITEM "&Excluir\tDel", ID_DELETE
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1219,7 +1223,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Adicione os idiomas para os quais você deseja copiar o recurso:", -1, 5, 5, 190, 22
     LTEXT "&Idiomas:", -1, 5, 35, 82, 12
-    LISTBOX lst1, 5, 50, 190, 100, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    LISTBOX lst1, 5, 50, 190, 100, LBS_EXTENDEDSEL | LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Adicionar", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 14
