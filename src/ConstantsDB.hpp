@@ -492,6 +492,8 @@ public:
 			mstr_trim(line);
 			if (line.empty())
 				continue;
+			if (line[0] == ';')
+				continue;
 
 			// "[category]"
 			if (line[0] == L'[')
