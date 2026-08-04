@@ -2711,17 +2711,25 @@ BOOL InitTypes(void)
 	return TRUE;
 }
 
-BOOL InitNames(void)
+BOOL InitNames(const MIdOrString& res_type)
 {
 	if (g_pNames)
 		delete g_pNames;
 	g_pNames = new std::vector<MString>();
 
-	auto entry = g_res.get_entry();
-	if (!entry)
-		return FALSE;   // no selection
+	IDTYPE_ nIDTYPE_;
 
-	auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+	if (res_type.is_null())
+	{
+		auto entry = g_res.get_entry();
+		if (!entry)
+			return FALSE;   // no selection
+		nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+	}
+	else
+	{
+		nIDTYPE_ = g_db.IDTypeFromResType(res_type);
+	}
 	auto prefix = MapIDTypeToPrefix(nIDTYPE_);
 	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 	auto end = table.end();

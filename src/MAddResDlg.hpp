@@ -29,13 +29,17 @@ public:
 	MComboBoxAutoComplete m_cmb1;
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
-	MRisohAutoComplete *m_pAutoComplete;
+	MRisohAutoComplete *m_pAutoComplete0;
+	MRisohAutoComplete *m_pAutoComplete1;
+	MRisohAutoComplete *m_pAutoComplete2;
 
 	MAddResDlg()
 		: MDialogBase(IDD_ADDRES)
 		, m_type(0xFFFF)
 		, m_file(NULL)
-		, m_pAutoComplete(new MRisohAutoComplete(2))
+		, m_pAutoComplete0(new MRisohAutoComplete(0))
+		, m_pAutoComplete1(new MRisohAutoComplete(1))
+		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
 		m_cmb3.m_bIgnoreCase = TRUE;
@@ -43,9 +47,17 @@ public:
 
 	~MAddResDlg()
 	{
-		m_pAutoComplete->unbind();
-		m_pAutoComplete->Release();
-		m_pAutoComplete = NULL;
+		m_pAutoComplete0->unbind();
+		m_pAutoComplete0->Release();
+		m_pAutoComplete0 = NULL;
+
+		m_pAutoComplete1->unbind();
+		m_pAutoComplete1->Release();
+		m_pAutoComplete1 = NULL;
+
+		m_pAutoComplete2->unbind();
+		m_pAutoComplete2->Release();
+		m_pAutoComplete2 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -100,9 +112,14 @@ public:
 
 		// auto complete
 		COMBOBOXINFO info = { sizeof(info) };
-		GetComboBoxInfo(m_cmb3, &info);
+		GetComboBoxInfo(m_cmb1, &info);
 		HWND hwndEdit = info.hwndItem;
-		m_pAutoComplete->bind(hwndEdit);
+		m_pAutoComplete0->bind(hwndEdit);
+
+		info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb3, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete2->bind(hwndEdit);
 
 		return FALSE;
 	}
@@ -399,6 +416,16 @@ public:
 			}
 		}
 		ComboBox_SetText(m_cmb2, strCmb2Text.c_str());
+
+		m_pAutoComplete1->unbind();
+		m_pAutoComplete1->Release();
+		m_pAutoComplete1 = NULL;
+		m_pAutoComplete1 = new MRisohAutoComplete(1, FALSE, type);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete1->bind(hwndEdit);
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

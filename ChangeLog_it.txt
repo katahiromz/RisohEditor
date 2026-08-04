@@ -4,6 +4,7 @@
     - Possibilità di effettuare nuovamente la compilazione con MinGW o RosBE.
     - Possibilità di modificare il tipo di risorsa.
     - Possibilità di clonare il tipo di risorsa.
+    - Piccoli miglioramenti all'interfaccia utente e all'esperienza utente.
 - v.6.1.1 (03.08.2026)
     - Refactoring.
 - v.6.1.0 (03.08.2026)

@@ -3355,6 +3355,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_EXTRACTRC, MF_GRAYED);

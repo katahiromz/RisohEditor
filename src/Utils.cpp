@@ -2457,7 +2457,7 @@ BOOL IsValidUILang(LANGID langid)
 	return value != langid;
 }
 
-MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage)
+MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrString& res_type)
 {
 	m_type = type;
 	m_nCurrentElement = 0;
@@ -2477,7 +2477,7 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage)
 	}
 	else if (type == 1) // Names
 	{
-		if (InitNames() && g_pNames)
+		if (InitNames(res_type) && g_pNames)
 		{
 			for (auto& name : *g_pNames)
 			{

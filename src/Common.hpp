@@ -153,7 +153,7 @@ BOOL InitTypeListBox(HWND hwnd);
 BOOL InitNameListBox(HWND hwnd);
 BOOL InitLangListBox(HWND hwnd);
 BOOL InitTypes(void);
-BOOL InitNames(void);
+BOOL InitNames(const MIdOrString& res_type = (WORD)0);
 BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type);
 BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString& name);
 BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId);

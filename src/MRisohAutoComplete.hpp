@@ -15,7 +15,7 @@ class MRisohAutoComplete : public IEnumString
 {
 public:
 	INT m_type = 2;
-	MRisohAutoComplete(INT type, BOOL bUILanguage = FALSE);
+	MRisohAutoComplete(INT type, BOOL bUILanguage = FALSE, const MIdOrString& res_type = (WORD)0);
 
 	virtual ~MRisohAutoComplete()
 	{
