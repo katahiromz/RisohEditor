@@ -201,6 +201,13 @@ bool MenuRes::LoadFromStream(const MByteStreamEx& stream)
 
 			if (fItemFlags & MF_END)
 			{
+				// NOTE: wDepth is a WORD; if it's already 0 (a top-level
+				// item ending the whole menu) and the stream still yields
+				// more data (malformed/corrupt input), decrementing would
+				// underflow to 0xFFFF and get stored as a bogus item.wDepth
+				// for subsequent items.
+				if (wDepth == 0)
+					break;
 				--wDepth;
 				while (flag_stack.size() && flag_stack.top())
 				{
@@ -274,6 +281,12 @@ bool MenuRes::LoadFromStreamEx(const MByteStreamEx& stream)
 
 			if (item_header.bResInfo & 0x80)
 			{
+				// NOTE: see the identical guard in LoadFromStream - avoid
+				// underflowing wDepth (WORD) when a depth-0 item claims to
+				// be the end of the menu but the stream still has data
+				// left over.
+				if (wDepth == 0)
+					break;
 				--wDepth;
 				while (flag_stack.size() && flag_stack.top())
 				{
