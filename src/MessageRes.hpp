@@ -196,10 +196,10 @@ public:
 			{
 				for (DWORD k = it->FirstId; k <= it->LastId; ++k)
 				{
-					auto it = m_map.find(k);
-					if (it == m_map.end())
+					auto found = m_map.find(k);
+					if (found == m_map.end())
 						return false;
-					auto& wstr = it->second;
+					auto& wstr = found->second;
 
 					MESSAGE_RESOURCE_ENTRY_HEADER header;
 					header.Length = (WORD)(sizeof(header) + (wstr.size() + 1) * sizeof(WCHAR));
@@ -352,10 +352,10 @@ protected:
 			for (DWORD k = it->FirstId; k <= it->LastId; ++k)
 			{
 				offset += sizeof(MESSAGE_RESOURCE_ENTRY_HEADER);
-				auto it = m_map.find(k);
-				if (it == m_map.end())
+				auto found = m_map.find(k);
+				if (found == m_map.end())
 					return false;
-				offset += (it->second.size() + 1) * sizeof(WCHAR);
+				offset += (found->second.size() + 1) * sizeof(WCHAR);
 			}
 		}
 		return true;
