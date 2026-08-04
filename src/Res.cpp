@@ -6,6 +6,7 @@
 
 #include "Res.hpp"
 #include "ToolbarRes.hpp"
+#include "resource.h"
 
 struct AutoDeleteFileW
 {
@@ -56,35 +57,60 @@ Res_IsEntityType(const MIdOrString& type)
 	return TRUE;
 }
 
-MStringW EntryBase::get_name_label() const
+// get the resource type label
+MStringW get_type_label(const MIdOrString& type)
 {
-	if (m_name.is_str())
-		return m_name.quoted_wstr(); // string name resource name
+	if (type.is_str())
+		return type.str();
 
-	WORD id = m_name.m_id;
+	if (type.m_id == 0)
+		return L"0";
+
+	MStringW label = g_db.GetName(L"RESOURCE", type.m_id);
+	if (label.empty())  // unable to get the label
+		return mstr_dec_word(type.m_id);  // returns the numeric text
+
+	// got the label
+	if (!mchr_is_digit(label[0]))   // first character is not digit
+	{
+		// add a parenthesis pair and numeric text
+		label += L" (";
+		label += mstr_dec_word(type.m_id);
+		label += L")";
+	}
+
+	return label;
+}
+
+// get the resource name label
+MStringW get_name_label(const MIdOrString& type, const MIdOrString& name)
+{
+	if (name.is_str())
+		return name.quoted_wstr(); // string name resource name
+
+	WORD id = name.m_id;
 	if (id == 0)
 		return L"0";
 
 	// get an IDTYPE_ value
-	IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
+	IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(type);
 
 	// RT_DLGINIT uses dialog name
-	if (m_type == RT_DLGINIT)
+	if (type == RT_DLGINIT)
 		nIDTYPE_ = IDTYPE_DIALOG;
 
 	// RT_TOOLBAR uses bitmap name
-	if (m_type == RT_TOOLBAR)
+	if (type == RT_TOOLBAR)
 		nIDTYPE_ = IDTYPE_BITMAP;
 
-	if (m_type == L"RISOHTEMPLATE")
+	if (type == L"RISOHTEMPLATE")
 	{
-		EntryBase entry(ET_LANG, m_name, BAD_NAME, BAD_LANG);
-		return entry.get_type_label();
+		return ::get_type_label(name);
 	}
 
 	// get the label from an IDTYPE_ value
 	MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
-	if (label.empty() || m_type == RT_STRING)
+	if (label.empty() || type == RT_STRING)
 	{
 		return mstr_dec_word(id);   // returns numeric text
 	}
@@ -97,7 +123,48 @@ MStringW EntryBase::get_name_label() const
 		label += mstr_dec_word(id);
 		label += L")";
 	}
+
 	return label;
+}
+
+// get the resource language label
+MStringW get_lang_label(LANGID lang)
+{
+	WCHAR sz[MAX_PATH], szLoc[MAX_PATH];
+
+	// get the locale ID
+	LCID lcid = MAKELCID(lang, SORT_DEFAULT);
+	if (lcid == 0)
+	{
+		// neutral language
+		StringCchPrintfW(sz, _countof(sz), L"%s (0)", LoadStringDx(IDS_NEUTRAL));
+	}
+	else
+	{
+		if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, _countof(szLoc)))
+		{
+			// a valid language
+			StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
+		}
+		else
+		{
+			// invalid or unknown language. just store numeric
+			StringCchPrintfW(sz, _countof(sz), L"%u", lang);
+		}
+	}
+
+	return MStringW(sz);
+}
+
+MStringW EntryBase::get_name_label() const
+{
+	return ::get_name_label(m_type, m_name);
+}
+
+// get the resource language label
+MStringW EntryBase::get_lang_label() const
+{
+	return ::get_lang_label(m_lang);
 }
 
 BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
@@ -1269,8 +1336,6 @@ bool EntrySet::is_childless_parent(EntryBase *entry) const
 		return false;   // not parent
 	}
 }
-
-MStringW get_type_label(const MIdOrString& type);
 
 // get the resource type label
 MStringW EntryBase::get_type_label() const

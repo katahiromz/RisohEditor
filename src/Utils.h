@@ -73,7 +73,6 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText);
 LANGID LangFromText(LPWSTR pszLang);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang);
-MStringW TextFromLang(LANGID lang);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name);
 BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file);

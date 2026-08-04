@@ -138,7 +138,7 @@ public:
 		if (wLang != BAD_LANG)
 		{
 			HWND hLst1 = GetDlgItem(hwnd, lst1);
-			str = TextFromLang(wLang);
+			str = get_lang_label(wLang);
 			INT iItem = ListBox_FindStringExact(hLst1, -1, str.c_str());
 			if (iItem == LB_ERR)
 			{

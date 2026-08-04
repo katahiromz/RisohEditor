@@ -19,6 +19,7 @@ class MModifyEncDlg;
 class MEncodingDlg;
 
 MStringW get_type_label(const MIdOrString& type);
+MStringW get_name_label(const MIdOrString& type, const MIdOrString& name);
 
 //////////////////////////////////////////////////////////////////////////////
 

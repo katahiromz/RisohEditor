@@ -911,8 +911,8 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 			PostUpdateArrow(hwnd);
 
 			WCHAR szText[MAX_PATH];
-			MString strLang = TextFromLang(wNewLang);
-			StringCbCopy(szText, sizeof(szText), strLang.c_str());
+			MStringW strLang = get_lang_label(wNewLang);
+			StringCbCopyW(szText, sizeof(szText), strLang.c_str());
 			DoRelangEntry(szText, entry, wOldLang, wNewLang);
 			DoSetFileModified(TRUE);
 		}

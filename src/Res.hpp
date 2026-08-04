@@ -60,6 +60,10 @@ Res_HasNoName(const MIdOrString& type)
 	return type == RT_STRING;
 }
 
+MStringW get_type_label(const MIdOrString& type);
+MStringW get_name_label(const MIdOrString& type, const MIdOrString& name);
+MStringW get_lang_label(LANGID lang);
+
 ///////////////////////////////////////////////////////////////////////////////
 // EntryType --- the entry type
 
@@ -238,17 +242,10 @@ struct EntryBase : EntryBaseBase
 
 	// get the resource type label
 	MStringW get_type_label() const;
-
 	// get the resource name label
 	MStringW get_name_label() const;
-
 	// get the resource language label
-	MStringW get_lang_label() const
-	{
-		// use an external helper function
-		MStringW TextFromLang(LANGID lang);
-		return TextFromLang(m_lang);
-	}
+	MStringW get_lang_label() const;
 
 	// clear the data
 	void clear_data()

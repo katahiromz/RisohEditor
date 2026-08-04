@@ -182,7 +182,6 @@ DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, std::vector
 MString GetAssoc(const MString& name);
 MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, LANGID wLang);
-MStringW TextFromLang(LANGID lang);
 LANGID LangFromText(LPWSTR pszLang);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);
 std::wstring GetKeyID(UINT wId);
