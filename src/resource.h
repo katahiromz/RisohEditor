@@ -294,7 +294,6 @@
 #define IDS_DFMFILTER                       313
 #define IDS_CANTEXTRACTDFM                  314
 #define IDS_EXTRACTDFM                      315
-#define IDS_ENTERNONZERONAME                316
 #define IDS_ENTERNONZEROTYPE                317
 #define IDS_HOMEPAGE                        318
 #define IDS_FILESAVED                       319

@@ -1530,7 +1530,6 @@ STRINGTABLE
     IDS_DFMFILTER "Plik DFM (*.dfm)|*.dfm|Pliki tekstowe (*.txt)|*.txt|Wszystkie pliki (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "Nie można wypakować danych DFM."
     IDS_EXTRACTDFM "Wypakuj dane DFM"
-    IDS_ENTERNONZERONAME "Wprowadź niezerową nazwę zasobu."
     IDS_ENTERNONZEROTYPE "Wprowadź niezerowy typ zasobu."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "Plik zapisany."

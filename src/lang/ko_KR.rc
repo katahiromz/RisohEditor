@@ -1530,7 +1530,6 @@ STRINGTABLE
     IDS_DFMFILTER "DFM 파일 (*.dfm)|*.dfm|텍스트 파일 (*.txt)|*.txt|모든 파일 (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "DFM 데이터를 추출할 수 없습니다."
     IDS_EXTRACTDFM "DFM 데이터 추출"
-    IDS_ENTERNONZERONAME "파일이 저장되었습니다. 0이 아닌 리소스 이름을 입력하세요."
     IDS_ENTERNONZEROTYPE "파일이 저장되었습니다. 0이 아닌 리소스 유형을 입력하세요."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/ko/"
     IDS_FILESAVED "파일이 저장되었습니다."

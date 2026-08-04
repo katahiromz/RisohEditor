@@ -1529,7 +1529,6 @@ STRINGTABLE
     IDS_DFMFILTER "Tiedostoa on muokattu. Haluatko tallentaa muutokset nyt?"
     IDS_CANTEXTRACTDFM "DFM dataa ei voi purkaa."
     IDS_EXTRACTDFM "Pura DFM data"
-    IDS_ENTERNONZERONAME "Anna nollasta poikkeava resurssin nimi."
     IDS_ENTERNONZEROTYPE "Anna nollasta poikkeava resurssin tyyppi."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "Tiedosto tallennettu."

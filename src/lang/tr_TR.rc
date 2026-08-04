@@ -1530,7 +1530,6 @@ STRINGTABLE
     IDS_DFMFILTER "DFM Dosyası (*.dfm)|*.dfm|Metin Dosyaları (*.txt)|*.txt|Tüm Dosyalar (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "DFM verisi çıkartılamıyor."
     IDS_EXTRACTDFM "DFM verisini çıkart"
-    IDS_ENTERNONZERONAME "Lütfen sıfır olmayan bir kaynak adı girin."
     IDS_ENTERNONZEROTYPE "Lütfen sıfır olmayan bir kaynak türü girin."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "Dosya kaydedildi."

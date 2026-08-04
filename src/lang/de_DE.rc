@@ -1529,7 +1529,6 @@ STRINGTABLE
     IDS_DFMFILTER "DFM-Datei (*.dfm)|*.dfm|Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "DFM-Daten können nicht extrahiert werden."
     IDS_EXTRACTDFM "DFM-Daten extrahieren"
-    IDS_ENTERNONZERONAME "Bitte geben Sie einen Ressourcennamen ungleich Null ein."
     IDS_ENTERNONZEROTYPE "Bitte geben Sie einen Ressourcentyp ungleich Null ein."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "Datei gespeichert."

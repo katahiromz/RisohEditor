@@ -1528,7 +1528,6 @@ STRINGTABLE
     IDS_DFMFILTER "DFM 文件 (*.dfm)|*.dfm|文字檔案 (*.txt)|*.txt|所有檔案 (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "無法提取DFM數據。"
     IDS_EXTRACTDFM "提取DFM數據"
-    IDS_ENTERNONZERONAME "請輸入不為零的資源名稱。"
     IDS_ENTERNONZEROTYPE "請輸入不為零的資源類型名稱。"
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/ch/"
     IDS_FILESAVED "文件保存確定。"

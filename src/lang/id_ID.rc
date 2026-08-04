@@ -1533,7 +1533,6 @@ STRINGTABLE
     IDS_DFMFILTER "Berkas DFM (*.dfm)|*.dfm|Berkas Teks (*.txt)|*.txt|Semua Berkas (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "Tidak bisa mengekstrak data DFM."
     IDS_EXTRACTDFM "Ekstrak data DFM"
-    IDS_ENTERNONZERONAME "Mohon masukkan nama sumber daya non-zero."
     IDS_ENTERNONZEROTYPE "Mohon masukkan jenis sumber daya non-zero."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "Berkas tersimpan."

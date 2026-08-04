@@ -1531,7 +1531,6 @@ STRINGTABLE
     IDS_DFMFILTER "Файл DFM (*.dfm)|*.dfm|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "Невозможно извлечь данные DFM."
     IDS_EXTRACTDFM "Извлечь данные DFM"
-    IDS_ENTERNONZERONAME "Введите непустое имя ресурса."
     IDS_ENTERNONZEROTYPE "Введите непустой тип ресурса."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/ru/"
     IDS_FILESAVED "Файл успешно сохранён."
