@@ -1521,7 +1521,6 @@ STRINGTABLE
     IDS_SPAIN "Spain"
     IDS_SPANISH "Spanish"
     IDS_INVALIDLANG "Tunnistamaton kieli."
-    IDS_INVALIDNAME "Virheellinen resurssin nimi."
     IDS_PNGRESBINFILTER "PNG kuva (*.png)|*.png|Binaariset resurssit (*.res)|*.res|Binaariset tiedostot (*.bin)|*.bin|Kaikki tiedostot (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG kuva (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Binaariset resurssit (*.res)|*.res|Binaariset tiedostot (*.bin)|*.bin|Kaikki tiedostot (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF kuva (*.gif)|*.gif|Binaariset resurssit (*.res)|*.res|Binaariset tiedostot (*.bin)|*.bin|Kaikki tiedostot (*.*)|*.*|"
@@ -1620,6 +1619,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "Resurssityyppi on tyhjä. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
     IDS_TYPEOUTOFRANGE "Resurssityyppi on sallitun alueen ulkopuolella. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
     IDS_INVALIDTYPE "Resurssityyppi on virheellinen. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
+    IDS_NAMEISEMPTY "Resurssin nimi on tyhjä. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
+    IDS_NAMEOUTOFRANGE "Resurssin nimi on sallitun alueen ulkopuolella. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
+    IDS_INVALIDNAME "Resurssin nimi on virheellinen. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
 }
 
 //////////////////////////////////////////////////////////////////////////////

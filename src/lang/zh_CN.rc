@@ -1521,7 +1521,6 @@ STRINGTABLE
     IDS_SPAIN "西班牙"
     IDS_SPANISH "西班牙语"
     IDS_INVALIDLANG "无法识别的语言。"
-    IDS_INVALIDNAME "资源名称无效。"
     IDS_PNGRESBINFILTER "PNG图片 (*.png)|*.png|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG图片 (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF图片 (*.gif)|*.gif|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
@@ -1620,6 +1619,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "资源类型为空。请输入非零的 16 位整数（范围：-32768 至 65535）或标识符。"
     IDS_TYPEOUTOFRANGE "资源类型超出范围。请输入非零的 16 位整数（-32768 至 65535）或标识符。"
     IDS_INVALIDTYPE "资源类型无效。请输入非零的 16 位整数（-32768 至 65535）或标识符。"
+    IDS_NAMEISEMPTY "资源名称为空。请输入一个 16 位整数（-32768 至 65535）或字符串字面量。"
+    IDS_NAMEOUTOFRANGE "资源名称超出范围。请输入 16 位整数（-32768 至 65535）或字符串字面量。"
+    IDS_INVALIDNAME "资源名称无效。请输入 16 位整数（-32768 至 65535）或字符串字面量。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

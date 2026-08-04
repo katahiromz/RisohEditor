@@ -1522,7 +1522,6 @@ STRINGTABLE
     IDS_SPAIN "Spagna"
     IDS_SPANISH "Spagnolo"
     IDS_INVALIDLANG "Lingua non riconosciuta."
-    IDS_INVALIDNAME "Nome risorsa non valido."
     IDS_PNGRESBINFILTER "File immagine PNG (*.png)|*.png|File risorse binarie (*.res)|*.res|File binario (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "File immagine JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|File risorse binarie (*.res)|*.res|File binario (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
     IDS_GIFRESBINFILTER "File immagine GIF (*.gif)|*.gif|Risorse binarie (*.res)|*.res|File binario (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
@@ -1621,6 +1620,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "Il tipo di risorsa è vuoto. Inserire un intero a 16 bit diverso da zero (-32768..65535) o un identificatore."
     IDS_TYPEOUTOFRANGE "Il tipo di risorsa è fuori intervallo. Inserire un intero a 16 bit diverso da zero (-32768..65535) o un identificatore."
     IDS_INVALIDTYPE "Il tipo di risorsa non è valido. Inserire un intero a 16 bit diverso da zero (-32768..65535) o un identificatore."
+    IDS_NAMEISEMPTY "Il nome della risorsa è vuoto. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
+    IDS_NAMEOUTOFRANGE "Il nome della risorsa non rientra nell'intervallo consentito. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
+    IDS_INVALIDNAME "Il nome della risorsa non è valido. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
 }
 
 //////////////////////////////////////////////////////////////////////////////

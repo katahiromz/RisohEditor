@@ -1521,7 +1521,6 @@ STRINGTABLE
     IDS_SPAIN "Spanien"
     IDS_SPANISH "Spanisch"
     IDS_INVALIDLANG "Nicht erkennbare Sprache."
-    IDS_INVALIDNAME "Ungültiger Ressourcenname."
     IDS_PNGRESBINFILTER "PNG-Bild (*.png)|*.png|Binäre Ressourcen (*.res)|*.res|Binärdateien (*.bin)|*.bin|Alle Dateien (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG-Bild (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Binäre Ressourcen (*.res)|*.res|Binärdateien (*.bin)|*.bin|Alle Dateien (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF-Bild (*.gif)|*.gif|Binäre Ressourcen (*.res)|*.res|Binärdateien (*.bin)|*.bin|Alle Dateien (*.*)|*.*|"
@@ -1620,6 +1619,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "Der Ressourcentyp ist leer. Bitte geben Sie eine 16-Bit-Ganzzahl ungleich Null (-32768 bis 65535) oder einen Bezeichner ein."
     IDS_TYPEOUTOFRANGE "Der Ressourcentyp liegt außerhalb des zulässigen Bereichs. Bitte geben Sie eine von Null verschiedene 16-Bit-Ganzzahl (-32768 bis 65535) oder einen Bezeichner ein."
     IDS_INVALIDTYPE "Der Ressourcentyp ist ungültig. Bitte geben Sie eine von Null verschiedene 16-Bit-Ganzzahl (-32768 bis 65535) oder einen Bezeichner ein."
+    IDS_NAMEISEMPTY "Der Ressourcenname ist leer. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder ein String-Literal ein."
+    IDS_NAMEOUTOFRANGE "Der Ressourcenname liegt außerhalb des zulässigen Bereichs. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder ein String-Literal ein."
+    IDS_INVALIDNAME "Der Ressourcenname ist ungültig. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder ein String-Literal ein."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -72,6 +72,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid);
 void InitLangListView(HWND hLst1, LPCTSTR pszText);
 LANGID LangFromText(LPWSTR pszLang);
 INT ParseType(const MStringW& input, MIdOrString& type);
+INT ParseName(const MStringW& input, const MIdOrString& type, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);

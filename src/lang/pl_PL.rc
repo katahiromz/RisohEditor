@@ -1522,7 +1522,6 @@ STRINGTABLE
     IDS_SPAIN "Hiszpania"
     IDS_SPANISH "Hiszpański"
     IDS_INVALIDLANG "Nierozpoznany język."
-    IDS_INVALIDNAME "Nieprawidłowa nazwa zasobu."
     IDS_PNGRESBINFILTER "Obraz PNG (*.png)|*.png|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "Obraz JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_GIFRESBINFILTER "Obraz GIF (*.gif)|*.gif|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
@@ -1621,6 +1620,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "Typ zasobu jest pusty. Proszę wprowadzić niezerową liczbę całkowitą 16-bitową (z zakresu -32768–65535) lub identyfikator."
     IDS_TYPEOUTOFRANGE "Typ zasobu wykracza poza dopuszczalny zakres. Proszę wprowadzić niezerową liczbę całkowitą 16-bitową (z zakresu -32768–65535) lub identyfikator."
     IDS_INVALIDTYPE "Nieprawidłowy typ zasobu. Wprowadź niezerową liczbę całkowitą 16-bitową (zakres -32768–65535) lub identyfikator."
+    IDS_NAMEISEMPTY "Nazwa zasobu jest pusta. Wprowadź liczbę całkowitą 16-bitową (-32768..65535) lub literał ciągu znaków."
+    IDS_NAMEOUTOFRANGE "Nazwa zasobu wykracza poza dopuszczalny zakres. Wprowadź liczbę całkowitą 16-bitową (od -32768 do 65535) lub literał ciągu znaków."
+    IDS_INVALIDNAME "Nazwa zasobu jest nieprawidłowa. Wprowadź liczbę całkowitą 16-bitową (zakres od -32768 do 65535) lub literał ciągu znaków."
 }
 
 //////////////////////////////////////////////////////////////////////////////

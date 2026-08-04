@@ -1522,7 +1522,6 @@ STRINGTABLE
     IDS_SPAIN "İspanya"
     IDS_SPANISH "İspanyolca"
     IDS_INVALIDLANG "Tanınmayan dil."
-    IDS_INVALIDNAME "Geçersiz kaynak adı."
     IDS_PNGRESBINFILTER "PNG Görseli (*.png)|*.png|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG Görseli (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF Görseli (*.gif)|*.gif|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
@@ -1621,6 +1620,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "Kaynak türü boş. Lütfen sıfır olmayan bir 16-bit tamsayı (-32768..65535) veya tanımlayıcı girin."
     IDS_TYPEOUTOFRANGE "Kaynak türü aralık dışında. Lütfen sıfır olmayan bir 16-bit tamsayı (-32768..65535) veya tanımlayıcı girin."
     IDS_INVALIDTYPE "Kaynak türü geçersiz. Lütfen sıfır olmayan bir 16-bit tamsayı (-32768..65535) veya tanımlayıcı girin."
+    IDS_NAMEISEMPTY "Kaynak adı boş. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
+    IDS_NAMEOUTOFRANGE "Kaynak adı aralık dışı. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
+    IDS_INVALIDNAME "Kaynak adı geçersiz. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
 }
 
 //////////////////////////////////////////////////////////////////////////////

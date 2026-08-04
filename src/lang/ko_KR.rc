@@ -1522,7 +1522,6 @@ STRINGTABLE
     IDS_SPAIN "스페인"
     IDS_SPANISH "스페인어"
     IDS_INVALIDLANG "인식할 수 없는 언어입니다."
-    IDS_INVALIDNAME "잘못된 리소스 이름입니다."
     IDS_PNGRESBINFILTER "PNG 이미지 (*.png)|*.png|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG 이미지 (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF 이미지 (*.gif)|*.gif|바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
@@ -1621,6 +1620,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "리소스 유형이 비어 있습니다. 0이 아닌 16비트 정수(-32768~65535) 또는 식별자를 입력하십시오."
     IDS_TYPEOUTOFRANGE "리소스 유형이 범위를 벗어났습니다. 0이 아닌 16비트 정수(-32768~65535) 또는 식별자를 입력하십시오."
     IDS_INVALIDTYPE "리소스 유형이 유효하지 않습니다. 0이 아닌 16비트 정수(-32768~65535) 또는 식별자를 입력하십시오."
+    IDS_NAMEISEMPTY "리소스 이름이 비어 있습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
+    IDS_NAMEOUTOFRANGE "리소스 이름이 범위를 벗어났습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
+    IDS_INVALIDNAME "리소스 이름이 유효하지 않습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
 }
 
 //////////////////////////////////////////////////////////////////////////////

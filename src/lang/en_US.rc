@@ -1522,7 +1522,6 @@ STRINGTABLE
     IDS_SPAIN "Spain"
     IDS_SPANISH "Spanish"
     IDS_INVALIDLANG "Unrecognizable language."
-    IDS_INVALIDNAME "Invalid resource name."
     IDS_PNGRESBINFILTER "PNG Image (*.png)|*.png|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "JPEG Image (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_GIFRESBINFILTER "GIF Image (*.gif)|*.gif|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
@@ -1621,6 +1620,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "The resource type is empty. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
     IDS_TYPEOUTOFRANGE "The resource type is out of range. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
     IDS_INVALIDTYPE "The resource type is invalid. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
+    IDS_NAMEISEMPTY "The resource name is empty. Please enter a 16-bit integer (-32768..65535) or string literal."
+    IDS_NAMEOUTOFRANGE "The resource name is out of range. Please enter a 16-bit integer (-32768..65535) or string literal."
+    IDS_INVALIDNAME "The resource name is invalid. Please enter a 16-bit integer (-32768..65535) or string literal."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -286,7 +286,6 @@
 #define IDS_SPAIN                           284
 #define IDS_SPANISH                         285
 #define IDS_INVALIDLANG                     286
-#define IDS_INVALIDNAME                     287
 #define IDS_PNGRESBINFILTER                 288
 #define IDS_JPEGRESBINFILTER                289
 #define IDS_GIFRESBINFILTER                 290
@@ -385,6 +384,9 @@
 #define IDS_TYPEISEMPTY                     383
 #define IDS_TYPEOUTOFRANGE                  384
 #define IDS_INVALIDTYPE                     385
+#define IDS_NAMEISEMPTY                     386
+#define IDS_NAMEOUTOFRANGE                  387
+#define IDS_INVALIDNAME                     388
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

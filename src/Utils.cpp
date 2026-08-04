@@ -2833,6 +2833,9 @@ INT ParseType(const MStringW& input, MIdOrString& type)
 	// replace the fullwidth characters with halfwidth characters
 	ReplaceFullWithHalf(str);
 
+	// Make it uppercase
+	mstr_upper(str);
+
 	// trim
 	mstr_trim(str);
 
@@ -2857,8 +2860,6 @@ INT ParseType(const MStringW& input, MIdOrString& type)
 		type = (WORD)value;
 		return 0; // Success
 	}
-
-	mstr_upper(str);
 
 	if (str[0] == L'"')
 		mstr_unquote(str);
@@ -2910,21 +2911,32 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 	return TRUE;	// success
 }
 
-// verify the resource name combobox
-BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name)
+INT ParseName(const MStringW& input, const MIdOrString& type, MIdOrString& name)
 {
-	// get the combobox text
-	MStringW str = MWindowBase::GetWindowText(hCmb2);
+	MStringW str = input;
+	name = BAD_NAME;
 
 	// replace the fullwidth characters with halfwidth characters
 	ReplaceFullWithHalf(str);
 
+	// make it uppercase
+	mstr_upper(str);
+
 	// trim
 	mstr_trim(str);
 
-	// Make it Uppercase
-	mstr_upper(str);
+	if (str.empty())  // an empty string?
+		return IDS_NAMEISEMPTY;
 
+	// remove paren
+	size_t i = str.rfind(L'(');
+	if (i != str.npos)
+	{
+		str = str.substr(0, i);
+		mstr_trim(str);
+	}
+
+	// template resource needs special handling
 	if (type == L"RISOHTEMPLATE")
 	{
 		WORD wID = WORD(g_db.GetValue(L"RESOURCE", str.c_str()));
@@ -2932,45 +2944,55 @@ BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name)
 			str = std::to_wstring(wID);
 	}
 
-	if (str.empty()) // an empty string
+	// numeric?
+	if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
 	{
+		long long value;
+		wchar_t* end_ptr = nullptr;
+		if (str[0] == L'-')
+			value = wcstoll(str.c_str(), &end_ptr, 0);
+		else
+			value = wcstoull(str.c_str(), &end_ptr, 0);
+		if (end_ptr && *end_ptr)
+			return IDS_INVALIDNAME;
+		if (value < SHRT_MIN || USHRT_MAX < value)
+			return IDS_NAMEOUTOFRANGE;
+		name = (WORD)value;
+		return 0; // Success
+	}
+
+	// unquote
+	if (str[0] == L'"')
+		mstr_unquote(str);
+
+	// resource id?
+	if (g_db.HasResID(str))
+	{
+		name = (WORD)g_db.GetResIDValue(str);
+		return 0; // Success
+	}
+
+	// string literal
+	name = str.c_str();
+	return 0; // Success
+}
+
+// verify the resource name combobox
+BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name)
+{
+	// get the combobox text
+	MStringW str = MWindowBase::GetWindowText(hCmb2);
+
+	INT ids = ParseName(str, type, name);
+	if (ids)
+	{
+		if (ids == IDS_NAMEOUTOFRANGE)
+			ComboBox_SetText(hCmb2, L"65535");
 		ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
 		SetFocus(hCmb2);	// set focus
 		// show error message
-		LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
-					   NULL, MB_ICONERROR);
+		LogMessageBoxW(GetParent(hCmb2), LoadStringDx(ids), NULL, MB_ICONERROR);
 		return FALSE;   // failure
-	}
-	else if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
-	{
-		// a numeric name
-		INT value = mstr_parse_int(str.c_str());
-		if (value < SHRT_MIN || USHRT_MAX < value)
-		{
-			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-			ComboBox_SetText(hCmb2, std::to_wstring(value).c_str());
-			ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
-			SetFocus(hCmb2);	// set focus
-			// show error message
-			LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERINT), NULL, MB_ICONERROR);
-			return FALSE;   // failure
-		}
-		name = WORD(value);
-	}
-	else
-	{
-		// a non-numeric name
-		if (g_db.HasResID(str))
-		{
-			name = (WORD)g_db.GetResIDValue(str);	// a valued name
-		}
-		else
-		{
-			if (str[0] == L'"') // Quoted?
-				mstr_unquote(str); // Unquote
-
-			name = str.c_str();  // a string name
-		}
 	}
 
 	return TRUE;	// success

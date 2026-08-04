@@ -1524,7 +1524,6 @@ STRINGTABLE
     IDS_SPAIN "Espanha"
     IDS_SPANISH "Espanhol"
     IDS_INVALIDLANG "Idioma irreconhecível."
-    IDS_INVALIDNAME "Nome de recurso inválido."
     IDS_PNGRESBINFILTER "Imagem PNG (*.png)|*.png|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "Imagem JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
     IDS_GIFRESBINFILTER "Imagem GIF (*.gif)|*.gif|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
@@ -1623,6 +1622,9 @@ STRINGTABLE
     IDS_TYPEISEMPTY "O tipo de recurso está vazio. Insira um inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
     IDS_TYPEOUTOFRANGE "O tipo de recurso está fora do intervalo. Insira um número inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
     IDS_INVALIDTYPE "O tipo de recurso é inválido. Insira um inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
+    IDS_NAMEISEMPTY "O nome do recurso está vazio. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
+    IDS_NAMEOUTOFRANGE "O nome do recurso está fora do intervalo. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
+    IDS_INVALIDNAME "O nome do recurso é inválido. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
 }
 
 //////////////////////////////////////////////////////////////////////////////
