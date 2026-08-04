@@ -1345,7 +1345,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Tallentaminen epäonnistui."
     IDS_REPLACERES "Korvaa resurssi"
     IDS_ALLFILES "Kaikki tiedostot (*.*)|*.*|"
-    IDS_ENTERTYPE "Anna resurssin tyyyppi."
     IDS_ENTERNAME "Anna resurssin nimi."
     IDS_ENTERLANG "Anna resurssin kieli."
     IDS_FILENOTFOUND "Tiedostoa ei löytynyt."

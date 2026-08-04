@@ -1349,7 +1349,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Tidak bisa disimpan."
     IDS_REPLACERES "Ganti Sumber Daya"
     IDS_ALLFILES "Semua Berkas (*.*)|*.*|"
-    IDS_ENTERTYPE "Mohon masukkan jenis sumber daya."
     IDS_ENTERNAME "Mohon masukkan nama sumber daya."
     IDS_ENTERLANG "Mohon masukkan bahasa sumber daya."
     IDS_FILENOTFOUND "Berkas tidak bisa ditemukan."

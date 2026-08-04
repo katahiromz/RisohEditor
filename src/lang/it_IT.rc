@@ -1346,7 +1346,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Impossibile salvare."
     IDS_REPLACERES "Sostituisci risorsa"
     IDS_ALLFILES "Tutti i file (*.*)|*.*|"
-    IDS_ENTERTYPE "Inserisci tipo risorsa."
     IDS_ENTERNAME "Inserisci nome risorsa."
     IDS_ENTERLANG "Inserisci lingua risorsa."
     IDS_FILENOTFOUND "File non trovato."

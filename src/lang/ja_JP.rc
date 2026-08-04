@@ -1349,7 +1349,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "保存できませんでした。"
     IDS_REPLACERES "リソースの置き換え"
     IDS_ALLFILES "すべてのファイル (*.*)|*.*|"
-    IDS_ENTERTYPE "リソース型を入力して下さい。"
     IDS_ENTERNAME "リソース名を入力して下さい。"
     IDS_ENTERLANG "リソース言語を入力して下さい。"
     IDS_FILENOTFOUND "ファイルが見つかりません。"

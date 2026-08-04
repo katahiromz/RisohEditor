@@ -1346,7 +1346,6 @@ STRINGTABLE
     IDS_CANNOTSAVE "Nie można zapisać."
     IDS_REPLACERES "Zamień zasób"
     IDS_ALLFILES "Wszystkie pliki (*.*)|*.*|"
-    IDS_ENTERTYPE "Wprowadź typ zasobu."
     IDS_ENTERNAME "Wprowadź nazwę zasobu."
     IDS_ENTERLANG "Wprowadź język zasobu."
     IDS_FILENOTFOUND "Nie można odnaleźć pliku."
