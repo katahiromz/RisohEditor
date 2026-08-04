@@ -85,18 +85,18 @@ public:
 	}
 
 	// IUnknown interface
-	STDMETHODIMP_(ULONG) AddRef()
+	STDMETHODIMP_(ULONG) AddRef() override
 	{
 		return ++m_nRefCount;
 	}
-	STDMETHODIMP_(ULONG) Release()
+	STDMETHODIMP_(ULONG) Release() override
 	{
 		ULONG nCount = --m_nRefCount;
 		if (nCount == 0)
 			delete this;
 		return nCount;
 	}
-	STDMETHODIMP QueryInterface(REFIID riid, void** ppvObject)
+	STDMETHODIMP QueryInterface(REFIID riid, void** ppvObject) override
 	{
 		if (ppvObject == NULL)
 			return E_POINTER;
@@ -118,7 +118,7 @@ public:
 	}
 
 	// IEnumString interface
-	STDMETHODIMP Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched)
+	STDMETHODIMP Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched) override
 	{
 		if (!rgelt)
 			return E_POINTER;
@@ -153,19 +153,19 @@ public:
 
 		return (fetched == celt) ? S_OK : S_FALSE;
 	}
-	STDMETHODIMP Skip(ULONG celt)
+	STDMETHODIMP Skip(ULONG celt) override
 	{
 		m_nCurrentElement += celt;
 		if (m_nCurrentElement > m_list.size())
 			m_nCurrentElement = 0;
 		return S_OK;
 	}
-	STDMETHODIMP Reset(void)
+	STDMETHODIMP Reset(void) override
 	{
 		m_nCurrentElement = 0;
 		return S_OK;
 	}
-	STDMETHODIMP Clone(IEnumString** ppenum)
+	STDMETHODIMP Clone(IEnumString** ppenum) override
 	{
 		if (!ppenum)
 			return E_POINTER;
