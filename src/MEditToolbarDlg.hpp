@@ -24,9 +24,20 @@ class MModifyTBBtnDlg : public MDialogBase
 public:
 	std::wstring m_str;
 	MComboBoxAutoComplete m_cmb1;
+	MRisohAutoComplete *m_pAutoComplete4;
 
-	MModifyTBBtnDlg(INT id, const std::wstring& str = L"") : MDialogBase(id), m_str(str)
+	MModifyTBBtnDlg(INT id, const std::wstring& str = L"")
+		: MDialogBase(id)
+		, m_str(str)
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
 	{
+	}
+
+	~MModifyTBBtnDlg()
+	{
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -44,6 +55,11 @@ public:
 		{
 			SetDlgItemTextW(hwnd, cmb1, m_str.c_str());
 		}
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete4->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -155,7 +171,8 @@ public:
 	HWND m_hLst1;
 
 	MEditToolbarDlg(ToolbarRes& toolbar_res)
-		: MDialogBase(IDD_TOOLBARRES), m_toolbar_res(toolbar_res)
+		: MDialogBase(IDD_TOOLBARRES)
+		, m_toolbar_res(toolbar_res)
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
