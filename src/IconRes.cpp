@@ -86,6 +86,7 @@ IconFile::GetIconGroup(int nBaseID) const
 	static const BYTE s_pngSignature[8] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n' };
 
 	int offset = sizeof(ICONDIR);
+	WORD nWritten = 0;
 	for (int i = 0; i < GetImageCount(); i++)
 	{
 		if (GetImageSize(i) > 25 &&
@@ -109,6 +110,7 @@ IconFile::GetIconGroup(int nBaseID) const
 			grpEntry.nID = WORD(nBaseID + i);
 			memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
 			offset += sizeof(grpEntry);
+			++nWritten;
 			continue;
 		}
 
@@ -158,7 +160,16 @@ IconFile::GetIconGroup(int nBaseID) const
 
 		memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
 		offset += sizeof(grpEntry);
+		++nWritten;
 	}
+
+	// NOTE: images that were skipped above (undersized/invalid bitmap data)
+	// leave no entry in `group`. Without this, the ICONDIR header would
+	// still claim the original idCount while the buffer contains fewer
+	// real entries (the rest silently zero-filled), producing a corrupt
+	// RT_GROUP_ICON resource.
+	reinterpret_cast<LPICONDIR>(&group[0])->idCount = nWritten;
+	group.resize(offset);
 
 	return group;
 }
@@ -256,6 +267,7 @@ CursorFile::GetCursorGroup(int nBaseID) const
 	memcpy(&group[0], &m_dir, sizeof(ICONDIR));
 
 	int offset = sizeof(ICONDIR);
+	WORD nWritten = 0;
 	for (int i = 0; i < GetImageCount(); i++)
 	{
 		BITMAPCOREHEADER    bmch;
@@ -307,7 +319,14 @@ CursorFile::GetCursorGroup(int nBaseID) const
 
 		memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
 		offset += sizeof(grpEntry);
+		++nWritten;
 	}
+
+	// NOTE: see IconFile::GetIconGroup - skipped (undersized) images must
+	// not be counted in idCount, or the header will overstate the number
+	// of valid GRPCURSORDIRENTRY records actually written.
+	reinterpret_cast<LPICONDIR>(&group[0])->idCount = nWritten;
+	group.resize(offset);
 
 	return group;
 }
