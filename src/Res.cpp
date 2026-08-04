@@ -156,12 +156,16 @@ MStringW get_lang_label(LANGID lang)
 	return MStringW(sz);
 }
 
+MStringW EntryBase::get_type_label() const
+{
+	return ::get_type_label(m_type);
+}
+
 MStringW EntryBase::get_name_label() const
 {
 	return ::get_name_label(m_type, m_name);
 }
 
-// get the resource language label
 MStringW EntryBase::get_lang_label() const
 {
 	return ::get_lang_label(m_lang);
@@ -1335,12 +1339,6 @@ bool EntrySet::is_childless_parent(EntryBase *entry) const
 	default:
 		return false;   // not parent
 	}
-}
-
-// get the resource type label
-MStringW EntryBase::get_type_label() const
-{
-	return ::get_type_label(m_type);
 }
 
 MStringW EntrySet::get_label(const EntryBase *entry)
