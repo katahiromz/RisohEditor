@@ -26,10 +26,20 @@ public:
 	MENU_ENTRY& m_entry;
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
+	MRisohAutoComplete *m_pAutoComplete4;
 
 	MAddMItemDlg(MENU_ENTRY& entry)
-		: MDialogBase(IDD_ADDMITEM), m_entry(entry)
+		: MDialogBase(IDD_ADDMITEM)
+		, m_entry(entry)
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
 	{
+	}
+
+	~MAddMItemDlg()
+	{
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -41,6 +51,11 @@ public:
 		InitResNameComboBox(GetDlgItem(hwnd, cmb3), MIdOrString(L""), IDTYPE_HELP);
 		SetDlgItemInt(hwnd, cmb3, 0, TRUE);
 		SubclassChildDx(m_cmb3, cmb3);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete4->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -74,10 +89,20 @@ public:
 	MENU_ENTRY& m_entry;
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
+	MRisohAutoComplete *m_pAutoComplete4;
 
 	MModifyMItemDlg(MENU_ENTRY& entry)
-		: MDialogBase(IDD_MODIFYMITEM), m_entry(entry)
+		: MDialogBase(IDD_MODIFYMITEM)
+		, m_entry(entry)
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
 	{
+	}
+
+	~MModifyMItemDlg()
+	{
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
@@ -113,7 +138,8 @@ public:
 	HWND m_hLst1;
 
 	MEditMenuDlg(MenuRes& menu_res)
-		: MDialogBase(IDD_EDITMENU), m_menu_res(menu_res)
+		: MDialogBase(IDD_EDITMENU)
+		, m_menu_res(menu_res)
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);

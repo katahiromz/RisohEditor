@@ -129,6 +129,11 @@ BOOL MModifyMItemDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	dwType = dwState = 0;
 	SetMenuTypeAndState(dwType, dwState, m_entry.szFlags);
 
+	COMBOBOXINFO info = { sizeof(info) };
+	GetComboBoxInfo(m_cmb2, &info);
+	HWND hwndEdit = info.hwndItem;
+	m_pAutoComplete4->bind(hwndEdit);
+
 	if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
 		(dwType & MFT_SEPARATOR))
 	{
