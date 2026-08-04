@@ -653,11 +653,15 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 static bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
 {
 	// make the text uppercase to ignore case
+	MString needle = pSearch->strText;
 	if (pSearch->bIgnoreCases)
+	{
 		mstr_upper(text);
+		mstr_upper(needle);
+	}
 
 	// find?
-	if (text.find(pSearch->strText) == MString::npos)
+	if (text.find(needle) == MString::npos)
 		return false;   // not found
 
 	if (pSearch->bDownward)     // go downward
