@@ -20,7 +20,7 @@ std::vector<MString> g_types;
 std::vector<MString> g_names;
 std::vector<MString> g_keys;
 std::vector<MString> g_ctrl_ids;
-std::vector<MString> *g_pStringIDs = NULL;
+std::vector<MString> g_string_ids;
 HWND s_hwndEga = NULL;
 
 #ifndef _MSC_VER
@@ -2808,9 +2808,7 @@ BOOL InitCtrlIDs(void)
 
 BOOL InitStringIDs(void)
 {
-	if (g_pStringIDs)
-		delete g_pStringIDs;
-	g_pStringIDs = new std::vector<MString>();
+	g_string_ids.clear();
 
 	// get the prefix from IDTYPE_STRING
 	MStringW prefix = MapIDTypeToPrefix(IDTYPE_STRING);
@@ -2821,7 +2819,7 @@ BOOL InitStringIDs(void)
 	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 	for (auto& table_entry : table)
 	{
-		g_pStringIDs->push_back(table_entry.name.c_str());
+		g_string_ids.push_back(table_entry.name);
 	}
 
 	return TRUE;
@@ -8641,8 +8639,7 @@ wWinMain(HINSTANCE   hInstance,
 	g_names.clear();
 	g_keys.clear();
 	g_ctrl_ids.clear();
-	if (g_pStringIDs)
-		delete g_pStringIDs;
+	g_string_ids.clear();
 
 	if (bWowFsDisabled)
 		RevertWow64FsRedirection(OldValue);

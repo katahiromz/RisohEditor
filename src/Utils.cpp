@@ -22,7 +22,7 @@ extern LPWSTR g_pszLogFile;
 extern std::vector<MString> g_types;
 extern std::vector<MString> g_keys;
 extern std::vector<MString> g_ctrl_ids;
-extern std::vector<MString> *g_pStringIDs;
+extern std::vector<MString> g_string_ids;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -2326,7 +2326,7 @@ void InitStringComboBox(HWND hCmb, const MString& strString)
 
 	InitStringIDs();
 
-	for (auto& id : *g_pStringIDs)
+	for (auto& id : g_string_ids)
 	{
 		INT i = ComboBox_AddString(hCmb, id.c_str());
 		if (id == strString)  // matched
@@ -2453,9 +2453,9 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 	}
 	else if (type == 5) // String IDs
 	{
-		if (InitStringIDs() && g_pStringIDs)
+		if (InitStringIDs())
 		{
-			for (auto& id : *g_pStringIDs)
+			for (auto& id : g_string_ids)
 			{
 				push_back(id);
 			}
