@@ -1475,7 +1475,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Mohon tentukan daftar strings karakter yang dipisah oleh line break untuk RT_DLGINIT."
     IDS_SAMELANG "Ini adalah bahasa yang sama."
     IDS_SAMENAME "Ini adalah sumber daya yang sama."
-    IDS_CANTSTARTSEARCH "Tidak bisa memulai pencarian."
     IDS_AMERICA "Amerika"
     IDS_ENGLISH "Inggris"
     IDS_CHINA "Tiongkok"

@@ -1474,7 +1474,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Por favor, especifique una lista de cadenas de caracteres separadas por saltos de línea en RT_DLGINIT."
     IDS_SAMELANG "Es el mismo idioma."
     IDS_SAMENAME "Es el mismo nombre de recurso."
-    IDS_CANTSTARTSEARCH "No se puede iniciar la búsqueda."
     IDS_AMERICA "América"
     IDS_ENGLISH "Inglés"
     IDS_CHINA "China"

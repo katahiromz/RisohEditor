@@ -1471,7 +1471,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Bitte geben Sie eine Liste von Zeichenfolgen an, die durch Zeilenumbrüche für RT_DLGINIT getrennt sind."
     IDS_SAMELANG "Es ist die gleiche Sprache."
     IDS_SAMENAME "Es ist der gleiche Ressourcenname."
-    IDS_CANTSTARTSEARCH "Suche kann nicht gestartet werden."
     IDS_AMERICA "Amerika"
     IDS_ENGLISH "Englisch"
     IDS_CHINA "China"

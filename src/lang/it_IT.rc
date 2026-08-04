@@ -1472,7 +1472,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Specifica per RT_DLGINIT un elenco di stringhe carattere separate da un ritorno a capo."
     IDS_SAMELANG "È la stessa lingua."
     IDS_SAMENAME "È lo stesso nome risorsa."
-    IDS_CANTSTARTSEARCH "Impossibile avviare la ricerca."
     IDS_AMERICA "America"
     IDS_ENGLISH "Inglese"
     IDS_CHINA "Cina"

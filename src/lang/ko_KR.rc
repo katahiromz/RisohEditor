@@ -1472,7 +1472,6 @@ STRINGTABLE
     IDS_DLGINIT3 "RT_DLGINIT의 경우 줄바꿈으로 구분된 문자열 목록을 지정하세요."
     IDS_SAMELANG "같은 언어입니다."
     IDS_SAMENAME "리소스 이름이 같습니다."
-    IDS_CANTSTARTSEARCH "검색을 시작할 수 없습니다."
     IDS_AMERICA "미국"
     IDS_ENGLISH "영어"
     IDS_CHINA "중국"

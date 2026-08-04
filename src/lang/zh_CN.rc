@@ -1471,7 +1471,6 @@ STRINGTABLE
     IDS_DLGINIT3 "请指定用换行符分隔的RT_DLGINIT字符串列表。"
     IDS_SAMELANG "这是相同的语言。"
     IDS_SAMENAME "这是相同的资源名称。"
-    IDS_CANTSTARTSEARCH "无法开始搜索。"
     IDS_AMERICA "美国"
     IDS_ENGLISH "英语"
     IDS_CHINA "中国"
