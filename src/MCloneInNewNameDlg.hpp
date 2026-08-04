@@ -23,11 +23,23 @@ public:
 	MIdOrString m_name;
 	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb2;
+	MRisohAutoComplete *m_pAutoComplete1;
 
 	MCloneInNewNameDlg(EntryBase *entry)
-		: MDialogBase(IDD_CLONEINNEWNAME), m_entry(g_res.get_shared(entry)),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+		: MDialogBase(IDD_CLONEINNEWNAME)
+		, m_entry(g_res.get_shared(entry))
+		, m_type(entry->m_type)
+		, m_name(entry->m_name)
+		, m_lang(entry->m_lang)
+		, m_pAutoComplete1(new MRisohAutoComplete(1, FALSE, entry->m_type))
 	{
+	}
+
+	~MCloneInNewNameDlg()
+	{
+		m_pAutoComplete1->unbind();
+		m_pAutoComplete1->Release();
+		m_pAutoComplete1 = NULL;
 	}
 
 	INT_PTR CALLBACK
@@ -52,6 +64,11 @@ public:
 		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 		InitResNameComboBox(hCmb2, m_name, nIDTYPE_);
 		SubclassChildDx(m_cmb2, cmb2);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete1->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
