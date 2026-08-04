@@ -1366,7 +1366,6 @@ STRINGTABLE
     IDS_BMPFILTER "ビットマップ ファイル (*.bmp)|*.bmp|PNG 画像 (*.png)|*.png|すべてのファイル (*.*)|*.*|"
     IDS_CANTREPLACEBMP "ビットマップの置き換えができませんでした。"
     IDS_REPLACEBMP "ビットマップの置き換え"
-    IDS_ERRORCODE "エラーコード %dが発生しました。"
     IDS_VERSIONINFO "リソーエディタ Version 6.1.2\r\n\r\n片山博文MZ\r\nかたやまひろふみえむぜっど\r\n\r\nライセンス: GPLv3 (フリーソフト)"
     IDS_ADDRES "リソースの追加"
     IDS_CANNOTADDRES "リソースの追加ができませんでした。"

@@ -1365,7 +1365,6 @@ STRINGTABLE
     IDS_BMPFILTER "Растрові малюнки (*.bmp)|*.bmp|Зображення PNG (*.png)|*.png|Усі файли (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Неможливо замінити растровий малюнок."
     IDS_REPLACEBMP "Замінити растровий малюнок"
-    IDS_ERRORCODE "Код помилки %d"
     IDS_VERSIONINFO "RisohEditor версія 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛіцензія: GPLv3 (free software)"
     IDS_ADDRES "Додати ресурс"
     IDS_CANNOTADDRES "Неможливо додати ресурс."

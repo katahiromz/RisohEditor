@@ -1361,7 +1361,6 @@ STRINGTABLE
     IDS_BMPFILTER "點陣圖文件 (*.bmp)|*.bmp|PNG 圖片 (*.png)|*.png|所有檔案 (*.*)|*.*|"
     IDS_CANTREPLACEBMP "點陣圖開啟失敗！"
     IDS_REPLACEBMP "替換點陣圖"
-    IDS_ERRORCODE "錯誤碼 %d"
     IDS_VERSIONINFO "RisohEditor 版本 6.1.2\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (free software)"
     IDS_ADDRES "增加資源"
     IDS_CANNOTADDRES "新增資源失敗。"

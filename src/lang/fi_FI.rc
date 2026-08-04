@@ -1362,7 +1362,6 @@ STRINGTABLE
     IDS_BMPFILTER "Bittikarttatiedostot (*.bmp)|*.bmp|PNG kuvat (*.png)|*.png|Kaikki tiedostot (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Bittikarttaa ei voi korvata."
     IDS_REPLACEBMP "Korvaa bittikartta"
-    IDS_ERRORCODE "Virhekoodi %d"
     IDS_VERSIONINFO "RisohEditor Version 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (free software)"
     IDS_ADDRES "Lisää resurssi"
     IDS_CANNOTADDRES "Resurssia ei voi lisätä."

@@ -1363,7 +1363,6 @@ STRINGTABLE
     IDS_BMPFILTER "비트맵 파일 (*.bmp)|*.bmp|PNG 이미지 (*.png)|*.png|모든 파일 (*.*)|*.*|"
     IDS_CANTREPLACEBMP "비트맵을 바꿀 수 없습니다."
     IDS_REPLACEBMP "비트맵 바꾸기"
-    IDS_ERRORCODE "오류 코드 %d"
     IDS_VERSIONINFO "RisohEditor 버전 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
     IDS_ADDRES "리소스 추가"
     IDS_CANNOTADDRES "리소스를 추가할 수 없습니다."

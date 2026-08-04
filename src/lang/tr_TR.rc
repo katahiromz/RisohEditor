@@ -1363,7 +1363,6 @@ STRINGTABLE
     IDS_BMPFILTER "Bitmap Dosyaları (*.bmp)|*.bmp|PNG Görselleri (*.png)|*.png|Tüm Dosyalar (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Bitmap değiştirilemiyor."
     IDS_REPLACEBMP "Bitmap Değiştir"
-    IDS_ERRORCODE "Hata Kodu %d"
     IDS_VERSIONINFO "RisohEditor Sürüm 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisans: GPLv3 (ücretsiz yazılım)"
     IDS_ADDRES "Kaynak Ekle"
     IDS_CANNOTADDRES "Kaynak eklenemiyor."

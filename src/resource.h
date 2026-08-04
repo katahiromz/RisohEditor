@@ -127,7 +127,6 @@
 #define IDS_BMPFILTER                       124
 #define IDS_CANTREPLACEBMP                  125
 #define IDS_REPLACEBMP                      126
-#define IDS_ERRORCODE                       127
 #define IDS_VERSIONINFO                     128
 #define IDS_ADDRES                          129
 #define IDS_CANNOTADDRES                    130

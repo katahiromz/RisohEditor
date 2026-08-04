@@ -1362,7 +1362,6 @@ STRINGTABLE
     IDS_BMPFILTER "Bitmap-Dateien (*.bmp)|*.bmp|PNG-Bilder (*.png)|*.png|Alle Dateien (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Bitmap kann nicht ersetzt werden."
     IDS_REPLACEBMP "Bitmap ersetzen"
-    IDS_ERRORCODE "Fehlercode %d"
     IDS_VERSIONINFO "RisohEditor Version 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLizenz: GPLv3 (free software)"
     IDS_ADDRES "Ressource hinzufügen"
     IDS_CANNOTADDRES "Die Ressource kann nicht hinzugefügt werden."

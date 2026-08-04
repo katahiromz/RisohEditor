@@ -1366,7 +1366,6 @@ STRINGTABLE
     IDS_BMPFILTER "Berkas Bitmap (*.bmp)|*.bmp|Citra PNG (*.png)|*.png|Semua Berkas (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Tidak bisa mengganti bitmap."
     IDS_REPLACEBMP "Ganti Bitmap"
-    IDS_ERRORCODE "Kode kesalahan %d"
     IDS_VERSIONINFO "RisohEditor Versi 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (free software)"
     IDS_ADDRES "Tambah Sumber Daya"
     IDS_CANNOTADDRES "Tidak bisa menambahkan sumber daya."

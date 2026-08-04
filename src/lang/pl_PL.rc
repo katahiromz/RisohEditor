@@ -1363,7 +1363,6 @@ STRINGTABLE
     IDS_BMPFILTER "Pliki map bitowych (*.bmp)|*.bmp|Obrazy PNG (*.png)|*.png|Wszystkie pliki (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Nie można zamienić bitmapy."
     IDS_REPLACEBMP "Zamień Bitmapę"
-    IDS_ERRORCODE "Kod błędu %d"
     IDS_VERSIONINFO "RisohEditor Wersja 6.1.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencja: GPLv3 (free software)"
     IDS_ADDRES "Dodaj zasób"
     IDS_CANNOTADDRES "Nie można dodać zasobu."
