@@ -165,7 +165,6 @@
 #define IDS_COMPILENOW                      168
 #define IDS_RADWINDOW                       169
 #define IDS_ENTERCLASS                      170
-#define IDS_TEXTEDIT                        171
 #define IDS_CURSORINFO                      172
 #define IDS_IMAGECOUNT                      173
 #define IDS_ICONINFO                        174

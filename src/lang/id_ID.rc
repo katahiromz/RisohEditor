@@ -1404,7 +1404,6 @@ STRINGTABLE
     IDS_COMPILENOW "Data telah diubah. Susun sekarang?"
     IDS_RADWINDOW "Edit Dialog"
     IDS_ENTERCLASS "Mohon masukkan nama kelas jendela yang sah."
-    IDS_TEXTEDIT "Edit dengan Teks (Ctrl+T)"
     IDS_CURSORINFO "Citra #%u: Lebar %u, Tinggi %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "ImageCount: %u\r\n"
     IDS_ICONINFO "Citra #%u: Lebar %u, Tinggi %u, BitCount %u, ID %u\r\n"

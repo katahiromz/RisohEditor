@@ -1400,7 +1400,6 @@ STRINGTABLE
     IDS_COMPILENOW "Tietoja on muutettu. Käännetäänkö nyt?"
     IDS_RADWINDOW "Muokkaa dialogia"
     IDS_ENTERCLASS "Anna kelvollinen ikkunaluokan nimi."
-    IDS_TEXTEDIT "Muokkaa tekstin mukaan (Ctrl+T)"
     IDS_CURSORINFO "Kuva #%u: Leveys %u, Korkeus %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "Kuvamäärä: %u\r\n"
     IDS_ICONINFO "Kuva #%u: Leveys %u, Korkeus %u, BitCount %u, ID %u\r\n"

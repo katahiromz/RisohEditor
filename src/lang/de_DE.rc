@@ -1400,7 +1400,6 @@ STRINGTABLE
     IDS_COMPILENOW "Daten wurden geändert. Jetzt kompilieren?"
     IDS_RADWINDOW "Dialogfeld Bearbeiten"
     IDS_ENTERCLASS "Bitte geben Sie einen gültigen Namen für die Fensterklasse ein."
-    IDS_TEXTEDIT "Nach Text bearbeiten (Ctrl+T)"
     IDS_CURSORINFO "Bild #%u: Breite %u, Höhe %u, Bitanzahl %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "ImageCount: %u\r\n"
     IDS_ICONINFO "Bild #%u: Breite %u, Höhe %u, Bitanzahl %u, ID %u\r\n"

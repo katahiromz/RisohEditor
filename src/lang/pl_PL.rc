@@ -1401,7 +1401,6 @@ STRINGTABLE
     IDS_COMPILENOW "Dane zostały zmienione. Skompilować teraz?"
     IDS_RADWINDOW "Edycja okna dialogowego"
     IDS_ENTERCLASS "Wprowadź prawidłową nazwę klasy okna."
-    IDS_TEXTEDIT "Edycja tekstowa (Ctrl+T)"
     IDS_CURSORINFO "Obraz #%u: Szerokość %u, Wysokość %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "Liczba obrazów: %u\r\n"
     IDS_ICONINFO "Obraz #%u: Szerokość %u, Wysokość %u, BitCount %u, ID %u\r\n"

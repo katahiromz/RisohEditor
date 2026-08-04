@@ -1399,7 +1399,6 @@ STRINGTABLE
     IDS_COMPILENOW "文件已經改變，編譯?"
     IDS_RADWINDOW "編輯對話框"
     IDS_ENTERCLASS "請輸入有效的window類名。"
-    IDS_TEXTEDIT "由Text編輯 (Ctrl+T)"
     IDS_CURSORINFO "圖片 #%u: 寬度 %u, 高度 %u, bit像素點 %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "圖片數量: %u\r\n"
     IDS_ICONINFO "圖片 #%u: 寬度 %u, 高度 %u, bit像素點 %u, ID %u\r\n"

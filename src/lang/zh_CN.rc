@@ -1400,7 +1400,6 @@ STRINGTABLE
     IDS_COMPILENOW "文件已经改变，编译?"
     IDS_RADWINDOW "编辑对话框"
     IDS_ENTERCLASS "请输入有效的window类名。"
-    IDS_TEXTEDIT "由Text编辑 (Ctrl+T)"
     IDS_CURSORINFO "图片 #%u: 宽度 %u, 高度 %u, bit像素点 %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "图片数量: %u\r\n"
     IDS_ICONINFO "图片 #%u: 宽度 %u, 高度 %u, bit像素点 %u, ID %u\r\n"

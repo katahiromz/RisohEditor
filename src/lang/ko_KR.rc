@@ -1401,7 +1401,6 @@ STRINGTABLE
     IDS_COMPILENOW "데이터가 변경되었습니다. 지금 컴파일하시겠습니까?"
     IDS_RADWINDOW "대화상자 편집"
     IDS_ENTERCLASS "유효한 창 클래스 이름을 입력하세요."
-    IDS_TEXTEDIT "텍스트로 편집 (Ctrl+T)"
     IDS_CURSORINFO "이미지 #%u: 너비 %u, 높이 %u, 비트수 %u, x핫스팟 %u, y핫스팟 %u, ID %u\r\n"
     IDS_IMAGECOUNT "이미지수: %u\r\n"
     IDS_ICONINFO "이미지 #%u: W너비 %u, 높이 %u, 비트수 %u, ID %u\r\n"

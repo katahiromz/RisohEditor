@@ -1400,7 +1400,6 @@ STRINGTABLE
     IDS_COMPILENOW "Les données ont été modifiées. Compiler maintenant?"
     IDS_RADWINDOW "Boîte de dialogue Modifier"
     IDS_ENTERCLASS "Veuillez saisir un nom de classe de fenêtre valide."
-    IDS_TEXTEDIT "Modifier par texte (Ctrl+T)"
     IDS_CURSORINFO "Image #%u: Largeur %u, Hauteur %u, Nombre de bits %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "Nombre d'images: %u\r\n"
     IDS_ICONINFO "Image #%u: Largeur %u, Hauteur %u, Nombre de bits %u, ID %u\r\n"

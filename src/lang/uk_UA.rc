@@ -1403,7 +1403,6 @@ STRINGTABLE
     IDS_COMPILENOW "Дані змінилися. Скомпілювати?"
     IDS_RADWINDOW "Редагування діалогу"
     IDS_ENTERCLASS "Введіть правильне ім'я класу вікна."
-    IDS_TEXTEDIT "Редагування як текста (Ctrl+T)"
     IDS_CURSORINFO "Малюнок #%u: ширина %u, висота %u, біт %u, x-крапка %u, y-крапка %u, ID %u\r\n"
     IDS_IMAGECOUNT "Малюнків: %u\r\n"
     IDS_ICONINFO "Малюнок #%u: Ширина %u, Висота %u, Біт %u, ID %u\r\n"

@@ -1401,7 +1401,6 @@ STRINGTABLE
     IDS_COMPILENOW "Veri değiştirildi. Şimdi derlensin mi?"
     IDS_RADWINDOW "Diyalog Düzenle"
     IDS_ENTERCLASS "Lütfen geçerli bir pencere sınıfı adı girin."
-    IDS_TEXTEDIT "Metin ile Düzenle (Ctrl+T)"
     IDS_CURSORINFO "Görüntü #%u: Genişlik %u, Yükseklik %u, BitSayısı %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT "Görüntü Sayısı: %u\r\n"
     IDS_ICONINFO "Görüntü #%u: Genişlik %u, Yükseklik %u, BitSayısı %u, ID %u\r\n"

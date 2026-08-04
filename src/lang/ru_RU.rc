@@ -1402,7 +1402,6 @@ STRINGTABLE
     IDS_COMPILENOW "Данные изменились. Откомпилировать?"
     IDS_RADWINDOW "Правка диалога"
     IDS_ENTERCLASS "Введите корректное имя класса окна."
-    IDS_TEXTEDIT "Правка как текста (Ctrl+T)"
     IDS_CURSORINFO "Рисунок #%u: ширина %u, высота %u, бит %u, x-точка %u, y-точка %u, ID %u\r\n"
     IDS_IMAGECOUNT "Рисунков: %u\r\n"
     IDS_ICONINFO "Рисунок #%u: ширина %u, высота %u, бит %u, ID %u\r\n"
