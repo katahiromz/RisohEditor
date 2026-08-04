@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_IMPORTRES "Importa"
     IDS_CANNOTIMPORT "Impossibile importare la risorsa."
     IDS_COMPILE "Compila (F8)"
-    IDS_GUIEDIT "Modifica via GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP "Impossibile avviare compilatore risorse."
     IDS_RESMISMATCH "Mancata corrispondenza risorsa."
     IDS_SAMPLETEXT "Questo è un esempio."

@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_IMPORTRES "가져오기"
     IDS_CANNOTIMPORT "리소스를 가져올 수 없습니다."
     IDS_COMPILE "컴파일 (F8)"
-    IDS_GUIEDIT "GUI로 편집 (Ctrl+G)"
     IDS_CANNOTSTARTUP "리소스 컴파일러를 시작할 수 없습니다."
     IDS_RESMISMATCH "리소스 유형이 일치하지 않습니다."
     IDS_SAMPLETEXT "이것은 예제입니다."

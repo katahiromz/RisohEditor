@@ -1386,7 +1386,6 @@ STRINGTABLE
     IDS_IMPORTRES "Impor"
     IDS_CANNOTIMPORT "Tidak bisa mengimpor sumber daya."
     IDS_COMPILE "Susun (F8)"
-    IDS_GUIEDIT "Edit dengan GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP "Tidak bisa memulai penyusun sumber daya."
     IDS_RESMISMATCH "Sumber daya tidak cocok."
     IDS_SAMPLETEXT "Ini adalah contoh."

@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_IMPORTRES "Импорт"
     IDS_CANNOTIMPORT "Невозможно импортировать ресурс."
     IDS_COMPILE "Компилировать (F8)"
-    IDS_GUIEDIT "Править в GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP "Невозможно запустить компилятор ресурсов."
     IDS_RESMISMATCH "Не соответствует тип ресурса."
     IDS_SAMPLETEXT "Это пример."
