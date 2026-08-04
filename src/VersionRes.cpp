@@ -88,7 +88,8 @@ VersionRes::DumpValue(WORD wType, const Var& value, int depth) const
 		{
 			const WORD *pw = reinterpret_cast<const WORD *>(&value.value[0]);
 			WCHAR buf[MAX_PATH];
-			for (size_t i = 0; i < value.value.size(); i += 2)
+			size_t cWords = value.value.size() / sizeof(WORD);
+			for (size_t i = 0; i < cWords; ++i)
 			{
 				StringCchPrintfW(buf, _countof(buf), L", 0x%04X", *pw++);
 				ret += buf;
