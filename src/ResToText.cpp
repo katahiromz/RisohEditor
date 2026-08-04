@@ -1664,7 +1664,7 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 
 	HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
 	FillBitmapDx(hbm, hbr);
-	DeleteObject(hbr);
+	// NOTE: hbr is a stock brush obtained via GetStockBrush, so it should NOT be deleted.
 
 	BITMAP bm;
 	GetObject(hbm, sizeof(bm), &bm);
@@ -1773,7 +1773,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 
 	HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
 	FillBitmapDx(hbm, hbr);
-	DeleteObject(hbr);
+	// NOTE: hbr is a stock brush obtained via GetStockBrush, so it should NOT be deleted.
 
 	HDC hDC = CreateCompatibleDC(NULL);
 	HDC hDC2 = CreateCompatibleDC(NULL);
