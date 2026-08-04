@@ -64,9 +64,18 @@ public:
 	MIdOrString m_type;
 	MString m_enc;
 	MComboBoxAutoComplete m_cmb1;
+	MRisohAutoComplete *m_pAutoComplete0;
 
-	MAddEncDlg() : MDialogBase(IDD_ADDENC)
+	MAddEncDlg()
+		: MDialogBase(IDD_ADDENC)
+		, m_pAutoComplete0(new MRisohAutoComplete(0))
 	{
+	}
+
+	~MAddEncDlg()
+	{
+		m_pAutoComplete0->unbind();
+		m_pAutoComplete0->Release();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -75,6 +84,12 @@ public:
 
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 		InitResTypeComboBox(hCmb1, MIdOrString());
+
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete0->bind(hwndEdit);
 
 		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_ANSI));
@@ -150,12 +165,20 @@ public:
 	MIdOrString m_type;
 	MString m_enc;
 	MComboBoxAutoComplete m_cmb1;
+	MRisohAutoComplete *m_pAutoComplete0;
 
-	MModifyEncDlg(const MIdOrString& type, MString enc) :
-		MDialogBase(IDD_MODIFYENC),
-		m_type(type),
-		m_enc(enc)
+	MModifyEncDlg(const MIdOrString& type, MString enc)
+		: MDialogBase(IDD_MODIFYENC)
+		, m_type(type)
+		, m_enc(enc)
+		, m_pAutoComplete0(new MRisohAutoComplete(0))
 	{
+	}
+
+	~MModifyEncDlg()
+	{
+		m_pAutoComplete0->unbind();
+		m_pAutoComplete0->Release();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -165,6 +188,12 @@ public:
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 		InitResTypeComboBox(hCmb1, m_type);
 		EnableWindow(hCmb1, FALSE);
+
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete0->bind(hwndEdit);
 
 		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_ANSI));
