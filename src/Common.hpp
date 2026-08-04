@@ -65,12 +65,6 @@ inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
 
 	return str;
 }
-
---- a/Common.hpp
-+++ b/Common.hpp
-@@ -66,15 +66,26 @@ inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
- 	return str;
- }
  
 // Helper function to get window text without buffer size limitations.
 // Uses a retry loop (like GetListViewItemText) instead of trusting
