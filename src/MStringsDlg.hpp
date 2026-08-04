@@ -34,9 +34,13 @@ public:
 	MResizable m_resizable;
 	HICON m_hIcon;
 	HICON m_hIconSm;
+	MRisohAutoComplete *m_pAutoComplete5;
 
 	MAddStrDlg(STRING_ENTRY& entry, StringRes& str_res)
-		: MDialogBase(IDD_ADDSTR), m_entry(entry), m_str_res(str_res)
+		: MDialogBase(IDD_ADDSTR)
+		, m_entry(entry)
+		, m_str_res(str_res)
+		, m_pAutoComplete5(new MRisohAutoComplete(5))
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -45,6 +49,10 @@ public:
 
 	virtual ~MAddStrDlg()
 	{
+		m_pAutoComplete5->unbind();
+		m_pAutoComplete5->Release();
+		m_pAutoComplete5 = NULL;
+
 		DestroyIcon(m_hIcon);
 		DestroyIcon(m_hIconSm);
 	}
@@ -58,8 +66,13 @@ public:
 		InitStringComboBox(hCmb1, L"");
 		SubclassChildDx(m_cmb1, cmb1);
 
-		m_resizable.OnParentCreate(hwnd);
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete5->bind(hwndEdit);
 
+		m_resizable.OnParentCreate(hwnd);
 		m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
 		m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
 		m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
@@ -163,9 +176,13 @@ public:
 	HICON m_hIcon;
 	HICON m_hIconSm;
 	MComboBoxAutoComplete m_cmb1;
+	MRisohAutoComplete *m_pAutoComplete5;
 
 	MModifyStrDlg(STRING_ENTRY& entry, StringRes& str_res)
-		: MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_str_res(str_res)
+		: MDialogBase(IDD_MODIFYSTR)
+		, m_entry(entry)
+		, m_str_res(str_res)
+		, m_pAutoComplete5(new MRisohAutoComplete(5))
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -174,6 +191,10 @@ public:
 
 	virtual ~MModifyStrDlg()
 	{
+		m_pAutoComplete5->unbind();
+		m_pAutoComplete5->Release();
+		m_pAutoComplete5 = NULL;
+
 		DestroyIcon(m_hIcon);
 		DestroyIcon(m_hIconSm);
 	}
@@ -184,12 +205,19 @@ public:
 		SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+		SubclassChildDx(m_cmb1, cmb1);
 		InitStringComboBox(hCmb1, L"");
+		EnableWindow(hCmb1, FALSE);
 
 		StrDlg_SetEntry(hwnd, m_entry);
 
-		m_resizable.OnParentCreate(hwnd);
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete5->bind(hwndEdit);
 
+		m_resizable.OnParentCreate(hwnd);
 		m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
 		m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
 		m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);

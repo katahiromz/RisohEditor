@@ -22,6 +22,7 @@ extern LPWSTR g_pszLogFile;
 extern std::vector<MString> *g_pTypes;
 extern std::vector<MString> *g_pKeys;
 extern std::vector<MString> *g_pCtrlIDs;
+extern std::vector<MString> *g_pStringIDs;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -2326,38 +2327,12 @@ void InitStringComboBox(HWND hCmb, const MString& strString)
 	if (g_settings.bHideID)
 		return;	 // don't use macro IDs
 
-	// get the prefix from IDTYPE_STRING
-	MStringW prefix = MapIDTypeToPrefix(IDTYPE_STRING);
-	if (prefix.empty())
-		return;
+	InitStringIDs();
 
-	// get the resource IDs from the prefix
-	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-
-	// add the resource IDs
-	for (auto& table_entry : table)
+	for (auto& id : *g_pStringIDs)
 	{
-		// add an item to combobox
-		INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-		if (table_entry.name == strString)  // matched
-		{
-			// select it
-			ComboBox_SetCurSel(hCmb, i);
-		}
-	}
-
-	// get the prefix from IDTYPE_PROMPT
-	prefix = MapIDTypeToPrefix(IDTYPE_PROMPT);
-
-	// get the resource IDs from the prefix
-	table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-
-	// add the resource IDs
-	for (auto& table_entry : table)
-	{
-		// add an item to combobox
-		INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-		if (table_entry.name == strString)  // matched
+		INT i = ComboBox_AddString(hCmb, id.c_str());
+		if (id == strString)  // matched
 		{
 			// select it
 			ComboBox_SetCurSel(hCmb, i);
@@ -2474,6 +2449,16 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 		if (InitCtrlIDs() && g_pCtrlIDs)
 		{
 			for (auto& id : *g_pCtrlIDs)
+			{
+				push_back(id);
+			}
+		}
+	}
+	else if (type == 5) // String IDs
+	{
+		if (InitStringIDs() && g_pStringIDs)
+		{
+			for (auto& id : *g_pStringIDs)
 			{
 				push_back(id);
 			}

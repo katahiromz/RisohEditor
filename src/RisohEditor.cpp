@@ -20,6 +20,7 @@ std::vector<MString> *g_pTypes = NULL;
 std::vector<MString> *g_pNames = NULL;
 std::vector<MString> *g_pKeys = NULL;
 std::vector<MString> *g_pCtrlIDs = NULL;
+std::vector<MString> *g_pStringIDs = NULL;
 HWND s_hwndEga = NULL;
 
 #ifndef _MSC_VER
@@ -2810,6 +2811,27 @@ BOOL InitCtrlIDs(void)
 		{
 			g_pCtrlIDs->push_back(table_entry.name.c_str());
 		}
+	}
+
+	return TRUE;
+}
+
+BOOL InitStringIDs(void)
+{
+	if (g_pStringIDs)
+		delete g_pStringIDs;
+	g_pStringIDs = new std::vector<MString>();
+
+	// get the prefix from IDTYPE_STRING
+	MStringW prefix = MapIDTypeToPrefix(IDTYPE_STRING);
+	if (prefix.empty())
+		return FALSE;
+
+	// get the resource IDs from the prefix
+	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+	for (auto& table_entry : table)
+	{
+		g_pStringIDs->push_back(table_entry.name.c_str());
 	}
 
 	return TRUE;
@@ -8634,6 +8656,8 @@ wWinMain(HINSTANCE   hInstance,
 		delete g_pKeys;
 	if (g_pCtrlIDs)
 		delete g_pCtrlIDs;
+	if (g_pStringIDs)
+		delete g_pStringIDs;
 
 	if (bWowFsDisabled)
 		RevertWow64FsRedirection(OldValue);
