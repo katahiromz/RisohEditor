@@ -1435,7 +1435,6 @@ STRINGTABLE
     IDS_DLGFAIL "Oops, Saya gagal membuat dialog RAD."
     IDS_LOADWCLIB "Muat Perpustakaan Kelas Jendela"
     IDS_AVIMOVIE "(Film AVI)\r\n"
-    IDS_ADDVERINFO "Tambah Informasi Versi"
     IDS_ADDCURSOR "Tambah Kursor"
     IDS_NOMOREITEM "Tidak ada item lagi."
     IDS_INVALIDDATA "(data tidak sah)\r\n"

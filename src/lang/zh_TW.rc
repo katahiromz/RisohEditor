@@ -1430,7 +1430,6 @@ STRINGTABLE
     IDS_DLGFAIL "建立 RAD 對話方塊失敗。"
     IDS_LOADWCLIB "載入Window類資源"
     IDS_AVIMOVIE "(AVI 影片)\r\n"
-    IDS_ADDVERINFO "新增版本資訊"
     IDS_ADDCURSOR "新增游標"
     IDS_NOMOREITEM "沒有更多的項目了。"
     IDS_INVALIDDATA "(無效數據)\r\n"
