@@ -47,6 +47,8 @@ MIDListDlg::MIDListDlg()
 	, m_hLst1(NULL)
 	, m_bChanging(FALSE)
 	, m_bRefreshing(FALSE)
+	, m_nSortColumn(-1)
+	, m_bSortAscending(TRUE)
 {
 	m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
 	InitMaps();
@@ -378,8 +380,9 @@ void MIDListDlg::UpdateListView(LPCTSTR pszIDType)
 
 	BOOL bAll = (pszIDType == NULL || lstrcmp(pszIDType, LoadStringDx(IDS_ALL)) == 0);
 	INT iRow = 0;
-	for (const auto& row : m_items)
+	for (INT iMaster = 0; iMaster < (INT)m_items.size(); ++iMaster)
 	{
+		const auto& row = m_items[iMaster];
 		if (!bAll && !IsTypeMatched(row.col1, pszIDType))
 			continue;
 
@@ -389,7 +392,7 @@ void MIDListDlg::UpdateListView(LPCTSTR pszIDType)
 		item.iItem = iRow;
 		item.iSubItem = 0;
 		item.pszText = const_cast<LPTSTR>(row.col0.c_str());
-		item.lParam = iRow;
+		item.lParam = iMaster;
 		ListView_InsertItem(m_hLst1, &item);
 
 		ZeroMemory(&item, sizeof(item));
@@ -1000,6 +1003,80 @@ void MIDListDlg::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos
 	}
 }
 
+void MIDListDlg::OnColumnClick(HWND hwnd, const NM_LISTVIEW *pnmv)
+{
+	if (pnmv->iSubItem == m_nSortColumn)
+	{
+		m_bSortAscending = !m_bSortAscending;
+	}
+	else
+	{
+		m_nSortColumn = pnmv->iSubItem;
+		m_bSortAscending = TRUE;
+	}
+
+	ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
+	UpdateSortArrow();
+}
+
+void MIDListDlg::UpdateSortArrow()
+{
+	HWND hHeader = ListView_GetHeader(m_hLst1);
+	if (!hHeader)
+		return;
+
+	for (INT iCol = 0; iCol < 3; ++iCol)
+	{
+		HDITEM hditem;
+		ZeroMemory(&hditem, sizeof(hditem));
+		hditem.mask = HDI_FORMAT;
+		Header_GetItem(hHeader, iCol, &hditem);
+
+		hditem.fmt &= ~(HDF_SORTUP | HDF_SORTDOWN);
+		if (iCol == m_nSortColumn)
+			hditem.fmt |= (m_bSortAscending ? HDF_SORTUP : HDF_SORTDOWN);
+
+		Header_SetItem(hHeader, iCol, &hditem);
+	}
+}
+
+int CALLBACK MIDListDlg::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+	MIDListDlg *pThis = (MIDListDlg *)lParamSort;
+
+	INT i1 = (INT)lParam1, i2 = (INT)lParam2;
+	if (i1 < 0 || i1 >= (INT)pThis->m_items.size() ||
+	    i2 < 0 || i2 >= (INT)pThis->m_items.size())
+	{
+		return 0;
+	}
+
+	const ItemRow& row1 = pThis->m_items[i1];
+	const ItemRow& row2 = pThis->m_items[i2];
+
+	INT cmp;
+	switch (pThis->m_nSortColumn)
+	{
+	case 0:
+		cmp = lstrcmp(row1.col0.c_str(), row2.col0.c_str());
+		break;
+	case 1:
+		cmp = lstrcmp(row1.col1.c_str(), row2.col1.c_str());
+		break;
+	case 2:
+		if (row1.numeric && row2.numeric)
+			cmp = (row1.value < row2.value) ? -1 : (row1.value > row2.value ? 1 : 0);
+		else
+			cmp = lstrcmp(row1.col2.c_str(), row2.col2.c_str());
+		break;
+	default:
+		cmp = 0;
+		break;
+	}
+
+	return pThis->m_bSortAscending ? cmp : -cmp;
+}
+
 LRESULT MIDListDlg::OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
 {
 	if (idFrom == lst1)
@@ -1022,6 +1099,11 @@ LRESULT MIDListDlg::OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
 				PostMessageDx(WM_COMMAND, ID_COPYIDDEF);
 				return 1;
 			}
+		}
+		if (pnmhdr->code == LVN_COLUMNCLICK)
+		{
+			OnColumnClick(hwnd, (const NM_LISTVIEW *)pnmhdr);
+			return 0;
 		}
 		if (pnmhdr->code == LVN_GETINFOTIP)
 		{

@@ -70,6 +70,8 @@ public:
 	HICON m_hIconDiamond;
 	MSubclassedListView m_lv;
 	MResizable m_resizable;
+	INT m_nSortColumn;
+	BOOL m_bSortAscending;
 	std::unordered_map<INT, MStringW> m_map1; // IDTYPE_ --> MStringW
 	std::unordered_map<MStringW, INT> m_map2; // MStringW --> IDTYPE_
 
@@ -120,4 +122,7 @@ protected:
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 	void OnIdJump(HWND hwnd, INT nIndex = -1);
+	void OnColumnClick(HWND hwnd, const NM_LISTVIEW *pnmv);
+	void UpdateSortArrow();
+	static int CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 };
