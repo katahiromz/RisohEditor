@@ -371,6 +371,13 @@ void MIDListDlg::UpdateItems()
 		return lstrcmp(a.col0.c_str(), b.col0.c_str()) < 0;
 	});
 
+	m_rowIndexMap.clear();
+	for (INT i = 0; i < (INT)m_items.size(); ++i)
+	{
+		RowKey key{m_items[i].col0, m_items[i].col2};
+		m_rowIndexMap[key] = i;
+	}
+
 	UpdateComboBox();
 }
 
