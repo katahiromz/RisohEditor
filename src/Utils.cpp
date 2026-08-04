@@ -21,7 +21,7 @@ extern INT g_bNoGuiMode; // No-GUI mode
 extern LPWSTR g_pszLogFile;
 extern std::vector<MString> g_types;
 extern std::vector<MString> g_keys;
-extern std::vector<MString> *g_pCtrlIDs;
+extern std::vector<MString> g_ctrl_ids;
 extern std::vector<MString> *g_pStringIDs;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
@@ -1792,12 +1792,9 @@ void InitCtrlIDComboBox(HWND hCmb)
 {
 	InitCtrlIDs();
 
-	if (g_pCtrlIDs)
+	for (auto id : g_ctrl_ids)
 	{
-		for (auto id : *g_pCtrlIDs)
-		{
-			ComboBox_AddString(hCmb, id.c_str());
-		}
+		ComboBox_AddString(hCmb, id.c_str());
 	}
 }
 
@@ -2446,9 +2443,9 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 	}
 	else if (type == 4) // Control IDs
 	{
-		if (InitCtrlIDs() && g_pCtrlIDs)
+		if (InitCtrlIDs())
 		{
-			for (auto& id : *g_pCtrlIDs)
+			for (auto& id : g_ctrl_ids)
 			{
 				push_back(id);
 			}

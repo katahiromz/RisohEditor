@@ -19,7 +19,7 @@ std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
 std::vector<MString> g_types;
 std::vector<MString> g_names;
 std::vector<MString> g_keys;
-std::vector<MString> *g_pCtrlIDs = NULL;
+std::vector<MString> g_ctrl_ids;
 std::vector<MString> *g_pStringIDs = NULL;
 HWND s_hwndEga = NULL;
 
@@ -2756,16 +2756,14 @@ BOOL InitKeys(void)
 
 BOOL InitCtrlIDs(void)
 {
-	if (g_pCtrlIDs)
-		delete g_pCtrlIDs;
-	g_pCtrlIDs = new std::vector<MString>();
+	g_ctrl_ids.claer();
 
 	// add the control IDs
 	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
 	{
 		for (auto& table_entry : *table)
 		{
-			g_pCtrlIDs->push_back(table_entry.name.c_str());
+			g_ctrl_ids.push_back(table_entry.name);
 		}
 	}
 
@@ -2777,7 +2775,7 @@ BOOL InitCtrlIDs(void)
 		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
-			g_pCtrlIDs->push_back(table_entry.name.c_str());
+			g_ctrl_ids.push_back(table_entry.name);
 		}
 	}
 
@@ -2789,7 +2787,7 @@ BOOL InitCtrlIDs(void)
 		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
-			g_pCtrlIDs->push_back(table_entry.name.c_str());
+			g_ctrl_ids.push_back(table_entry.name);
 		}
 	}
 
@@ -2801,7 +2799,7 @@ BOOL InitCtrlIDs(void)
 		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 		for (auto& table_entry : table)
 		{
-			g_pCtrlIDs->push_back(table_entry.name.c_str());
+			g_ctrl_ids.push_back(table_entry.name);
 		}
 	}
 
@@ -8642,8 +8640,7 @@ wWinMain(HINSTANCE   hInstance,
 	g_types.clear();
 	g_names.clear();
 	g_keys.clear();
-	if (g_pCtrlIDs)
-		delete g_pCtrlIDs;
+	g_ctrl_ids.clear();
 	if (g_pStringIDs)
 		delete g_pStringIDs;
 
