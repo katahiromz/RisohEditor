@@ -1432,7 +1432,6 @@ STRINGTABLE
     IDS_DLGFAIL "Creazione finestra dialogo RAD fallita."
     IDS_LOADWCLIB "Carica una libreria classi finestra"
     IDS_AVIMOVIE "(Filmato AVI)\r\n"
-    IDS_ADDMENU "Aggiungi menu"
     IDS_ADDVERINFO "Aggiungi InfoVersione"
     IDS_ADDCURSOR "Aggiungi cursore"
     IDS_NOMOREITEM "Nessun altro elemento."

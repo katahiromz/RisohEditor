@@ -1431,7 +1431,6 @@ STRINGTABLE
     IDS_DLGFAIL "哟，RAD制作失败。"
     IDS_LOADWCLIB "加载Window类资源"
     IDS_AVIMOVIE "(AVI 视频)\r\n"
-    IDS_ADDMENU "添加菜单"
     IDS_ADDVERINFO "添加版本信息"
     IDS_ADDCURSOR "添加光标"
     IDS_NOMOREITEM "没有更多的项目了。"

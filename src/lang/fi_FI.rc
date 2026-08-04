@@ -1431,7 +1431,6 @@ STRINGTABLE
     IDS_DLGFAIL "Hups, RAD-dialogin luominen epäonnistui."
     IDS_LOADWCLIB "Lataa Window Class Library"
     IDS_AVIMOVIE "(AVI Movie)\r\n"
-    IDS_ADDMENU "Lisää valikko"
     IDS_ADDVERINFO "Lisää versiotiedot"
     IDS_ADDCURSOR "Lisää kursori"
     IDS_NOMOREITEM "Ei enää kohteita."

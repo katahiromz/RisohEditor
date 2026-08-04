@@ -1432,7 +1432,6 @@ STRINGTABLE
     IDS_DLGFAIL "Hassktr, RAD diyaloğu oluşturulamadı."
     IDS_LOADWCLIB "Bir Pencere Sınıfı Kütüphanesini Yükle"
     IDS_AVIMOVIE "(AVI Film)\r\n"
-    IDS_ADDMENU "Menü Ekle"
     IDS_ADDVERINFO "Sürüm Bilgisi Ekle"
     IDS_ADDCURSOR "İmleç Ekle"
     IDS_NOMOREITEM "Daha fazla öğe yok."

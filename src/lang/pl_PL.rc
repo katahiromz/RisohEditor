@@ -1432,7 +1432,6 @@ STRINGTABLE
     IDS_DLGFAIL "Ups, nie udało mi się utworzyć okna dialogowego RAD."
     IDS_LOADWCLIB "Załaduj bibliotekę klas okien (Window Class Library)"
     IDS_AVIMOVIE "(Film AVI)\r\n"
-    IDS_ADDMENU "Dodaj Menu"
     IDS_ADDVERINFO "Dodaj informacje o Wersji"
     IDS_ADDCURSOR "Dodaj Kursor"
     IDS_NOMOREITEM "Nie ma więcej elementów."

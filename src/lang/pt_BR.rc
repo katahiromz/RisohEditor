@@ -1434,7 +1434,6 @@ STRINGTABLE
     IDS_DLGFAIL "Opa, falhei em criar uma caixa de diálogo RAD."
     IDS_LOADWCLIB "Carregar uma Biblioteca de Classe do Windows"
     IDS_AVIMOVIE "(Filme AVI)\r\n"
-    IDS_ADDMENU "Adicionar Menu"
     IDS_ADDVERINFO "Adicionar Informação da Versão"
     IDS_ADDCURSOR "Adicionar Cursor"
     IDS_NOMOREITEM "Não há mais itens."

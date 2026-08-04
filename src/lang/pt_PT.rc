@@ -1432,7 +1432,6 @@ STRINGTABLE
     IDS_DLGFAIL "Oops, não foi possível criar um diálogo RAD."
     IDS_LOADWCLIB "Carregar uma biblioteca de classes de janelas"
     IDS_AVIMOVIE "(Vídeo AVI)\r\n"
-    IDS_ADDMENU "Adicionar Menu"
     IDS_ADDVERINFO "Adicionar Info da Versão"
     IDS_ADDCURSOR "Adicionar Cursor"
     IDS_NOMOREITEM "Não há mais itens."
