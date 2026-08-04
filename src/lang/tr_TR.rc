@@ -1524,7 +1524,6 @@ STRINGTABLE
     IDS_BINARY "(ikili veri)"
     IDS_RESTYPE "Kaynak Türü"
     IDS_ENCODING "Kodlama"
-    IDS_PATHSPACEERROR "Yolu boşluk karakterleri içerdiği için yanlış kurulum yapıldı! Kaynak derleyicisi boşluğu kabul edemez.\n\nLütfen ""C:\\Program Files""'dan kaçının."
     IDS_LOADEGAPROGRAM "EGA programını yükle..."
     IDS_EGAFILTER "EGA Programı (*.ega)|*.ega|Tüm Dosyalar (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "Dosya değiştirildi. Şimdi değişiklikleri kaydetmek ister misiniz?"

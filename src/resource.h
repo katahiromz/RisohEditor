@@ -288,7 +288,6 @@
 #define IDS_BINARY                          305
 #define IDS_RESTYPE                         306
 #define IDS_ENCODING                        307
-#define IDS_PATHSPACEERROR                  309
 #define IDS_LOADEGAPROGRAM                  310
 #define IDS_EGAFILTER                       311
 #define IDS_QUERYSAVECHANGE                 312

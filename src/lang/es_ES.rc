@@ -1526,7 +1526,6 @@ STRINGTABLE
     IDS_BINARY "(datos binarios)"
     IDS_RESTYPE "Tipo de Recurso"
     IDS_ENCODING "Codificación"
-    IDS_PATHSPACEERROR "!Ha instalado equivocadamente en una ubicación con caracteres de espacio.! El compilador de recursos no puede aceptar espacio.\n\nPor vavor, evite ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Cargar programa EGA..."
     IDS_EGAFILTER "Programa EGA (*.ega)|*.ega|Todos los Archivos (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "El achivo ha sido modificado. ¿Quiere guardar los cambios ahora?"

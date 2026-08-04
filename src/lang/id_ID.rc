@@ -1527,7 +1527,6 @@ STRINGTABLE
     IDS_BINARY "(binary data)"
     IDS_RESTYPE "Jenis Sumber Daya"
     IDS_ENCODING "Enkoding"
-    IDS_PATHSPACEERROR "Anda memasang dengan salah pada lokasi dengan karakter spasi! Pensuyun sumber daya tidak menerima spasi.\nMohon hindari ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Muat Program EGA..."
     IDS_EGAFILTER "Program EGA (*.ega)|*.ega|Semua Berkas (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "Berkas telah diubah. Anda ingin menyimpan perubahannya sekarang?"

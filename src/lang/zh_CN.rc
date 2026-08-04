@@ -1523,7 +1523,6 @@ STRINGTABLE
     IDS_BINARY "(二进制数据)"
     IDS_RESTYPE "资源类型"
     IDS_ENCODING "编码"
-    IDS_PATHSPACEERROR "您错误地使用空格字符安装了该位置！ 资源编译器不能接受空间。\n\n请避免使用“C:\\Program Files”。"
     IDS_LOADEGAPROGRAM "加载EGA程序..."
     IDS_EGAFILTER "EGA 计划 (*.ega)|*.ega|全部文件 (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "该文件已被修改. 您要立即保存更改吗？"

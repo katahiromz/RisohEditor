@@ -1523,7 +1523,6 @@ STRINGTABLE
     IDS_BINARY "(Binärdaten)"
     IDS_RESTYPE "Ressourcentyp"
     IDS_ENCODING "Codierung"
-    IDS_PATHSPACEERROR "Sie haben fälschlicherweise mit Leerzeichen an der Stelle installiert! Der Ressourcen-Compiler kann keinen Speicherplatz akzeptieren.\n\nBitte vermeiden Sie ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Laden Sie das EGA-Programm..."
     IDS_EGAFILTER "EGA-Programm (*.ega)|*.ega|Alle Dateien (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "Die Datei wurde geändert. Möchten Sie jetzt Änderungen speichern?"

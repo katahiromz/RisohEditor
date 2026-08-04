@@ -1523,7 +1523,6 @@ STRINGTABLE
     IDS_BINARY "(binaarinen data)"
     IDS_RESTYPE "Resurssin tyyppi"
     IDS_ENCODING "Koodaus"
-    IDS_PATHSPACEERROR "Asensit sijaintiin, jonka nimessä on välilyöntejä! Resurssikääntäjä ei hyväksy välilyöntejä.\n\nVältä ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Lataa EGA-ohjelma..."
     IDS_EGAFILTER "EGA ohjelma (*.ega)|*.ega|Kaikki tiedostot (*.*)|*.*|"
     IDS_QUERYSAVECHANGE "Tiedostoa on muokattu. Haluatko tallentaa muutokset nyt?"
