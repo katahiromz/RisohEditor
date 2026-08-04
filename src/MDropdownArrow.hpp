@@ -27,8 +27,12 @@ public:
 	HWND m_lst1;
 	HWND m_arrow;
 	ARROW_TARGET_TYPE m_target_type = TARGET_TYPE_LANG;
+	enum { TIMER_ID = 999 };
 
-	MDropdownListDlg() : MDialogBase(IDD_DROPDOWNPOPUP), m_lst1(NULL), m_arrow(NULL)
+	MDropdownListDlg()
+		: MDialogBase(IDD_DROPDOWNPOPUP)
+		, m_lst1(NULL)
+		, m_arrow(NULL)
 	{
 	}
 
@@ -91,7 +95,7 @@ public:
 
 		MoveWindow(hwnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 
-		SetTimer(hwnd, 999, 250, NULL);
+		SetTimer(hwnd, TIMER_ID, 250, NULL);
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -114,12 +118,15 @@ public:
 
 	void OnTimer(HWND hwnd, UINT id)
 	{
+		if (id != TIMER_ID)
+			return;
+
 		HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
 		HWND hwndFocus = GetFocus();
 		if (m_arrow != hwndFocus && hwnd != hwndFocus &&
 			hwndOwner != hwndFocus && m_lst1 != hwndFocus)
 		{
-			KillTimer(hwnd, 999);
+			KillTimer(hwnd, TIMER_ID);
 			PostMessage(m_arrow, MYWM_CLOSELIST, 0, 0);
 		}
 	}
