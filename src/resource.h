@@ -196,7 +196,6 @@
 #define IDS_DLGFAIL                         201
 #define IDS_LOADWCLIB                       202
 #define IDS_AVIMOVIE                        203
-#define IDS_ADDDIALOG                       204
 #define IDS_ADDMENU                         205
 #define IDS_ADDVERINFO                      206
 #define IDS_ADDCURSOR                       207

@@ -1434,7 +1434,6 @@ STRINGTABLE
     IDS_DLGFAIL "Не вдалося створити діалог RAD."
     IDS_LOADWCLIB "Завантажити бібліотеку класів вікон"
     IDS_AVIMOVIE "(AVI-відео)\r\n"
-    IDS_ADDDIALOG "Додати діалог"
     IDS_ADDMENU "Додати меню"
     IDS_ADDVERINFO "Додати інформацію про версію"
     IDS_ADDCURSOR "Додати курсор"

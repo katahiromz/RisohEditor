@@ -1431,7 +1431,6 @@ STRINGTABLE
     IDS_DLGFAIL "Oups, je n'ai pas réussi à créer une boîte de dialogue RAD."
     IDS_LOADWCLIB "Charger une bibliothèque de classes de fenêtres"
     IDS_AVIMOVIE "(Film AVI)\r\n"
-    IDS_ADDDIALOG "Ajouter une boîte de dialogue"
     IDS_ADDMENU "Ajouter un menu"
     IDS_ADDVERINFO "Ajouter des informations sur la version"
     IDS_ADDCURSOR "Ajouter un curseur"
