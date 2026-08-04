@@ -1441,7 +1441,6 @@ STRINGTABLE
     IDS_SAVERESH "Зберегти файл ""resource.h"""
     IDS_DLLFILTER "Файли DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Усі файли (*.*)|*.*|"
     IDS_EXERESRCFILTER "Файли, що завантажуються (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Виконувані файли (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.rc;*.rc2)|*.rc;*.rc2|Усі файли (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Неможливо протестувати діалог, оскільки це дочірнє вікно."
     IDS_CANTTESTCLASSDLG "Неможливо перевірити діалогове вікно, оскільки воно має клас."
     IDS_FILEISUPXED "Файл\r\n\r\n'%s'\r\n\r\nстиснуто за допомогою UPX. Розпакувати його у тимчасовий файл?\r\n\r\nЯкщо цього не зробити, можлива помилка під час читання."
     IDS_CANTUPXEXTRACT "Неможливо розпакувати за допомогою UPX."

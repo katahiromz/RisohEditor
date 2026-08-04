@@ -203,7 +203,6 @@
 #define IDS_SAVERESH                        212
 #define IDS_DLLFILTER                       213
 #define IDS_EXERESRCFILTER                  214
-#define IDS_CANTTESTCHILDWND                215
 #define IDS_CANTTESTCLASSDLG                216
 #define IDS_FILEISUPXED                     217
 #define IDS_CANTUPXEXTRACT                  218

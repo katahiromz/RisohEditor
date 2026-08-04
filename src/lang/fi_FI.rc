@@ -1438,7 +1438,6 @@ STRINGTABLE
     IDS_SAVERESH "Tallenna ""resource.h"" tiedosto"
     IDS_DLLFILTER "DLL tiedostot (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Kaikki tiedostot (*.*)|*.*|"
     IDS_EXERESRCFILTER "Ladattavat tiedostot (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Suoritettavat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Binaari resurssit (*.res)|*.res|Resurssitiedostot (*.rc;*.rc2)|*.rc;*.rc2|Kaikki tiedostot (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Valintaikkunaa ei voi testata, koska se on ali-ikkuna."
     IDS_CANTTESTCLASSDLG "Dialogia ei voi testata, koska se on luokiteltu."
     IDS_FILEISUPXED "Tiedosto\r\n\r\n'%s'\r\n\r\non UPX pakattu. Haluatko purkaa sen käyttämällä väliaikaista tiedostoa?\r\n\r\nJos et laajentanut sitä, lukeminen voi epäonnistua.."
     IDS_CANTUPXEXTRACT "UPX ei pysty purkamaan."

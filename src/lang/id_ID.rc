@@ -1442,7 +1442,6 @@ STRINGTABLE
     IDS_SAVERESH "Simpan Berkas ""resource.h"""
     IDS_DLLFILTER "Berkas DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Semua Berkas (*.*)|*.*|"
     IDS_EXERESRCFILTER "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc;*.rc2)|*.rc;*.rc2|Semua Berkas (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Tidak dapat menguji dialog karena ini adalah anak jendela."
     IDS_CANTTESTCLASSDLG "Tidak dapat menguji dialog karena telah digolongkan."
     IDS_FILEISUPXED "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak memperluasnya, berkas mungkin akan gagal terbaca."
     IDS_CANTUPXEXTRACT "Tidak bisa mengekstrak dengan UPX."

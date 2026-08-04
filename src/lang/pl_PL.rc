@@ -1439,7 +1439,6 @@ STRINGTABLE
     IDS_SAVERESH "Zapisz plik ""resource.h"""
     IDS_DLLFILTER "Biblioteki DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Wszystkie pliki (*.*)|*.*|"
     IDS_EXERESRCFILTER "Wczytywalne pliki (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Wykonywalne (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Zasoby binarne (*.res)|*.res|Pliki zasobów (*.rc;*.rc2)|*.rc;*.rc2|Wszystkie pliki (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Nie można przetestować okna dialogowego, ponieważ jest to okno podrzędne."
     IDS_CANTTESTCLASSDLG "Nie można przetestować okna dialogowego, ponieważ jest sklasyfikowane."
     IDS_FILEISUPXED "Plik\r\n\r\n'%s'\r\n\r\njest kompresowany przez UPX. Czy chcesz go wyodrębnić przy użyciu pliku tymczasowego?\r\n\r\nJeśli go nie rozwiniesz, czytanie może się nie powieść."
     IDS_CANTUPXEXTRACT "Nie można wypakować przez UPX."

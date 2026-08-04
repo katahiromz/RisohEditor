@@ -1438,7 +1438,6 @@ STRINGTABLE
     IDS_SAVERESH "Enregistrer le fichier ""resource.h"""
     IDS_DLLFILTER "Fichiers DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tous les fichiers (*.*)|*.*|"
     IDS_EXERESRCFILTER "Fichiers chargeables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Exécutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Ressources binaires (*.res)|*.res|Fichiers de ressources (*.rc;*.rc2)|*.rc;*.rc2|Tous les fichiers (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Impossible de tester la boîte de dialogue car il s'agit d'une fenêtre enfant."
     IDS_CANTTESTCLASSDLG "Impossible de tester la boîte de dialogue car elle est classée."
     IDS_FILEISUPXED "Fichier\r\n\r\n'%s'\r\n\r\nest compressé par UPX. Voulez-vous l'extraire à l'aide d'un fichier temporaire?\r\n\r\nSi vous ne l'avez pas développé, la lecture peut échouer."
     IDS_CANTUPXEXTRACT "Impossible d'extraire par UPX."

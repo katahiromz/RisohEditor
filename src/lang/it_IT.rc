@@ -1439,7 +1439,6 @@ STRINGTABLE
     IDS_SAVERESH "Salva file 'resource.h'"
     IDS_DLLFILTER "File DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tutti i file (*.*)|*.*|"
     IDS_EXERESRCFILTER "File caricabile (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|File eseguibile (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|File risorse binarie (*.res)|*.res|File risorse (*.rc;*.rc2)|*.rc;*.rc2|Tutti i file (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Impossibile provare la finestra di dialogo poiché è una finestra figlia."
     IDS_CANTTESTCLASSDLG "Impossibile provare la finestra di dialogo poiché è una classe."
     IDS_FILEISUPXED "Il file\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
     IDS_CANTUPXEXTRACT "Estrazione con UPX fallita."

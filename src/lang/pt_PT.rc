@@ -1439,7 +1439,6 @@ STRINGTABLE
     IDS_SAVERESH "Guardar ficheiro ""resource.h"""
     IDS_DLLFILTER "Ficheiros DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Todos os ficheiros (*.*)|*.*|"
     IDS_EXERESRCFILTER "Ficheiros carregáveis (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Executáveis (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Recursos binários (*.res)|*.res|Ficheiros de recursos (*.rc;*.rc2)|*.rc;*.rc2|Todos os ficheiros (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Não foi possível testar o diálogo porque é uma janela dependente."
     IDS_CANTTESTCLASSDLG "Não foi possível testar o diálogo porque está classificado."
     IDS_FILEISUPXED "Ficheiro\r\n\r\n'%s'\r\n\r\nis comprimido por UPX. Deseja extrair utilizando um ficheiro temporário?\r\n\r\nSe não o expandir, a leitura poderá falhar."
     IDS_CANTUPXEXTRACT "Não foi possível extrair por UPX."

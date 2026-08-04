@@ -1439,7 +1439,6 @@ STRINGTABLE
     IDS_SAVERESH """resource.h"" Dosyasını Kaydet"
     IDS_DLLFILTER "DLL Dosyaları (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tüm Dosyalar (*.*)|*.*|"
     IDS_EXERESRCFILTER "Yüklenebilir Dosyalar (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Çalıştırılabilir Dosyalar (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|İkili Kaynaklar (*.res)|*.res|Kaynak Dosyaları (*.rc;*.rc2)|*.rc;*.rc2|Tüm Dosyalar (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Diyalog test edilemiyor çünkü bu alt penceresi."
     IDS_CANTTESTCLASSDLG "Diyalog test edilemiyor çünkü sınıflandırılmış."
     IDS_FILEISUPXED "Dosya\r\n\r\n'%s'\r\n\r\nUPX ile sıkıştırılmış. Geçici bir dosya kullanarak çıkartılmasını ister misiniz?\r\n\r\nEğer genişletmediyseniz, okuma başarısız olabilir."
     IDS_CANTUPXEXTRACT "UPX ile çıkartılamıyor."

@@ -1438,7 +1438,6 @@ STRINGTABLE
     IDS_SAVERESH "Speichern Sie die Datei ""resource.h"""
     IDS_DLLFILTER "DLL-Dateien (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Alle Dateien (*.*)|*.*|"
     IDS_EXERESRCFILTER "Ladefähige Dateien (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Ausführbare Dateien (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Binäre Ressourcen (*.res)|*.res|Ressourcendateien (*.rc;*.rc2)|*.rc;*.rc2|Alle Dateien (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND "Der Dialog kann nicht getestet werden, da es sich um ein untergeordnetes Fenster handelt."
     IDS_CANTTESTCLASSDLG "Der Dialog kann nicht getestet werden, da er klassifiziert ist."
     IDS_FILEISUPXED "Datei\r\n\r\n'%s'\r\n\r\nwird von UPX komprimiert. Möchten Sie es mithilfe einer temporären Datei extrahieren?\r\n\r\nWenn Sie es nicht erweitert haben, schlägt das Lesen möglicherweise fehl."
     IDS_CANTUPXEXTRACT "Mit UPX kann nicht extrahiert werden."
