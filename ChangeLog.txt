@@ -6,6 +6,7 @@
     - Able to clone resource type.
     - Minor UI/UX improvements.
     - Fixed the handling of DLGITEMTEMPLATE.
+    - Updated mcpp.exe to process the source line information.
 - v.6.1.1 (2026-08-03)
     - Refactoring.
 - v.6.1.0 (2026-08-03)

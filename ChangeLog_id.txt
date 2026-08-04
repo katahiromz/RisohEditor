@@ -6,6 +6,7 @@
     - Dapat mengkloning tipe sumber daya.
     - UI/UX ma ki yubu manok.
     - Memperbaiki penanganan DLGITEMTEMPLATE.
+    - Memperbarui mcpp.exe untuk memproses informasi baris sumber.
 - v.6.1.1 (2026-08-03)
     - Refaktorisasi.
 - v.6.1.0 (2026-08-03)

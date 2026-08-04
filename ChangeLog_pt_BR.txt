@@ -6,6 +6,7 @@
     - Capacidade de clonar o tipo de recurso.
     - Pequenas melhorias na interface do usuário/experiência do usuário.
     - Corrigido o tratamento de DLGITEMTEMPLATE.
+    - mcpp.exe atualizado para processar as informações de linha do código-fonte.
 - v.6.1.1 (2026-08-03)
     - Refatoração.
 - v.6.1.0 (2026-08-03)
