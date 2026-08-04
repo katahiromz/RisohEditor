@@ -1511,7 +1511,6 @@ STRINGTABLE
     IDS_AVIRESBINFILTER "AVI视频 (*.avi)|*.avi|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_WAVERESBINFILTER "WAVE声音 (*.wav)|*.wav|资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_COMMENT_SEP "//////////////////////////////////////////////////////////////////////////////\r\n"
-    IDS_NEWLINE "\r\n"
     IDS_NOTICE "// 此文件由 RisohEditor 6.1.2 自动生成。\r\n"
     IDS_DAGGER "// † <-- 这个匕首符号有助于 UTF-8 检测。\r\n"
     IDS_IMPORTFILTER "可导入文件|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC 文件 (*.rc;*.rc2)|*.rc;*.rc2|二进制资源文件 (*.res)|*.res|图片文件|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|光标文件(*.cur;*.ani)|*.cur;*.ani|图标文件 (*.ico)|*.ico|WAVE声音 (*.wav)|*.wav|MP3声音 (*.mp3)|*.mp3|HTML文件 (*.html;*.htm)|*.html;*.htm|清单文件 (*.manifest)|*.manifest|Delphi DFM Files (*.dfm)|*.dfm|Delphi DFM 文件 (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|全部文件 (*.*)|*.*|"

@@ -1515,7 +1515,6 @@ STRINGTABLE
     IDS_AVIRESBINFILTER "AVI動画 (*.avi)|*.avi|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_WAVERESBINFILTER "WAVE音声 (*.wav)|*.wav|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_COMMENT_SEP "//////////////////////////////////////////////////////////////////////////////\r\n"
-    IDS_NEWLINE "\r\n"
     IDS_NOTICE "// このファイルは リソーエディタ 6.1.2 によって自動生成されました。\r\n"
     IDS_DAGGER "// † <-- このダガー記号は、UTF-8の検出に役立ちます。\r\n"
     IDS_IMPORTFILTER "インポート可能なファイル|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC ファイル (*.rc;*.rc2)|*.rc;*.rc2|バイナリ リソース (*.res)|*.res|画像ファイル|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|カーソル ファイル (*.cur;*.ani)|*.cur;*.ani|アイコン ファイル (*.ico)|*.ico|WAVE音声ファイル (*.wav)|*.wav|MP3音声 (*.mp3)|*.mp3|HTML ファイル (*.html;*.htm)|*.html;*.htm|マニフェスト ファイル (*.manifest)|*.manifest|Delphi DFM ファイル (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|すべてのファイル (*.*)|*.*|"

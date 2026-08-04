@@ -276,7 +276,6 @@
 #define IDS_AVIRESBINFILTER                 292
 #define IDS_WAVERESBINFILTER                293
 #define IDS_COMMENT_SEP                     294
-#define IDS_NEWLINE                         295
 #define IDS_NOTICE                          296
 #define IDS_DAGGER                          297
 #define IDS_IMPORTFILTER                    298

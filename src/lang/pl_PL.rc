@@ -1512,7 +1512,6 @@ STRINGTABLE
     IDS_AVIRESBINFILTER "Film AVI (*.avi)|*.avi|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_WAVERESBINFILTER "Dźwięk typu WAVE (*.wav)|*.wav|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_COMMENT_SEP "//////////////////////////////////////////////////////////////////////////////\r\n"
-    IDS_NEWLINE "\r\n"
     IDS_NOTICE "// Ten plik jest automatycznie generowany przez RisohEditor 6.1.2.\r\n"
     IDS_DAGGER "// † <-- Ten dagger, pomaga w wykrywaniu UTF-8.\r\n"
     IDS_IMPORTFILTER "Pliki importowane |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Pliki RC (*.rc;*.rc2)|*.rc;*.rc2|Zasoby binarne (*.res)|*.res|Pliki obrazów|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Pliki kursorów (*.cur;*.ani)|*.cur;*.ani|Pliki ikon (*.ico)|*.ico|Pliki dźwiękowe WAVE (*.wav)|*.wav|Dźwięk typu MP3 (*.mp3)|*.mp3|Pliki HTML (*.html;*.htm)|*.html;*.htm|Pliki Manifest (*.manifest)|*.manifest|Pliki Delphi DFM (*.dfm)|*.dfm|Pliki TYPELIB (*.tlb)|*.tlb|Wszystkie pliki (*.*)|*.*|"
