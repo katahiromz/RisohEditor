@@ -1380,7 +1380,6 @@ STRINGTABLE
     IDS_NEUTRAL "無指定"
     IDS_IMPORTRES "導入"
     IDS_CANNOTIMPORT "導入資源失敗。"
-    IDS_COMPILE "編譯 (F8)"
     IDS_CANNOTSTARTUP "編譯器啟動失敗。"
     IDS_RESMISMATCH "資源類型不匹配。"
     IDS_SAMPLETEXT "這是一個模板"

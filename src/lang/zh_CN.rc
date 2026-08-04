@@ -1381,7 +1381,6 @@ STRINGTABLE
     IDS_NEUTRAL "中性"
     IDS_IMPORTRES "导入"
     IDS_CANNOTIMPORT "导入资源失败。"
-    IDS_COMPILE "编译 (F8)"
     IDS_CANNOTSTARTUP "编译器启动失败。"
     IDS_RESMISMATCH "资源类型不匹配。"
     IDS_SAMPLETEXT "这是一个模板"

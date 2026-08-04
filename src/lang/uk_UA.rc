@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_NEUTRAL "Нейтральний"
     IDS_IMPORTRES "Імпорт"
     IDS_CANNOTIMPORT "Неможливо імпортувати ресурс."
-    IDS_COMPILE "Компілювати (F8)"
     IDS_CANNOTSTARTUP "Неможливо запустити компілятор ресурсів."
     IDS_RESMISMATCH "Тип ресурсу не співпадає."
     IDS_SAMPLETEXT "Це приклад."

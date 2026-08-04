@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_NEUTRAL "Nötr"
     IDS_IMPORTRES "İçe Aktar"
     IDS_CANNOTIMPORT "Kaynak içe aktarılamıyor."
-    IDS_COMPILE "Derle (F8)"
     IDS_CANNOTSTARTUP "Kaynak derleyicisi başlatılamıyor."
     IDS_RESMISMATCH "Kaynak türü uyuşmazlığı."
     IDS_SAMPLETEXT "Bu bir örnektir."

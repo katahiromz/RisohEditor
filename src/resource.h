@@ -146,7 +146,6 @@
 #define IDS_NEUTRAL                         144
 #define IDS_IMPORTRES                       145
 #define IDS_CANNOTIMPORT                    146
-#define IDS_COMPILE                         147
 #define IDS_CANNOTSTARTUP                   151
 #define IDS_RESMISMATCH                     152
 #define IDS_SAMPLETEXT                      153

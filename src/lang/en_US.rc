@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_NEUTRAL "Neutral"
     IDS_IMPORTRES "Import"
     IDS_CANNOTIMPORT "Unable to import the resource."
-    IDS_COMPILE "Compile (F8)"
     IDS_CANNOTSTARTUP "Unable to start up the resource compiler."
     IDS_RESMISMATCH "Resource type was mismatched."
     IDS_SAMPLETEXT "This is a sample."

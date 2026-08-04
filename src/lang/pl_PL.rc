@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_NEUTRAL "Neutralny"
     IDS_IMPORTRES "Importuj"
     IDS_CANNOTIMPORT "Nie można zaimportować zasobu."
-    IDS_COMPILE "Kompiluj (F8)"
     IDS_CANNOTSTARTUP "Nie można uruchomić kompilatora zasobów."
     IDS_RESMISMATCH "Niezgodny typ zasobu."
     IDS_SAMPLETEXT "To jest przykład."

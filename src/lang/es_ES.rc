@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_NEUTRAL "Neutro"
     IDS_IMPORTRES "Importar"
     IDS_CANNOTIMPORT "No se puede importar el recurso."
-    IDS_COMPILE "Compilar (F8)"
     IDS_CANNOTSTARTUP "No se puede iniciar el compilador de recursos."
     IDS_RESMISMATCH "El tipo de recurso no era compatible."
     IDS_SAMPLETEXT "Esta es una muestra."

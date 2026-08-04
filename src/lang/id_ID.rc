@@ -1385,7 +1385,6 @@ STRINGTABLE
     IDS_NEUTRAL "Netral"
     IDS_IMPORTRES "Impor"
     IDS_CANNOTIMPORT "Tidak bisa mengimpor sumber daya."
-    IDS_COMPILE "Susun (F8)"
     IDS_CANNOTSTARTUP "Tidak bisa memulai penyusun sumber daya."
     IDS_RESMISMATCH "Sumber daya tidak cocok."
     IDS_SAMPLETEXT "Ini adalah contoh."

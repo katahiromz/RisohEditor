@@ -1381,7 +1381,6 @@ STRINGTABLE
     IDS_NEUTRAL "Neutraali"
     IDS_IMPORTRES "Tuo"
     IDS_CANNOTIMPORT "Resurssia ei voi tuoda."
-    IDS_COMPILE "Käännä (F8)"
     IDS_CANNOTSTARTUP "Resurssikääntäjää ei voi käynnistää."
     IDS_RESMISMATCH "Resurssityyppi ei täsmää."
     IDS_SAMPLETEXT "Tämä on näyte."
