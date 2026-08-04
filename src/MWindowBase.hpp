@@ -1111,6 +1111,8 @@ inline BOOL MZCAPI CopyTextDx(HWND hwnd, const MString& text)
 			SetClipboardData(CF_, hGlobal);
 			return CloseClipboard();
 		}
+		// OpenClipboard failed; free the global memory to avoid a leak
+		GlobalFree(hGlobal);
 	}
 	return FALSE;
 }
