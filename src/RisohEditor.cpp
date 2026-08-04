@@ -2756,7 +2756,7 @@ BOOL InitKeys(void)
 
 BOOL InitCtrlIDs(void)
 {
-	g_ctrl_ids.claer();
+	g_ctrl_ids.clear();
 
 	// add the control IDs
 	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
