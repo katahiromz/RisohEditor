@@ -2825,11 +2825,10 @@ BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString)
 
 //////////////////////////////////////////////////////////////////////////////
 
-// verify the resource type combobox
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
+INT ParseType(const MStringW& input, MIdOrString& type)
 {
-	// get the combobox text
-	MStringW str = MWindowBase::GetWindowText(hCmb1);
+	MStringW str = input;
+	type = BAD_TYPE;
 
 	// replace the fullwidth characters with halfwidth characters
 	ReplaceFullWithHalf(str);
@@ -2837,92 +2836,75 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 	// trim
 	mstr_trim(str);
 
-	if (str.empty())  // an empty string
+	if (str.empty())  // an empty string?
+		return IDS_TYPEISEMPTY;
+
+	// numeric?
+	if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
 	{
+		long long value;
+		wchar_t* end_ptr = nullptr;
+		if (str[0] == L'-')
+			value = wcstoll(str.c_str(), &end_ptr, 0);
+		else
+			value = wcstoull(str.c_str(), &end_ptr, 0);
+		if (end_ptr && *end_ptr)
+			return IDS_INVALIDTYPE;
+		if (value == 0)
+			return IDS_ENTERNONZEROTYPE;
+		if (value < SHRT_MIN || USHRT_MAX < value)
+			return IDS_TYPEOUTOFRANGE;
+		type = (WORD)value;
+		return 0; // Success
+	}
+
+	mstr_upper(str);
+
+	if (str[0] == L'"')
+		mstr_unquote(str);
+
+	size_t i = str.rfind(L'(');
+	if (i != str.npos)
+	{
+		str = str.substr(0, i);
+		mstr_trim(str);
+	}
+
+	INT value = g_db.GetValue(L"RESOURCE", str);
+	if (value != 0)
+	{
+		if (value < SHRT_MIN || USHRT_MAX < value)
+			return IDS_TYPEOUTOFRANGE;
+		if (value == 0)
+			return IDS_ENTERNONZEROTYPE;
+		type = (WORD)value;
+		return 0; // Success
+	}
+
+	if (!mstr_is_identifier(str))
+		return IDS_INVALIDTYPE;
+
+	type = str.c_str();
+	return 0; // Success
+}
+
+// verify the resource type combobox
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
+{
+	// get the combobox text
+	MStringW str = MWindowBase::GetWindowText(hCmb1);
+
+	INT ids = ParseType(str, type);
+	if (ids)
+	{
+		if (ids == IDS_TYPEOUTOFRANGE)
+			ComboBox_SetText(hCmb1, L"65535");
+
 		ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
 		SetFocus(hCmb1);	// set focus
 		// show error message
-		LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
-					   NULL, MB_ICONERROR);
+		LogMessageBoxW(GetParent(hCmb1), LoadStringDx(ids), NULL, MB_ICONERROR);
 		return FALSE;   // failure
-	}
-	else if (mchr_is_digit(str[0]) || str[0] == L'-' || str[0] == L'+')
-	{
-		// numeric type name
-		INT value = mstr_parse_int(str.c_str());
-		if (value == 0)
-		{
-			ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-			SetFocus(hCmb1);	// set focus
-			// show error message
-			LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
-						   NULL, MB_ICONERROR);
-			return FALSE;   // failure
-		}
-		if (value < SHRT_MIN || USHRT_MAX < value)
-		{
-			value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-			ComboBox_SetText(hCmb1, std::to_wstring(value).c_str());
-			ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-			SetFocus(hCmb1);	// set focus
-			// show error message
-			LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
-						   NULL, MB_ICONERROR);
-			return FALSE;   // failure
-		}
-		type = (WORD)value;
-	}
-	else
-	{
-		mstr_upper(str);
-		
-		size_t i = str.rfind(L'('); // ')'
-		if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
-		{
-			// numeric type name after the parenthesis
-			INT value = mstr_parse_int(&str[i + 1]);
-			if (value < SHRT_MIN || USHRT_MAX < value)
-			{
-				value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-				ComboBox_SetText(hCmb1, std::to_wstring(value).c_str());
-				ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-				SetFocus(hCmb1);	// set focus
-				// show error message
-				LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
-							   NULL, MB_ICONERROR);
-				return FALSE;   // failure
-			}
-			type = (WORD)value;
-		}
-		else
-		{
-			INT value = g_db.GetValue(L"RESOURCE", str);
-			if (value != 0)
-			{
-				value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-				if (value < SHRT_MIN || USHRT_MAX < value)
-				{
-					value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
-					ComboBox_SetText(hCmb1, std::to_wstring(value).c_str());
-					ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
-					SetFocus(hCmb1);	// set focus
-					// show error message
-					LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
-								   NULL, MB_ICONERROR);
-					return FALSE;   // failure
-				}
-				type = (WORD)value;
-			}
-			else
-			{
-				// Unquote
-				if (str[0] == L'"')
-					mstr_unquote(str);
-
-				// a string type name
-				type = str.c_str();
-			}
-		}
 	}
 
 	return TRUE;	// success

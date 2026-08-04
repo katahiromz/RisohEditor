@@ -1617,6 +1617,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "La modification du type de ressource peut corrompre vos données.\r\n\r\nVoulez-vous continuer ?"
     IDS_SAMETYPE "Il s'agit du même type de ressource."
+    IDS_TYPEISEMPTY "Le type de ressource est vide. Veuillez saisir un entier 16 bits non nul (-32768 à 65535) ou un identifiant."
+    IDS_TYPEOUTOFRANGE "Le type de ressource est hors limites. Veuillez saisir un entier 16 bits non nul (-32768 à 65535) ou un identifiant."
+    IDS_INVALIDTYPE "Le type de ressource n'est pas valide. Veuillez saisir un entier 16 bits non nul (-32768 à 65535) ou un identifiant."
 }
 
 //////////////////////////////////////////////////////////////////////////////

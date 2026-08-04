@@ -1618,6 +1618,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Zmiana typu zasobu może spowodować uszkodzenie danych.\r\n\r\nCzy chcesz kontynuować?"
     IDS_SAMETYPE "Są to te same typy zasobów."
+    IDS_TYPEISEMPTY "Typ zasobu jest pusty. Proszę wprowadzić niezerową liczbę całkowitą 16-bitową (z zakresu -32768–65535) lub identyfikator."
+    IDS_TYPEOUTOFRANGE "Typ zasobu wykracza poza dopuszczalny zakres. Proszę wprowadzić niezerową liczbę całkowitą 16-bitową (z zakresu -32768–65535) lub identyfikator."
+    IDS_INVALIDTYPE "Nieprawidłowy typ zasobu. Wprowadź niezerową liczbę całkowitą 16-bitową (zakres -32768–65535) lub identyfikator."
 }
 
 //////////////////////////////////////////////////////////////////////////////

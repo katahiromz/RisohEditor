@@ -382,6 +382,9 @@
 #define IDS_SEARCHURL                       380
 #define IDS_RETYPEWARNING                   381
 #define IDS_SAMETYPE                        382
+#define IDS_TYPEISEMPTY                     383
+#define IDS_TYPEOUTOFRANGE                  384
+#define IDS_INVALIDTYPE                     385
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

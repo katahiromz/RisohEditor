@@ -1617,6 +1617,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "更改资源类型可能会损坏您的数据。\r\n\r\n是否继续？"
     IDS_SAMETYPE "它们是同一种资源类型。"
+    IDS_TYPEISEMPTY "资源类型为空。请输入非零的 16 位整数（范围：-32768 至 65535）或标识符。"
+    IDS_TYPEOUTOFRANGE "资源类型超出范围。请输入非零的 16 位整数（-32768 至 65535）或标识符。"
+    IDS_INVALIDTYPE "资源类型无效。请输入非零的 16 位整数（-32768 至 65535）或标识符。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

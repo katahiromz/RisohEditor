@@ -290,6 +290,20 @@ inline void mstr_lower(std::wstring& str)
 		_wcslwr(&str[0]);
 }
 
+inline bool mstr_is_identifier(const std::wstring& str)
+{
+	if (str.empty())
+		return false;
+	if (str[0] != '_' && !mchr_is_alpha(str[0]))
+		return false;
+	for (size_t i = 1; i < str.size(); ++i)
+	{
+		if (str[i] != '_' && !mchr_is_alnum(str[i]))
+			return false;
+	}
+	return true;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // binary
 

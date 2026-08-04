@@ -1618,6 +1618,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Changing the resource type may result in data corruption.\r\n\r\nDo you want to continue?"
     IDS_SAMETYPE "They are the same resource type."
+    IDS_TYPEISEMPTY "The resource type is empty. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
+    IDS_TYPEOUTOFRANGE "The resource type is out of range. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
+    IDS_INVALIDTYPE "The resource type is invalid. Please enter a non-zero 16-bit integer (-32768..65535) or identifier."
 }
 
 //////////////////////////////////////////////////////////////////////////////

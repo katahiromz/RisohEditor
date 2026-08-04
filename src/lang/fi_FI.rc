@@ -1617,6 +1617,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Resurssityypin muuttaminen voi vioittaa tietojasi.\r\n\r\nHaluatko jatkaa?"
     IDS_SAMETYPE "Ne ovat samaa resurssityyppiä."
+    IDS_TYPEISEMPTY "Resurssityyppi on tyhjä. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
+    IDS_TYPEOUTOFRANGE "Resurssityyppi on sallitun alueen ulkopuolella. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
+    IDS_INVALIDTYPE "Resurssityyppi on virheellinen. Anna nollasta poikkeava 16-bittinen kokonaisluku (-32768..65535) tai tunniste."
 }
 
 //////////////////////////////////////////////////////////////////////////////

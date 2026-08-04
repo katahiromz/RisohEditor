@@ -1620,6 +1620,9 @@ STRINGTABLE
     IDS_SEARCHURL "https://duckduckgo.com/?q=%s&t=h_&ia=web"
     IDS_RETYPEWARNING "Alterar o tipo de recurso pode corromper seus dados.\r\n\r\nDeseja continuar?"
     IDS_SAMETYPE "São do mesmo tipo de recurso."
+    IDS_TYPEISEMPTY "O tipo de recurso está vazio. Insira um inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
+    IDS_TYPEOUTOFRANGE "O tipo de recurso está fora do intervalo. Insira um número inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
+    IDS_INVALIDTYPE "O tipo de recurso é inválido. Insira um inteiro de 16 bits diferente de zero (-32768 a 65535) ou um identificador."
 }
 
 //////////////////////////////////////////////////////////////////////////////
