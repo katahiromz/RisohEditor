@@ -1541,7 +1541,6 @@ STRINGTABLE
     IDS_BINARY "(données binaires)"
     IDS_RESTYPE "Type de ressource"
     IDS_ENCODING "Codage"
-    IDS_INVALIDRESTYPE "Type de ressource non valide."
     IDS_PATHSPACEERROR "Vous avez mal installé à l'emplacement avec des caractères d'espace! Le compilateur de ressources ne peut pas accepter d'espace.\n\nVeuillez éviter ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Charger le programme EGA..."
     IDS_EGAFILTER "Programme EGA (*.ega)|*.ega|Tous les fichiers (*.*)|*.*|"

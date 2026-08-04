@@ -1542,7 +1542,6 @@ STRINGTABLE
     IDS_BINARY "(바이너리 데이터)"
     IDS_RESTYPE "리소스 유형"
     IDS_ENCODING "인코딩"
-    IDS_INVALIDRESTYPE "잘못된 리소스 유형입니다."
     IDS_PATHSPACEERROR "공백 문자가 있는 위치에 잘못 설치했습니다! 리소스 컴파일러는 공백을 허용할 수 없습니다.\n\nC:\\Program Files""는 피하세요."
     IDS_LOADEGAPROGRAM "EGA 프로그램 불러오기..."
     IDS_EGAFILTER "EGA 프로그램 (*.ega)|*.ega|모든 파일 (*.*)|*.*|"

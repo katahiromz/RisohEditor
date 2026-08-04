@@ -1540,7 +1540,6 @@ STRINGTABLE
     IDS_BINARY "(二進位制數據)"
     IDS_RESTYPE "資源類型"
     IDS_ENCODING "編碼"
-    IDS_INVALIDRESTYPE "資源類型無效。"
     IDS_PATHSPACEERROR "您錯誤地使用空格字元安裝了該位置！ 資源編譯器不能接受空間。\n\n請避免使用“C:\\Program Files”。"
     IDS_LOADEGAPROGRAM "載入EGA程序..."
     IDS_EGAFILTER "EGA 計劃 (*.ega)|*.ega|所有檔案 (*.*)|*.*|"

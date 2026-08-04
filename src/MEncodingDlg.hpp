@@ -20,6 +20,7 @@ class MEncodingDlg;
 
 MStringW get_type_label(const MIdOrString& type);
 MStringW get_name_label(const MIdOrString& type, const MIdOrString& name);
+INT ParseType(const MStringW& input, MIdOrString& type);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -51,30 +52,6 @@ inline MString enc2txt(const MString& enc)
 	if (enc == L"sjis")
 		return LoadStringDx(IDS_SJIS);
 	return L"";
-}
-
-inline MIdOrString get_type_from_text(MString str)
-{
-	mstr_trim(str);
-
-	MIdOrString type;
-	auto k = str.find(L" (");   // )
-	if (k != MStringW::npos)
-	{
-		int num = mstr_parse_int(&str[k + 2]);
-		type = (WORD)num;
-	}
-	else if (str.size() && mchr_is_digit(str[0]))
-	{
-		int num = mstr_parse_int(&str[0]);
-		type = (WORD)num;
-	}
-	else
-	{
-		mstr_upper(str);
-		type.m_str = std::move(str);
-	}
-	return type;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -116,10 +93,10 @@ public:
 	void OnOK(HWND hwnd)
 	{
 		MString text = GetDlgItemText(hwnd, cmb1);
-		m_type = get_type_from_text(text);
-		if (m_type.empty())
+		INT ids = ParseType(text, m_type);
+		if (ids)
 		{
-			ErrorBoxDx(IDS_INVALIDRESTYPE);
+			ErrorBoxDx(ids);
 			return;
 		}
 
@@ -208,10 +185,10 @@ public:
 	void OnOK(HWND hwnd)
 	{
 		MString text = GetDlgItemText(hwnd, cmb1);
-		m_type = get_type_from_text(text);
-		if (m_type.empty())
+		INT ids = ParseType(text, m_type);
+		if (ids)
 		{
-			ErrorBoxDx(IDS_INVALIDRESTYPE);
+			ErrorBoxDx(ids);
 			return;
 		}
 
@@ -292,7 +269,10 @@ public:
 				continue;
 
 			MStringW str = pair.first;
-			MIdOrString type = get_type_from_text(str);
+
+			MIdOrString type;
+			ParseType(str, type);
+
 			str = get_type_label(type);
 
 			LV_ITEM item;
@@ -379,7 +359,9 @@ public:
 			ListView_GetItemText(m_hLst1, iItem, 1, szText2, _countof(szText2));
 			mstr_trim(szText2);
 
-			MIdOrString type = get_type_from_text(szText1);
+			MIdOrString type;
+			ParseType(szText1, type);
+
 			MString enc = txt2enc(szText2);
 
 			map.insert(std::make_pair(type.str(), enc));
@@ -464,7 +446,10 @@ public:
 		ListView_GetItemText(m_hLst1, iItem, 1, szText2, _countof(szText2));
 		mstr_trim(szText2);
 
-		MModifyEncDlg dialog(get_type_from_text(szText1), txt2enc(szText2));
+		MIdOrString type;
+		ParseType(szText1, type);
+
+		MModifyEncDlg dialog(type, txt2enc(szText2));
 		if (IDOK != dialog.DialogBoxDx(hwnd))
 			return;
 

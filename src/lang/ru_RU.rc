@@ -1543,7 +1543,6 @@ STRINGTABLE
     IDS_BINARY "(двоичные данные)"
     IDS_RESTYPE "Тип ресурса"
     IDS_ENCODING "Кодировка"
-    IDS_INVALIDRESTYPE "Неверный тип ресурса."
     IDS_PATHSPACEERROR "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папку ""C:\\Program Files"" и подобные."
     IDS_LOADEGAPROGRAM "Загрузить программу EGA..."
     IDS_EGAFILTER "Программа EGA (*.ega)|*.ega|Все файлы (*.*)|*.*|"

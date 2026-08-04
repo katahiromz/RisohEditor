@@ -1542,7 +1542,6 @@ STRINGTABLE
     IDS_BINARY "(dane binarne)"
     IDS_RESTYPE "Typ zasobu"
     IDS_ENCODING "Kodowanie"
-    IDS_INVALIDRESTYPE "Nieprawidłowy typ zasobu."
     IDS_PATHSPACEERROR "Nieprawidłowo zainstalowano w lokalizacji ze znakami spacji! Kompilator zasobów nie może zaakceptować spacji.\n\nNależy unikać ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Załaduj program EGA..."
     IDS_EGAFILTER "EGA Program (*.ega)|*.ega|Wszystkie pliki (*.*)|*.*|"

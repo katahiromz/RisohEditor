@@ -1542,7 +1542,6 @@ STRINGTABLE
     IDS_BINARY "(dati binari)"
     IDS_RESTYPE "Tipo risorsa"
     IDS_ENCODING "Codifica"
-    IDS_INVALIDRESTYPE "Tipo risorsa non valida."
     IDS_PATHSPACEERROR "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.\r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM "Carica programma EGA..."
     IDS_EGAFILTER "file programma EGA(*.ega)|*.ega|Tutti i file (*.*)|*.*|"
