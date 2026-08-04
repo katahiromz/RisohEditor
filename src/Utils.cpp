@@ -20,6 +20,8 @@
 extern INT g_bNoGuiMode; // No-GUI mode
 extern LPWSTR g_pszLogFile;
 extern std::vector<MString> *g_pTypes;
+extern std::vector<MString> *g_pKeys;
+extern std::vector<MString> *g_pCtrlIDs;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -1787,51 +1789,13 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 // initialize the control ID combobox
 void InitCtrlIDComboBox(HWND hCmb)
 {
-	// add the control IDs
-	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
-	{
-		for (auto& table_entry : *table)
-		{
-			ComboBox_AddString(hCmb, table_entry.name.c_str());
-		}
-	}
+	InitCtrlIDs();
 
-	// get the prefix of Control.ID
-	auto prefix = MapIDTypeToPrefix(IDTYPE_CONTROL);
-	if (prefix.size())
+	if (g_pCtrlIDs)
 	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
+		for (auto id : *g_pCtrlIDs)
 		{
-			// add the resource IDs
-			ComboBox_AddString(hCmb, table_entry.name.c_str());
-		}
-	}
-
-	// get the prefix of Command.ID
-	prefix = MapIDTypeToPrefix(IDTYPE_COMMAND);
-	if (prefix.size())
-	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
-		{
-			// add the resource IDs
-			ComboBox_AddString(hCmb, table_entry.name.c_str());
-		}
-	}
-
-	// get the prefix of New.Command.ID
-	prefix = MapIDTypeToPrefix(IDTYPE_NEWCOMMAND);
-	if (prefix.size())
-	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
-		{
-			// add the resource IDs
-			ComboBox_AddString(hCmb, table_entry.name.c_str());
+			ComboBox_AddString(hCmb, id.c_str());
 		}
 	}
 }
@@ -2493,6 +2457,26 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 				continue;
 
 			push_back(lang.str);
+		}
+	}
+	else if (type == 3) // Keys
+	{
+		if (InitKeys() && g_pKeys)
+		{
+			for (auto& key : *g_pKeys)
+			{
+				push_back(key);
+			}
+		}
+	}
+	else if (type == 4) // Control IDs
+	{
+		if (InitCtrlIDs() && g_pCtrlIDs)
+		{
+			for (auto& id : *g_pCtrlIDs)
+			{
+				push_back(id);
+			}
 		}
 	}
 }

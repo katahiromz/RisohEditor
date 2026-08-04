@@ -18,6 +18,8 @@ std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized = NULL;
 std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
 std::vector<MString> *g_pTypes = NULL;
 std::vector<MString> *g_pNames = NULL;
+std::vector<MString> *g_pKeys = NULL;
+std::vector<MString> *g_pCtrlIDs = NULL;
 HWND s_hwndEga = NULL;
 
 #ifndef _MSC_VER
@@ -2739,6 +2741,77 @@ BOOL InitNames(const MIdOrString& res_type)
 	}
 
 	std::sort(g_pNames->begin(), g_pNames->end());
+	return TRUE;
+}
+
+BOOL InitKeys(void)
+{
+	if (g_pKeys)
+		delete g_pKeys;
+	g_pKeys = new std::vector<MString>();
+
+	if (auto* table = g_db.GetTable(L"VIRTUALKEYS"))
+	{
+		for (auto& table_entry : *table)
+		{
+			g_pKeys->push_back(table_entry.name);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL InitCtrlIDs(void)
+{
+	if (g_pCtrlIDs)
+		delete g_pCtrlIDs;
+	g_pCtrlIDs = new std::vector<MString>();
+
+	// add the control IDs
+	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
+	{
+		for (auto& table_entry : *table)
+		{
+			g_pCtrlIDs->push_back(table_entry.name.c_str());
+		}
+	}
+
+	// get the prefix of Control.ID
+	auto prefix = MapIDTypeToPrefix(IDTYPE_CONTROL);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_pCtrlIDs->push_back(table_entry.name.c_str());
+		}
+	}
+
+	// get the prefix of Command.ID
+	prefix = MapIDTypeToPrefix(IDTYPE_COMMAND);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_pCtrlIDs->push_back(table_entry.name.c_str());
+		}
+	}
+
+	// get the prefix of New.Command.ID
+	prefix = MapIDTypeToPrefix(IDTYPE_NEWCOMMAND);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_pCtrlIDs->push_back(table_entry.name.c_str());
+		}
+	}
+
 	return TRUE;
 }
 
@@ -8557,6 +8630,10 @@ wWinMain(HINSTANCE   hInstance,
 		delete g_pTypes;
 	if (g_pNames)
 		delete g_pNames;
+	if (g_pKeys)
+		delete g_pKeys;
+	if (g_pCtrlIDs)
+		delete g_pCtrlIDs;
 
 	if (bWowFsDisabled)
 		RevertWow64FsRedirection(OldValue);

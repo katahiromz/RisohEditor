@@ -27,10 +27,26 @@ public:
 	ACCEL_ENTRY& m_entry;
 	MComboBoxAutoComplete m_cmb1;
 	MComboBoxAutoComplete m_cmb2;
+	MRisohAutoComplete *m_pAutoComplete3;
+	MRisohAutoComplete *m_pAutoComplete4;
 
-	MAddKeyDlg(ACCEL_ENTRY& entry) :
-		MDialogBase(IDD_ADDKEY), m_entry(entry)
+	MAddKeyDlg(ACCEL_ENTRY& entry)
+		: MDialogBase(IDD_ADDKEY)
+		, m_entry(entry)
+		, m_pAutoComplete3(new MRisohAutoComplete(3))
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
 	{
+	}
+
+	~MAddKeyDlg()
+	{
+		m_pAutoComplete3->unbind();
+		m_pAutoComplete3->Release();
+		m_pAutoComplete3 = NULL;
+
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -45,6 +61,17 @@ public:
 		InitCtrlIDComboBox(hCmb2);
 		SetDlgItemText(hwnd, cmb2, L"");
 		SubclassChildDx(m_cmb2, cmb2);
+
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete3->bind(hwndEdit);
+
+		info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete4->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -143,11 +170,28 @@ public:
 	ACCEL_ENTRY& m_entry;
 	MComboBoxAutoComplete m_cmb1;
 	MComboBoxAutoComplete m_cmb2;
+	MRisohAutoComplete *m_pAutoComplete3;
+	MRisohAutoComplete *m_pAutoComplete4;
 
-	MModifyKeyDlg(ACCEL_ENTRY& entry) :
-		MDialogBase(IDD_MODIFYKEY), m_entry(entry)
+	MModifyKeyDlg(ACCEL_ENTRY& entry)
+		: MDialogBase(IDD_MODIFYKEY)
+		, m_entry(entry)
+		, m_pAutoComplete3(new MRisohAutoComplete(3))
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
 	{
 	}
+
+	~MModifyKeyDlg()
+	{
+		m_pAutoComplete3->unbind();
+		m_pAutoComplete3->Release();
+		m_pAutoComplete3 = NULL;
+
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete4 = NULL;
+	}
+
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
@@ -185,6 +229,17 @@ public:
 				ComboBox_SetCurSel(hCmb1, i);
 			}
 		}
+
+		// auto complete
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb1, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete3->bind(hwndEdit);
+
+		info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete4->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -297,7 +352,8 @@ public:
 	HWND m_hLst1;
 
 	MEditAccelDlg(AccelRes& accel_res)
-		: MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res)
+		: MDialogBase(IDD_EDITACCEL)
+		, m_accel_res(accel_res)
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
