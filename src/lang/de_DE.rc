@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_IMPORTRES "Importieren"
     IDS_CANNOTIMPORT "Die Ressource kann nicht importiert werden."
     IDS_COMPILE "Kompilieren (F8)"
-    IDS_CANCELEDIT "Abbrechen Bearbeiten (Ctrl+E)"
     IDS_GUIEDIT "Bearbeiten per GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP "Der Ressourcen-Compiler kann nicht gestartet werden."
     IDS_RESMISMATCH "Der Ressourcentyp stimmte nicht überein."

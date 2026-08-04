@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_IMPORTRES "Tuo"
     IDS_CANNOTIMPORT "Resurssia ei voi tuoda."
     IDS_COMPILE "Käännä (F8)"
-    IDS_CANCELEDIT "Peruuta muokkaus (Ctrl+E)"
     IDS_GUIEDIT "Muokkaa GUI:ssa (Ctrl+G)"
     IDS_CANNOTSTARTUP "Resurssikääntäjää ei voi käynnistää."
     IDS_RESMISMATCH "Resurssityyppi ei täsmää."

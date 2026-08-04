@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_IMPORTRES "İçe Aktar"
     IDS_CANNOTIMPORT "Kaynak içe aktarılamıyor."
     IDS_COMPILE "Derle (F8)"
-    IDS_CANCELEDIT "Düzenlemeyi İptal Et (Ctrl+E)"
     IDS_GUIEDIT "GUI ile Düzenle (Ctrl+G)"
     IDS_CANNOTSTARTUP "Kaynak derleyicisi başlatılamıyor."
     IDS_RESMISMATCH "Kaynak türü uyuşmazlığı."

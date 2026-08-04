@@ -1385,7 +1385,6 @@ STRINGTABLE
     IDS_IMPORTRES "Importar"
     IDS_CANNOTIMPORT "No se puede importar el recurso."
     IDS_COMPILE "Compilar (F8)"
-    IDS_CANCELEDIT "Cancelar Edición (Ctrl+E)"
     IDS_GUIEDIT "Editar vía GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP "No se puede iniciar el compilador de recursos."
     IDS_RESMISMATCH "El tipo de recurso no era compatible."
