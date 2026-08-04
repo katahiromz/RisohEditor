@@ -66,16 +66,38 @@ inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
 	return str;
 }
 
-// Helper function to get window text without buffer size limitations
+--- a/Common.hpp
++++ b/Common.hpp
+@@ -66,15 +66,26 @@ inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
+ 	return str;
+ }
+ 
+// Helper function to get window text without buffer size limitations.
+// Uses a retry loop (like GetListViewItemText) instead of trusting
+// GetWindowTextLengthW, because the window text can change between the
+// length query and the actual read (TOCTOU), which could otherwise
+// truncate or under-allocate the buffer.
 inline MStringW GetWindowTextW(HWND hwnd)
 {
-	INT cch = ::GetWindowTextLengthW(hwnd);
-	if (cch <= 0)
-		return MStringW();
-
 	MStringW str;
-	str.resize(cch);
-	::GetWindowTextW(hwnd, &str[0], cch + 1);
+	INT cchBuffer = 256;
+
+	for (;;)
+	{
+		str.resize(cchBuffer);
+		INT cch = ::GetWindowTextW(hwnd, &str[0], cchBuffer);
+		if (cch < cchBuffer - 1)
+		{
+			str.resize(cch);
+			break;
+		}
+		cchBuffer *= 2;
+		if (cchBuffer > 0xFFFF) // Safety limit
+		{
+			str.resize(cch);
+			break;
+		}
+	}
 	return str;
 }
 
