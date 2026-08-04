@@ -1431,7 +1431,6 @@ STRINGTABLE
     IDS_DLGFAIL "Hoppla, ich konnte keinen RAD-Dialog erstellen."
     IDS_LOADWCLIB "Laden Sie eine Fensterklassenbibliothek"
     IDS_AVIMOVIE "(AVI-Film)\r\n"
-    IDS_ADDCURSOR "Cursor hinzufügen"
     IDS_NOMOREITEM "Keine Gegenstände mehr."
     IDS_INVALIDDATA "(ungültige Daten)\r\n"
     IDS_UPDATERESH """resource.h"" aktualisieren?"

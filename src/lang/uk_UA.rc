@@ -1434,7 +1434,6 @@ STRINGTABLE
     IDS_DLGFAIL "Не вдалося створити діалог RAD."
     IDS_LOADWCLIB "Завантажити бібліотеку класів вікон"
     IDS_AVIMOVIE "(AVI-відео)\r\n"
-    IDS_ADDCURSOR "Додати курсор"
     IDS_NOMOREITEM "Більше немає елементів."
     IDS_INVALIDDATA "(неправильні дані)\r\n"
     IDS_UPDATERESH "Оновити ""resource.h""?"

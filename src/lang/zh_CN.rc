@@ -1431,7 +1431,6 @@ STRINGTABLE
     IDS_DLGFAIL "哟，RAD制作失败。"
     IDS_LOADWCLIB "加载Window类资源"
     IDS_AVIMOVIE "(AVI 视频)\r\n"
-    IDS_ADDCURSOR "添加光标"
     IDS_NOMOREITEM "没有更多的项目了。"
     IDS_INVALIDDATA "(无效数据)\r\n"
     IDS_UPDATERESH "确定更新 ""resource.h"" 吗?"

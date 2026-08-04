@@ -1434,7 +1434,6 @@ STRINGTABLE
     IDS_DLGFAIL "Ups, no pude crear un cuadro de diálogo RAD."
     IDS_LOADWCLIB "Cargar una Librería de Clases de Ventana"
     IDS_AVIMOVIE "(Video AVI)\r\n"
-    IDS_ADDCURSOR "Añadir Cursor"
     IDS_NOMOREITEM "No hay mas elementos."
     IDS_INVALIDDATA "(datos inválidos)\r\n"
     IDS_UPDATERESH "Actualizar ""resource.h""?"
