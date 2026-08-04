@@ -39,9 +39,14 @@ size_t std::hash<RowKey>::operator()(const RowKey& k) const {
 }
 
 MIDListDlg::MIDListDlg()
-	: MDialogBase(IDD_IDLIST), m_hMainWnd(NULL), m_pszResH(NULL),
-	  m_nBase(10), m_hCmb1(NULL), m_hLst1(NULL),
-	  m_bChanging(FALSE), m_bRefreshing(FALSE)
+	: MDialogBase(IDD_IDLIST)
+	, m_hMainWnd(NULL)
+	, m_pszResH(NULL)
+	, m_nBase(10)
+	, m_hCmb1(NULL)
+	, m_hLst1(NULL)
+	, m_bChanging(FALSE)
+	, m_bRefreshing(FALSE)
 {
 	m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
 	InitMaps();
