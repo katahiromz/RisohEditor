@@ -343,10 +343,21 @@ public:
 		if (!fp)
 			return false;
 
-		size_t n = fwrite(&m_data[0], m_data.size(), 1, fp);
+		// NOTE: &m_data[0] is undefined behavior when m_data is empty
+		// (std::vector, unlike std::string, gives no guarantee about
+		// indexing at size()). Also, fwrite(ptr, 0, 1, fp) legitimately
+		// returns 0 per the C standard even though nothing is wrong, so
+		// treating that as failure would incorrectly delete a validly
+		// saved empty file.
+		bool ok = true;
+		if (!m_data.empty())
+		{
+			size_t n = fwrite(&m_data[0], m_data.size(), 1, fp);
+			ok = (n != 0);
+		}
 		fclose(fp);
 
-		if (!n)
+		if (!ok)
 		{
 #ifdef UNICODE
 			_wremove(FileName);
@@ -355,7 +366,7 @@ public:
 #endif
 		}
 
-		return n != 0;
+		return ok;
 	}
 
 	uint8_t& operator[](size_t index)
