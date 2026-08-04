@@ -24,8 +24,11 @@ public:
 	LANGID m_lang;
 
 	MReplaceBinDlg(EntryBase *entry)
-		: MDialogBase(IDD_REPLACERES), m_entry(g_res.get_shared(entry)),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+		: MDialogBase(IDD_REPLACERES)
+		, m_entry(g_res.get_shared(entry))
+		, m_type(entry->m_type)
+		, m_name(entry->m_name)
+		, m_lang(entry->m_lang)
 	{
 	}
 

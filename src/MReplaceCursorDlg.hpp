@@ -25,9 +25,12 @@ public:
 	MIdOrString m_name;
 	LANGID m_lang;
 
-	MReplaceCursorDlg(EntryBase *entry) :
-		MDialogBase(IDD_REPLACECUR), m_entry(g_res.get_shared(entry)),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+	MReplaceCursorDlg(EntryBase *entry)
+		: MDialogBase(IDD_REPLACECUR)
+		, m_entry(g_res.get_shared(entry))
+		, m_type(entry->m_type)
+		, m_name(entry->m_name)
+		, m_lang(entry->m_lang)
 	{
 		m_hCursor = NULL;
 	}

@@ -26,8 +26,11 @@ public:
 	LANGID m_lang;
 
 	MReplaceIconDlg(EntryBase *entry)
-		: MDialogBase(IDD_REPLACEICON), m_entry(g_res.get_shared(entry)),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+		: MDialogBase(IDD_REPLACEICON)
+		, m_entry(g_res.get_shared(entry))
+		, m_type(entry->m_type)
+		, m_name(entry->m_name)
+		, m_lang(entry->m_lang)
 	{
 		m_hIcon = NULL;
 	}
