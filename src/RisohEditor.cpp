@@ -17,7 +17,7 @@ LPWSTR g_pszLogFile = NULL;
 std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized = NULL;
 std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType = NULL;
 std::vector<MString> g_types;
-std::vector<MString> *g_pNames = NULL;
+std::vector<MString> g_names;
 std::vector<MString> *g_pKeys = NULL;
 std::vector<MString> *g_pCtrlIDs = NULL;
 std::vector<MString> *g_pStringIDs = NULL;
@@ -847,12 +847,12 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 		return TRUE; // accepted
 
 	case TARGET_TYPE_NAME:
-		if (g_pNames)
+		if (g_names.size())
 		{
-			if (index >= (INT)g_pNames->size())
+			if (index >= (INT)g_names.size())
 				return FALSE;   // reject
 
-			MIdOrString new_name = (*g_pNames)[index].c_str();
+			MIdOrString new_name = g_names[index].c_str();
 
 			auto entry = g_res.get_entry();
 			if (!entry || entry->m_et != ET_NAME)
@@ -2713,12 +2713,9 @@ BOOL InitTypes(void)
 
 BOOL InitNames(const MIdOrString& res_type)
 {
-	if (g_pNames)
-		delete g_pNames;
-	g_pNames = new std::vector<MString>();
+	g_names.clear();
 
 	IDTYPE_ nIDTYPE_;
-
 	if (res_type.is_null())
 	{
 		auto entry = g_res.get_entry();
@@ -2735,10 +2732,10 @@ BOOL InitNames(const MIdOrString& res_type)
 	auto end = table.end();
 	for (auto it = table.begin(); it != end; ++it)
 	{
-		g_pNames->push_back(it->name);
+		g_names.push_back(it->name);
 	}
 
-	std::sort(g_pNames->begin(), g_pNames->end());
+	std::sort(g_names.begin(), g_names.end());
 	return TRUE;
 }
 
@@ -2862,7 +2859,7 @@ BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString
 	if (g_settings.bHideID)
 		return TRUE;
 
-	for (auto& item : *g_pNames)
+	for (auto& item : g_names)
 	{
 		INT index = ListBox_AddString(hwnd, item.c_str());
 		if (index != LB_ERR && item == name.str())
@@ -2917,7 +2914,7 @@ BOOL InitNameListBox(HWND hwnd)
 
 	InitNames();
 
-	for (auto& name : *g_pNames)
+	for (auto& name : g_names)
 	{
 		ListBox_AddString(hwnd, name.c_str());
 	}
@@ -8645,8 +8642,7 @@ wWinMain(HINSTANCE   hInstance,
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
 	g_types.clear();
-	if (g_pNames)
-		delete g_pNames;
+	g_names.clear();
 	if (g_pKeys)
 		delete g_pKeys;
 	if (g_pCtrlIDs)

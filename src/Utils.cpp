@@ -2373,7 +2373,7 @@ void InitMessageComboBox(HWND hCmb, const MString& strString)
 // languages
 
 std::vector<LANG_ENTRY> g_langs;
-extern std::vector<MString> *g_pNames;
+extern std::vector<MString> g_names;
 
 BOOL CALLBACK
 EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage,
@@ -2416,9 +2416,9 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 	}
 	else if (type == 1) // Names
 	{
-		if (InitNames(res_type) && g_pNames)
+		if (InitNames(res_type))
 		{
-			for (auto& name : *g_pNames)
+			for (auto& name : g_names)
 			{
 				push_back(name);
 			}
