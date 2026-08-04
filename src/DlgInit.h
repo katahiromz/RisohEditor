@@ -57,8 +57,11 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
 		   msg == CBEM_INSERTITEM);
 
 #ifndef NDEBUG
-	const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
-	assert(pb[dwLen - 1] == 0);
+	if (dwLen != 0)
+	{
+		const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
+		assert(pb[dwLen - 1] == 0);
+	}
 #endif
 
 	// send the message
@@ -88,21 +91,15 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
 inline BOOL
 ExecuteDlgInitDataDx(HWND hwnd, const void *pData, SIZE_T& cbData)
 {
-#ifndef NDEBUG
-	DWORD i = 0;
-#endif
 	const UNALIGNED WORD *pw;
 	pw = reinterpret_cast<const UNALIGNED WORD *>(pData);
-	while (pw && *pw)
+	while (pw && cbData >= sizeof(WORD) && *pw)
 	{
 		pw = ExecuteDlgInitEntryDx(hwnd, pw, cbData);
-#ifndef NDEBUG
-		++i;
-#endif
 	}
 
 	// NOTE: We don't send WM_INITIALUPDATE messages.
-	return pw != NULL;
+	return pw != nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////////
