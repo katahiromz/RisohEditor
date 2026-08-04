@@ -14,7 +14,6 @@
 #include <set>
 #include <map>
 #include <memory>            // for std::shared_ptr
-#include <unordered_set>     // for std::unordered_set
 #include <shlwapi.h>
 
 #include "IconRes.hpp"
