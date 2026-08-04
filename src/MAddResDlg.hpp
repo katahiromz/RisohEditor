@@ -391,7 +391,7 @@ public:
 		{
 			// otherwise the name is non-optional
 			SetDlgItemText(hwnd, stc1, NULL);
-			InitComboBoxPlaceholder(m_cmb2, IDS_INTEGERORIDENTIFIER);
+			InitComboBoxPlaceholder(m_cmb2, IDS_INTEGERORSTRLITERAL);
 		}
 
 		// iType (IDTYPE_*) --> prefix

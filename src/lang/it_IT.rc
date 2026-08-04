@@ -1622,6 +1622,7 @@ STRINGTABLE
     IDS_NAMEISEMPTY "Il nome della risorsa è vuoto. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
     IDS_NAMEOUTOFRANGE "Il nome della risorsa non rientra nell'intervallo consentito. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
     IDS_INVALIDNAME "Il nome della risorsa non è valido. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
+    IDS_INTEGERORSTRLITERAL "(Valore letterale intero o stringa)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

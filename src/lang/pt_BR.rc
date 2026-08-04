@@ -1624,6 +1624,7 @@ STRINGTABLE
     IDS_NAMEISEMPTY "O nome do recurso está vazio. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
     IDS_NAMEOUTOFRANGE "O nome do recurso está fora do intervalo. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
     IDS_INVALIDNAME "O nome do recurso é inválido. Insira um inteiro de 16 bits (-32768 a 65535) ou um literal de string."
+    IDS_INTEGERORSTRLITERAL "(Número inteiro ou literal de string)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

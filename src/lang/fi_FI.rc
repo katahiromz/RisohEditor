@@ -1621,6 +1621,7 @@ STRINGTABLE
     IDS_NAMEISEMPTY "Resurssin nimi on tyhjä. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
     IDS_NAMEOUTOFRANGE "Resurssin nimi on sallitun alueen ulkopuolella. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
     IDS_INVALIDNAME "Resurssin nimi on virheellinen. Anna 16-bittinen kokonaisluku (-32768..65535) tai merkkijonoliteraali."
+    IDS_INTEGERORSTRLITERAL "(Kokonaisluku tai merkkijonoliteraali)"
 }
 
 //////////////////////////////////////////////////////////////////////////////
