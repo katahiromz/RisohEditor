@@ -2678,40 +2678,16 @@ BOOL InitTypes(void)
 	if (auto table1 = g_db.GetTable(L"RESOURCE"))
 	{
 		for (auto& entry : *table1)
-		{
 			g_types.push_back(entry.name);
-		}
 	}
 
 	if (auto table2 = g_db.GetTable(L"RESOURCE.STRING.TYPE"))
 	{
 		for (auto& entry : *table2)
-		{
 			g_types.push_back(entry.name);
-			MString str = L"\"";
-			str += entry.name;
-			str += L"\"";
-			g_types.push_back(std::move(str));
-		}
 	}
 
-	std::sort(g_types.begin(), g_types.end(), [](const MString& x, const MString& y){
-		if (x.empty() && y.empty())
-			return false;
-		if (x.empty())
-			return true;
-		if (y.empty())
-			return false;
-		bool quote0 = (x[0] == '"');
-		bool quote1 = (y[0] == '"');
-		if (quote0 && quote1)
-			return lstrcmpiW(&x.c_str()[1], &y.c_str()[1]) < 0;
-		if (quote0)
-			return false;
-		if (quote1)
-			return true;
-		return lstrcmpiW(x.c_str(), y.c_str()) < 0;
-	});
+	std::sort(g_types.begin(), g_types.end());
 	return TRUE;
 }
 
