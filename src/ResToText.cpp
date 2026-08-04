@@ -420,7 +420,7 @@ ResToText::DoCursor(const EntryBase& entry)
 
 	if (m_bHumanReadable)
 	{
-		BITMAP bm;
+		BITMAP bm = {};
 		HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
 		HBITMAP hbm = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
 		str += DumpIconInfo(bm, FALSE);
@@ -464,7 +464,7 @@ ResToText::DoIcon(const EntryBase& entry)
 
 	if (m_bHumanReadable)
 	{
-		BITMAP bm;
+		BITMAP bm = {};
 		HBITMAP hbm = CreateBitmapFromIconOrPngDx(m_hwnd, entry, bm);
 
 		HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
@@ -1459,7 +1459,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
 		return ret;
 	}
 
-	ret += LoadStringPrintfDx(IDS_IMAGECOUNT, dir.idCount);;
+	ret += LoadStringPrintfDx(IDS_IMAGECOUNT, dir.idCount);
 	ret += L"-------\r\n";
 
 	const GRPICONDIRENTRY *pEntries;
