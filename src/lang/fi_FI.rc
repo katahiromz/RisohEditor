@@ -1520,7 +1520,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (with BOM)"
     IDS_UTF8N "UTF-8 (without BOM)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(binaarinen data)"
     IDS_RESTYPE "Resurssin tyyppi"
     IDS_ENCODING "Koodaus"
     IDS_LOADEGAPROGRAM "Lataa EGA-ohjelma..."

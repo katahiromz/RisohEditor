@@ -1524,7 +1524,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 with BOM"
     IDS_UTF8N "UTF-8 without BOM"
     IDS_SJIS "シフトJIS"
-    IDS_BINARY "バイナリ データ"
     IDS_RESTYPE "リソース型"
     IDS_ENCODING "エンコーディング"
     IDS_LOADEGAPROGRAM "EGAプログラムを読み込む..."

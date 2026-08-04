@@ -1519,7 +1519,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (with BOM)"
     IDS_UTF8N "UTF-8 (without BOM)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(二進位制數據)"
     IDS_RESTYPE "資源類型"
     IDS_ENCODING "編碼"
     IDS_LOADEGAPROGRAM "載入EGA程序..."

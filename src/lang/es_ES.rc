@@ -1523,7 +1523,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (con BOM)"
     IDS_UTF8N "UTF-8 (sin BOM)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(datos binarios)"
     IDS_RESTYPE "Tipo de Recurso"
     IDS_ENCODING "Codificación"
     IDS_LOADEGAPROGRAM "Cargar programa EGA..."

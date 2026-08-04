@@ -1524,7 +1524,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (Dengan BOM)"
     IDS_UTF8N "UTF-8 (Tanpa BOM)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(binary data)"
     IDS_RESTYPE "Jenis Sumber Daya"
     IDS_ENCODING "Enkoding"
     IDS_LOADEGAPROGRAM "Muat Program EGA..."

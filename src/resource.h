@@ -285,7 +285,6 @@
 #define IDS_UTF8                            302
 #define IDS_UTF8N                           303
 #define IDS_SJIS                            304
-#define IDS_BINARY                          305
 #define IDS_RESTYPE                         306
 #define IDS_ENCODING                        307
 #define IDS_LOADEGAPROGRAM                  310

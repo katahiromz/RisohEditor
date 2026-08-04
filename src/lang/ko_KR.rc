@@ -1521,7 +1521,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (BOM 포함)"
     IDS_UTF8N "UTF-8 (BOM 없음)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(바이너리 데이터)"
     IDS_RESTYPE "리소스 유형"
     IDS_ENCODING "인코딩"
     IDS_LOADEGAPROGRAM "EGA 프로그램 불러오기..."

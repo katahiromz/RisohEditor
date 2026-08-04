@@ -1521,7 +1521,6 @@ STRINGTABLE
     IDS_UTF8 "UTF-8 (BOM ile)"
     IDS_UTF8N "UTF-8 (BOM'suz)"
     IDS_SJIS "Shift_JIS"
-    IDS_BINARY "(ikili veri)"
     IDS_RESTYPE "Kaynak Türü"
     IDS_ENCODING "Kodlama"
     IDS_LOADEGAPROGRAM "EGA programını yükle..."
