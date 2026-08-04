@@ -195,7 +195,7 @@ VersionRes::Dump(const MIdOrString& name) const
 	DWORD dwValue;
 
 	if (name.is_str())
-		ret += name.quoted_wstr();
+		ret += mstr_quote_with_wrap(name.str());
 	else
 		ret += name.str();
 

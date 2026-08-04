@@ -1374,13 +1374,9 @@ MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& name)
 {
 	MString ret;
 	if (name.is_str())
-	{
-		ret += name.str();
-	}
+		ret = mstr_quote_with_wrap(name.str());
 	else
-	{
-		ret += g_db.GetNameOfResID(g_db.IDTypeFromResType(type), name.m_id);
-	}
+		ret = g_db.GetNameOfResID(g_db.IDTypeFromResType(type), name.m_id);
 	return ret;
 }
 

@@ -423,7 +423,7 @@ MenuRes::Dump(const MIdOrString& name) const
 
 	if (name.is_str())
 	{
-		ret += name.str();
+		ret += mstr_quote_with_wrap(name.str());
 	}
 	else
 	{
@@ -514,7 +514,7 @@ MenuRes::DumpEx(const MIdOrString& name) const
 
 	if (name.is_str())
 	{
-		ret += name.str();
+		ret += mstr_quote_with_wrap(name.str());
 	}
 	else
 	{
