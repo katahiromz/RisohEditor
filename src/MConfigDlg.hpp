@@ -21,11 +21,11 @@ class MConfigDlg : public MDialogBase
 {
 public:
 	MComboBoxAutoComplete m_cmb3;
-	MRisohAutoComplete *m_pAutoComplete;
+	MRisohAutoComplete *m_pAutoComplete2;
 
 	MConfigDlg()
 		: MDialogBase(IDD_CONFIG)
-		, m_pAutoComplete(new MRisohAutoComplete(2))
+		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
 		m_cmb3.m_bIgnoreCase = TRUE;
@@ -33,11 +33,8 @@ public:
 
 	~MConfigDlg()
 	{
-		if (m_pAutoComplete)
-		{
-			m_pAutoComplete->Release();
-			m_pAutoComplete = NULL;
-		}
+		m_pAutoComplete2->unbind();
+		m_pAutoComplete2->Release();
 	}
 
 	void Reload(HWND hwnd)
@@ -88,12 +85,12 @@ public:
 		SubclassChildDx(m_cmb3, cmb3);
 
 		// auto complete
-		if (m_pAutoComplete)
+		if (m_pAutoComplete2)
 		{
 			COMBOBOXINFO info = { sizeof(info) };
 			GetComboBoxInfo(m_cmb3, &info);
 			HWND hwndEdit = info.hwndItem;
-			m_pAutoComplete->bind(hwndEdit);
+			m_pAutoComplete2->bind(hwndEdit);
 		}
 
 		Reload(hwnd);
