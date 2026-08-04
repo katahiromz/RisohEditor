@@ -1472,7 +1472,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Lütfen RT_DLGINIT için satır sonlarıyla ayrılmış karakter dizilerinin bir listesini belirtin."
     IDS_SAMELANG "Bu aynı dil."
     IDS_SAMENAME "Bu aynı kaynak adı."
-    IDS_CANTSAVETOEXE "Çalıştırılabilir olmayan bir dosyadan EXE olarak kaydedilemez."
     IDS_CANTSTARTSEARCH "Arama başlatılamıyor."
     IDS_AMERICA "Amerika"
     IDS_ENGLISH "İngilizce"

@@ -1472,7 +1472,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Proszę podać listę ciągów znaków oddzielonych znakami końca linii dla RT_DLGINIT."
     IDS_SAMELANG "To ten sam język."
     IDS_SAMENAME "To ta sama nazwa zasobu."
-    IDS_CANTSAVETOEXE "Nie można zapisać jako EXE z pliku niewykonywalnego."
     IDS_CANTSTARTSEARCH "Nie można rozpocząć wyszukiwania."
     IDS_AMERICA "Ameryka"
     IDS_ENGLISH "Angielski"

@@ -1473,7 +1473,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Укажите для RT_DLGINIT список строк символов, разделённых переводами строки."
     IDS_SAMELANG "Это тот же язык."
     IDS_SAMENAME "Это то же имя ресурса."
-    IDS_CANTSAVETOEXE "Невозможно сохранить как EXE из не-исполняемого файла."
     IDS_CANTSTARTSEARCH "Невозможно начать поиск."
     IDS_AMERICA "Америка"
     IDS_ENGLISH "Английский"

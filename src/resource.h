@@ -236,7 +236,6 @@
 #define IDS_DLGINIT3                        249
 #define IDS_SAMELANG                        250
 #define IDS_SAMENAME                        251
-#define IDS_CANTSAVETOEXE                   252
 #define IDS_CANTSTARTSEARCH                 253
 #define IDS_AMERICA                         254
 #define IDS_ENGLISH                         255

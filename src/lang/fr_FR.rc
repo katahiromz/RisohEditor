@@ -1471,7 +1471,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Veuillez spécifier une liste de chaînes de caractères séparées par des sauts de ligne pour RT_DLGINIT."
     IDS_SAMELANG "C'est la même langue."
     IDS_SAMENAME "C'est le même nom de ressource."
-    IDS_CANTSAVETOEXE "Impossible d'enregistrer au format EXE à partir d'un fichier non exécutable."
     IDS_CANTSTARTSEARCH "Impossible de démarrer la recherche."
     IDS_AMERICA "Amérique"
     IDS_ENGLISH "Anglais"

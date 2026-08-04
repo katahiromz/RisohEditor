@@ -1474,7 +1474,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Будь ласка, вкажіть список текстових рядків, розділених переносами рядків, для RT_DLGINIT."
     IDS_SAMELANG "Це та сама мова."
     IDS_SAMENAME "Це те саме ім'я ресурсу."
-    IDS_CANTSAVETOEXE "Неможливо зберегти як EXE з невиконуваного файлу."
     IDS_CANTSTARTSEARCH "Неможливо почати пошук."
     IDS_AMERICA "Америка"
     IDS_ENGLISH "Английська"

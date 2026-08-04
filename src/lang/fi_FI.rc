@@ -1471,7 +1471,6 @@ STRINGTABLE
     IDS_DLGINIT3 "Määritä luettelo merkkijonoista, jotka on erotettu rivinvaihdoilla lausekkeelle RT_DLGINIT."
     IDS_SAMELANG "Sama kieli."
     IDS_SAMENAME "Sama resurssin nimi."
-    IDS_CANTSAVETOEXE "Ei voida tallentaa EXE-tiedostona ei-suoritettavasta tiedostosta."
     IDS_CANTSTARTSEARCH "Hakua ei voitu aloittaa."
     IDS_AMERICA "America"
     IDS_ENGLISH "English"
