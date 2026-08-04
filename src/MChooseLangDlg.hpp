@@ -37,7 +37,6 @@ public:
 	{
 		if (m_pAutoComplete)
 		{
-			m_pAutoComplete->unbind();
 			m_pAutoComplete->Release();
 			m_pAutoComplete = NULL;
 		}

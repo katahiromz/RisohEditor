@@ -49,7 +49,6 @@ public:
 
 	virtual ~MAddStrDlg()
 	{
-		m_pAutoComplete5->unbind();
 		m_pAutoComplete5->Release();
 		m_pAutoComplete5 = NULL;
 
@@ -191,7 +190,6 @@ public:
 
 	virtual ~MModifyStrDlg()
 	{
-		m_pAutoComplete5->unbind();
 		m_pAutoComplete5->Release();
 		m_pAutoComplete5 = NULL;
 

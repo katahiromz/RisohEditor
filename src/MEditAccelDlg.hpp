@@ -40,13 +40,8 @@ public:
 
 	~MAddKeyDlg()
 	{
-		m_pAutoComplete3->unbind();
 		m_pAutoComplete3->Release();
-		m_pAutoComplete3 = NULL;
-
-		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
-		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -183,13 +178,8 @@ public:
 
 	~MModifyKeyDlg()
 	{
-		m_pAutoComplete3->unbind();
 		m_pAutoComplete3->Release();
-		m_pAutoComplete3 = NULL;
-
-		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
-		m_pAutoComplete4 = NULL;
 	}
 
 

@@ -42,13 +42,9 @@ public:
 
 	~MAddIconDlg()
 	{
-		m_pAutoComplete1->unbind();
 		m_pAutoComplete1->Release();
-		m_pAutoComplete1 = NULL;
-
-		m_pAutoComplete2->unbind();
 		m_pAutoComplete2->Release();
-		m_pAutoComplete2 = NULL;
+
 		DestroyIcon(m_hIcon);
 	}
 

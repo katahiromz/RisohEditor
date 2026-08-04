@@ -40,13 +40,8 @@ public:
 
 	~MAddBitmapDlg()
 	{
-		m_pAutoComplete1->unbind();
 		m_pAutoComplete1->Release();
-		m_pAutoComplete1 = NULL;
-
-		m_pAutoComplete2->unbind();
 		m_pAutoComplete2->Release();
-		m_pAutoComplete2 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)

@@ -37,9 +37,7 @@ public:
 
 	~MCloneInNewNameDlg()
 	{
-		m_pAutoComplete1->unbind();
 		m_pAutoComplete1->Release();
-		m_pAutoComplete1 = NULL;
 	}
 
 	INT_PTR CALLBACK

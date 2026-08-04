@@ -41,12 +41,7 @@ public:
 
 	~MCopyToMultiLangDlg()
 	{
-		if (m_pAutoComplete2)
-		{
-			m_pAutoComplete2->unbind();
-			m_pAutoComplete2->Release();
-			m_pAutoComplete2 = NULL;
-		}
+		m_pAutoComplete2->Release();
 	}
 
 	int OnVKeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)

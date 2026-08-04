@@ -35,9 +35,7 @@ public:
 
 	~MModifyTBBtnDlg()
 	{
-		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
-		m_pAutoComplete4 = NULL;
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
