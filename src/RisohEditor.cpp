@@ -6724,11 +6724,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 			if (entry->m_et == ET_LANG || entry->m_et == ET_STRING)
 			{
-				old_lang = LangFromText(szOldText);
-				if (old_lang == BAD_LANG)
-				{
+				if (!ParseLang(szOldText, old_lang))
 					return TRUE;    // prevent
-				}
 			}
 
 			m_arrow.ShowDropDownList(m_arrow, FALSE);
@@ -6779,37 +6776,16 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 					return FALSE;   // reject
 			}
 
-			WCHAR szNewText[MAX_PATH];
-			StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
-			mstr_trim(szNewText);
-
-			if (entry->m_et == ET_TYPE && !szNewText[0])
-			{
-				ErrorBoxDx(IDS_INVALIDRESTYPE);
-				return FALSE;   // reject
-			}
-
-			if (entry->m_et == ET_NAME && !szNewText[0])
-			{
-				ErrorBoxDx(IDS_INVALIDNAME);
-				return FALSE;   // reject
-			}
-
 			if (entry->m_et == ET_TYPE)
 			{
-				WCHAR ch = szNewText[0];
-				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
+				MIdOrString old_type = entry->m_type;
+				MIdOrString new_type;
+				INT ids = ParseType(pszNewText, new_type);
+				if (ids)
 				{
-					INT value = mstr_parse_int(szNewText);
-					if (value < SHRT_MIN || USHRT_MAX < value)
-					{
-						ErrorBoxDx(IDS_ENTERINT);
-						return FALSE; // failure
-					}
+					ErrorBoxDx(ids);
+					return FALSE; // failure
 				}
-
-				MIdOrString old_type = GetTypeFromText(szOldText);
-				MIdOrString new_type = GetTypeFromText(szNewText);
 
 				if (old_type == new_type)
 					return FALSE;   // reject
@@ -6830,20 +6806,15 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			}
 			else if (entry->m_et == ET_NAME)
 			{
-				WCHAR ch = szNewText[0];
-				if (mchr_is_digit(ch) || ch == L'-' || ch == L'+')
-				{
-					INT value = mstr_parse_int(szNewText);
-					if (value < SHRT_MIN || USHRT_MAX < value)
-					{
-						ErrorBoxDx(IDS_ENTERINT);
-						return FALSE; // failure
-					}
-				}
+				MIdOrString old_name = entry->m_name;
+				MIdOrString new_name;
 
-				// rename the name
-				MIdOrString old_name = GetNameFromText(szOldText);
-				MIdOrString new_name = GetNameFromText(szNewText);
+				INT ids = ParseName(pszNewText, entry->m_type, new_name);
+				if (ids)
+				{
+					ErrorBoxDx(ids);
+					return FALSE; // failure
+				}
 
 				if (old_name == new_name)
 					return FALSE;   // reject
@@ -6864,12 +6835,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			{
 				PostUpdateArrow(hwnd);
 
-				old_lang = LangFromText(szOldText);
-				if (old_lang == BAD_LANG)
-					return FALSE;   // reject
-
-				LANGID new_lang = LangFromText(szNewText);
-				if (new_lang == BAD_LANG)
+				LANGID new_lang;
+				if (!ParseLang(pszNewText, new_lang))
 				{
 					ErrorBoxDx(IDS_INVALIDLANG);
 					return FALSE;   // reject
@@ -6895,12 +6862,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			{
 				PostUpdateArrow(hwnd);
 
-				old_lang = LangFromText(szOldText);
-				if (old_lang == BAD_LANG)
-					return FALSE;   // reject
-
-				LANGID new_lang = LangFromText(szNewText);
-				if (new_lang == BAD_LANG)
+				LANGID new_lang;
+				if (!ParseLang(pszNewText, new_lang))
 				{
 					ErrorBoxDx(IDS_INVALIDLANG);
 					return FALSE;   // reject

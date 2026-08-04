@@ -2525,22 +2525,22 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 	}
 }
 
-// get the language ID from a text
-LANGID LangFromText(LPWSTR pszLang)
+BOOL ParseLang(const MStringW& input, LANGID& lang)
 {
-	LANGID lang = BAD_LANG;	 // not found yet
+	lang = BAD_LANG;	 // not found yet
+	MStringW str = input;
 
 	// replace the fullwidth characters with halfwidth characters
-	ReplaceFullWithHalf(pszLang);
+	ReplaceFullWithHalf(str);
 
-	// trim and store to pszLang and strLang
-	MStringW strLang = pszLang;
-	mstr_trim(strLang);
-	StringCchCopyW(pszLang, MAX_PATH, strLang.c_str());
+	// trim
+	mstr_trim(str);
+
+	PCWSTR pszLang = str.c_str();
 
 	do
 	{
-		if (strLang[0] == 0)
+		if (str[0] == 0)
 			break;  // it's empty. invalid
 
 		// is it American English?
@@ -2640,7 +2640,7 @@ LANGID LangFromText(LPWSTR pszLang)
 		}
 
 		// maybe en_US, or jp_JP etc.
-		if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang))
+		if (INT nValue = g_db.GetValueI(L"LANGUAGES", str))
 		{
 			lang = (WORD)nValue;	// found
 			break;
@@ -2648,7 +2648,7 @@ LANGID LangFromText(LPWSTR pszLang)
 
 		// maybe en-US, or jp-JP etc.
 		{
-			MStringW str = strLang;
+			MStringW str = str;
 
 			// replace '-' with '_'
 			auto i = str.find(L'-');
@@ -2664,9 +2664,9 @@ LANGID LangFromText(LPWSTR pszLang)
 		}
 
 		// is it numeric?
-		if (mchr_is_digit(strLang[0]))
+		if (mchr_is_digit(str[0]))
 		{
-			// strLang is numeric
+			// str is numeric
 			int nValue = mstr_parse_int(pszLang);
 			if (nValue < 0 || BAD_LANG <= nValue)
 				break;  // invalid
@@ -2690,7 +2690,7 @@ LANGID LangFromText(LPWSTR pszLang)
 		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// numeric after parenthesis
-			if (WCHAR *pch = wcsrchr(pszLang, L'('))
+			if (const WCHAR *pch = wcsrchr(pszLang, L'('))
 			{
 				++pch;
 				if (mchr_is_digit(*pch))
@@ -2720,7 +2720,7 @@ LANGID LangFromText(LPWSTR pszLang)
 		if (lang == BAD_LANG)	 // not found yet?
 		{
 			// ignore case, partial match
-			mstr_upper(strLang);
+			mstr_upper(str);
 			for (auto& entry : g_langs)
 			{
 				MStringW strEntry = entry.str;
@@ -2735,7 +2735,7 @@ LANGID LangFromText(LPWSTR pszLang)
 		}
 	} while (0);
 
-	return lang;
+	return lang != BAD_LANG;
 }
 
 // verify the language combobox
@@ -2747,7 +2747,7 @@ BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type)
 	// get the language ID from texts
 	WCHAR szPath[MAX_PATH];
 	StringCchCopyW(szPath, _countof(szPath), strLang.c_str());
-	lang = LangFromText(szPath);
+	ParseLang(szPath, lang);
 	if ((type != LANG_TYPE_1 || IsValidUILang(lang)) && lang != BAD_LANG)
 		return TRUE;	// success
 

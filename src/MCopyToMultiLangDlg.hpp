@@ -14,6 +14,8 @@
 #include "MRisohAutoComplete.hpp"
 #include "Common.hpp"
 
+BOOL ParseLang(const MStringW& input, LANGID& lang);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MCopyToMultiLangDlg : public MDialogBase
@@ -93,7 +95,8 @@ public:
 			MStringW str = GetListBoxText(hLst1, iItem);
 			if (str.empty())
 				continue;
-			LANGID wLang = LangFromText(&str[0]);
+			LANGID wLang;
+			ParseLang(str, wLang);
 			m_langs.push_back(wLang);
 		}
 
@@ -134,8 +137,8 @@ public:
 			return;
 		}
 
-		LANGID wLang = LangFromText(&str[0]);
-		if (wLang != BAD_LANG)
+		LANGID wLang;
+		if (ParseLang(str, wLang))
 		{
 			HWND hLst1 = GetDlgItem(hwnd, lst1);
 			str = get_lang_label(wLang);
