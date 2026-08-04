@@ -317,7 +317,14 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 			CLSID cls;
 			if (GetEncoderClsid(L"image/png", &cls) != -1)
 			{
-				ret = pBitmap->Save(FileName, &cls, nullptr) == Gdiplus::Ok;
+				try
+				{
+					ret = pBitmap->Save(FileName, &cls, nullptr) == Gdiplus::Ok;
+				}
+				catch (...)
+				{
+					ret = FALSE;
+				}
 			}
 		}
 		delete pBitmap;
