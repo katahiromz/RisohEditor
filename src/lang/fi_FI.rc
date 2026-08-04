@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Resurssia ei voi tuoda."
     IDS_CANNOTSTARTUP "Resurssikääntäjää ei voi käynnistää."
     IDS_RESMISMATCH "Resurssityyppi ei täsmää."
-    IDS_SAMPLETEXT "Tämä on näyte."
     IDS_ALREADYEXISTS "On jo olemassa."
     IDS_KEY "Avain"
     IDS_FLAGS "Liput"

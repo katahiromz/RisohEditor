@@ -148,7 +148,6 @@
 #define IDS_CANNOTIMPORT                    146
 #define IDS_CANNOTSTARTUP                   151
 #define IDS_RESMISMATCH                     152
-#define IDS_SAMPLETEXT                      153
 #define IDS_ALREADYEXISTS                   154
 #define IDS_KEY                             155
 #define IDS_FLAGS                           156

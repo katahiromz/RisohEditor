@@ -1387,7 +1387,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Tidak bisa mengimpor sumber daya."
     IDS_CANNOTSTARTUP "Tidak bisa memulai penyusun sumber daya."
     IDS_RESMISMATCH "Sumber daya tidak cocok."
-    IDS_SAMPLETEXT "Ini adalah contoh."
     IDS_ALREADYEXISTS "Telah tersedia."
     IDS_KEY "Tombol"
     IDS_FLAGS "Flag"

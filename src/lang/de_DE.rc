@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Die Ressource kann nicht importiert werden."
     IDS_CANNOTSTARTUP "Der Ressourcen-Compiler kann nicht gestartet werden."
     IDS_RESMISMATCH "Der Ressourcentyp stimmte nicht überein."
-    IDS_SAMPLETEXT "Dies ist ein Beispiel."
     IDS_ALREADYEXISTS "Ist bereits vorhanden."
     IDS_KEY "Schlüssel"
     IDS_FLAGS "Flaggen"

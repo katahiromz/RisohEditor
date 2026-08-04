@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Impossibile importare la risorsa."
     IDS_CANNOTSTARTUP "Impossibile avviare compilatore risorse."
     IDS_RESMISMATCH "Mancata corrispondenza risorsa."
-    IDS_SAMPLETEXT "Questo è un esempio."
     IDS_ALREADYEXISTS "Esiste già."
     IDS_KEY "Chiave"
     IDS_FLAGS "Flag"

@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Unable to import the resource."
     IDS_CANNOTSTARTUP "Unable to start up the resource compiler."
     IDS_RESMISMATCH "Resource type was mismatched."
-    IDS_SAMPLETEXT "This is a sample."
     IDS_ALREADYEXISTS "Already exists."
     IDS_KEY "Key"
     IDS_FLAGS "Flags"

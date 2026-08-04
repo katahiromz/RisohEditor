@@ -1384,7 +1384,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Nie można zaimportować zasobu."
     IDS_CANNOTSTARTUP "Nie można uruchomić kompilatora zasobów."
     IDS_RESMISMATCH "Niezgodny typ zasobu."
-    IDS_SAMPLETEXT "To jest przykład."
     IDS_ALREADYEXISTS "Już istnieje."
     IDS_KEY "Klucz"
     IDS_FLAGS "Flagi"

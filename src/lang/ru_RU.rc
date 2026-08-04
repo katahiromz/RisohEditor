@@ -1385,7 +1385,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "Невозможно импортировать ресурс."
     IDS_CANNOTSTARTUP "Невозможно запустить компилятор ресурсов."
     IDS_RESMISMATCH "Не соответствует тип ресурса."
-    IDS_SAMPLETEXT "Это пример."
     IDS_ALREADYEXISTS "Уже существует."
     IDS_KEY "Ключ"
     IDS_FLAGS "Флаги"

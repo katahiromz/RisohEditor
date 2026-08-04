@@ -1382,7 +1382,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "導入資源失敗。"
     IDS_CANNOTSTARTUP "編譯器啟動失敗。"
     IDS_RESMISMATCH "資源類型不匹配。"
-    IDS_SAMPLETEXT "這是一個模板"
     IDS_ALREADYEXISTS "已存在。"
     IDS_KEY "鍵"
     IDS_FLAGS "標識"

@@ -1383,7 +1383,6 @@ STRINGTABLE
     IDS_CANNOTIMPORT "导入资源失败。"
     IDS_CANNOTSTARTUP "编译器启动失败。"
     IDS_RESMISMATCH "资源类型不匹配。"
-    IDS_SAMPLETEXT "这是一个模板"
     IDS_ALREADYEXISTS "已存在。"
     IDS_KEY "键"
     IDS_FLAGS "标识"
