@@ -26,12 +26,14 @@ public:
 	LANGID m_lang;
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
-	MRisohAutoComplete *m_pAutoComplete;
+	MRisohAutoComplete *m_pAutoComplete1;
+	MRisohAutoComplete *m_pAutoComplete2;
 
 	MAddCursorDlg()
 		: MDialogBase(IDD_ADDCURSOR)
 		, m_file(NULL)
-		, m_pAutoComplete(new MRisohAutoComplete(2))
+		, m_pAutoComplete1(new MRisohAutoComplete(1, FALSE, RT_GROUP_CURSOR))
+		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_hCursor = NULL;
 		m_cmb3.m_bAcceptSpace = TRUE;
@@ -40,9 +42,13 @@ public:
 
 	~MAddCursorDlg()
 	{
-		m_pAutoComplete->unbind();
-		m_pAutoComplete->Release();
-		m_pAutoComplete = NULL;
+		m_pAutoComplete1->unbind();
+		m_pAutoComplete1->Release();
+		m_pAutoComplete1 = NULL;
+
+		m_pAutoComplete2->unbind();
+		m_pAutoComplete2->Release();
+		m_pAutoComplete2 = NULL;
 		DestroyCursor(m_hCursor);
 	}
 
@@ -63,9 +69,14 @@ public:
 
 		// auto complete
 		COMBOBOXINFO info = { sizeof(info) };
-		GetComboBoxInfo(m_cmb3, &info);
+		GetComboBoxInfo(m_cmb2, &info);
 		HWND hwndEdit = info.hwndItem;
-		m_pAutoComplete->bind(hwndEdit);
+		m_pAutoComplete1->bind(hwndEdit);
+
+		info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb3, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete2->bind(hwndEdit);
 
 		FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
 
