@@ -1,13 +1,13 @@
 ﻿## HISTORIA
 
-- v.6.1.2 (2026-XX-YY)
+- v.6.1.2 (2026-08-05)
     - Se puede compilar de nuevo con MinGW o RosBE.
     - Capaz de cambiar el tipo de recurso.
     - Capaz de clonar el tipo de recurso.
     - Pequeñas mejoras en la interfaz de usuario y la experiencia de usuario.
     - Se corrigió el manejo de DLGITEMTEMPLATE.
     - Se actualizó mcpp.exe para procesar la información de las líneas de código fuente.
-    - Improved compilation process and error info.
+    - Proceso de compilación e información de errores mejorados.
 - v.6.1.1 (2026-08-03)
     - Refactorización.
 - v.6.1.0 (2026-08-03)

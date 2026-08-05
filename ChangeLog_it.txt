@@ -1,13 +1,13 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.1.2 (2026-XX-YY)
+- v.6.1.2 (05.08.2026)
     - Possibilità di effettuare nuovamente la compilazione con MinGW o RosBE.
     - Possibilità di modificare il tipo di risorsa.
     - Possibilità di clonare il tipo di risorsa.
     - Piccoli miglioramenti all'interfaccia utente e all'esperienza utente.
     - Corretta la gestione di DLGITEMTEMPLATE.
     - Aggiornato mcpp.exe per elaborare le informazioni sulle righe del codice sorgente.
-    - Improved compilation process and error info.
+    - Migliorati il ​​processo di compilazione e le informazioni sugli errori.
 - v.6.1.1 (03.08.2026)
     - Refactoring.
 - v.6.1.0 (03.08.2026)

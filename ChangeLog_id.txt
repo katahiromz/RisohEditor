@@ -1,13 +1,13 @@
 ﻿## SEJARAH
 
-- v.6.1.2 (2026-XX-YY)
+- v.6.1.2 (2026-08-05)
     - Dapat dibangun kembali menggunakan MinGW atau RosBE.
     - Dapat mengubah jenis sumber daya.
     - Dapat mengkloning tipe sumber daya.
     - UI/UX ma ki yubu manok.
     - Memperbaiki penanganan DLGITEMTEMPLATE.
     - Memperbarui mcpp.exe untuk memproses informasi baris sumber.
-    - Improved compilation process and error info.
+    - Peningkatan proses kompilasi dan informasi kesalahan.
 - v.6.1.1 (2026-08-03)
     - Refaktorisasi.
 - v.6.1.0 (2026-08-03)
