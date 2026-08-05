@@ -23,6 +23,7 @@ extern std::vector<MString> g_types;
 extern std::vector<MString> g_keys;
 extern std::vector<MString> g_ctrl_ids;
 extern std::vector<MString> g_string_ids;
+wclib_t s_wclib;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -3300,4 +3301,73 @@ BOOL CreateEmptyFile(PCWSTR filename)
 MStringA GetCannotCreateTempFile(VOID)
 {
 	return MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANTMAKETEMPFILE)).c_str();
+}
+
+// is there a window class that is named pszName?
+BOOL IsThereWndClass(PCWSTR pszName)
+{
+	if (!pszName || !pszName[0])
+		return FALSE;   // failure
+
+	WNDCLASSEX cls;
+	if (GetClassInfoEx(NULL, pszName, &cls) ||
+		GetClassInfoEx(GetModuleHandle(NULL), pszName, &cls))
+	{
+		return TRUE;    // already exists
+	}
+
+	// in the window class libraries?
+	for (auto& library : s_wclib)
+	{
+		if (GetClassInfoEx(library, pszName, &cls))
+			return TRUE;    // found
+	}
+
+	// CLSID?
+	if (pszName[0] == L'{' &&
+		pszName[9] == L'-' && pszName[14] == L'-' &&
+		pszName[19] == L'-' && pszName[24] == L'-' &&
+		pszName[37] == L'}')
+	{
+		return TRUE;        // it's a CLSID
+	}
+
+	// ATL OLE control?
+	if (std::wstring(pszName).find(L"AtlAxWin") == 0)
+		return TRUE;        // it's an ATL OLE control
+
+	return FALSE;   // failure
+}
+
+// release all the window class libraries
+void FreeWCLib(void)
+{
+	for (auto& library : s_wclib)
+	{
+		FreeLibrary(library);
+		//library = NULL;
+	}
+	s_wclib.clear();
+}
+
+MStringW GetResTypeEncoding(const MIdOrString& type)
+{
+	MStringW name;
+
+	if (type.m_id)
+	{
+		name = g_db.GetName(L"RESOURCE", type.m_id);
+		if (name.empty())
+			name = mstr_dec_word(type.m_id);
+	}
+	else
+	{
+		name = type.str();
+	}
+
+	auto it = g_settings.encoding_map.find(name);
+	if (it != g_settings.encoding_map.end())
+		return it->second;
+
+	return L"";
 }

@@ -14,6 +14,12 @@
 #include "StringRes.hpp"
 #include "MessageRes.hpp"
 
+// window class libraries
+typedef std::unordered_set<HMODULE> wclib_t;
+extern wclib_t s_wclib;
+BOOL IsThereWndClass(PCWSTR pszName);
+void FreeWCLib(void);
+
 void ReplaceFullWithHalf(wchar_t* pszText);
 void ReplaceFullWithHalf(std::wstring& strText);
 
@@ -106,3 +112,4 @@ BOOL IsCodePageReallyUsable(UINT cp);
 BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_loader, LANGID langid);
 BOOL CreateEmptyFile(PCWSTR filename);
 MStringA GetCannotCreateTempFile(VOID);
+MStringW GetResTypeEncoding(const MIdOrString& type);

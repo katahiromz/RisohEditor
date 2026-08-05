@@ -3078,6 +3078,319 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 	return NOT_IMPORTABLE;
 }
 
+// ID_EDIT: do text edit
+void MMainWnd::OnEdit(HWND hwnd)
+{
+	// compile if necessary
+	if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
+		return;
+
+	// get the selected entry
+	auto entry = g_res.get_entry();
+	if (!IsEntryTextEditable(entry))
+		return;
+
+	// make it non-read-only
+	Edit_SetReadOnly(m_hCodeEditor, FALSE);
+
+	// select the entry
+	SelectTV(entry, TRUE);
+}
+
+// ID_UPDATERESHBANG: do save or update the resource.h file
+void MMainWnd::OnUpdateResHBang(HWND hwnd)
+{
+	// check whether the ID list window is open or not
+	BOOL bListOpen = IsWindow(m_id_list_dlg);
+
+	// destroy the ID list window
+	DestroyWindow(m_id_list_dlg);
+
+	// // query update to the user
+	// if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)    // don't update
+	// {
+	//     ShowIDList(hwnd, bListOpen);
+	//     return;
+	// }
+
+	if (1)
+	{
+		// build new "resource.h" file path
+		WCHAR szResH[MAX_PATH];
+
+		if (m_szResourceH[0])
+		{
+			StringCchCopyW(szResH, _countof(szResH), m_szResourceH);
+		}
+		else if (m_szFile[0])
+		{
+			StringCchCopyW(szResH, _countof(szResH), m_szFile);
+
+			WCHAR *pch = wcsrchr(szResH, L'\\');
+			if (pch == NULL)
+				pch = wcsrchr(szResH, L'/');
+			if (pch == NULL)
+				return; // failure
+
+			*pch = 0;
+			StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
+		}
+		else
+		{
+			StringCchCopyW(szResH, _countof(szResH), L"resource.h");
+		}
+
+		// initialize OPENFILENAME structure
+		OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+		ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
+		ofn.lpstrFile = szResH;
+		ofn.nMaxFile = _countof(szResH);
+		ofn.lpstrTitle = LoadStringDx(IDS_SAVERESH);
+		ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+					OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+		ofn.lpstrDefExt = L"h";
+
+		// let the user choose the path
+		if (!GetSaveFileNameW(&ofn))
+		{
+			return;     // cancelled
+		}
+
+		// create new
+		if (!DoWriteResH(szResH))
+		{
+			ErrorBoxDx(IDS_CANTWRITERESH);
+			ShowIDList(hwnd, bListOpen);
+			return;     // failure
+		}
+
+		// szResH --> m_szResourceH
+		StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+	}
+	else    // update the resource.h file by modification
+	{
+		// do backup the resource.h file
+		if (g_settings.bBackup)
+			DoBackupFile(m_szResourceH);
+
+		// open file
+		FILE *fp = _wfopen(m_szResourceH, L"r");
+		if (!fp)
+		{
+			ErrorBoxDx(IDS_CANTWRITERESH);
+			ShowIDList(hwnd, bListOpen);
+			return;
+		}
+
+		// read the resource.h lines
+		std::vector<MStringA> lines;
+		ReadResHLines(fp, lines);
+		fclose(fp);     // close the files
+
+		// modify the lines
+		UpdateResHLines(lines);
+
+		// reopen the file to write
+		fp = _wfopen(m_szResourceH, L"w");
+		if (!fp)
+		{
+			ErrorBoxDx(IDS_CANTWRITERESH);
+			ShowIDList(hwnd, bListOpen);
+			return;
+		}
+
+		// write now
+		for (size_t i = 0; i < lines.size(); ++i)
+		{
+			fprintf(fp, "%s\n", lines[i].c_str());
+		}
+
+		fflush(fp);
+		fclose(fp);     // close the files
+	}
+
+	// clear modification of IDs
+	g_settings.added_ids.clear();
+	g_settings.removed_ids.clear();
+
+	// reopen the ID list window if necessary
+	ShowIDList(hwnd, bListOpen);
+
+	DoSetFileModified(TRUE);
+}
+
+// ID_LOADRESHBANG: load the resource.h file
+void MMainWnd::OnLoadResHBang(HWND hwnd)
+{
+	if (m_szResourceH[0])
+	{
+		MString strFile = m_szResourceH;
+		DoLoadResH(hwnd, strFile.c_str());
+
+		if (m_szResourceH[0])
+		{
+			ShowIDList(hwnd, TRUE);
+		}
+	}
+}
+
+void MMainWnd::OnOpenLocalFile(HWND hwnd, LPCWSTR filename)
+{
+	// compile if necessary
+	if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
+		return;
+
+	// get the module path filename of this application module
+	WCHAR szPath[MAX_PATH];
+	GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+	LPWSTR pch = PathFindFileNameW(szPath);
+	*pch = 0;
+
+	for (INT m = 0; m <= 3; ++m)
+	{
+		MString strPath = szPath;
+		for (INT n = 0; n < m; ++n)
+			strPath += L"..\\";
+
+		strPath += filename;
+
+		if (PathFileExistsW(strPath.c_str()))
+		{
+			// open it
+			ShellExecuteW(hwnd, NULL, strPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+			return;
+		}
+	}
+}
+
+// ID_LOADWCLIB: load a window class library
+void MMainWnd::OnLoadWCLib(HWND hwnd)
+{
+	// compile if necessary
+	if (!CompileIfNecessary(TRUE))
+		return;
+
+	WCHAR file[MAX_PATH] = TEXT("");
+
+	// initialize OPENFILENAME structure
+	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+	ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_DLLFILTER));
+	ofn.lpstrFile = file;
+	ofn.nMaxFile = _countof(file);
+	ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
+	ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+				OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+	ofn.lpstrDefExt = L"dll";       // the default extension
+
+	// let the user choose the path
+	if (GetOpenFileNameW(&ofn))
+	{
+		// load the window class library
+		HMODULE hMod = LoadLibraryW(file);
+		if (!hMod)
+		{
+			ErrorBoxDx(IDS_CANNOTLOAD);
+			return;
+		}
+
+		// success. add it
+		s_wclib.insert(hMod);
+	}
+}
+
+// ID_CANCELEDIT: cancel edit
+void MMainWnd::OnCancelEdit(HWND hwnd)
+{
+	// clear modification flag
+	Edit_SetModify(m_hCodeEditor, FALSE);
+	Edit_SetReadOnly(m_hCodeEditor, FALSE);
+
+	// reselect to update the m_hCodeEditor
+	auto entry = g_res.get_entry();
+	SelectTV(entry, FALSE);
+}
+
+// ID_NEXTPANE, ID_PREVPANE
+void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
+{
+	HWND hwndCodeEditor = m_hCodeEditor;
+	HWND hwndHexViewer = m_hHexViewer;
+	HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
+	HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
+	HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
+
+	HWND hwndFocus = GetFocus();
+
+	if (hwndRad != NULL && GetParent(hwndFocus) == hwndRad)
+		hwndFocus = hwndRad;
+
+	if (hwndIDList != NULL && GetParent(hwndFocus) == hwndIDList)
+		hwndFocus = hwndIDList;
+
+	if (hwndFind != NULL && GetParent(hwndFocus) == hwndFind)
+		hwndFocus = hwndFind;
+
+	if (hwndFocus == NULL)
+	{
+		SetFocus(m_hwndTV);
+		return;
+	}
+
+	HWND ahwnd[] =
+	{
+		m_hwndTV, m_hCodeEditor, m_hHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
+	};
+
+	UINT i;
+	for (i = 0; i < _countof(ahwnd); ++i)
+	{
+		if (ahwnd[i] == hwndFocus)
+			break;
+	}
+
+	if (i == _countof(ahwnd))
+	{
+		SetFocus(m_hwndTV);
+		return;
+	}
+
+	if (bNext)
+	{
+		do
+		{
+			++i;
+			if (i == _countof(ahwnd))
+				i = 0;
+		} while (ahwnd[i] == NULL);
+	}
+	else
+	{
+		do
+		{
+			if (i == 0)
+				i = _countof(ahwnd) - 1;
+			else
+				--i;
+		} while (ahwnd[i] == NULL);
+	}
+
+	if (hwndCodeEditor == ahwnd[i])
+	{
+		OnSelChange(hwnd, 0);
+		SetFocus(m_hCodeEditor);
+	}
+	else if (hwndHexViewer == ahwnd[i])
+	{
+		OnSelChange(hwnd, 1);
+		SetFocus(m_hHexViewer);
+	}
+	else
+	{
+		SetFocus(ahwnd[i]);
+	}
+}
+
 PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 {
 	auto entry = g_res.get_entry();
