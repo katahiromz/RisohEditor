@@ -1603,6 +1603,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "리소스 이름이 범위를 벗어났습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
     IDS_INVALIDNAME "리소스 이름이 유효하지 않습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
     IDS_INTEGERORSTRLITERAL "(정수 또는 문자열 리터럴)"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

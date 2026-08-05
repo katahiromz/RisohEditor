@@ -1603,6 +1603,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "O nome do recurso está fora do intervalo. Introduza um número inteiro de 16 bits (-32768..65535) ou uma cadeia literal."
     IDS_INVALIDNAME "O nome do recurso é inválido. Introduza um número inteiro de 16 bits (-32768..65535) ou uma cadeia literal."
     IDS_INTEGERORSTRLITERAL "(Número inteiro ou string literal)"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1601,6 +1601,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "資源名稱超出範圍。請輸入一個 16 位元整數（-32768 到 65535）或字串字面量。"
     IDS_INVALIDNAME "資源名稱無效。請輸入 16 位元整數（-32768..65535）或字串字面量。"
     IDS_INTEGERORSTRLITERAL "（整數或字串字面量）"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

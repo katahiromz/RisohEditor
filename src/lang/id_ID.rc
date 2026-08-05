@@ -1606,6 +1606,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "Nama sumber daya berada di luar rentang. Harap masukkan bilangan bulat 16-bit (-32768..65535) atau literal string."
     IDS_INVALIDNAME "Nama sumber daya tidak valid. Harap masukkan bilangan bulat 16-bit (-32768..65535) atau literal string."
     IDS_INTEGERORSTRLITERAL "(Bilangan bulat atau literal string)"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

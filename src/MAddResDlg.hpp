@@ -32,6 +32,7 @@ public:
 	MRisohAutoComplete *m_pAutoComplete0;
 	MRisohAutoComplete *m_pAutoComplete1;
 	MRisohAutoComplete *m_pAutoComplete2;
+	EntryBase *m_added_entry = nullptr;
 
 	MAddResDlg()
 		: MDialogBase(IDD_ADDRES)
@@ -237,7 +238,7 @@ public:
 			if (bTemplateToAdd)    // it's OK
 			{
 				// add an empty entry (data will be set later)
-				g_res.add_lang_entry(type, name, lang);
+				m_added_entry = g_res.add_lang_entry(type, name, lang);
 				bAdded = true;
 
 				// store the results
@@ -261,7 +262,7 @@ public:
 		if (!bAdded)
 		{
 			// add the data from the file
-			g_res.add_lang_entry(type, name, lang, bs.data());
+			m_added_entry = g_res.add_lang_entry(type, name, lang, bs.data());
 
 			// store the results
 			m_type = type;

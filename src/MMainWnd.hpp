@@ -527,6 +527,7 @@ protected:
 	PCSTR GetTreeItemHelp(EntryBase *entry);
 	void DoWordHelp(const MStringW& str);
 	PCSTR GetWordHelp(const MStringW& str);
+	BOOL WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR szPayloadLoader, LANGID lang);
 };
 
 extern MMainWnd *s_pMainWnd;

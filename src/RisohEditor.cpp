@@ -1737,26 +1737,38 @@ MStringW MMainWnd::GetIncludesDumpForWindres() const
 	return ret;
 }
 
+BOOL MMainWnd::WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR szPayloadLoader, LANGID lang)
+{
+	if (!g_settings.IsIDMapEmpty() && DoWriteResH(szHeader))
+		return WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
+	else if (m_szResourceH[0])
+		return WritePayloadLoaderRC(m_szResourceH, szPayload, szPayloadLoader, lang);
+	else
+		return WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
+}
+
 // compile the string table
 BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStringW& strWide)
 {
 	// Header file
 	WCHAR szHeader[MAX_PATH];
 	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
+	if (!CreateEmptyFile(szHeader))
 	{
-		FILE *fout = _wfopen(szHeader, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_1(szHeader);
 
 	// Output resource object file (imported)
 	WCHAR szObject[MAX_PATH];
 	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
+	if (!CreateEmptyFile(szObject))
 	{
-		FILE *fout = _wfopen(szObject, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_2(szObject);
 
 	// Payload
 	WCHAR szPayload[MAX_PATH];
@@ -1764,38 +1776,30 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 	{
 		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
 		FILE *fout = _wfopen(szPayload, L"wb");
-		if (fout)
+		if (!fout)
 		{
-			fwrite(str.c_str(), str.size(), 1, fout);
-			fclose(fout);
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
+		fclose(fout);
+		if (!ok)
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
 		}
 	}
+	AutoDeleteFileW auto_delete_3(szPayload);
 
 	// Payload loader
 	WCHAR szPayloadLoader[MAX_PATH];
 	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
 	{
-		if (!g_settings.IsIDMapEmpty() && DoWriteResH(szHeader))
-		{
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
-		else if (m_szResourceH[0])
-		{
-			WritePayloadLoaderRC(m_szResourceH, szPayload, szPayloadLoader, lang);
-		}
-		else
-		{
-			FILE *fout = _wfopen(szHeader, L"wb");
-			if (fout)
-				fclose(fout);
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
-
-	AutoDeleteFileW adf1(szPayloadLoader);
-	AutoDeleteFileW adf2(szHeader);
-	AutoDeleteFileW adf3(szObject);
-	AutoDeleteFileW adf4(szPayload);
+	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -2007,20 +2011,22 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	// Header file
 	WCHAR szHeader[MAX_PATH];
 	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
+	if (!CreateEmptyFile(szHeader))
 	{
-		FILE *fout = _wfopen(szHeader, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_1(szHeader);
 
 	// Output resource object file (imported)
 	WCHAR szObject[MAX_PATH];
 	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
+	if (!CreateEmptyFile(szObject))
 	{
-		FILE *fout = _wfopen(szObject, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_2(szObject);
 
 	// Payload
 	WCHAR szPayload[MAX_PATH];
@@ -2028,39 +2034,31 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	{
 		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
 		FILE *fout = _wfopen(szPayload, L"wb");
-		if (fout)
+		if (!fout)
 		{
-			fwrite(str.c_str(), str.size(), 1, fout);
-			fclose(fout);
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
+		fclose(fout);
+		if (!ok)
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
 		}
 	}
+	AutoDeleteFileW auto_delete_3(szPayload);
 
 	// Payload loader
 	WCHAR szPayloadLoader[MAX_PATH];
 	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
 	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
 	{
-		if (!g_settings.IsIDMapEmpty() && DoWriteResH(szHeader))
-		{
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
-		else if (m_szResourceH[0])
-		{
-			WritePayloadLoaderRC(m_szResourceH, szPayload, szPayloadLoader, lang);
-		}
-		else
-		{
-			FILE *fout = _wfopen(szHeader, L"wb");
-			if (fout)
-				fclose(fout);
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
-
-	AutoDeleteFileW adf1(szPayloadLoader);
-	AutoDeleteFileW adf2(szHeader);
-	AutoDeleteFileW adf3(szObject);
-	AutoDeleteFileW adf4(szPayload);
+	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -2257,20 +2255,22 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	// Header file
 	WCHAR szHeader[MAX_PATH];
 	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
+	if (!CreateEmptyFile(szHeader))
 	{
-		FILE *fout = _wfopen(szHeader, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_1(szHeader);
 
 	// Output resource object file (imported)
 	WCHAR szObject[MAX_PATH];
 	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
+	if (!CreateEmptyFile(szObject))
 	{
-		FILE *fout = _wfopen(szObject, L"wb");
-		if (fout)
-			fclose(fout);
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
+	AutoDeleteFileW auto_delete_2(szObject);
 
 	// Payload
 	WCHAR szPayload[MAX_PATH];
@@ -2278,38 +2278,30 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	{
 		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
 		FILE *fout = _wfopen(szPayload, L"wb");
-		if (fout)
+		if (!fout)
 		{
-			fwrite(str.c_str(), str.size(), 1, fout);
-			fclose(fout);
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
+		fclose(fout);
+		if (!ok)
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
 		}
 	}
+	AutoDeleteFileW auto_delete_3(szPayload);
 
 	// Payload loader
 	WCHAR szPayloadLoader[MAX_PATH];
 	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
 	{
-		if (!g_settings.IsIDMapEmpty() && DoWriteResH(szHeader))
-		{
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
-		else if (m_szResourceH[0])
-		{
-			WritePayloadLoaderRC(m_szResourceH, szPayload, szPayloadLoader, lang);
-		}
-		else
-		{
-			FILE *fout = _wfopen(szHeader, L"wb");
-			if (fout)
-				fclose(fout);
-			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
-		}
+		strOutput = GetCannotCreateTempFile();
+		return FALSE;
 	}
-
-	AutoDeleteFileW adf1(szPayloadLoader);
-	AutoDeleteFileW adf2(szHeader);
-	AutoDeleteFileW adf3(szObject);
-	AutoDeleteFileW adf4(szPayload);
+	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -7633,6 +7625,12 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 			// clear the modification flag
 			Edit_SetModify(m_hCodeEditor, FALSE);
 			m_nStatusStringID = IDS_RECOMPILEOK;
+
+			// select the added entry
+			if (dialog.m_type == RT_STRING)
+				SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
+			else
+				SelectTV(ET_LANG, dialog, FALSE);
 		}
 		else
 		{
@@ -7643,19 +7641,17 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 			// set the error message
 			SetErrorMessage(strOutput);
 
-			// set the modification flag
-			Edit_SetModify(m_hCodeEditor, TRUE);
+			if (dialog.m_added_entry)
+			{
+				dialog.m_added_entry->mark_invalid();
+				g_res.delete_invalid();
 
-			// make it non-read-only
-			Edit_SetReadOnly(m_hCodeEditor, FALSE);
+				HidePreview(STV_RESETTEXT);
+				SelectTV(g_res.get_entry(), FALSE, STV_RESETTEXT);
+				PostUpdateArrow(hwnd);
+			}
 		}
-
-		// select the added entry
-		if (dialog.m_type == RT_STRING)
-			SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
-		else
-			SelectTV(ET_LANG, dialog, FALSE);
-   }
+    }
 }
 
 void MMainWnd::UpdateTitleBar()

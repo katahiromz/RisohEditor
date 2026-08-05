@@ -1603,6 +1603,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "Nazwa zasobu wykracza poza dopuszczalny zakres. Wprowadź liczbę całkowitą 16-bitową (od -32768 do 65535) lub literał ciągu znaków."
     IDS_INVALIDNAME "Nazwa zasobu jest nieprawidłowa. Wprowadź liczbę całkowitą 16-bitową (zakres od -32768 do 65535) lub literał ciągu znaków."
     IDS_INTEGERORSTRLITERAL "(Liczba całkowita lub ciąg znaków)"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

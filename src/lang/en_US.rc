@@ -1603,6 +1603,7 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "The resource name is out of range. Please enter a 16-bit integer (-32768..65535) or string literal."
     IDS_INVALIDNAME "The resource name is invalid. Please enter a 16-bit integer (-32768..65535) or string literal."
     IDS_INTEGERORSTRLITERAL "(integer or string literal)"
+    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
 }
 
 //////////////////////////////////////////////////////////////////////////////

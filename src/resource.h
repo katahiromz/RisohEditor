@@ -366,6 +366,7 @@
 #define IDS_NAMEOUTOFRANGE                  387
 #define IDS_INVALIDNAME                     388
 #define IDS_INTEGERORSTRLITERAL             389
+#define IDS_CANTMAKETEMPFILE                390
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

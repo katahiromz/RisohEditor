@@ -3287,3 +3287,17 @@ BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_load
 
 	return !!written;
 }
+
+BOOL CreateEmptyFile(PCWSTR filename)
+{
+	FILE *fout = _wfopen(filename, L"wb");
+	if (!fout)
+		return FALSE;
+	fclose(fout);
+	return TRUE;
+}
+
+MStringA GetCannotCreateTempFile(VOID)
+{
+	return MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANTMAKETEMPFILE)).c_str();
+}
