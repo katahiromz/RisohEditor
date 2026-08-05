@@ -1785,6 +1785,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 		fclose(fout);
 		if (!ok)
 		{
+			DeleteFileW(szPayload);
 			strOutput = GetCannotCreateTempFile();
 			return FALSE;
 		}
@@ -2043,6 +2044,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 		fclose(fout);
 		if (!ok)
 		{
+			DeleteFileW(szPayload);
 			strOutput = GetCannotCreateTempFile();
 			return FALSE;
 		}
@@ -2287,6 +2289,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		fclose(fout);
 		if (!ok)
 		{
+			DeleteFileW(szPayload);
 			strOutput = GetCannotCreateTempFile();
 			return FALSE;
 		}
