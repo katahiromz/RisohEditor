@@ -3113,101 +3113,57 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 	//     return;
 	// }
 
-	if (1)
+	// build new "resource.h" file path
+	WCHAR szResH[MAX_PATH];
+
+	if (m_szResourceH[0])
 	{
-		// build new "resource.h" file path
-		WCHAR szResH[MAX_PATH];
-
-		if (m_szResourceH[0])
-		{
-			StringCchCopyW(szResH, _countof(szResH), m_szResourceH);
-		}
-		else if (m_szFile[0])
-		{
-			StringCchCopyW(szResH, _countof(szResH), m_szFile);
-
-			WCHAR *pch = wcsrchr(szResH, L'\\');
-			if (pch == NULL)
-				pch = wcsrchr(szResH, L'/');
-			if (pch == NULL)
-				return; // failure
-
-			*pch = 0;
-			StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
-		}
-		else
-		{
-			StringCchCopyW(szResH, _countof(szResH), L"resource.h");
-		}
-
-		// initialize OPENFILENAME structure
-		OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
-		ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
-		ofn.lpstrFile = szResH;
-		ofn.nMaxFile = _countof(szResH);
-		ofn.lpstrTitle = LoadStringDx(IDS_SAVERESH);
-		ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-					OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-		ofn.lpstrDefExt = L"h";
-
-		// let the user choose the path
-		if (!GetSaveFileNameW(&ofn))
-		{
-			return;     // cancelled
-		}
-
-		// create new
-		if (!DoWriteResH(szResH))
-		{
-			ErrorBoxDx(IDS_CANTWRITERESH);
-			ShowIDList(hwnd, bListOpen);
-			return;     // failure
-		}
-
-		// szResH --> m_szResourceH
-		StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+		StringCchCopyW(szResH, _countof(szResH), m_szResourceH);
 	}
-	else    // update the resource.h file by modification
+	else if (m_szFile[0])
 	{
-		// do backup the resource.h file
-		if (g_settings.bBackup)
-			DoBackupFile(m_szResourceH);
+		StringCchCopyW(szResH, _countof(szResH), m_szFile);
 
-		// open file
-		FILE *fp = _wfopen(m_szResourceH, L"r");
-		if (!fp)
-		{
-			ErrorBoxDx(IDS_CANTWRITERESH);
-			ShowIDList(hwnd, bListOpen);
-			return;
-		}
+		WCHAR *pch = wcsrchr(szResH, L'\\');
+		if (pch == NULL)
+			pch = wcsrchr(szResH, L'/');
+		if (pch == NULL)
+			return; // failure
 
-		// read the resource.h lines
-		std::vector<MStringA> lines;
-		ReadResHLines(fp, lines);
-		fclose(fp);     // close the files
-
-		// modify the lines
-		UpdateResHLines(lines);
-
-		// reopen the file to write
-		fp = _wfopen(m_szResourceH, L"w");
-		if (!fp)
-		{
-			ErrorBoxDx(IDS_CANTWRITERESH);
-			ShowIDList(hwnd, bListOpen);
-			return;
-		}
-
-		// write now
-		for (size_t i = 0; i < lines.size(); ++i)
-		{
-			fprintf(fp, "%s\n", lines[i].c_str());
-		}
-
-		fflush(fp);
-		fclose(fp);     // close the files
+		*pch = 0;
+		StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
 	}
+	else
+	{
+		StringCchCopyW(szResH, _countof(szResH), L"resource.h");
+	}
+
+	// initialize OPENFILENAME structure
+	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+	ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
+	ofn.lpstrFile = szResH;
+	ofn.nMaxFile = _countof(szResH);
+	ofn.lpstrTitle = LoadStringDx(IDS_SAVERESH);
+	ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+				OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.lpstrDefExt = L"h";
+
+	// let the user choose the path
+	if (!GetSaveFileNameW(&ofn))
+	{
+		return;     // cancelled
+	}
+
+	// create new
+	if (!DoWriteResH(szResH))
+	{
+		ErrorBoxDx(IDS_CANTWRITERESH);
+		ShowIDList(hwnd, bListOpen);
+		return;     // failure
+	}
+
+	// szResH --> m_szResourceH
+	StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
 
 	// clear modification of IDs
 	g_settings.added_ids.clear();
