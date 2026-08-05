@@ -4005,15 +4005,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_DFMSETTINGS:
 		OnDfmSettings(hwnd);
 		break;
-	case ID_AUTOCOMPLETE:
-		{
-			HWND hwndEdit = TreeView_GetEditControl(m_hwndTV);
-			DoTVEditAutoComplete(hwnd, hwndEdit);
-		}
-		break;
-	case ID_AUTOCOMPLETEDONE:
-		DoTVEditAutoCompleteRelease(hwnd);
-		break;
 	case ID_OPENREADMEKO:
 		OnOpenLocalFile(hwnd, L"README_ko.txt");
 		break;

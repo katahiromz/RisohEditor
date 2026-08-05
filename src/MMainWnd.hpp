@@ -439,6 +439,8 @@ protected:
 	BOOL DoInnerSearch(HWND hwnd);
 	LRESULT OnUpdateArrow(HWND hwnd, WPARAM wParam, LPARAM lParam);
 	LRESULT OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnAutoComplete(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnAutoCompleteDone(HWND hwnd, WPARAM wParam, LPARAM lParam);
 	LRESULT OnEgaFinish(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
 	void OnAddBitmap(HWND hwnd);

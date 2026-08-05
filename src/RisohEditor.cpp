@@ -474,6 +474,21 @@ LRESULT MMainWnd::OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+// MYWM_AUTOCOMPLETE
+LRESULT MMainWnd::OnAutoComplete(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+	HWND hwndEdit = TreeView_GetEditControl(m_hwndTV);
+	DoTVEditAutoComplete(hwnd, hwndEdit);
+    return 0;
+}
+
+// MYWM_AUTOCOMPLETEDONE
+LRESULT MMainWnd::OnAutoCompleteDone(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+	DoTVEditAutoCompleteRelease(hwnd);
+    return 0;
+}
+
 // WM_EGA_FINISH
 LRESULT MMainWnd::OnEgaFinish(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -6713,7 +6728,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			case ET_NAME:
 			case ET_LANG:
 			case ET_STRING:
-				PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETE, 0);
+				PostMessage(hwnd, MYWM_AUTOCOMPLETE, 0, 0);
 				break;
 			}
 
@@ -6736,7 +6751,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			case ET_NAME:
 			case ET_LANG:
 			case ET_STRING:
-				PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETEDONE, 0);
+				PostMessage(hwnd, MYWM_AUTOCOMPLETEDONE, 0, 0);
 				break;
 			}
 
@@ -7945,6 +7960,8 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
 		DO_MESSAGE(MYWM_UPDATEARROW, OnUpdateArrow);
 		DO_MESSAGE(MYWM_RADDBLCLICK, OnRadDblClick);
+	    DO_MESSAGE(MYWM_AUTOCOMPLETE, OnAutoComplete);
+	    DO_MESSAGE(MYWM_AUTOCOMPLETEDONE, OnAutoCompleteDone);
 		DO_MESSAGE(WM_EGA_FINISH, OnEgaFinish);
 	default:
 		return DefaultProcDx();

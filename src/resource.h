@@ -524,8 +524,6 @@
 #define ID_EXPORTRES                        260
 #define ID_CHECKUPDATE                      261
 #define ID_DFMSETTINGS                      262
-#define ID_AUTOCOMPLETE                     263
-#define ID_AUTOCOMPLETEDONE                 264
 #define ID_OPENREADMEKO                     265
 #define ID_USEMSMSGTBL                      266
 #define ID_CHOOSEUILANG                     267
