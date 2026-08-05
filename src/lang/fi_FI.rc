@@ -978,6 +978,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 230, 200, 60, 14
     PUSHBUTTON "Pala&uta kaikki", psh9, 5, 200, 95, 14
+    LTEXT "* TDM-GCC:tä suositellaan. cpp.exe ei tue UTF-16:a.", -1, 115, 130, 170, 20
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225

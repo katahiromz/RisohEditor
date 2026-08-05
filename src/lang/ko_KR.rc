@@ -979,6 +979,7 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     DEFPUSHBUTTON "확인", IDOK, 165, 200, 60, 14
     PUSHBUTTON "취소", IDCANCEL, 230, 200, 60, 14
     PUSHBUTTON "모두 재설정(&S)", psh9, 5, 200, 95, 14
+    LTEXT "* TDM-GCC를 권장합니다. cpp.exe는 UTF-16을 지원하지 않습니다.", -1, 115, 130, 170, 20
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225

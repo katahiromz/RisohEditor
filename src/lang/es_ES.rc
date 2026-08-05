@@ -981,6 +981,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 230, 200, 60, 14
     PUSHBUTTON "Re&stablecer Todo", psh9, 5, 200, 95, 14
+    LTEXT "* Se recomienda TDM-GCC. No hay soporte para UTF-16 en cpp.exe.", -1, 115, 130, 170, 20
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225
