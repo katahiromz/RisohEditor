@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Elimina\tCanc", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "Associazione &ID...", ID_IDASSOC
-        MENUITEM "&Macro predefinite...", ID_PREDEFMACROS
-        MENUITEM "Impostazioni &font...", ID_FONTS
-        MENUITEM "Impostazioni &percorsi...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

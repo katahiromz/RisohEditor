@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "삭제(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "ID 연결(&I)...", ID_IDASSOC
-        MENUITEM "사전 정의 매크로(&M)...", ID_PREDEFMACROS
-        MENUITEM "글꼴 설정(&F)...", ID_FONTS
-        MENUITEM "경로 설정(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

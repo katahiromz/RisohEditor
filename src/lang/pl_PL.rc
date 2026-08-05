@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Usuń\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "Skojarzenia ID...", ID_IDASSOC
-        MENUITEM "Predefiniowane Mak&ra...", ID_PREDEFMACROS
-        MENUITEM "Ustawienia C&zcionki...", ID_FONTS
-        MENUITEM "Ustawienia &Katalogów...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

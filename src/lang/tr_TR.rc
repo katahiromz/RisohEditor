@@ -81,9 +81,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Sil\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&ID Eşlemesi...", ID_IDASSOC
-        MENUITEM "Ön Tanımlı &Makrolar...", ID_PREDEFMACROS
-        MENUITEM "Ya&zı Tipi Ayarları...", ID_FONTS
-        MENUITEM "Y&olları Ayarla...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "削除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
-        MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS
-        MENUITEM "フォント設定(&F)...", ID_FONTS
-        MENUITEM "PATHの設定(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

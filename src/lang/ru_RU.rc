@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Удалить\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "ID-&ассоциация...", ID_IDASSOC
-        MENUITEM "Предопределённые &макросы...", ID_PREDEFMACROS
-        MENUITEM "Настройки &шрифта...", ID_FONTS
-        MENUITEM "Задать п&ути...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

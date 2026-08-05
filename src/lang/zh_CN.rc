@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "删除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&ID关联列表...", ID_IDASSOC
-        MENUITEM "预定义的宏(&M)...", ID_PREDEFMACROS
-        MENUITEM "字体设置(&F)...", ID_FONTS
-        MENUITEM "设置PATH(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

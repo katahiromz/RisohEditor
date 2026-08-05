@@ -83,9 +83,6 @@ IDR_MAINMENU MENU
         MENUITEM "Ha&pus\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "Asosiasi &ID...", ID_IDASSOC
-        MENUITEM "Yang Telah Ditentukan &Macro...", ID_PREDEFMACROS
-        MENUITEM "Pengaturan &Fon...", ID_FONTS
-        MENUITEM "Tentukan &Jalur...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR

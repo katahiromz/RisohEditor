@@ -82,9 +82,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Eliminar\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "I&D de Asociación...", ID_IDASSOC
-        MENUITEM "&Macros predefinidas...", ID_PREDEFMACROS
-        MENUITEM "Configuración de &Fuente...", ID_FONTS
-        MENUITEM "Establecer &Rutas...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
