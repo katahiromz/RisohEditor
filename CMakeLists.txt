@@ -70,11 +70,11 @@ if(ENABLE_CRYPTO)
     add_definitions(-DENABLE_CRYPTO)
 endif()
 
-# VERIFY_SIGNATURE option
-option(VERIFY_SIGNATURE "Verify digital signature" OFF)
-message(STATUS "VERIFY_SIGNATURE: ${VERIFY_SIGNATURE}")
-if(VERIFY_SIGNATURE)
-    add_definitions(-DVERIFY_SIGNATURE)
+# CHECK_SIGN option
+option(CHECK_SIGN "Verify digital signature" OFF)
+message(STATUS "CHECK_SIGN: ${CHECK_SIGN}")
+if(CHECK_SIGN)
+    add_definitions(-DCHECK_SIGN)
 endif()
 
 ##############################################################################

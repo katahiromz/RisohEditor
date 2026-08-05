@@ -8317,7 +8317,7 @@ RisohEditor_Main(
 ////////////////////////////////////////////////////////////////////////////
 // Digital signature
 
-#if defined(VERIFY_SIGNATURE) && defined(_MSC_VER)
+#if defined(NDEBUG) && defined(CHECK_SIGN) && defined(_MSC_VER)
 #include <wintrust.h>
 #include <softpub.h>
 #pragma comment(lib, "wintrust.lib")
@@ -8370,7 +8370,7 @@ wWinMain(HINSTANCE   hInstance,
 	// Code protection
 	if (IsDebuggerPresent())
 		return 1;
-#if defined(VERIFY_SIGNATURE) && defined(_MSC_VER)
+#if defined(CHECK_SIGN) && defined(_MSC_VER)
 	if (!IsSelfSigned())
 	{
 		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
