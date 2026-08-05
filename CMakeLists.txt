@@ -62,6 +62,10 @@ if (WIN32)
 	endif()
 endif()
 
+option(ENABLE_CRYPTO "Support crypto" ON)
+set(WONRES_ENABLE_CRYPTO ${ENABLE_CRYPTO} CACHE BOOL "Enable WonRes encryption" FORCE)
+message(STATUS "ENABLE_CRYPTO: ${ENABLE_CRYPTO}")
+
 ##############################################################################
 
 include_directories(WonRes)
