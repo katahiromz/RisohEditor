@@ -1984,13 +1984,15 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGI
 									 g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
 	if (text.empty())
 	{
-		MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
-		strOutput = w2a.c_str();
-		if (iLine != 0)
-		{
-			::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-			::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
-		}
+		INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
+		if (iLine > iMaxLine)
+			iLine = iMaxLine;
+		if (iLine <= 0)
+			iLine = 1;
+		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+		::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+		strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
+			MStringA("\r\n\r\n") + strOutput;
 		return FALSE;
 	}
 
