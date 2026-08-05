@@ -8366,8 +8366,8 @@ wWinMain(HINSTANCE   hInstance,
 		 LPWSTR      lpCmdLine,
 		 INT         nCmdShow)
 {
-	// Code protection
 #ifdef NDEBUG
+	// Code protection
 	if (IsDebuggerPresent())
 		return 1;
 #if defined(VERIFY_SIGNATURE) && defined(_MSC_VER)
