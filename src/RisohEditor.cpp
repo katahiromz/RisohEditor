@@ -2002,45 +2002,63 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGI
 // compile the message table
 BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
-	// convert strWide to UTF-8
-	MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
-
-	WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
-
-	// Source file #1
-	StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
-	MFile r1(szPath1, TRUE);
-
 	// Header file
-	StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
+	WCHAR szHeader[MAX_PATH];
+	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
+	{
+		FILE *fout = _wfopen(szHeader, L"wb");
+		if (fout)
+			fclose(fout);
+	}
 
 	// Output resource object file (imported)
-	StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
-
-	MFile r3(szPath3, TRUE);    // create the file
-	r3.CloseHandle();   // close the handle
-
-	AutoDeleteFileW adf1(szPath1);
-	AutoDeleteFileW adf3(szPath3);
-
-	if (!g_settings.IsIDMapEmpty() && DoWriteResH(szPath2))
+	WCHAR szObject[MAX_PATH];
+	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
 	{
-		r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, szPath2).c_str());
+		FILE *fout = _wfopen(szObject, L"wb");
+		if (fout)
+			fclose(fout);
 	}
-	else if (m_szResourceH[0])
-	{
-		r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
-	}
-	r1.WriteFormatA("#include <windows.h>\r\n");
-	r1.WriteFormatA("#include <commctrl.h>\r\n");
-	r1.WriteFormatA("#include <richedit.h>\r\n");
-	r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
-	r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 
-	DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
-	r1.WriteFormatA("#pragma RisohEditor\r\n");
-	r1.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-	r1.CloseHandle();       // close the handle
+	// Payload
+	WCHAR szPayload[MAX_PATH];
+	StringCchCopyW(szPayload, _countof(szPayload), GetTempFileNameDx(L"R4"));
+	{
+		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
+		FILE *fout = _wfopen(szPayload, L"wb");
+		if (fout)
+		{
+			fwrite(str.c_str(), str.size(), 1, fout);
+			fclose(fout);
+		}
+	}
+
+	// Payload loader
+	WCHAR szPayloadLoader[MAX_PATH];
+	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+	{
+		if (!g_settings.IsIDMapEmpty() && DoWriteResH(szHeader))
+		{
+			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
+		}
+		else if (m_szResourceH[0])
+		{
+			WritePayloadLoaderRC(m_szResourceH, szPayload, szPayloadLoader, lang);
+		}
+		else
+		{
+			FILE *fout = _wfopen(szHeader, L"wb");
+			if (fout)
+				fclose(fout);
+			WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
+		}
+	}
+
+	AutoDeleteFileW adf1(szPayloadLoader);
+	AutoDeleteFileW adf2(szHeader);
+	AutoDeleteFileW adf3(szObject);
+	AutoDeleteFileW adf4(szPayload);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -2052,9 +2070,9 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	strCmdLine += L" \"--preprocessor=";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" -o \"";
-	strCmdLine += szPath3;
+	strCmdLine += szObject;
 	strCmdLine += L"\" -J rc -O res \"";
-	strCmdLine += szPath1;
+	strCmdLine += szPayloadLoader;
 	strCmdLine += L'\"';
 	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
@@ -2072,6 +2090,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 		// read all with timeout
 		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
+		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
 
 		if (pmaker.GetExitCode() == 0 && bOK)
 		{
@@ -2079,7 +2098,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
 			// import res
 			EntrySet res;
-			if (res.import_res(szPath3))
+			if (res.import_res(szObject))
 			{
 				// resource type check
 				bOK = TRUE;
@@ -2108,17 +2127,23 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 		else
 		{
 			bOK = FALSE;
-			size_t ich = strOutput.find("RisohEditor.rc (");
+			// error message
+			size_t ich = strOutput.find("): ERROR: Syntax error");
 			if (ich != strOutput.npos)
 			{
-				ich += 16; // "RisohEditor.rc ("
-				INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
-				iLine += 4; // FIXME: workaround
+				while (ich > 0 && strOutput[--ich] != '(') {}
+				MStringA str = strOutput.substr(ich + 1);
+				INT iLine = atoi(str.c_str());
+				INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
+				if (iLine > iMaxLine)
+					iLine = iMaxLine;
+				if (iLine <= 0)
+					iLine = 1;
 				::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 				::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+				strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
+					MStringA("\r\n\r\n") + strOutput;
 			}
-			// error message
-			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
 		}
 	}
 	else
@@ -2129,8 +2154,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
 	// recalculate the splitter
 	PostMessageDx(WM_SIZE);
-
-	AutoDeleteFileW adf2(szPath2);
 
 	if (bOK)
 		DoSetFileModified(TRUE);
