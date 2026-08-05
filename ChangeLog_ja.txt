@@ -8,6 +8,7 @@
     - 細かい UI/UX の改善。
     - DLGITEMTEMPLATEの処理を修正。
     - ソース行情報を処理するように mcpp.exe を更新。
+    - Improved compilation process and error info.
 - v.6.1.1 (2026-08-03)
     - リファクタリング。
 - v.6.1.0 (2026-08-03)

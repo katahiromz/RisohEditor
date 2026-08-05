@@ -3252,3 +3252,38 @@ BOOL IsCodePageReallyUsable(UINT cp)
 	CPINFOEXW info;
 	return IsValidCodePage(cp) && GetCPInfoExW(cp, 0, &info);
 }
+
+BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_loader, LANGID langid)
+{
+	MStringA payload_utf8 = MWideToAnsi(CP_UTF8, payload).c_str();
+	payload_utf8 = mstr_quote(payload_utf8);
+
+	MStringA resource_h_utf8 = MWideToAnsi(CP_UTF8, resource_h).c_str();
+	resource_h_utf8 = mstr_quote(resource_h_utf8);
+
+	static const PCSTR c_template =
+		"// Payload loader\r\n"
+		"#include <windows.h>\r\n"
+		"#include <commctrl.h>\r\n"
+		"#include <richedit.h>\r\n"
+		"#pragma code_page(65001) // UTF-8\r\n"
+		"#include %s\r\n"
+		"#ifndef IDC_STATIC\r\n"
+		"    #define IDC_STATIC (-1)\r\n"
+		"#endif\r\n"
+		"LANGUAGE 0x%04X, 0x%04X\r\n"
+		"#include %s\r\n";
+
+	char buf[512];
+	StringCchPrintfA(buf, _countof(buf), c_template, resource_h_utf8.c_str(),
+		             PRIMARYLANGID(langid), SUBLANGID(langid), payload_utf8.c_str());
+
+	FILE *fout = _wfopen(payload_loader, L"wb");
+	if (!fout)
+		return FALSE;
+
+	size_t written = fwrite(buf, std::strlen(buf), 1, fout);
+	fclose(fout);
+
+	return !!written;
+}

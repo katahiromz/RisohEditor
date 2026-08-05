@@ -7,6 +7,7 @@
     - Pequeñas mejoras en la interfaz de usuario y la experiencia de usuario.
     - Se corrigió el manejo de DLGITEMTEMPLATE.
     - Se actualizó mcpp.exe para procesar la información de las líneas de código fuente.
+    - Improved compilation process and error info.
 - v.6.1.1 (2026-08-03)
     - Refactorización.
 - v.6.1.0 (2026-08-03)

@@ -103,3 +103,4 @@ EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLan
 BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString);
 BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString);
 BOOL IsCodePageReallyUsable(UINT cp);
+BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_loader, LANGID langid);
