@@ -8314,6 +8314,48 @@ RisohEditor_Main(
 	return s_ret;
 }
 
+////////////////////////////////////////////////////////////////////////////
+// Digital signature
+
+#if defined(VERIFY_SIGNATURE) && defined(_MSC_VER)
+#include <wintrust.h>
+#include <softpub.h>
+#pragma comment(lib, "wintrust.lib")
+#pragma comment(lib, "crypt32.lib")
+BOOL IsSelfSigned(VOID)
+{
+    WCHAR szPath[MAX_PATH] = {0};
+    if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
+        return FALSE;
+
+    WINTRUST_FILE_INFO fileInfo = {0};
+    fileInfo.cbStruct      = sizeof(WINTRUST_FILE_INFO);
+    fileInfo.pcwszFilePath = szPath;
+    fileInfo.hFile         = NULL;
+    fileInfo.pgKnownSubject = NULL;
+
+    GUID action = WINTRUST_ACTION_GENERIC_VERIFY_V2;
+
+    WINTRUST_DATA trustData = {0};
+    trustData.cbStruct            = sizeof(WINTRUST_DATA);
+    trustData.dwUIChoice          = WTD_UI_NONE;
+    trustData.fdwRevocationChecks = WTD_REVOKE_NONE;
+    trustData.dwUnionChoice       = WTD_CHOICE_FILE;
+    trustData.pFile               = &fileInfo;
+    trustData.dwStateAction       = WTD_STATEACTION_VERIFY;
+    trustData.hWVTStateData       = NULL;
+
+    LONG status = WinVerifyTrust(NULL, &action, &trustData);
+
+    trustData.dwStateAction = WTD_STATEACTION_CLOSE;
+    WinVerifyTrust(NULL, &action, &trustData);
+
+    return (status == ERROR_SUCCESS);
+}
+#endif
+
+////////////////////////////////////////////////////////////////////////////
+
 #include "WowFsRedirection.h"
 
 // the main function of the windows application
@@ -8324,6 +8366,19 @@ wWinMain(HINSTANCE   hInstance,
 		 LPWSTR      lpCmdLine,
 		 INT         nCmdShow)
 {
+	// Code protection
+#ifdef NDEBUG
+	if (IsDebuggerPresent())
+		return 1;
+#if defined(VERIFY_SIGNATURE) && defined(_MSC_VER)
+	if (!IsSelfSigned())
+	{
+		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
+		return 1;
+	}
+#endif
+#endif // def NDEBUG
+
 #if defined(_MSC_VER) && !defined(NDEBUG)
 	// for detecting memory leak (MSVC only)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

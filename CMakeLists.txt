@@ -67,7 +67,14 @@ option(ENABLE_CRYPTO "Support crypto" ON)
 set(WONRES_ENABLE_CRYPTO ${ENABLE_CRYPTO} CACHE BOOL "Enable WonRes encryption" FORCE)
 message(STATUS "ENABLE_CRYPTO: ${ENABLE_CRYPTO}")
 if(ENABLE_CRYPTO)
-    add_definitions(-DENABLE_CRYPTO=1)
+    add_definitions(-DENABLE_CRYPTO)
+endif()
+
+# VERIFY_SIGNATURE option
+option(VERIFY_SIGNATURE "Verify digital signature" ON)
+message(STATUS "VERIFY_SIGNATURE: ${VERIFY_SIGNATURE}")
+if(VERIFY_SIGNATURE)
+    add_definitions(-DVERIFY_SIGNATURE)
 endif()
 
 ##############################################################################
