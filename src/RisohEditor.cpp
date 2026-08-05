@@ -8329,28 +8329,36 @@ wWinMain(HINSTANCE   hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	// Disable WoW64 filesystem redirection
 	PVOID OldValue;
 	BOOL bWowFsDisabled = DisableWow64FsRedirection(&OldValue);
 
+	// Initialize OLE
 	HRESULT hrOleInit = OleInitialize(NULL);
 
+	// The body
 	INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
+	// release strings
 	g_types.clear();
 	g_names.clear();
 	g_keys.clear();
 	g_ctrl_ids.clear();
 	g_string_ids.clear();
 
+	// Revert WoW64 filesystem redirection
 	if (bWowFsDisabled)
 		RevertWow64FsRedirection(OldValue);
 
+	// Uninitialize OLE
 	if (SUCCEEDED(hrOleInit))
 		OleUninitialize();
 
+	// Clean up
 	g_RES_select_type.clear();
 	g_RES_select_name.clear();
 	assert(EntryBaseBase::is_alive_zero());
+
 	return ret;
 }
 
