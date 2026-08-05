@@ -28,14 +28,9 @@ add_library(libRisohEditor STATIC
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # Create object libraries for shared source files.
-add_library(RisohEditorMain_obj OBJECT
-	RisohEditor.cpp)
-
-add_library(RisohSettings_obj OBJECT
-	RisohSettings.cpp)
-
-add_library(RisohSettingsPortable_obj OBJECT
-	RisohSettings.cpp)
+add_library(RisohEditorMain_obj OBJECT RisohEditor.cpp)
+add_library(RisohSettings_obj OBJECT RisohSettings.cpp)
+add_library(RisohSettingsPortable_obj OBJECT RisohSettings.cpp)
 target_compile_definitions(RisohSettingsPortable_obj PRIVATE PORTABLE)
 
 # RisohEditor.exe
@@ -106,7 +101,3 @@ add_definitions(-DUNICODE=1 -D_UNICODE=1)
 #add_dependencies(RisohEditor messagetables)
 #add_dependencies(messagetables mcdx)
 #set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/messagetables${DOTRES})
-
-# do statically link
-set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_START_STATIC 1)
-set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_END_STATIC 1)
