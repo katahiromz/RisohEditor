@@ -529,6 +529,7 @@ protected:
 	PCSTR GetWordHelp(const MStringW& str);
 	BOOL WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR szPayloadLoader, LANGID lang);
 	void MarkErrorLine(INT iLine);
+	RECT m_rcRadWindow = {};
 };
 
 extern MMainWnd *s_pMainWnd;

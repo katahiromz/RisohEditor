@@ -1544,6 +1544,11 @@ void MMainWnd::OnCompile(HWND hwnd)
 	// needs reopen?
 	BOOL bReopen = IsWindowVisible(m_rad_window);
 
+	if (bReopen)
+		GetWindowRect(m_rad_window, &m_rcRadWindow);
+	else
+		SetRectEmpty(&m_rcRadWindow);
+
 	// get the selected entry
 	auto entry = g_res.get_entry();
 	if (!entry)

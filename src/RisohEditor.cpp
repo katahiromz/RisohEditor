@@ -152,17 +152,23 @@ void MMainWnd::OnKillFocus(HWND hwnd, HWND hwndNewFocus)
 	m_arrow.ShowDropDownList(m_arrow, FALSE);
 }
 
-// check whether it needs compilation
+// MYWM_COMPILECHECK: check whether it needs compilation
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	// compile if necessary
 	return CompileIfNecessary(TRUE);
 }
 
-// reopen the RADical window
+// MYWM_REOPENRAD: reopen the RADical window
 LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	OnGuiEdit(hwnd);
+	if (IsWindow(m_rad_window) && !IsRectEmpty(&m_rcRadWindow))
+	{
+		RECT& rc = m_rcRadWindow;
+		MoveWindow(m_rad_window, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+		SetRectEmpty(&rc);
+	}
 	return 0;
 }
 
