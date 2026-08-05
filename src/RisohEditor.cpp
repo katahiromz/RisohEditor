@@ -1875,13 +1875,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 				while (ich > 0 && strOutput[--ich] != ':') {}
 				MStringA str = strOutput.substr(ich + 1);
 				INT iLine = atoi(str.c_str());
-				INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
-				if (iLine > iMaxLine)
-					iLine = iMaxLine;
-				if (iLine <= 0)
-					iLine = 1;
-				::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-				::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+				MarkErrorLine(iLine);
 			}
 			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
 				MStringA("\r\n\r\n") + strOutput;
@@ -2136,16 +2130,10 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 				while (ich > 0 && strOutput[--ich] != '(') {}
 				MStringA str = strOutput.substr(ich + 1);
 				INT iLine = atoi(str.c_str());
-				INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
-				if (iLine > iMaxLine)
-					iLine = iMaxLine;
-				if (iLine <= 0)
-					iLine = 1;
-				::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-				::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
-				strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
-					MStringA("\r\n\r\n") + strOutput;
+				MarkErrorLine(iLine);
 			}
+			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
+				MStringA("\r\n\r\n") + strOutput;
 		}
 	}
 	else
@@ -2161,6 +2149,20 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 		DoSetFileModified(TRUE);
 
 	return bOK;
+}
+
+void MMainWnd::MarkErrorLine(INT iLine)
+{
+	INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
+	if (iLine > iMaxLine)
+		iLine = iMaxLine;
+	if (iLine <= 0)
+		iLine = 1;
+	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+	::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+	LRESULT ichLine = ::SendMessageW(m_hCodeEditor, EM_LINEINDEX, iLine - 1, 0);
+	::SendMessageW(m_hCodeEditor, EM_SETSEL, ichLine, ichLine);
+	::SendMessageW(m_hCodeEditor, EM_SCROLLCARET, 0, 0);
 }
 
 // compile a resource item source
@@ -2395,13 +2397,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 				while (ich > 0 && strOutput[--ich] != ':') {}
 				MStringA str = strOutput.substr(ich + 1);
 				INT iLine = atoi(str.c_str());
-				INT iMaxLine = (INT)::SendMessageW(m_hCodeEditor, EM_GETLINECOUNT, 0, 0);
-				if (iLine > iMaxLine)
-					iLine = iMaxLine;
-				if (iLine <= 0)
-					iLine = 1;
-				::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-				::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+				MarkErrorLine(iLine);
 			}
 			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
 				MStringA("\r\n\r\n") + strOutput;
