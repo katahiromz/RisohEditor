@@ -1,4 +1,4 @@
-// RisohSettings.cpp --- RisohEditor
+// settings.cpp --- RisohEditor
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>

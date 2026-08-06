@@ -7,7 +7,7 @@
 #pragma once
 
 #include "MWindowBase.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "MComboBoxAutoComplete.hpp"
 #include "Common.hpp"
 

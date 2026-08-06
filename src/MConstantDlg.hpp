@@ -9,7 +9,7 @@
 #include "resource.h"
 #include "MWindowBase.hpp"
 #include "MString.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "MComboBoxAutoComplete.hpp"
 #include "ConstantsDB.hpp"
 #include "Common.hpp"

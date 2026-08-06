@@ -11,7 +11,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "Common.hpp"
 
 extern std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized;

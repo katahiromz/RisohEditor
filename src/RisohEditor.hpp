@@ -54,7 +54,7 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 #include "ConstantsDB.hpp"
 #include "MacroParser.hpp"
 #include "MWaitCursor.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 
 #define _CP_UTF16 1200
 

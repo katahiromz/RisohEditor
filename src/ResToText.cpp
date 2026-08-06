@@ -8,7 +8,7 @@
 #include "ResToText.hpp"
 #include "MTextToText.hpp"
 #include "ConstantsDB.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "MStrBin.hpp"
 
 #include "DialogRes.hpp"

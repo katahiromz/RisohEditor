@@ -8,7 +8,7 @@
 
 #include "resource.h"
 #include "MToolBarCtrl.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"

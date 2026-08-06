@@ -8,7 +8,7 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "ConstantsDB.hpp"
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"

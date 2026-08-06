@@ -2,7 +2,7 @@
 // Author: katahiromz
 // License: GPL-3 or later
 #include <windows.h>
-#include "RisohSettings.hpp"
+#include "settings.h"
 #define WONRES_ENABLE_CRYPTO
 #include "WonRes.h"
 

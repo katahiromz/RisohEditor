@@ -10,7 +10,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

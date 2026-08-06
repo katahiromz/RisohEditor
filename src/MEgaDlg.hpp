@@ -8,7 +8,7 @@
 
 #include "resource.h"
 #include "MResizable.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "../EGA/ega.hpp"
 #include "EgaBridge.hpp"
 #include <deque>

@@ -7,7 +7,7 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "Common.hpp"
 
 BOOL IsCodePageReallyUsable(UINT cp);

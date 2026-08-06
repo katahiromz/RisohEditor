@@ -8,7 +8,7 @@
 #ifndef NO_CONSTANTS_DB
 	#include "ConstantsDB.hpp"
 #endif
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include <shlwapi.h>
 #include <unordered_set>
 

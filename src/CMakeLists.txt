@@ -29,14 +29,14 @@ set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # Create object libraries for shared source files.
 add_library(RisohEditorMain_obj OBJECT RisohEditor.cpp)
-add_library(RisohSettings_obj OBJECT RisohSettings.cpp)
-add_library(RisohSettingsPortable_obj OBJECT RisohSettings.cpp)
-target_compile_definitions(RisohSettingsPortable_obj PRIVATE PORTABLE)
+add_library(settings_obj OBJECT settings.cpp)
+add_library(settingsPortable_obj OBJECT settings.cpp)
+target_compile_definitions(settingsPortable_obj PRIVATE PORTABLE)
 
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
 	$<TARGET_OBJECTS:RisohEditorMain_obj>
-	$<TARGET_OBJECTS:RisohSettings_obj>
+	$<TARGET_OBJECTS:settings_obj>
 	RisohEditor_res.rc
 	res/Manifest_1.manifest)
 target_link_libraries(RisohEditor
@@ -51,7 +51,7 @@ endif()
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
 	$<TARGET_OBJECTS:RisohEditorMain_obj>
-	$<TARGET_OBJECTS:RisohSettingsPortable_obj>
+	$<TARGET_OBJECTS:settingsPortable_obj>
 	RisohEditor_res.rc
 	res/Manifest_1.manifest)
 target_link_libraries(RisohEditorPortable
@@ -71,8 +71,8 @@ if (MSVC)
 	foreach(target_name
 		libRisohEditor
 		RisohEditorMain_obj
-		RisohSettings_obj
-		RisohSettingsPortable_obj)
+		settings_obj
+		settingsPortable_obj)
 		target_compile_options(${target_name} PRIVATE /MP)
 	endforeach()
 	# ATL Support

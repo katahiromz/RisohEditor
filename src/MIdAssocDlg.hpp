@@ -8,7 +8,7 @@
 
 #include "MWindowBase.hpp"
 #include "MModifyAssocDlg.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

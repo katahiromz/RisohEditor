@@ -16,7 +16,7 @@
 
 #include "MString.hpp"
 #include "MIdOrString.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 
 class ConstantsDB
 {

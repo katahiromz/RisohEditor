@@ -8,7 +8,7 @@
 
 #include "MWindowBase.hpp"
 #include "MResizable.hpp"
-#include "RisohSettings.hpp"
+#include "settings.h"
 #include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
