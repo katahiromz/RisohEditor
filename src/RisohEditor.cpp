@@ -3177,7 +3177,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 #ifdef ENABLE_CRYPTO
 		SetWonResPassword(nullptr, nullptr);
-		if (g_bEnableCrypto && g_password.size() && g_res.is_protected(hMod))
+		if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size() && g_res.is_protected(hMod))
 		{
 			for (auto& ch : g_password) ch ^= 0xFFFF;
 			for (auto& ch : g_salt) ch ^= 0xFFFF;
@@ -5145,7 +5145,26 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 	// The executable is updated. Wait for virus scan
 	WaitForVirusScan(pszExeFile, 10 * 1000);
 
-	if (!g_res.update_exe(pszExeFile))
+#ifdef ENABLE_CRYPTO
+	BOOL bEnableCrypt = FALSE;
+	if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size())
+	{
+		switch (MsgBoxDx(LoadStringDx(IDS_WANTCRYPTO), MB_YESNOCANCEL))
+		{
+		case IDYES:
+			bEnableCrypt = TRUE;
+			break;
+		case IDNO:
+			break;
+		case IDCANCEL:
+			DeleteFileW(pszExeFile);
+			return TRUE;
+		}
+	}
+#else
+	BOOL bEnableCrypt = FALSE;
+#endif
+	if (!g_res.update_exe(pszExeFile, bEnableCrypt))
 		return FALSE;
 
 	// Now the executable is updated. Wait a little for virus checker.

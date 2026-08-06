@@ -567,7 +567,7 @@ struct EntrySet : protected EntrySetBase
 	UINT get_last_id(const MIdOrString& type, LANGID lang) const;
 
 	// update the executable
-	BOOL update_exe(LPCWSTR ExeFile) const;
+	BOOL update_exe(LPCWSTR ExeFile, BOOL bEnableCrypt) const;
 
 	// helper method for MRadWindow and MTestDialog
 	void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, LANGID lang);

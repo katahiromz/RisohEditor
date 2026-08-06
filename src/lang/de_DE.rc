@@ -1637,7 +1637,10 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "Der Ressourcenname liegt außerhalb des zulässigen Bereichs. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder ein String-Literal ein."
     IDS_INVALIDNAME "Der Ressourcenname ist ungültig. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder ein String-Literal ein."
     IDS_INTEGERORSTRLITERAL "(Ganzzahl oder Zeichenkettenliteral)"
-    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
+    IDS_CANTMAKETEMPFILE "Die temporäre Datei konnte nicht erstellt werden. Die Kompilierung ist fehlgeschlagen."
+    IDS_ENTERPASSWORD "Bitte geben Sie ein nicht leeres Passwort ein."
+    IDS_ENTERSALT "Bitte geben Sie eine Salt-Zeichenkette mit mindestens 16 Zeichen ein."
+    IDS_WANTCRYPTO "Möchten Sie die Ressourcendaten der ausführbaren Datei, in der sie gespeichert werden, verschlüsseln?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

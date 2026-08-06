@@ -8,6 +8,7 @@
 
 #ifdef ENABLE_CRYPTO
 BOOL g_bEnableCrypto = FALSE;
+BOOL g_bEnableCrypto2 = FALSE;
 MStringW g_password;
 MStringW g_salt;
 extern std::vector<MString> g_encrypted_types;
@@ -114,7 +115,7 @@ BOOL Wrap_UpdateResourceW(
 	DWORD cbData)
 {
 #ifdef ENABLE_CRYPTO
-	if (g_bEnableCrypto && g_password.size())
+	if (g_bEnableCrypto && g_bEnableCrypto2 && g_settings.bUseWonRes && g_password.size())
 	{
 		for (auto& item : g_encrypted_types)
 		{

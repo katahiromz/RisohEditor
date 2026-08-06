@@ -56,15 +56,13 @@ public:
 		SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
 
 		CheckDlgButton(hwnd, chx10, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
-#ifdef ENABLE_CRYPTO
-		CheckDlgButton(hwnd, chx11, (g_settings.bUseWonRes || g_bEnableCrypto) ? BST_CHECKED : BST_UNCHECKED);
-#else
 		CheckDlgButton(hwnd, chx11, g_settings.bUseWonRes ? BST_CHECKED : BST_UNCHECKED);
-#endif
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-old");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-bak");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"~");
 		SetDlgItemTextW(hwnd, cmb2, g_settings.strBackupSuffix.c_str());
+
+		EnableWindow(GetDlgItem(hwnd, psh5), g_settings.bUseWonRes);
 	}
 
 	void Cmb1_AddString(HWND hwnd, LPCWSTR text)
@@ -223,6 +221,12 @@ public:
 			{
 				m_cmb3.OnEditChange();  // input completion
 			}
+			break;
+		case chx11:
+			if (IsDlgButtonChecked(hwnd, chx11) == BST_CHECKED)
+				EnableWindow(GetDlgItem(hwnd, psh5), TRUE);
+			else
+				EnableWindow(GetDlgItem(hwnd, psh5), FALSE);
 			break;
 		}
 	}

@@ -59,15 +59,15 @@ public:
 
 	void OnOK(HWND hwnd)
 	{
-		g_encrypted_types.clear();
-
 		HWND hLst1 = GetDlgItem(hwnd, lst1);
 		INT iItem, cItems = ListBox_GetCount(hLst1);
 		WCHAR text[MAX_PATH];
+
+		g_encrypted_types.clear();
 		for (iItem = 0; iItem < cItems; ++iItem)
 		{
-			INT length = SendMessageW(hLst1, LB_GETTEXTLEN, iItem, 0);
-			if (length + 1 < (INT)_countof(text))
+			INT cch = SendMessageW(hLst1, LB_GETTEXTLEN, iItem, 0);
+			if (cch + 1 < (INT)_countof(text))
 			{
 				SendMessageW(hLst1, LB_GETTEXT, iItem, (LPARAM)text);
 				g_encrypted_types.push_back(text);

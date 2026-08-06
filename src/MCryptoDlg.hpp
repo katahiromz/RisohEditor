@@ -24,8 +24,12 @@ public:
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
 #ifdef ENABLE_CRYPTO
-		if (g_bEnableCrypto && g_password.size())
-			CheckDlgButton(hwnd, chx1, BST_CHECKED);
+		BOOL bCrypto = (g_bEnableCrypto && g_password.size());
+		CheckDlgButton(hwnd, chx1, (bCrypto ? BST_CHECKED : BST_UNCHECKED));
+		EnableWindow(GetDlgItem(hwnd, edt1), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, edt2), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, edt3), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, psh2), bCrypto);
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
 		SetDlgItemTextW(hwnd, edt1, g_password.c_str());
@@ -49,6 +53,21 @@ public:
 		g_bEnableCrypto = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
 		MString str1 = GetDlgItemText(edt1);
 		MString str2 = GetDlgItemText(edt2);
+		if (g_bEnableCrypto)
+		{
+			mstr_trim(str1);
+			if (str1.empty())
+			{
+				MessageBoxW(hwnd, LoadStringDx(IDS_ENTERPASSWORD), NULL, MB_ICONERROR);
+				return;
+			}
+			mstr_trim(str2);
+			if (str2.size() < 16)
+			{
+				MessageBoxW(hwnd, LoadStringDx(IDS_ENTERSALT), NULL, MB_ICONERROR);
+				return;
+			}
+		}
 		mstr_trim(str1);
 		mstr_trim(str2);
 		for (auto& ch : str1) ch ^= 0xFFFF;
@@ -75,7 +94,21 @@ public:
 		case psh2:
 			OnPsh2(hwnd);
 			break;
+		case chx1:
+			OnChx1(hwnd);
+			break;
 		}
+	}
+
+	void OnChx1(HWND hwnd)
+	{
+#ifdef ENABLE_CRYPTO
+		BOOL bCrypto = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+		EnableWindow(GetDlgItem(hwnd, edt1), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, edt2), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, edt3), bCrypto);
+		EnableWindow(GetDlgItem(hwnd, psh2), bCrypto);
+#endif
 	}
 
 	void OnPsh1(HWND hwnd)

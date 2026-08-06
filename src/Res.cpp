@@ -8,6 +8,10 @@
 #include "ToolbarRes.hpp"
 #include "resource.h"
 
+#ifdef ENABLE_CRYPTO
+extern BOOL g_bEnableCrypto2;
+#endif
+
 struct AutoDeleteFileW
 {
 	std::wstring m_file;
@@ -643,20 +647,22 @@ UINT EntrySet::get_last_id(const MIdOrString& type, LANGID lang) const
 	return wLastID;
 }
 
-BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
+BOOL EntrySet::update_exe(LPCWSTR ExeFile, BOOL bEnableCrypt) const
 {
 #ifdef ENABLE_CRYPTO
-	if (g_bEnableCrypto && g_password.size())
+	if (bEnableCrypt && g_settings.bUseWonRes && g_bEnableCrypto && g_password.size())
 	{
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
 		SetWonResPassword(g_password.c_str(), g_salt.c_str());
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
+		g_bEnableCrypto2 = TRUE;
 	}
 	else
 	{
 		SetWonResPassword(nullptr, nullptr);
+		g_bEnableCrypto2 = FALSE;
 	}
 #endif
 

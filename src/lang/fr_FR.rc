@@ -1637,7 +1637,10 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "Le nom de la ressource est hors limites. Veuillez saisir un entier 16 bits (-32768 à 65535) ou un littéral de chaîne."
     IDS_INVALIDNAME "Le nom de la ressource n'est pas valide. Veuillez saisir un entier 16 bits (-32768 à 65535) ou un littéral de chaîne."
     IDS_INTEGERORSTRLITERAL "(Entier ou chaîne littérale)"
-    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
+    IDS_CANTMAKETEMPFILE "Impossible de créer le fichier temporaire. La compilation a échoué."
+    IDS_ENTERPASSWORD "Veuillez saisir un mot de passe non vide."
+    IDS_ENTERSALT "Veuillez saisir une chaîne de caractères de sel d'au moins 16 caractères."
+    IDS_WANTCRYPTO "Souhaitez-vous chiffrer les données de ressources du fichier exécutable à l'endroit où elles seront enregistrées ?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

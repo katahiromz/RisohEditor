@@ -1638,7 +1638,10 @@ STRINGTABLE
     IDS_NAMEOUTOFRANGE "Il nome della risorsa non rientra nell'intervallo consentito. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
     IDS_INVALIDNAME "Il nome della risorsa non è valido. Inserire un intero a 16 bit (-32768..65535) o un valore letterale stringa."
     IDS_INTEGERORSTRLITERAL "(Valore letterale intero o stringa)"
-    IDS_CANTMAKETEMPFILE "Failed. Unable to create a temporary file."
+    IDS_CANTMAKETEMPFILE "Impossibile creare il file temporaneo. Compilazione non riuscita."
+    IDS_ENTERPASSWORD "Inserisci una password non vuota."
+    IDS_ENTERSALT "Inserisci una stringa di salt di almeno 16 caratteri."
+    IDS_WANTCRYPTO "Desideri crittografare i dati delle risorse del file eseguibile nella posizione in cui verrà salvato?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

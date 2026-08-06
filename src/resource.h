@@ -369,6 +369,9 @@
 #define IDS_INVALIDNAME                     388
 #define IDS_INTEGERORSTRLITERAL             389
 #define IDS_CANTMAKETEMPFILE                390
+#define IDS_ENTERPASSWORD                   391
+#define IDS_ENTERSALT                       392
+#define IDS_WANTCRYPTO                      393
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
