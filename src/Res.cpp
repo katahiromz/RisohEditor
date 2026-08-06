@@ -1129,42 +1129,8 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 	if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
 		return NULL;
 
-	// is it a JPEG, GIF or PNG image?
-	if (stream.size() >= 4 &&
-		(memcmp(&stream[0], "\xFF\xD8\xFF", 3) == 0 ||    // JPEG
-		 memcmp(&stream[0], "GIF", 3) == 0 ||             // GIF
-		 memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
-	{
-		// create a bitmap object from memory
-		MBitmapDx bitmap;
-		if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
-			return NULL;
-
-		LONG cx, cy;
-		HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
-
-		// create a packed DIB from bitmap handle
-		std::vector<BYTE> PackedDIB;
-		if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
-		{
-			DeleteObject(hbm);
-			return NULL;
-		}
-		DeleteObject(hbm);
-
-		// add the entry
-		return add_lang_entry(RT_BITMAP, name, lang, PackedDIB);
-	}
-
-	// check the size
-	size_t head_size = sizeof(BITMAPFILEHEADER);
-	if (stream.size() < head_size)
-		return NULL;    // invalid
-
 	// add the entry
-	size_t i0 = head_size, i1 = stream.size();
-	EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-	return add_lang_entry(RT_BITMAP, name, lang, HeadLess);
+	return add_lang_entry(RT_BITMAP, name, lang, stream.data());
 }
 
 EntryBase *

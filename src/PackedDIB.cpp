@@ -167,7 +167,7 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 		return nullptr;
 
 	LPBYTE pb = (LPBYTE)pPackedDIB + Offset;
-	dwSize -= Offset;
+	DWORD cbBits = dwSize - Offset;
 
 	// NOTE: BITMAPINFO only has room for a single RGBQUAD in bmiColors.
 	// Copying into a local BITMAPINFO truncates the color table for
@@ -175,31 +175,82 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 	// Use the original buffer directly instead, since it already
 	// contains the full color table.
 	LPBITMAPINFO pbi = (LPBITMAPINFO)pPackedDIB;
-	LPVOID pBits;
 
-	HBITMAP hbm;
+	// CreateDIBSection (the DIB_RGB_COLORS path below) hands back a raw
+	// pixel buffer sized straight from biWidth/biBitCount -- it does not
+	// decode BI_RLE4/BI_RLE8, so copying compressed source bytes into it
+	// would just corrupt the image. BITMAPCOREHEADER (OS/2) packed DIBs
+	// have no biCompression field at all -- never RLE -- and always take
+	// that CreateDIBSection path, same as before.
+	DWORD dwHeaderSize = *(const DWORD *)pPackedDIB;
+	BOOL fCompressed = (dwHeaderSize >= sizeof(BITMAPINFOHEADER)) &&
+	                   (pbi->bmiHeader.biCompression == BI_RLE4 ||
+	                    pbi->bmiHeader.biCompression == BI_RLE8);
+
 	HDC hDC = CreateCompatibleDC(nullptr);
 	if (!hDC)
 		return nullptr;
-	hbm = CreateDIBSection(hDC, pbi, DIB_RGB_COLORS, &pBits, nullptr, 0);
-	DeleteDC(hDC);
 
-	if (hbm)
+	HBITMAP hbm;
+	if (fCompressed)
 	{
-#ifdef _MSC_VER
-		// Win2k3 ieframe.dll BITMAP 214 causes exception
-		__try
+		// For RLE data, decode straight into a DIB section of our own
+		// choosing (24-bit BI_RGB) via SetDIBits, instead of going through
+		// CreateDIBitmap. CreateDIBitmap builds a device-dependent bitmap
+		// matching the *current display*, which means GDI has to color-
+		// match every decoded pixel against whatever the display can
+		// currently show -- on anything other than a plain truecolor
+		// desktop (a palettized/limited-color device, a remote session,
+		// ...) that shows up as washed-out/blotchy colors. Targeting an
+		// explicit 24-bit DIB section instead means GDI decodes the RLE
+		// and converts each palette entry straight to its exact RGB value
+		// with no device-dependent approximation involved.
+		BITMAPINFOHEADER bmihDst = { sizeof(bmihDst) };
+		bmihDst.biWidth = pbi->bmiHeader.biWidth;
+		bmihDst.biHeight = pbi->bmiHeader.biHeight;
+		bmihDst.biPlanes = 1;
+		bmihDst.biBitCount = 24;
+		bmihDst.biCompression = BI_RGB;
+
+		LPVOID pDstBits = nullptr;
+		hbm = CreateDIBSection(hDC, (LPBITMAPINFO)&bmihDst, DIB_RGB_COLORS, &pDstBits, nullptr, 0);
+		if (hbm)
 		{
-			CopyMemory(pBits, pb, dwSize);
+			// lpbmi here is still the *source* description (pbi, with its
+			// original biBitCount/biCompression/color table) -- SetDIBits
+			// decodes from that format into hbm's (the 24-bit target's).
+			INT nLines = SetDIBits(hDC, hbm, 0, pbi->bmiHeader.biHeight, pb, pbi, DIB_RGB_COLORS);
+			if (nLines == 0)
+			{
+				DeleteObject(hbm);
+				hbm = nullptr;
+			}
 		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			;
-		}
-#else
-		CopyMemory(pBits, pb, dwSize);
-#endif
 	}
+	else
+	{
+		LPVOID pBits;
+		hbm = CreateDIBSection(hDC, pbi, DIB_RGB_COLORS, &pBits, nullptr, 0);
+
+		if (hbm)
+		{
+#ifdef _MSC_VER
+			// Win2k3 ieframe.dll BITMAP 214 causes exception
+			__try
+			{
+				CopyMemory(pBits, pb, cbBits);
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				;
+			}
+#else
+			CopyMemory(pBits, pb, cbBits);
+#endif
+		}
+	}
+
+	DeleteDC(hDC);
 
 	return hbm;
 }
@@ -302,8 +353,6 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
 BOOL
 PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 {
-	BITMAPFILEHEADER FileHeader;
-
 	if (WritePNG)
 	{
 		BOOL ret = FALSE;
@@ -332,6 +381,7 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 		return ret;
 	}
 
+	BITMAPFILEHEADER FileHeader;
 	FileHeader.bfType = 0x4d42;
 	FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + siz);
 	FileHeader.bfReserved1 = 0;
@@ -352,23 +402,40 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
 
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 {
-	HBITMAP hbm = nullptr;
-
-	// Try a dirty hack for BI_RLE4, BI_RLE8, ...
-	WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
-	GetTempPathW(_countof(szPath), szPath);
-	GetTempFileNameW(szPath, L"reb", 0, szTempFile);
-
-	if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
+	// PackedDIB_* works on a "packed DIB" -- BITMAPINFOHEADER + color
+	// table + bits, with NO BITMAPFILEHEADER -- exactly how RT_BITMAP
+	// resources are stored. It's an easy mistake to instead pass the raw
+	// bytes of an actual .bmp *file*, which does start with a 14-byte
+	// BITMAPFILEHEADER ("BM" + bfSize/bfOffBits/...). Detect that case and
+	// skip it transparently, rather than letting PackedDIB_GetBitsOffset
+	// misread the file header as (garbage) BITMAPINFOHEADER fields and
+	// fail outright.
+	const BYTE *pb0 = (const BYTE *)ptr;
+	if (siz > sizeof(BITMAPFILEHEADER) && pb0[0] == 'B' && pb0[1] == 'M')
 	{
-		hbm = (HBITMAP)LoadImageW(nullptr, szTempFile, IMAGE_BITMAP, 0, 0,
-								  LR_LOADFROMFILE | LR_COLOR);
+		ptr = pb0 + sizeof(BITMAPFILEHEADER);
+		siz -= sizeof(BITMAPFILEHEADER);
 	}
 
-	DeleteFileW(szTempFile);
+	HBITMAP hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
+	if (hbm)
+	{
+		HBITMAP hbmCopy = (HBITMAP)CopyImage(hbm, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG | LR_CREATEDIBSECTION);
+		DeleteObject(hbm);
+		return hbmCopy;
+	}
 
-	if (hbm == nullptr)
-		hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
+	WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
+	if (GetTempPathW(_countof(szPath), szPath) &&
+		GetTempFileNameW(szPath, L"reb", 0, szTempFile))
+	{
+		if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
+		{
+			hbm = (HBITMAP)LoadImageW(nullptr, szTempFile, IMAGE_BITMAP, 0, 0,
+									  LR_LOADFROMFILE | LR_COLOR);
+		}
+		DeleteFileW(szTempFile);
+	}
 
 	return hbm;
 }
