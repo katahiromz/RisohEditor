@@ -403,6 +403,14 @@ struct EntrySet : protected EntrySetBase
 
 	HWND m_hwndTV;      // the treeview handle
 
+	// True while delete_all() is wiping the whole set.  TVN_DELETEITEM still
+	// arrives for every tree item, but on_delete_item() must not run the
+	// per-entry cascade (group-icon/cursor related deletes, parent pruning,
+	// ...) - that would be O(n^2) and is pointless when everything is going
+	// away.  After the tree is empty, ownership is released in bulk via
+	// m_owned.clear(), which destroys every EntryBase exactly once.
+	bool m_bDeletingAll = false;
+
 	// The entries actually created by (and thus owned by) this EntrySet,
 	// keyed by their raw pointer identity so lookups/erasure are O(log n)
 	// and unaffected by later mutation of an entry's content (m_type,
@@ -682,23 +690,23 @@ public:
 	BOOL is_protected(HMODULE hMod);
 
 	// delete all the entries
-	void delete_all(void)
-	{
-		if (m_hwndTV)
-		{
-			TreeView_DeleteAllItems(m_hwndTV);
-		}
-		else
-		{
-			search_and_delete(ET_ANY, BAD_TYPE, BAD_NAME, BAD_LANG);
-			delete_invalid();
-		}
-	}
+	void delete_all(void);
 
 	// for TVN_DELETEITEM
 	void on_delete_item(EntryBase *entry)
 	{
-		if (!entry || super()->find(entry) == super()->end())
+		if (!entry)
+			return;
+
+		// Bulk clear: just detach the tree handle; ownership is released
+		// by delete_all() after TreeView_DeleteAllItems returns.
+		if (m_bDeletingAll)
+		{
+			entry->m_hItem = NULL;
+			return;
+		}
+
+		if (super()->find(entry) == super()->end())
 			return;
 
 		//MTRACEW(L"on_delete_item: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());

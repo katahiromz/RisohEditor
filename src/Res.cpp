@@ -2186,3 +2186,23 @@ BOOL EntrySet::is_protected(HMODULE hMod)
 	EnumResourceTypesW(hMod, EnumResTypeProc2, (LPARAM)&ers);
 	return ers.is_protected;
 }
+
+// delete all the entries
+void EntrySet::delete_all(void)
+{
+	// Fast path: wipe everything without per-entry cascade work.
+	// TreeView_DeleteAllItems still posts TVN_DELETEITEM for each item;
+	// m_bDeletingAll makes on_delete_item a no-op so we avoid O(n^2)
+	// group-icon/cursor searches and recursive parent pruning.
+	m_bDeletingAll = true;
+	if (m_hwndTV)
+	{
+		TreeView_DeleteAllItems(m_hwndTV);
+	}
+	// Drop every owned EntryBase exactly once (shared_ptr destructor).
+	// super()->clear() first so EntryLess is never asked to order a
+	// pointer whose object is already gone.
+	super()->clear();
+	m_owned.clear();
+	m_bDeletingAll = false;
+}

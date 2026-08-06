@@ -6450,13 +6450,22 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 	}
 	else if (pnmhdr->code == TVN_DELETEITEM)
 	{
-		MWaitCursor wait;
 		auto ptv = (NM_TREEVIEW *)pnmhdr;
 		auto entry = (EntryBase *)ptv->itemOld.lParam;
-		g_res.on_delete_item(entry);
-		DoSetFileModified(TRUE);
-	}
-	else if (pnmhdr->code == NM_DBLCLK)
+		// During delete_all(), skip wait-cursor and modified-flag work;
+		// on_delete_item is already a no-op cascade and ownership is
+		// released in bulk afterwards.
+		if (g_res.m_bDeletingAll)
+		{
+			g_res.on_delete_item(entry);
+		}
+		else
+		{
+			MWaitCursor wait;
+			g_res.on_delete_item(entry);
+			DoSetFileModified(TRUE);
+		}
+	} else if (pnmhdr->code == NM_DBLCLK)
 	{
 		MWaitCursor wait;
 		if (pnmhdr->hwndFrom == m_hwndTV && entry)
