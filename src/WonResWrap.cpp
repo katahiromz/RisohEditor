@@ -135,7 +135,7 @@ BOOL Wrap_UpdateResourceW(
 BOOL Wrap_FreeResource(HGLOBAL hGlobal)
 {
 #ifdef ENABLE_CRYPTO
-	return WonFreeResource(pMemory);
+	return WonFreeResource(hGlobal);
 #else
     return TRUE;
 #endif
