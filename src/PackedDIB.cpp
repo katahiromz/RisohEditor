@@ -123,11 +123,18 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 BOOL
 PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm)
 {
+	const BYTE* pb = (const BYTE*)pPackedDIB;
+	if (dwSize > sizeof(BITMAPFILEHEADER) && pb[0] == 'B' && pb[1] == 'M')
+	{
+		pb += sizeof(BITMAPFILEHEADER);
+		pPackedDIB = pb;
+		dwSize -= sizeof(BITMAPFILEHEADER);
+	}
+
 	DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
 	if (Offset == 0)
 		return FALSE;   // failure
 
-	const BYTE *pb = (const BYTE *)pPackedDIB;
 	DWORD HeaderSize = *(const DWORD *)pPackedDIB;
 	if (HeaderSize == sizeof(BITMAPCOREHEADER))
 	{
