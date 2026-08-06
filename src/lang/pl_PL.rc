@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Proszę wpisać ciąg znaków hasła, który nie jest pusty."
     IDS_ENTERSALT "Proszę wprowadzić ciąg znaków składający się z 16 lub więcej znaków."
     IDS_WANTCRYPTO "Czy chcesz zaszyfrować dane zasobów pliku wykonywalnego, w którym zostaną zapisane?"
+    IDS_CRYPTTARGETEMPTY "Typy zasobów do zaszyfrowania są puste. Czy to w porządku?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

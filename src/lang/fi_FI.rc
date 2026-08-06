@@ -1641,6 +1641,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Anna salasana, joka ei ole tyhjä."
     IDS_ENTERSALT "Anna vähintään 16 merkin pituinen suolamerkkijono."
     IDS_WANTCRYPTO "Haluatko salata suoritettavan tiedoston resurssitiedot, joihin se tallennetaan?"
+    IDS_CRYPTTARGETEMPTY "Salattavien resurssien tyypit ovat tyhjiä. Onko tämä ok?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

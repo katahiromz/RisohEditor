@@ -372,6 +372,7 @@
 #define IDS_ENTERPASSWORD                   391
 #define IDS_ENTERSALT                       392
 #define IDS_WANTCRYPTO                      393
+#define IDS_CRYPTTARGETEMPTY                394
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

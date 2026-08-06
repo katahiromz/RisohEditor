@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Por favor, introduza uma palavra-passe válida."
     IDS_ENTERSALT "Por favor, introduza uma sequência de sal com 16 caracteres ou mais."
     IDS_WANTCRYPTO "Deseja encriptar os dados do ficheiro executável onde será guardado?"
+    IDS_CRYPTTARGETEMPTY "Os tipos de recursos a encriptar estão vazios. Isto está correto?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1644,6 +1644,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Por favor, introduzca una contraseña que no esté vacía."
     IDS_ENTERSALT "Introduzca una cadena de sal de 16 caracteres o más."
     IDS_WANTCRYPTO "¿Desea cifrar los datos de recursos del archivo ejecutable donde se guardarán?"
+    IDS_CRYPTTARGETEMPTY "La lista de tipos de recursos que se van a cifrar está vacía. ¿Es correcto?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

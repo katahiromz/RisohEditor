@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Inserisci una password non vuota."
     IDS_ENTERSALT "Inserisci una stringa di salt di almeno 16 caratteri."
     IDS_WANTCRYPTO "Desideri crittografare i dati delle risorse del file eseguibile nella posizione in cui verrà salvato?"
+    IDS_CRYPTTARGETEMPTY "L'elenco dei tipi di risorsa da crittografare è vuoto. Va bene così?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

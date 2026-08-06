@@ -1641,6 +1641,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Bitte geben Sie ein nicht leeres Passwort ein."
     IDS_ENTERSALT "Bitte geben Sie eine Salt-Zeichenkette mit mindestens 16 Zeichen ein."
     IDS_WANTCRYPTO "Möchten Sie die Ressourcendaten der ausführbaren Datei, in der sie gespeichert werden, verschlüsseln?"
+    IDS_CRYPTTARGETEMPTY "Die Liste der zu verschlüsselnden Ressourcentypen ist leer. Ist das so in Ordnung?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

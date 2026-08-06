@@ -67,6 +67,18 @@ public:
 				MessageBoxW(hwnd, LoadStringDx(IDS_ENTERSALT), NULL, MB_ICONERROR);
 				return;
 			}
+			if (g_encrypted_types.empty())
+			{
+				switch (MessageBoxW(hwnd, LoadStringDx(IDS_CRYPTTARGETEMPTY), NULL,
+				                    MB_ICONWARNING | MB_YESNOCANCEL))
+				{
+				case IDYES:
+					break;
+				case IDNO:
+				case IDCANCEL:
+					return;
+				}
+			}
 		}
 		mstr_trim(str1);
 		mstr_trim(str2);

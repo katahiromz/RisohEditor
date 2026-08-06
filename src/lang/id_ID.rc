@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Silakan masukkan kata sandi yang tidak kosong."
     IDS_ENTERSALT "Silakan masukkan string garam dengan panjang 16 karakter atau lebih."
     IDS_WANTCRYPTO "Apakah Anda ingin mengenkripsi data sumber daya dari file yang dapat dieksekusi di tempat file tersebut akan disimpan?"
+    IDS_CRYPTTARGETEMPTY "Jenis sumber daya yang akan dienkripsi kosong. Apakah ini tidak masalah?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

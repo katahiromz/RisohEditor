@@ -1641,6 +1641,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Veuillez saisir un mot de passe non vide."
     IDS_ENTERSALT "Veuillez saisir une chaîne de caractères de sel d'au moins 16 caractères."
     IDS_WANTCRYPTO "Souhaitez-vous chiffrer les données de ressources du fichier exécutable à l'endroit où elles seront enregistrées ?"
+    IDS_CRYPTTARGETEMPTY "La liste des types de ressources à chiffrer est vide. Est-ce acceptable ?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

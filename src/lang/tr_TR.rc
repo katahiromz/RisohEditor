@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Lütfen boş olmayan bir parola girin."
     IDS_ENTERSALT "Lütfen en az 16 karakterden oluşan bir tuz dizesi girin."
     IDS_WANTCRYPTO "Kaydedileceği yürütülebilir dosyanın kaynak verilerini şifrelemek istiyor musunuz?"
+    IDS_CRYPTTARGETEMPTY "Şifrelenecek kaynak türleri boş. Bu sorun olur mu?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

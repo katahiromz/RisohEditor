@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_ENTERPASSWORD "Please enter a non-empty password string."
     IDS_ENTERSALT "Please enter a salt string of at least 16 characters."
     IDS_WANTCRYPTO "Do you want to encrypt the resource data of the destination executable file?"
+    IDS_CRYPTTARGETEMPTY "The resource types to be encrypted is empty. Is this okay?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
