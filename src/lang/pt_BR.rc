@@ -254,6 +254,12 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Excluir\tDel", ID_DELETE
     }
+    POPUP "Popup #10"
+    {
+        MENUITEM "&Excluir\tDel", ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "Selecionar &tudo\tCtrl+A", ID_SELECTALL
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1306,6 +1312,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "O WonRes pode ser usado para criptografar e descriptografar dados de recursos dentro de arquivos executáveis.", -1, 5, 5, 245, 20
     AUTOCHECKBOX "&Ativar criptografia", chx1, 5, 40, 140, 15
+    PUSHBUTTON "&Tipos de recursos...", psh2, 150, 40, 95, 15
     RTEXT "&Senha:", -1, 5, 60, 70, 10
     EDITTEXT edt1, 85, 60, 160, 15
     RTEXT "&Sal:", -1, 5, 80, 70, 10
@@ -1313,6 +1320,20 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Gerado automaticamente", psh1, 5, 125, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
     PUSHBUTTON "Cancelar", IDCANCEL, 190, 125, 60, 15
+}
+
+IDD_ENCRYPTTYPES DIALOGEX 0, 0, 170, 147
+CAPTION "Tipos de recursos a serem criptografados"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "Tipos de recursos a &serem criptografados:", -1, 5, 5, 160, 10
+    LISTBOX lst1, 5, 20, 160, 60, LBS_EXTENDEDSEL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX cmb1, 5, 85, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Adicionar", psh1, 105, 85, 60, 15
+    LTEXT "Os itens de recursos criptografados devem ser protegidos por senha e carregados no WonRes.", -1, 5, 103, 158, 21
+    DEFPUSHBUTTON "OK", IDOK, 5, 130, 60, 15
+    PUSHBUTTON "Cancelar", IDCANCEL, 70, 130, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

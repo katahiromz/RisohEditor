@@ -251,6 +251,12 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&&Poista\tDel", ID_DELETE
     }
+    POPUP "Popup #10"
+    {
+        MENUITEM "&&Poista\tDel", ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "&Valitse kaikki\tCtrl+A", ID_SELECTALL
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1303,6 +1309,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "WonRes-ohjelmalla voidaan salata ja purkaa resurssitietoja suoritettavissa tiedostoissa.", -1, 5, 5, 245, 20
     AUTOCHECKBOX "&Ota salaus käyttöön", chx1, 5, 40, 140, 15
+    PUSHBUTTON "&Resurssityypit...", psh2, 150, 40, 95, 15
     RTEXT "&Salasana:", -1, 5, 60, 70, 10
     EDITTEXT edt1, 85, 60, 160, 15
     RTEXT "S&uolaa:", -1, 5, 80, 70, 10
@@ -1310,6 +1317,20 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Automaattisesti luotu", psh1, 5, 125, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
     PUSHBUTTON "Peruuta", IDCANCEL, 190, 125, 60, 15
+}
+
+IDD_ENCRYPTTYPES DIALOGEX 0, 0, 170, 147
+CAPTION "Salattavat resurssityypit"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "Salattavat &resurssityypit:", -1, 5, 5, 160, 10
+    LISTBOX lst1, 5, 20, 160, 60, LBS_EXTENDEDSEL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX cmb1, 5, 85, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Lisätä", psh1, 105, 85, 60, 15
+    LTEXT "Salattujen resurssien on oltava salasanasuojattuja ja ladattuja WonResiin.", -1, 5, 103, 158, 21
+    DEFPUSHBUTTON "OK", IDOK, 5, 130, 60, 15
+    PUSHBUTTON "Peruuta", IDCANCEL, 70, 130, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

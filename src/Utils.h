@@ -11,6 +11,8 @@
 #include <vector>
 #include <windows.h>
 #include <unordered_map>
+#include <unordered_set>
+#include "Common.hpp"
 #include "StringRes.hpp"
 #include "MessageRes.hpp"
 

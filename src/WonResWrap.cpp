@@ -10,6 +10,9 @@
 BOOL g_bEnableCrypto = FALSE;
 MStringW g_password;
 MStringW g_salt;
+extern std::vector<MString> g_encrypted_types;
+
+INT ParseType(const MStringW& input, MIdOrString& type);
 
 BOOL SetWonResPassword(PCWSTR password, PCWSTR salt)
 {
@@ -113,24 +116,14 @@ BOOL Wrap_UpdateResourceW(
 #ifdef ENABLE_CRYPTO
 	if (g_bEnableCrypto && g_password.size())
 	{
-#ifndef RT_DLGINIT
-	#define RT_DLGINIT  MAKEINTRESOURCE(240)
-#endif
-		if (lpType != RT_ACCELERATOR &&
-			lpType != RT_ANICURSOR &&
-			lpType != RT_ANIICON &&
-			lpType != RT_CURSOR &&
-			lpType != RT_DIALOG &&
-			lpType != RT_DLGINIT &&
-			lpType != RT_GROUP_CURSOR &&
-			lpType != RT_GROUP_ICON &&
-			lpType != RT_ICON &&
-			lpType != RT_MANIFEST &&
-			lpType != RT_MENU &&
-			lpType != RT_MESSAGETABLE &&
-			lpType != RT_VERSION)
+		for (auto& item : g_encrypted_types)
 		{
-			return WonUpdateResourceEncryptedW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
+			MIdOrString type;
+			INT ids = ParseType(item, type);
+			if (!ids && type == lpType)
+			{
+				return WonUpdateResourceEncryptedW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
+			}
 		}
 	}
 #endif
@@ -142,15 +135,6 @@ BOOL Wrap_UpdateResourceW(
 VOID Wrap_FreeResourceMemory(LPVOID pMemory)
 {
 #ifdef ENABLE_CRYPTO
-	// WonFreeResourceMemory now tracks which pointers it actually
-	// HeapAlloc'd (see crypto.c) and is a safe no-op for anything else, so
-	// it can be called for every resource unconditionally -- regardless of
-	// whether crypto is currently enabled, and regardless of whether this
-	// particular resource happened to be encrypted. Previously this was
-	// gated on g_bEnableCrypto alone, which called HeapFree on plain
-	// (non-encrypted) resource pointers -- pointers into the mapped module
-	// image, not heap blocks -- whenever encrypted and non-encrypted
-	// resources were mixed while crypto was enabled.
 	WonFreeResourceMemory(pMemory);
 #endif
 }

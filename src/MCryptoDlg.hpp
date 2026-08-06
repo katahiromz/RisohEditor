@@ -10,8 +10,7 @@
 #include "MString.hpp"
 #include <commdlg.h>
 #include "WonResWrap.h"
-
-class MCryptoDlg;
+#include "MEncryptTypesDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -73,6 +72,9 @@ public:
 		case psh1:
 			OnPsh1(hwnd);
 			break;
+		case psh2:
+			OnPsh2(hwnd);
+			break;
 		}
 	}
 
@@ -91,6 +93,12 @@ public:
 
 		DWORD count = 500 + std::rand() % 500;
 		SetDlgItemInt(hwnd, edt3, count, FALSE);
+	}
+
+	void OnPsh2(HWND hwnd)
+	{
+		MEncryptTypesDlg dialog;
+		dialog.DialogBoxDx(hwnd);
 	}
 
 	INT_PTR CALLBACK

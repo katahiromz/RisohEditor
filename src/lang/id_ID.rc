@@ -255,6 +255,12 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Hapus\tDel", ID_DELETE
     }
+    POPUP "Popup #10"
+    {
+        MENUITEM "&Hapus\tDel", ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "&Pilih Semua\tCtrl+A", ID_SELECTALL
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1307,6 +1313,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "WonRes dapat digunakan untuk mengenkripsi dan mendekripsi data sumber daya di dalam file yang dapat dieksekusi.", -1, 5, 5, 245, 20
     AUTOCHECKBOX "&Aktifkan enkripsi", chx1, 5, 40, 140, 15
+    PUSHBUTTON "&Jenis Sumber Daya...", psh2, 150, 40, 95, 15
     RTEXT "&Kata sandi:", -1, 5, 60, 70, 10
     EDITTEXT edt1, 85, 60, 160, 15
     RTEXT "&Garam:", -1, 5, 80, 70, 10
@@ -1314,6 +1321,20 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Dihasilkan secara otomatis", psh1, 5, 125, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
     PUSHBUTTON "Batal", IDCANCEL, 190, 125, 60, 15
+}
+
+IDD_ENCRYPTTYPES DIALOGEX 0, 0, 170, 147
+CAPTION "Jenis sumber daya yang akan dienkripsi"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "Jenis sumber daya &yang akan dienkripsi:", -1, 5, 5, 160, 10
+    LISTBOX lst1, 5, 20, 160, 60, LBS_EXTENDEDSEL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX cmb1, 5, 85, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Menambahkan", psh1, 105, 85, 60, 15
+    LTEXT "Item sumber daya terenkripsi harus dilindungi kata sandi dan dimuat ke dalam WonRes.", -1, 5, 103, 158, 21
+    DEFPUSHBUTTON "OK", IDOK, 5, 130, 60, 15
+    PUSHBUTTON "Batal", IDCANCEL, 70, 130, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

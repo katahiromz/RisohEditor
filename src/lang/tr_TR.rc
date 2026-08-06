@@ -252,6 +252,12 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Sil\tDel", ID_DELETE
     }
+    POPUP "Açılır Pencere #10"
+    {
+        MENUITEM "&Sil\tDel", ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "Tümünü &Seç\tCtrl+A", ID_SELECTALL
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1304,6 +1310,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     LTEXT "WonRes, çalıştırılabilir dosyalar içindeki kaynak verilerini şifrelemek ve şifresini çözmek için kullanılabilir.", -1, 5, 5, 245, 20
     AUTOCHECKBOX "Şifrelemeyi &etkinleştirin", chx1, 5, 40, 140, 15
+    PUSHBUTTON "&Kaynak Türleri...", psh2, 150, 40, 95, 15
     RTEXT "&Şifre:", -1, 5, 60, 70, 10
     EDITTEXT edt1, 85, 60, 160, 15
     RTEXT "&Tuz:", -1, 5, 80, 70, 10
@@ -1311,6 +1318,20 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Otomatik olarak oluşturuldu", psh1, 5, 125, 90, 15
     DEFPUSHBUTTON "Tamam", IDOK, 130, 125, 60, 15
     PUSHBUTTON "İptal", IDCANCEL, 190, 125, 60, 15
+}
+
+IDD_ENCRYPTTYPES DIALOGEX 0, 0, 170, 147
+CAPTION "Şifrelenecek kaynak türleri"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
+{
+    LTEXT "Şifrelenecek kaynak &türleri:", -1, 5, 5, 160, 10
+    LISTBOX lst1, 5, 20, 160, 60, LBS_EXTENDEDSEL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX cmb1, 5, 85, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Eklemek", psh1, 105, 85, 60, 15
+    LTEXT "Şifrelenmiş kaynak öğeleri parola ile korunmalı ve WonRes'e yüklenmelidir.", -1, 5, 103, 158, 21
+    DEFPUSHBUTTON "Tamam", IDOK, 5, 130, 60, 15
+    PUSHBUTTON "İptal", IDCANCEL, 70, 130, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

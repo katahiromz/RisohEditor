@@ -31,6 +31,7 @@ std::vector<LPCWSTR> g_idtype_strings =
 	extern MStringW g_password;
 	extern MStringW g_salt;
 #endif
+extern std::vector<MString> g_encrypted_types;
 
 MStringW MapIDTypeToPrefix(IDTYPE_ idtype)
 {
@@ -90,6 +91,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_bEnableCrypto = FALSE;
 	g_password.clear();
 	g_salt.clear();
+	g_encrypted_types.clear();
 
 	HFONT hFont;
 	LOGFONTW lf, lfBin, lfSrc;
@@ -318,6 +320,22 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
 			if (!value.empty())
 				g_settings.includes.push_back(value);
+		}
+	}
+
+	g_encrypted_types.clear();
+	DWORD cEncrypedTypes = 0;
+	if (keyRisoh.QueryDword(TEXT("NumEncryptedTypes"), cEncrypedTypes) == ERROR_SUCCESS)
+	{
+		for (DWORD i = 0; i < cEncrypedTypes; ++i)
+		{
+			MString value;
+			StringCchPrintf(szValueName, _countof(szValueName), TEXT("EncryptedType%lu"), i);
+			if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+				value = szText;
+
+			if (!value.empty())
+				g_encrypted_types.push_back(value);
 		}
 	}
 
@@ -651,6 +669,15 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 		StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
 		keyRisoh.SetSz(szValueName, strInclude.c_str());
 		++i;
+	}
+
+	DWORD cEncrypedTypes = DWORD(g_encrypted_types.size());
+	keyRisoh.SetDword(TEXT("NumEncryptedTypes"), cEncrypedTypes);
+	for (DWORD i = 0; i < cEncrypedTypes; ++i)
+	{
+		MString value;
+		StringCchPrintf(szValueName, _countof(szValueName), TEXT("EncryptedType%lu"), i);
+		keyRisoh.SetSz(szValueName, g_encrypted_types[i].c_str());
 	}
 
 	keyRisoh.SetSz(TEXT("strWindResExe"), g_settings.strWindResExe.c_str());

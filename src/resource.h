@@ -79,6 +79,7 @@
 #define IDD_GOTOLINE                        171
 #define IDD_CLONEINNEWTYPE                  172
 #define IDD_CRYPTO                          173
+#define IDD_ENCRYPTTYPES                    174
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
