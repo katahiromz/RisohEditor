@@ -26,6 +26,12 @@ std::vector<LPCWSTR> g_idtype_strings =
 #undef DEFINE_IDTYPE
 };
 
+#ifdef ENABLE_CRYPTO
+	extern BOOL g_bEnableCrypto;
+	extern MStringW g_password;
+	extern MStringW g_salt;
+#endif
+
 MStringW MapIDTypeToPrefix(IDTYPE_ idtype)
 {
 	auto localized = MapIDType(idtype);
@@ -80,6 +86,10 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.nEgaWidth = CW_USEDEFAULT;
 	g_settings.nEgaHeight = CW_USEDEFAULT;
 	g_settings.nDefResLangID = BAD_LANG;
+
+	g_bEnableCrypto = FALSE;
+	g_password.clear();
+	g_salt.clear();
 
 	HFONT hFont;
 	LOGFONTW lf, lfBin, lfSrc;
@@ -318,6 +328,12 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	if (keyRisoh.QuerySz(TEXT("strBinFont"), szText, _countof(szText)) == ERROR_SUCCESS)
 		g_settings.strBinFont = szText;
 	keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)g_settings.nBinFontSize);
+
+	keyRisoh.QueryDword(TEXT("EnableCrypto"), (DWORD&)g_bEnableCrypto);
+	if (keyRisoh.QuerySz(TEXT("Password"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_password = szText;
+	if (keyRisoh.QuerySz(TEXT("Salt"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_salt = szText;
 
 	INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
 	INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -585,6 +601,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
 	keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());
 	keyRisoh.SetDword(TEXT("nBinFontSize"), g_settings.nBinFontSize);
+
+	keyRisoh.SetDword(TEXT("EnableCrypto"), g_bEnableCrypto);
+	keyRisoh.SetSz(L"Password", g_password.c_str());
+	keyRisoh.SetSz(L"Salt", g_salt.c_str());
 
 	DWORD i, dwCount;
 

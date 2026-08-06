@@ -8,6 +8,13 @@
 #include "ToolbarRes.hpp"
 #include "resource.h"
 
+#ifdef ENABLE_CRYPTO
+extern BOOL g_bEnableCrypto;
+extern MStringW g_password;
+extern MStringW g_salt;
+BOOL SetPassword(PCWSTR password, PCWSTR salt);
+#endif
+
 struct AutoDeleteFileW
 {
 	std::wstring m_file;
@@ -645,6 +652,21 @@ UINT EntrySet::get_last_id(const MIdOrString& type, LANGID lang) const
 
 BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
 {
+#ifdef ENABLE_CRYPTO
+	if (g_bEnableCrypto && g_password.size())
+	{
+		for (auto& ch : g_password) ch ^= 0xFFFF;
+		for (auto& ch : g_salt) ch ^= 0xFFFF;
+		SetPassword(g_password.c_str(), g_salt.c_str());
+		for (auto& ch : g_password) ch ^= 0xFFFF;
+		for (auto& ch : g_salt) ch ^= 0xFFFF;
+	}
+	else
+	{
+		SetPassword(nullptr, nullptr);
+	}
+#endif
+
 	// begin the update
 	HANDLE hUpdate = ::Wrap_BeginUpdateResourceW(ExeFile, TRUE);
 	if (hUpdate == NULL)
@@ -1524,12 +1546,15 @@ EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 	// get the size and the pointer
 	DWORD dwSize = ::Wrap_SizeofResource(hMod, hResInfo);
 	HGLOBAL hGlobal = ::Wrap_LoadResource(hMod, hResInfo);
-	LPVOID pv = ::Wrap_LockResource(hGlobal);
-	if (pv && dwSize)
+	if (hGlobal)
 	{
-		// got it. add a language entry
-		EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
-		return add_lang_entry(type, name, lang, data);
+		LPVOID pv = ::Wrap_LockResource(hGlobal);
+		if (pv && dwSize)
+		{
+			// got it. add a language entry
+			EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv)+dwSize);
+			return add_lang_entry(type, name, lang, data);
+		}
 	}
 
 	return NULL;    // unable to get
@@ -2056,4 +2081,64 @@ void EntrySet::add_default_TEXTINCLUDE()
 	data.resize(str3.size());
 	std::memcpy(data.data(), str3.data(), str3.size());
 	add_lang_entry(L"TEXTINCLUDE", 3, 0, data);
+}
+
+struct EnumResStruct2
+{
+	EntrySet *this_;
+	BOOL is_protected;
+};
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
+                 WORD wIDLanguage, LPARAM lParam)
+{
+	auto ers = (EnumResStruct2 *)lParam;
+	
+	// find the resource in hMod
+	HRSRC hResInfo = ::Wrap_FindResourceExW(hMod, lpszType, lpszName, wIDLanguage);
+	if (!hResInfo)
+		return TRUE;
+
+	// get the size and the pointer
+	DWORD dwSize = ::Wrap_SizeofResource(hMod, hResInfo);
+	HGLOBAL hGlobal = ::Wrap_LoadResource(hMod, hResInfo);
+	if (hGlobal)
+	{
+		LPVOID pv = ::Wrap_LockResource(hGlobal);
+		if (pv && dwSize)
+		{
+			if (dwSize >= 8 && std::memcmp(pv, "WONRSRC1", 8) == 0)
+			{
+				ers->is_protected = TRUE;
+				return FALSE;
+			}
+		}
+	}
+
+	return TRUE;
+}
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResNameProc2(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
+{
+	return ::Wrap_EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc2, lParam);
+}
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResTypeProc2(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
+{
+	return ::Wrap_EnumResourceNamesW(hMod, lpszType, EnumResNameProc2, lParam);
+}
+
+BOOL EntrySet::is_protected(HMODULE hMod)
+{
+	EnumResStruct2 ers;
+	ers.this_ = this;
+	ers.is_protected = FALSE;
+	::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc2, (LPARAM)&ers);
+	return ers.is_protected;
 }

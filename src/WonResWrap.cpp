@@ -3,6 +3,7 @@
 // License: GPL-3 or later
 #include <windows.h>
 #include "RisohSettings.hpp"
+#define WONRES_ENABLE_CRYPTO
 #include "WonRes.h"
 
 HRSRC Wrap_FindResourceExW(HMODULE hModule, LPCWSTR lpType, LPCWSTR lpName, WORD wLanguage)
@@ -68,6 +69,13 @@ BOOL Wrap_EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard)
 	return EndUpdateResourceW(hUpdate, fDiscard);
 }
 
+#ifdef ENABLE_CRYPTO
+	extern BOOL g_bEnableCrypto;
+	extern MStringW g_password;
+	extern MStringW g_salt;
+	BOOL SetPassword(PCWSTR password, PCWSTR salt);
+#endif
+
 BOOL Wrap_UpdateResourceW(
 	HANDLE hUpdate,
 	LPCWSTR lpType,
@@ -76,6 +84,28 @@ BOOL Wrap_UpdateResourceW(
 	LPVOID lpData,
 	DWORD cbData)
 {
+	if (g_bEnableCrypto && g_password.size())
+	{
+#ifndef RT_DLGINIT
+	#define RT_DLGINIT  MAKEINTRESOURCE(240)
+#endif
+		if (lpType != RT_ACCELERATOR &&
+			lpType != RT_ANICURSOR &&
+			lpType != RT_ANIICON &&
+			lpType != RT_CURSOR &&
+			lpType != RT_DIALOG &&
+			lpType != RT_DLGINIT &&
+			lpType != RT_GROUP_CURSOR &&
+			lpType != RT_GROUP_ICON &&
+			lpType != RT_ICON &&
+			lpType != RT_MANIFEST &&
+			lpType != RT_MENU &&
+			lpType != RT_MESSAGETABLE &&
+			lpType != RT_VERSION)
+		{
+			return WonUpdateResourceEncryptedW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
+		}
+	}
 	if (g_settings.bUseWonRes)
 		return WonUpdateResourceW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
 	return UpdateResourceW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);

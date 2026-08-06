@@ -2,6 +2,7 @@
 
 - v.6.1.3 (2026-XX-YY)
     - Menyederhanakan menu [Edit].
+    - Menerapkan enkripsi sumber daya menggunakan WonRes.
 - v.6.1.2 (2026-08-05)
     - Dapat dibangun kembali menggunakan MinGW atau RosBE.
     - Dapat mengubah jenis sumber daya.

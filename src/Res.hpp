@@ -671,6 +671,7 @@ struct EntrySet : protected EntrySetBase
 	struct EnumResStruct
 	{
 		EntrySet *this_;
+		BOOL failed;
 	};
 
 	// add a resource entry from an executable module
@@ -683,7 +684,8 @@ struct EntrySet : protected EntrySetBase
 					WORD wIDLanguage, LPARAM lParam)
 	{
 		auto ers = (EnumResStruct *)lParam;
-		ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage);
+		if (!ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage))
+			ers->failed = TRUE;
 		return TRUE;
 	}
 
@@ -710,8 +712,12 @@ public:
 	{
 		EnumResStruct ers;
 		ers.this_ = this;
-		return ::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
+		ers.failed = FALSE;
+		::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
+		return !ers.failed;
 	}
+
+	BOOL is_protected(HMODULE hMod);
 
 	// delete all the entries
 	void delete_all(void)

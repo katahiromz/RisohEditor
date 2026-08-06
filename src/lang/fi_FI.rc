@@ -731,7 +731,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Sta&ndardressourcensprache:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Käytä &WonResiä (alkuperäinen resurssien käsittelytyökalu)", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "Käytä &WonResiä", chx11, 5, 285, 90, 14
+    PUSHBUTTON "Resurssien salaus...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "&Palauta kaikki", psh3, 5, 305, 75, 14
@@ -1293,6 +1294,22 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
     PUSHBUTTON "Peruuta", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "Resurssitietojen salaus/salauksen purku"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "WonRes-ohjelmalla voidaan salata ja purkaa resurssitietoja suoritettavissa tiedostoissa.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "&Ota salaus käyttöön", chx1, 5, 40, 140, 15
+    RTEXT "&Salasana:", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "S&uolaa:", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "&Automaattisesti luotu", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "Peruuta", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

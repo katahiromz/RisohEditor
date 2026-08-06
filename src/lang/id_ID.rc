@@ -735,7 +735,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Ba&hasa sumber:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Gunakan &WonRes (manipulator sumber daya asli)", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "Gunakan &WonRes", chx11, 5, 285, 90, 14
+    PUSHBUTTON "Enkripsi sumber da&ya...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
     PUSHBUTTON "Batal", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "S&et Ulang Semua", psh3, 5, 305, 75, 14
@@ -1297,6 +1298,22 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
     PUSHBUTTON "Batal", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "Enkripsi/dekripsi data sumber daya"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "WonRes dapat digunakan untuk mengenkripsi dan mendekripsi data sumber daya di dalam file yang dapat dieksekusi.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "&Aktifkan enkripsi", chx1, 5, 40, 140, 15
+    RTEXT "&Kata sandi:", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "&Garam:", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "&Dihasilkan secara otomatis", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "Batal", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

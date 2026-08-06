@@ -734,7 +734,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Idiom&a do recurso:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Use &WonRes (manipulador de recursos original)", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "Use &WonRes", chx11, 5, 285, 90, 14
+    PUSHBUTTON "Criptografia &de recursos...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "&Redefinir Todos", psh3, 5, 305, 75, 14
@@ -1296,6 +1297,22 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "Criptografia/descriptografia de dados de recursos"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+{
+    LTEXT "O WonRes pode ser usado para criptografar e descriptografar dados de recursos dentro de arquivos executáveis.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "&Ativar criptografia", chx1, 5, 40, 140, 15
+    RTEXT "&Senha:", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "&Sal:", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "&Gerado automaticamente", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "Cancelar", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

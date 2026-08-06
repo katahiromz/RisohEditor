@@ -732,7 +732,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Kaynak d&ili:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&WonRes'i kullanın (orijinal kaynak düzenleyici)", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "&WonRes'i kullanın", chx11, 5, 285, 90, 14
+    PUSHBUTTON "Kaynak şi&frelemesi...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "Tamam", IDOK, 100, 305, 50, 14
     PUSHBUTTON "İptal", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "Tümünü &Sıfırla", psh3, 5, 305, 75, 14
@@ -1294,6 +1295,22 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "Tamam", IDOK, 42, 55, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "Kaynak verilerinin şifrelenmesi/şifresinin çözülmesi"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
+{
+    LTEXT "WonRes, çalıştırılabilir dosyalar içindeki kaynak verilerini şifrelemek ve şifresini çözmek için kullanılabilir.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "Şifrelemeyi &etkinleştirin", chx1, 5, 40, 140, 15
+    RTEXT "&Şifre:", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "&Tuz:", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "&Otomatik olarak oluşturuldu", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "Tamam", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "İptal", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

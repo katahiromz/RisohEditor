@@ -734,7 +734,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     COMBOBOX cmb2, 158, 246, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "Мо&ва ресурсу:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Застосу&вати WonRes (оригін. маніпулятор ресурсів)", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "Застосу&вати WonRes", chx11, 5, 285, 90, 14
+    PUSHBUTTON "Шифрува&ння ресурсів...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
     PUSHBUTTON "Скасувати", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "&Скинути все", psh3, 5, 305, 75, 14
@@ -1296,6 +1297,22 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
     PUSHBUTTON "Скасувати", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "Шифрування/дешифрування даних ресурсів"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
+{
+    LTEXT "WonRes можна використовувати для шифрування та розшифрування даних ресурсів у виконуваних файлах.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "&Увімкнути шифрування", chx1, 5, 40, 140, 15
+    RTEXT "&Пароль:", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "&Сіль:", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "&Автоматично згенеровано", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "OK", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "Скасувати", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

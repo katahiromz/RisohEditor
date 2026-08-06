@@ -732,7 +732,8 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "리소스 언어(&A):", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&WonRes(오리지널 리소스 조작 도구)를 사용하세요", chx11, 5, 285, 200, 14
+    AUTOCHECKBOX "&WonRes를 사용하세요", chx11, 5, 285, 90, 14
+    PUSHBUTTON "리소스 암호화(&E)...", psh5, 100, 285, 105, 15
     DEFPUSHBUTTON "확인", IDOK, 100, 305, 50, 14
     PUSHBUTTON "취소", IDCANCEL, 155, 305, 50, 14
     PUSHBUTTON "모두 재설정(&S)", psh3, 5, 305, 75, 14
@@ -1294,6 +1295,22 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "확인", IDOK, 42, 55, 60, 14
     PUSHBUTTON "취소", IDCANCEL, 121, 55, 60, 14
+}
+
+IDD_CRYPTO DIALOGEX 0, 0, 257, 147
+CAPTION "리소스 데이터 암호화/해독"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
+{
+    LTEXT "WonRes를 사용하여 실행 파일 내부의 리소스 데이터를 암호화 및 복호화할 수 있습니다.", -1, 5, 5, 245, 20
+    AUTOCHECKBOX "암호화 사용(&E)", chx1, 5, 40, 140, 15
+    RTEXT "비밀번호(&P):", -1, 5, 60, 70, 10
+    EDITTEXT edt1, 85, 60, 160, 15
+    RTEXT "솔트(&S):", -1, 5, 80, 70, 10
+    EDITTEXT edt2, 85, 80, 160, 15
+    PUSHBUTTON "자동 생성(&G)", psh1, 5, 125, 90, 15
+    DEFPUSHBUTTON "확인", IDOK, 130, 125, 60, 15
+    PUSHBUTTON "취소", IDCANCEL, 190, 125, 60, 15
 }
 
 //////////////////////////////////////////////////////////////////////////////

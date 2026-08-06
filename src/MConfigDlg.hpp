@@ -13,7 +13,15 @@
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
+#include "MCryptoDlg.hpp"
 #include "MRisohAutoComplete.hpp"
+
+#ifdef ENABLE_CRYPTO
+	extern BOOL g_bEnableCrypto;
+	extern MStringW g_password;
+	extern MStringW g_salt;
+	BOOL SetPassword(PCWSTR password, PCWSTR salt);
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +60,7 @@ public:
 		SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
 
 		CheckDlgButton(hwnd, chx10, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
-		CheckDlgButton(hwnd, chx11, g_settings.bUseWonRes ? BST_CHECKED : BST_UNCHECKED);
+		CheckDlgButton(hwnd, chx11, (g_settings.bUseWonRes || g_bEnableCrypto) ? BST_CHECKED : BST_UNCHECKED);
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-old");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-bak");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"~");
@@ -171,6 +179,14 @@ public:
 		dialog.DialogBoxDx(hwnd);
 	}
 
+	void OnPsh5(HWND hwnd)
+	{
+		MCryptoDlg dialog;
+		dialog.DialogBoxDx(hwnd);
+		if (g_bEnableCrypto && g_password.size())
+			CheckDlgButton(hwnd, chx11, BST_CHECKED);
+	}
+
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
@@ -192,6 +208,9 @@ public:
 			break;
 		case psh4:
 			OnPsh4(hwnd);
+			break;
+		case psh5:
+			OnPsh5(hwnd);
 			break;
 		case cmb3:
 			if (codeNotify == CBN_EDITCHANGE)
