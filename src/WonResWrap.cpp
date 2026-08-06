@@ -18,9 +18,24 @@ BOOL SetWonResPassword(PCWSTR password, PCWSTR salt)
 		WonClearEncryptionKey();
 		return TRUE;
 	}
-	if (salt == nullptr)
-		salt = L"";
-	return WonSetEncryptionPasswordW(password, (PBYTE)salt, lstrlenW(salt) * sizeof(WCHAR), WON_ENCRYPTION_MIN_ITERATIONS);
+
+	// WonSetEncryptionPasswordW (crypto.c) rejects any salt shorter than 16
+	// bytes. Silently substituting an empty salt here (the previous
+	// behavior for salt == nullptr, and the effective behavior whenever a
+	// caller passes an empty g_salt) therefore guaranteed a failed call
+	// every time -- and since every caller of SetWonResPassword (Res.cpp,
+	// RisohEditor.cpp) discards its return value, "password set, salt left
+	// blank" silently left encryption disabled instead of enabling it, with
+	// no indication of why. Fail explicitly instead, and make sure no stale
+	// key from a previous, successful call is left active.
+	DWORD cbSalt = salt ? lstrlenW(salt) * sizeof(WCHAR) : 0;
+	if (cbSalt < 16)
+	{
+		WonClearEncryptionKey();
+		return FALSE;
+	}
+
+	return WonSetEncryptionPasswordW(password, (PBYTE)salt, cbSalt, WON_ENCRYPTION_MIN_ITERATIONS);
 }
 #endif
 
@@ -127,7 +142,15 @@ BOOL Wrap_UpdateResourceW(
 VOID Wrap_FreeResourceMemory(LPVOID pMemory)
 {
 #ifdef ENABLE_CRYPTO
-	if (g_bEnableCrypto)
-		WonFreeResourceMemory(pMemory);
+	// WonFreeResourceMemory now tracks which pointers it actually
+	// HeapAlloc'd (see crypto.c) and is a safe no-op for anything else, so
+	// it can be called for every resource unconditionally -- regardless of
+	// whether crypto is currently enabled, and regardless of whether this
+	// particular resource happened to be encrypted. Previously this was
+	// gated on g_bEnableCrypto alone, which called HeapFree on plain
+	// (non-encrypted) resource pointers -- pointers into the mapped module
+	// image, not heap blocks -- whenever encrypted and non-encrypted
+	// resources were mixed while crypto was enabled.
+	WonFreeResourceMemory(pMemory);
 #endif
 }
