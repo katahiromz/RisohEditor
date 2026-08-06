@@ -132,9 +132,11 @@ BOOL Wrap_UpdateResourceW(
 	return UpdateResourceW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
 }
 
-VOID Wrap_FreeResourceMemory(LPVOID pMemory)
+BOOL Wrap_FreeResource(HGLOBAL hGlobal)
 {
 #ifdef ENABLE_CRYPTO
-	WonFreeResourceMemory(pMemory);
+	return WonFreeResource(pMemory);
+#else
+    return TRUE;
 #endif
 }

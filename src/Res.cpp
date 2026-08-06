@@ -1548,11 +1548,11 @@ EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 			{
 				// got it. add a language entry
 				EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
-				Wrap_FreeResourceMemory(pv);
+        		Wrap_FreeResource(hGlobal);
 				return add_lang_entry(type, name, lang, data);
 			}
-			Wrap_FreeResourceMemory(pv);
 		}
+		Wrap_FreeResource(hGlobal);
 	}
 
 	return NULL;    // unable to get

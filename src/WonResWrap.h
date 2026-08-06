@@ -20,7 +20,7 @@ BOOL Wrap_UpdateResourceW(
     WORD wLanguage,
     LPVOID lpData,
     DWORD cbData);
-VOID Wrap_FreeResourceMemory(LPVOID pMemory);
+BOOL Wrap_FreeResource(HGLOBAL hGlobal);
 
 #ifdef ENABLE_CRYPTO
 	extern BOOL g_bEnableCrypto;
