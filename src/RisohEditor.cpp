@@ -169,7 +169,8 @@ LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	if (IsWindow(m_rad_window) && !IsRectEmpty(&m_rcRadWindow))
 	{
 		RECT& rc = m_rcRadWindow;
-		MoveWindow(m_rad_window, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+		SetWindowPos(m_rad_window, nullptr, rc.left, rc.top, 0, 0,
+            	     SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 		SetRectEmpty(&rc);
 	}
 	return 0;
