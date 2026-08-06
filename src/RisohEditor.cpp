@@ -24,11 +24,6 @@ std::vector<MString> g_keys;
 std::vector<MString> g_ctrl_ids;
 std::vector<MString> g_string_ids;
 HWND s_hwndEga = NULL;
-#ifdef ENABLE_CRYPTO
-	BOOL g_bEnableCrypto = TRUE;
-	MStringW g_password;
-	MStringW g_salt;
-#endif
 
 #ifndef _MSC_VER
 	typedef int (WINAPI *FN_GetMenuPosFromID)(HMENU hmenu, UINT id);
@@ -3074,20 +3069,6 @@ BOOL MMainWnd::DoLoadRES(HWND hwnd, LPCWSTR szPath)
 	return TRUE;
 }
 
-#ifdef ENABLE_CRYPTO
-BOOL SetPassword(PCWSTR password, PCWSTR salt)
-{
-	if (!password || !password[0])
-	{
-		WonClearEncryptionKey();
-		return TRUE;
-	}
-	if (salt == nullptr)
-		salt = L"";
-	return WonSetEncryptionPasswordW(password, (PBYTE)salt, lstrlenW(salt) * sizeof(WCHAR), WON_ENCRYPTION_MIN_ITERATIONS);
-}
-#endif
-
 BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 {
 	WCHAR szPath[MAX_PATH];
@@ -3194,17 +3175,18 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 		SendMessageW(m_hwndTV, WM_SETREDRAW, FALSE, 0);
 
 #ifdef ENABLE_CRYPTO
+		SetWonResPassword(nullptr, nullptr);
 		if (g_bEnableCrypto && g_password.size() && g_res.is_protected(hMod))
 		{
 			for (auto& ch : g_password) ch ^= 0xFFFF;
 			for (auto& ch : g_salt) ch ^= 0xFFFF;
-			SetPassword(g_password.c_str(), g_salt.c_str());
+			SetWonResPassword(g_password.c_str(), g_salt.c_str());
 			for (auto& ch : g_password) ch ^= 0xFFFF;
 			for (auto& ch : g_salt) ch ^= 0xFFFF;
 		}
 		else
 		{
-			SetPassword(nullptr, nullptr);
+			SetWonResPassword(nullptr, nullptr);
 		}
 #endif
 		g_res.delete_all();

@@ -20,3 +20,10 @@ BOOL Wrap_UpdateResourceW(
     WORD wLanguage,
     LPVOID lpData,
     DWORD cbData);
+VOID Wrap_FreeResourceMemory(LPVOID pMemory);
+
+extern BOOL g_bEnableCrypto;
+extern MStringW g_password;
+extern MStringW g_salt;
+
+BOOL SetWonResPassword(PCWSTR password, PCWSTR salt);

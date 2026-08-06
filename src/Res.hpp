@@ -668,54 +668,16 @@ struct EntrySet : protected EntrySetBase
 	// helper method to delete the group cursor
 	bool on_delete_group_cursor(EntryBase *entry);
 
-	struct EnumResStruct
-	{
-		EntrySet *this_;
-		BOOL failed;
-	};
-
 	// add a resource entry from an executable module
 	EntryBase *
 	add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang);
-
-	// callback to insert the resource in the executable
-	static BOOL CALLBACK
-	EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
-					WORD wIDLanguage, LPARAM lParam)
-	{
-		auto ers = (EnumResStruct *)lParam;
-		if (!ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage))
-			ers->failed = TRUE;
-		return TRUE;
-	}
-
-	// callback to insert the resource in the executable
-	static BOOL CALLBACK
-	EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
-	{
-		return ::Wrap_EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
-	}
-
-	// callback to insert the resource in the executable
-	static BOOL CALLBACK
-	EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
-	{
-		return ::Wrap_EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
-	}
 
 	// get the child if any
 	EntryBase *get_child(EntryBase *parent) const;
 
 public:
 	// add the resources in the executable module
-	BOOL from_res(HMODULE hMod)
-	{
-		EnumResStruct ers;
-		ers.this_ = this;
-		ers.failed = FALSE;
-		::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
-		return !ers.failed;
-	}
+	BOOL from_res(HMODULE hMod);
 
 	BOOL is_protected(HMODULE hMod);
 

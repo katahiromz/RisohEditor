@@ -6,6 +6,24 @@
 #define WONRES_ENABLE_CRYPTO
 #include "WonRes.h"
 
+#ifdef ENABLE_CRYPTO
+BOOL g_bEnableCrypto = FALSE;
+MStringW g_password;
+MStringW g_salt;
+
+BOOL SetWonResPassword(PCWSTR password, PCWSTR salt)
+{
+	if (!password || !password[0])
+	{
+		WonClearEncryptionKey();
+		return TRUE;
+	}
+	if (salt == nullptr)
+		salt = L"";
+	return WonSetEncryptionPasswordW(password, (PBYTE)salt, lstrlenW(salt) * sizeof(WCHAR), WON_ENCRYPTION_MIN_ITERATIONS);
+}
+#endif
+
 HRSRC Wrap_FindResourceExW(HMODULE hModule, LPCWSTR lpType, LPCWSTR lpName, WORD wLanguage)
 {
 	if (g_settings.bUseWonRes)
@@ -69,13 +87,6 @@ BOOL Wrap_EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard)
 	return EndUpdateResourceW(hUpdate, fDiscard);
 }
 
-#ifdef ENABLE_CRYPTO
-	extern BOOL g_bEnableCrypto;
-	extern MStringW g_password;
-	extern MStringW g_salt;
-	BOOL SetPassword(PCWSTR password, PCWSTR salt);
-#endif
-
 BOOL Wrap_UpdateResourceW(
 	HANDLE hUpdate,
 	LPCWSTR lpType,
@@ -84,6 +95,7 @@ BOOL Wrap_UpdateResourceW(
 	LPVOID lpData,
 	DWORD cbData)
 {
+#ifdef ENABLE_CRYPTO
 	if (g_bEnableCrypto && g_password.size())
 	{
 #ifndef RT_DLGINIT
@@ -106,7 +118,16 @@ BOOL Wrap_UpdateResourceW(
 			return WonUpdateResourceEncryptedW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
 		}
 	}
+#endif
 	if (g_settings.bUseWonRes)
 		return WonUpdateResourceW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
 	return UpdateResourceW(hUpdate, lpType, lpName, wLanguage, lpData, cbData);
+}
+
+VOID Wrap_FreeResourceMemory(LPVOID pMemory)
+{
+#ifdef ENABLE_CRYPTO
+	if (g_bEnableCrypto)
+		WonFreeResourceMemory(pMemory);
+#endif
 }

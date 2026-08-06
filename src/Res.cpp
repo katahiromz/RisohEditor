@@ -8,13 +8,6 @@
 #include "ToolbarRes.hpp"
 #include "resource.h"
 
-#ifdef ENABLE_CRYPTO
-extern BOOL g_bEnableCrypto;
-extern MStringW g_password;
-extern MStringW g_salt;
-BOOL SetPassword(PCWSTR password, PCWSTR salt);
-#endif
-
 struct AutoDeleteFileW
 {
 	std::wstring m_file;
@@ -657,13 +650,13 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
 	{
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
-		SetPassword(g_password.c_str(), g_salt.c_str());
+		SetWonResPassword(g_password.c_str(), g_salt.c_str());
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
 	}
 	else
 	{
-		SetPassword(nullptr, nullptr);
+		SetWonResPassword(nullptr, nullptr);
 	}
 #endif
 
@@ -1549,11 +1542,16 @@ EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 	if (hGlobal)
 	{
 		LPVOID pv = ::Wrap_LockResource(hGlobal);
-		if (pv && dwSize)
+		if (pv)
 		{
-			// got it. add a language entry
-			EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv)+dwSize);
-			return add_lang_entry(type, name, lang, data);
+			if (dwSize)
+			{
+				// got it. add a language entry
+				EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
+				Wrap_FreeResourceMemory(pv);
+				return add_lang_entry(type, name, lang, data);
+			}
+			Wrap_FreeResourceMemory(pv);
 		}
 	}
 
@@ -2083,6 +2081,46 @@ void EntrySet::add_default_TEXTINCLUDE()
 	add_lang_entry(L"TEXTINCLUDE", 3, 0, data);
 }
 
+struct EnumResStruct
+{
+	EntrySet *this_;
+	BOOL failed;
+};
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
+				WORD wIDLanguage, LPARAM lParam)
+{
+	auto ers = (EnumResStruct *)lParam;
+	if (!ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage))
+		ers->failed = TRUE;
+	return TRUE;
+}
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
+{
+	return ::Wrap_EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
+}
+
+// callback to insert the resource in the executable
+static BOOL CALLBACK
+EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
+{
+	return ::Wrap_EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
+}
+
+BOOL EntrySet::from_res(HMODULE hMod)
+{
+	EnumResStruct ers;
+	ers.this_ = this;
+	ers.failed = FALSE;
+	::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
+	return !ers.failed;
+}
+
 struct EnumResStruct2
 {
 	EntrySet *this_;
@@ -2097,16 +2135,16 @@ EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 	auto ers = (EnumResStruct2 *)lParam;
 	
 	// find the resource in hMod
-	HRSRC hResInfo = ::Wrap_FindResourceExW(hMod, lpszType, lpszName, wIDLanguage);
+	HRSRC hResInfo = ::FindResourceExW(hMod, lpszType, lpszName, wIDLanguage);
 	if (!hResInfo)
 		return TRUE;
 
 	// get the size and the pointer
-	DWORD dwSize = ::Wrap_SizeofResource(hMod, hResInfo);
-	HGLOBAL hGlobal = ::Wrap_LoadResource(hMod, hResInfo);
+	DWORD dwSize = ::SizeofResource(hMod, hResInfo);
+	HGLOBAL hGlobal = ::LoadResource(hMod, hResInfo);
 	if (hGlobal)
 	{
-		LPVOID pv = ::Wrap_LockResource(hGlobal);
+		LPVOID pv = ::LockResource(hGlobal);
 		if (pv && dwSize)
 		{
 			if (dwSize >= 8 && std::memcmp(pv, "WONRSRC1", 8) == 0)
@@ -2124,14 +2162,14 @@ EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 static BOOL CALLBACK
 EnumResNameProc2(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
 {
-	return ::Wrap_EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc2, lParam);
+	return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc2, lParam);
 }
 
 // callback to insert the resource in the executable
 static BOOL CALLBACK
 EnumResTypeProc2(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 {
-	return ::Wrap_EnumResourceNamesW(hMod, lpszType, EnumResNameProc2, lParam);
+	return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc2, lParam);
 }
 
 BOOL EntrySet::is_protected(HMODULE hMod)
@@ -2139,6 +2177,6 @@ BOOL EntrySet::is_protected(HMODULE hMod)
 	EnumResStruct2 ers;
 	ers.this_ = this;
 	ers.is_protected = FALSE;
-	::Wrap_EnumResourceTypesW(hMod, EnumResTypeProc2, (LPARAM)&ers);
+	EnumResourceTypesW(hMod, EnumResTypeProc2, (LPARAM)&ers);
 	return ers.is_protected;
 }

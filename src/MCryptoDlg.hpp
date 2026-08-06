@@ -9,15 +9,9 @@
 #include "resource.h"
 #include "MString.hpp"
 #include <commdlg.h>
+#include "WonResWrap.h"
 
 class MCryptoDlg;
-
-#ifdef ENABLE_CRYPTO
-	extern BOOL g_bEnableCrypto;
-	extern MStringW g_password;
-	extern MStringW g_salt;
-	BOOL SetPassword(PCWSTR password, PCWSTR salt);
-#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -63,7 +57,6 @@ public:
 		g_password = std::move(str1);
 		g_salt = std::move(str2);
 #endif
-
 		EndDialog(IDOK);
 	}
 

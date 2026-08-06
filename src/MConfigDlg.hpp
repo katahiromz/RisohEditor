@@ -15,12 +15,8 @@
 #include "MFontsDlg.hpp"
 #include "MCryptoDlg.hpp"
 #include "MRisohAutoComplete.hpp"
-
 #ifdef ENABLE_CRYPTO
-	extern BOOL g_bEnableCrypto;
-	extern MStringW g_password;
-	extern MStringW g_salt;
-	BOOL SetPassword(PCWSTR password, PCWSTR salt);
+	#include "WonResWrap.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -91,6 +87,10 @@ public:
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
 		InitLangComboBox(hCmb3, (LANGID)g_settings.nDefResLangID);
 		SubclassChildDx(m_cmb3, cmb3);
+
+#ifndef ENABLE_CRYPTO
+		EnableWindow(GetDlgItem(hwnd, psh5), FALSE);
+#endif
 
 		// auto complete
 		if (m_pAutoComplete2)
@@ -183,8 +183,10 @@ public:
 	{
 		MCryptoDlg dialog;
 		dialog.DialogBoxDx(hwnd);
+#ifdef ENABLE_CRYPTO
 		if (g_bEnableCrypto && g_password.size())
 			CheckDlgButton(hwnd, chx11, BST_CHECKED);
+#endif
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
