@@ -67,7 +67,7 @@ public:
 		for (iItem = 0; iItem < cItems; ++iItem)
 		{
 			INT length = SendMessageW(hLst1, LB_GETTEXTLEN, iItem, 0);
-			if (length + 1 < _countof(text))
+			if (length + 1 < (INT)_countof(text))
 			{
 				SendMessageW(hLst1, LB_GETTEXT, iItem, (LPARAM)text);
 				g_encrypted_types.push_back(text);
@@ -128,8 +128,8 @@ public:
 		INT cSelections = (INT)SendMessageW(hLst1, LB_GETSELCOUNT, 0, 0);
 		if (cSelections <= 0)
 			return;
-		if (cSelections > _countof(selections))
-			cSelections = _countof(selections);
+		if (cSelections > (INT)_countof(selections))
+			cSelections = (INT)_countof(selections);
 		SendMessageW(hLst1, LB_GETSELITEMS, cSelections, (LPARAM)selections);
 
 		for (INT i = cSelections - 1; i >= 0; --i)

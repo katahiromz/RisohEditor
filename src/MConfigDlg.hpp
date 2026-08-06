@@ -56,7 +56,11 @@ public:
 		SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
 
 		CheckDlgButton(hwnd, chx10, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
+#ifdef ENABLE_CRYPTO
 		CheckDlgButton(hwnd, chx11, (g_settings.bUseWonRes || g_bEnableCrypto) ? BST_CHECKED : BST_UNCHECKED);
+#else
+		CheckDlgButton(hwnd, chx11, g_settings.bUseWonRes ? BST_CHECKED : BST_UNCHECKED);
+#endif
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-old");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-bak");
 		SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"~");

@@ -172,8 +172,8 @@ public:
 			return;
 
 		INT selections[128];
-		if (cSelections > _countof(selections))
-			cSelections = _countof(selections);
+		if (cSelections > (INT)_countof(selections))
+			cSelections = (INT)_countof(selections);
 
 		::SendMessageW(hLst1, LB_GETSELITEMS, cSelections, (LPARAM)selections);
 

@@ -88,10 +88,12 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.nEgaHeight = CW_USEDEFAULT;
 	g_settings.nDefResLangID = BAD_LANG;
 
+#ifdef ENABLE_CRYPTO
 	g_bEnableCrypto = FALSE;
 	g_password.clear();
 	g_salt.clear();
 	g_encrypted_types.clear();
+#endif
 
 	HFONT hFont;
 	LOGFONTW lf, lfBin, lfSrc;
@@ -323,6 +325,20 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 		}
 	}
 
+	if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_settings.strSrcFont = szText;
+	keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)g_settings.nSrcFontSize);
+
+	if (keyRisoh.QuerySz(TEXT("strBinFont"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_settings.strBinFont = szText;
+	keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)g_settings.nBinFontSize);
+
+#ifdef ENABLE_CRYPTO
+	keyRisoh.QueryDword(TEXT("EnableCrypto"), (DWORD&)g_bEnableCrypto);
+	if (keyRisoh.QuerySz(TEXT("Password"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_password = szText;
+	if (keyRisoh.QuerySz(TEXT("Salt"), szText, _countof(szText)) == ERROR_SUCCESS)
+		g_salt = szText;
 	g_encrypted_types.clear();
 	DWORD cEncrypedTypes = 0;
 	if (keyRisoh.QueryDword(TEXT("NumEncryptedTypes"), cEncrypedTypes) == ERROR_SUCCESS)
@@ -338,20 +354,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 				g_encrypted_types.push_back(value);
 		}
 	}
-
-	if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
-		g_settings.strSrcFont = szText;
-	keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)g_settings.nSrcFontSize);
-
-	if (keyRisoh.QuerySz(TEXT("strBinFont"), szText, _countof(szText)) == ERROR_SUCCESS)
-		g_settings.strBinFont = szText;
-	keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)g_settings.nBinFontSize);
-
-	keyRisoh.QueryDword(TEXT("EnableCrypto"), (DWORD&)g_bEnableCrypto);
-	if (keyRisoh.QuerySz(TEXT("Password"), szText, _countof(szText)) == ERROR_SUCCESS)
-		g_password = szText;
-	if (keyRisoh.QuerySz(TEXT("Salt"), szText, _countof(szText)) == ERROR_SUCCESS)
-		g_salt = szText;
+#endif
 
 	INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
 	INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -620,10 +623,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());
 	keyRisoh.SetDword(TEXT("nBinFontSize"), g_settings.nBinFontSize);
 
-	keyRisoh.SetDword(TEXT("EnableCrypto"), g_bEnableCrypto);
-	keyRisoh.SetSz(L"Password", g_password.c_str());
-	keyRisoh.SetSz(L"Salt", g_salt.c_str());
-
 	DWORD i, dwCount;
 
 	// save the recently used files
@@ -671,6 +670,11 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 		++i;
 	}
 
+#ifdef ENABLE_CRYPTO
+	keyRisoh.SetDword(TEXT("EnableCrypto"), g_bEnableCrypto);
+	keyRisoh.SetSz(L"Password", g_password.c_str());
+	keyRisoh.SetSz(L"Salt", g_salt.c_str());
+
 	DWORD cEncrypedTypes = DWORD(g_encrypted_types.size());
 	keyRisoh.SetDword(TEXT("NumEncryptedTypes"), cEncrypedTypes);
 	for (DWORD i = 0; i < cEncrypedTypes; ++i)
@@ -679,6 +683,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 		StringCchPrintf(szValueName, _countof(szValueName), TEXT("EncryptedType%lu"), i);
 		keyRisoh.SetSz(szValueName, g_encrypted_types[i].c_str());
 	}
+#endif
 
 	keyRisoh.SetSz(TEXT("strWindResExe"), g_settings.strWindResExe.c_str());
 	keyRisoh.SetSz(TEXT("strCppExe"), g_settings.strCppExe.c_str());
