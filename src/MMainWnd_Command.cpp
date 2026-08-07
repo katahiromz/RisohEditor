@@ -1516,6 +1516,8 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 	DoRefreshIDList(hwnd);
 
 	DoSetFileModified(TRUE);
+
+	PostUpdateArrow(hwnd);
 }
 
 // ID_PLAY: play the sound
