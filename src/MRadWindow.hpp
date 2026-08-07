@@ -2107,50 +2107,11 @@ public:
 			EnableMenuItem(hMenu, ID_COPY, MF_ENABLED);
 		}
 
-		if (CanIndexTop())
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
-		}
-		else
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
-		}
-
-		if (CanIndexBottom())
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
-		}
-		else
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
-		}
-
-		if (CanIndexMinus())
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
-		}
-		else
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
-		}
-
-		if (CanIndexPlus())
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
-		}
-		else
-		{
-			EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
-		}
-
-		if (m_clipboard.IsAvailable())
-		{
-			EnableMenuItem(hMenu, ID_PASTE, MF_ENABLED);
-		}
-		else
-		{
-			EnableMenuItem(hMenu, ID_PASTE, MF_GRAYED);
-		}
+		EnableMenuItem(hMenu, ID_CTRLINDEXTOP, CanIndexTop() ? MF_ENABLED : MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, CanIndexBottom() ? MF_ENABLED : MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, CanIndexMinus() ? MF_ENABLED : MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, CanIndexPlus() ? MF_ENABLED : MF_GRAYED);
+		EnableMenuItem(hMenu, ID_PASTE, m_clipboard.IsAvailable() ? MF_ENABLED : MF_GRAYED);
 	}
 
 	// MRadWindow MYWM_DELETESEL
@@ -2405,13 +2366,8 @@ public:
 	// get the selected dialog items
 	BOOL GetSelectedItems(DialogItems& items)
 	{
-		auto indeces = MRadCtrl::GetTargetIndeces();
-		auto end = indeces.end();
-		for (auto it = indeces.begin(); it != end; ++it)
-		{
-			DialogItem& item = m_dialog_res[*it];
-			items.push_back(item);
-		}
+		for (INT index : MRadCtrl::GetTargetIndeces())
+			items.push_back(m_dialog_res[index]);
 		return !items.empty();
 	}
 
@@ -2444,18 +2400,13 @@ public:
 			if (m_clipboard.Paste(hwnd, items))
 			{
 				s_nShift += 5;
-				for (size_t i = 0; i < items.size(); ++i)
+				for (auto& item : items)
 				{
-					items[i].m_pt.x += s_nShift;
-					items[i].m_pt.y += s_nShift;
+					item.m_pt.x += s_nShift;
+					item.m_pt.y += s_nShift;
+					m_dialog_res.m_items.push_back(item);
+					++m_dialog_res.m_cItems;
 				}
-
-				for (size_t i = 0; i < items.size(); ++i)
-				{
-					m_dialog_res.m_cItems++;
-					m_dialog_res.m_items.push_back(items[i]);
-				}
-
 				OnRefresh(hwnd);
 			}
 			return;
@@ -2466,257 +2417,140 @@ public:
 		FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, DoSendMessage);
 	}
 
-	// called from MMainWnd WM_COMMAND ID_TOPALIGN
-	void OnTopAlign(HWND hwnd)
+	// align selected controls to a common edge (needs >= 2 targets)
+	enum AlignEdge { ALIGN_TOP, ALIGN_BOTTOM, ALIGN_LEFT, ALIGN_RIGHT };
+
+	void AlignSelection(AlignEdge edge)
 	{
-		auto set = MRadCtrl::GetTargets();
-		if (set.size() < 2)
+		auto& targets = MRadCtrl::GetTargets();
+		if (targets.size() < 2)
 			return;
 
 		RECT rc;
+		INT extreme = (edge == ALIGN_TOP || edge == ALIGN_LEFT) ? INT_MAX : INT_MIN;
 
-		// the highest Y coordinate --> nUp
-		INT nUp = INT_MAX;
-		auto end = set.end();
-		for (auto it = set.begin(); it != end; ++it)
+		for (HWND hwndCtrl : targets)
 		{
-			GetWindowRect(*it, &rc);
+			GetWindowRect(hwndCtrl, &rc);
 			MapWindowRect(NULL, m_rad_dialog, &rc);
-			if (rc.top < nUp)
-				nUp = rc.top;
+			switch (edge)
+			{
+				case ALIGN_TOP:    if (rc.top < extreme) extreme = rc.top; break;
+				case ALIGN_BOTTOM: if (extreme < rc.bottom) extreme = rc.bottom; break;
+				case ALIGN_LEFT:   if (rc.left < extreme) extreme = rc.left; break;
+				case ALIGN_RIGHT:  if (extreme < rc.right) extreme = rc.right; break;
+			}
 		}
 
-		// move the selected controls to the highest Y coordinate
-		for (auto it = set.begin(); it != end; ++it)
+		for (HWND hwndCtrl : targets)
 		{
-			// get the coordinates of the control
-			auto pCtrl = MRadCtrl::GetRadCtrl(*it);
-			GetWindowRect(*it, &rc);
+			auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+			GetWindowRect(hwndCtrl, &rc);
 			MapWindowRect(NULL, m_rad_dialog, &rc);
 
-			// move it
+			INT x = rc.left, y = rc.top;
+			switch (edge)
+			{
+				case ALIGN_TOP:    y = extreme; break;
+				case ALIGN_BOTTOM: y = extreme - (rc.bottom - rc.top); break;
+				case ALIGN_LEFT:   x = extreme; break;
+				case ALIGN_RIGHT:  x = extreme - (rc.right - rc.left); break;
+			}
+
 			pCtrl->m_bMoving = TRUE;
-			SetWindowPos(*it, NULL, rc.left, nUp, 0, 0,
+			SetWindowPos(hwndCtrl, NULL, x, y, 0, 0,
 				SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
 			pCtrl->m_bMoving = FALSE;
 		}
 	}
 
-	// called from MMainWnd WM_COMMAND ID_BOTTOMALIGN
-	void OnBottomAlign(HWND hwnd)
-	{
-		auto set = MRadCtrl::GetTargets();
-		if (set.size() < 2)
-			return;
+	void OnTopAlign(HWND hwnd)    { AlignSelection(ALIGN_TOP); }
+	void OnBottomAlign(HWND hwnd) { AlignSelection(ALIGN_BOTTOM); }
+	void OnLeftAlign(HWND hwnd)   { AlignSelection(ALIGN_LEFT); }
+	void OnRightAlign(HWND hwnd)  { AlignSelection(ALIGN_RIGHT); }
 
-		RECT rc;
-
-		// the lowest Y coordinate --> nDown
-		INT nDown = INT_MIN;
-		auto end = set.end();
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-			if (nDown < rc.bottom)
-				nDown = rc.bottom;
-		}
-
-		// move the selected controls to the lowest Y coordinate
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			// get the coordinates of the control
-			MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-
-			// the height
-			INT cy = rc.bottom - rc.top;
-
-			// move it
-			pCtrl->m_bMoving = TRUE;
-			SetWindowPos(*it, NULL, rc.left, nDown - cy, 0, 0,
-						 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
-			pCtrl->m_bMoving = FALSE;
-		}
-	}
-
-	// called from MMainWnd WM_COMMAND ID_LEFTALIGN
-	void OnLeftAlign(HWND hwnd)
-	{
-		auto set = MRadCtrl::GetTargets();
-		if (set.size() < 2)
-			return;
-
-		RECT rc;
-
-		// the leftest X coordinate --> nLeft
-		INT nLeft = INT_MAX;
-		auto end = set.end();
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-			if (rc.left < nLeft)
-				nLeft = rc.left;
-		}
-
-		// move the selected controls to the leftest coordinate
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			// get the coordinates of the control
-			MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-
-			// move it
-			pCtrl->m_bMoving = TRUE;
-			SetWindowPos(*it, NULL, nLeft, rc.top, 0, 0,
-				SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
-			pCtrl->m_bMoving = FALSE;
-		}
-	}
-
-	// called from MMainWnd WM_COMMAND ID_RIGHTALIGN
-	void OnRightAlign(HWND hwnd)
-	{
-		MRadCtrl::set_type set = MRadCtrl::GetTargets();
-		if (set.size() < 2)
-			return;
-
-		RECT rc;
-
-		// the rightest X coordinate --> nRight
-		INT nRight = INT_MIN;
-		auto end = set.end();
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-			if (nRight < rc.right)
-				nRight = rc.right;
-		}
-
-		for (auto it = set.begin(); it != end; ++it)
-		{
-			// get the coordinates of the control
-			MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-			GetWindowRect(*it, &rc);
-			MapWindowRect(NULL, m_rad_dialog, &rc);
-
-			// the width
-			INT cx = rc.right - rc.left;
-
-			// move it
-			pCtrl->m_bMoving = TRUE;
-			SetWindowPos(*it, NULL, nRight - cx, rc.top, 0, 0,
-				SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
-			pCtrl->m_bMoving = FALSE;
-		}
-	}
-
-	// able to make it top index?
+	// able to make it top index? (true if any selected item follows an unselected one)
 	BOOL CanIndexTop() const
 	{
 		auto indeces = MRadCtrl::GetTargetIndeces();
 		if (indeces.empty())
-			return FALSE;   // no
+			return FALSE;
 
-		INT iUnselected = -1;
+		BOOL saw_unselected = FALSE;
 		for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
 		{
 			if (indeces.find(i) != indeces.end())
 			{
-				if (iUnselected != -1)
-					return TRUE;    // yes
+				if (saw_unselected)
+					return TRUE;
 			}
 			else
 			{
-				iUnselected = i;
+				saw_unselected = TRUE;
 			}
 		}
+		return FALSE;
+	}
 
-		return FALSE;   // no
+	// partition items into (unselected, selected) preserving relative order
+	void PartitionBySelection(DialogItems& unselected, DialogItems& selected) const
+	{
+		auto indeces = MRadCtrl::GetTargetIndeces();
+		for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
+		{
+			if (indeces.find(i) == indeces.end())
+				unselected.push_back(m_dialog_res[i]);
+			else
+				selected.push_back(m_dialog_res[i]);
+		}
 	}
 
 	// make it top index
 	void IndexTop(HWND hwnd)
 	{
-		auto indeces = MRadCtrl::GetTargetIndeces();
-		if (indeces.empty())
+		if (MRadCtrl::GetTargetIndeces().empty())
 			return;
 
-		// move the dialog items
-		DialogItems items1, items2;
-		for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
-		{
-			if (indeces.find(i) == indeces.end())
-			{
-				items1.push_back(m_dialog_res[i]);
-			}
-			else
-			{
-				items2.push_back(m_dialog_res[i]);
-			}
-		}
-		m_dialog_res.m_items = std::move(items1);
-		m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), items2.begin(), items2.end());
-
-		// refresh
+		DialogItems unselected, selected;
+		PartitionBySelection(unselected, selected);
+		m_dialog_res.m_items = std::move(unselected);
+		m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), selected.begin(), selected.end());
 		OnRefresh(hwnd);
 	}
 
-	// able to make it bottom index?
+	// able to make it bottom index? (true if any selected item precedes an unselected one)
 	BOOL CanIndexBottom() const
 	{
 		auto indeces = MRadCtrl::GetTargetIndeces();
 		if (indeces.empty())
 			return FALSE;
 
-		// find two items to swap
-		INT iUnselected = -1;
+		BOOL saw_unselected = FALSE;
 		for (INT i = m_dialog_res.m_cItems - 1; i >= 0; --i)
 		{
 			if (indeces.find(i) != indeces.end())
 			{
-				if (iUnselected != -1)
+				if (saw_unselected)
 					return TRUE;
 			}
 			else
 			{
-				iUnselected = i;
+				saw_unselected = TRUE;
 			}
 		}
-
 		return FALSE;
 	}
 
 	// make it bottom index
 	void IndexBottom(HWND hwnd)
 	{
-		auto indeces = MRadCtrl::GetTargetIndeces();
-		if (indeces.empty())
+		if (MRadCtrl::GetTargetIndeces().empty())
 			return;
 
-		// move the dialog items
-		DialogItems items1, items2;
-		for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
-		{
-			if (indeces.find(i) == indeces.end())
-			{
-				items1.push_back(m_dialog_res[i]);
-			}
-			else
-			{
-				items2.push_back(m_dialog_res[i]);
-			}
-		}
-
-		// swap
-		m_dialog_res.m_items = std::move(items1);
-		m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), items2.begin(), items2.end());
-
-		// refresh
+		DialogItems unselected, selected;
+		PartitionBySelection(unselected, selected);
+		m_dialog_res.m_items = std::move(unselected);
+		m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), selected.begin(), selected.end());
 		OnRefresh(hwnd);
 	}
 
@@ -2724,10 +2558,7 @@ public:
 	BOOL CanIndexMinus() const
 	{
 		auto indeces = MRadCtrl::GetTargetIndeces();
-		if (indeces.empty() || indeces.count(0) > 0)
-			return FALSE;
-
-		return TRUE;
+		return !indeces.empty() && indeces.count(0) == 0;
 	}
 
 	// decrement the control index
@@ -2754,10 +2585,7 @@ public:
 	BOOL CanIndexPlus() const
 	{
 		auto indeces = MRadCtrl::GetTargetIndeces();
-		if (indeces.empty() || indeces.count(m_dialog_res.m_cItems - 1) > 0)
-			return FALSE;
-
-		return TRUE;
+		return !indeces.empty() && indeces.count(m_dialog_res.m_cItems - 1) == 0;
 	}
 
 	// increment the control index
