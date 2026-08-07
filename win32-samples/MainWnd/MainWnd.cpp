@@ -17,7 +17,15 @@ HWND g_hButton = NULL;
 // WM_CREATE
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    g_hMainWnd = hwnd;
+#if defined(NDEBUG) && defined(PROTECTION)
+	if (!IsSelfSigned())
+	{
+		char *p = nullptr;
+		*p = 0;
+	}
+#endif
+
+	g_hMainWnd = hwnd;
 
     LoadString(g_hInst, IDS_TEXT1, s_szText, _countof(s_szText));
 
@@ -27,6 +35,13 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     INT x = (rc.left + rc.right - CX_BUTTON) / 2;
     INT y = (rc.top + rc.bottom - CY_BUTTON) / 2;
 
+#if defined(NDEBUG) && defined(PROTECTION)
+	if (IsDebuggerPresent())
+	{
+		return FALSE;
+	}
+#endif
+
     DWORD style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
     HMENU id = reinterpret_cast<HMENU>(static_cast<INT_PTR>(psh1));
     g_hButton = CreateWindow(TEXT("BUTTON"), TEXT("psh1"), style,
@@ -34,6 +49,11 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
                              hwnd, id, g_hInst, NULL);
     if (!g_hButton)
         return FALSE;
+
+#if defined(NDEBUG) && defined(PROTECTION)
+	if (!IsDebuggerPresent())
+		return FALSE;
+#endif
 
     return TRUE;
 }
@@ -120,10 +140,11 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 
     g_hInst = hInstance;
 
-#if defined(NDEBUG) && defined(PROTECTION)
+#if defined(NDEBUG) && defined(PROTECTION) && defined(RESOURCE_PROTECTION)
     // TODO: Conceal the final string values trickly from digital forensic
-    WCHAR password[] = L"my password";
-    WCHAR salt[] = L"my salt my salt my salt my salt";
+    volatile WCHAR password[256] = L"my pas";
+	StringCbCatW(password, sizeof(password), L"sword");
+    volatile WCHAR salt[] = L"my salt my salt my salt my salt";
     WonSetEncryptionPasswordW(password, salt, lstrlenW(salt) * sizeof(WCHAR), WON_ENCRYPTION_MIN_ITERATIONS);
     SecureZeroMemory(password, sizeof(password));
     SecureZeroMemory(salt, sizeof(salt));
@@ -147,6 +168,14 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
         MessageBoxA(NULL, "RegisterClassEx failed", NULL, MB_ICONERROR);
         return FALSE;
     }
+
+#if defined(NDEBUG) && defined(PROTECTION)
+#if (_WIN32_WINNT >= 0x0501) // XP SP1 and later
+	BOOL bDebuggerPresent;
+	if (CheckRemoteDebuggerPresent(GetCurrentProcess(), &bDebuggerPresent) && bDebuggerPresent)
+		return 1;
+#endif
+#endif // defined(NDEBUG) && defined(PROTECTION)
 
     DWORD style = WS_OVERLAPPEDWINDOW;
     DWORD exstyle = WS_EX_ACCEPTFILES;
@@ -192,46 +221,6 @@ INT Run(VOID)
     return ExitInstance(msg);
 }
 
-////////////////////////////////////////////////////////////////////////////
-// Digital signature
-
-#if defined(NDEBUG) && defined(PROTECTION)
-#include <wintrust.h>
-#include <softpub.h>
-#pragma comment(lib, "wintrust.lib")
-#pragma comment(lib, "crypt32.lib")
-BOOL IsSelfSigned(VOID)
-{
-    WCHAR szPath[MAX_PATH] = {0};
-    if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
-        return FALSE;
-
-    WINTRUST_FILE_INFO fileInfo = {0};
-    fileInfo.cbStruct      = sizeof(WINTRUST_FILE_INFO);
-    fileInfo.pcwszFilePath = szPath;
-    fileInfo.hFile         = NULL;
-    fileInfo.pgKnownSubject = NULL;
-
-    GUID action = WINTRUST_ACTION_GENERIC_VERIFY_V2;
-
-    WINTRUST_DATA trustData = {0};
-    trustData.cbStruct            = sizeof(WINTRUST_DATA);
-    trustData.dwUIChoice          = WTD_UI_NONE;
-    trustData.fdwRevocationChecks = WTD_REVOKE_NONE;
-    trustData.dwUnionChoice       = WTD_CHOICE_FILE;
-    trustData.pFile               = &fileInfo;
-    trustData.dwStateAction       = WTD_STATEACTION_VERIFY;
-    trustData.hWVTStateData       = NULL;
-
-    LONG status = WinVerifyTrust(NULL, &action, &trustData);
-
-    trustData.dwStateAction = WTD_STATEACTION_CLOSE;
-    WinVerifyTrust(NULL, &action, &trustData);
-
-    return (status == ERROR_SUCCESS);
-}
-#endif // defined(NDEBUG) && defined(PROTECTION)
-
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
@@ -241,11 +230,6 @@ WinMain(HINSTANCE   hInstance,
 #if defined(NDEBUG) && defined(PROTECTION)
     if (IsDebuggerPresent())
         return 1;
-    if (!IsSelfSigned())
-    {
-        MessageBoxA(NULL, "No valid digital signature.", NULL, MB_ICONERROR);
-        return 1;
-    }
 #endif // defined(NDEBUG) && defined(PROTECTION)
 
 #if defined(_MSC_VER) && !defined(NDEBUG)

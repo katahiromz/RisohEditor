@@ -11,6 +11,7 @@
 #include "Utils.h"
 #include "WonRes.h"
 #include "resource.h"
+#include "protection.h"
 #include <process.h>   // _beginthreadex
 
 LPWSTR g_pszLogFile = NULL;
@@ -7482,6 +7483,11 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
 	MWaitCursor wait;
 
+#if defined(NDEBUG) && defined(PROTECTION)
+	if (!IsSelfSigned())
+		return FALSE;
+#endif
+
 	m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
 	g_hMainWnd = hwnd;
@@ -8289,6 +8295,14 @@ RisohEditor_Main(
 	LPWSTR      lpCmdLine,
 	INT         nCmdShow)
 {
+#if defined(NDEBUG) && defined(PROTECTION)
+#if (_WIN32_WINNT >= 0x0501)
+	BOOL bDebuggerPresent;
+	if (CheckRemoteDebuggerPresent(GetCurrentProcess(), &bDebuggerPresent) && bDebuggerPresent)
+		return 1;
+#endif
+#endif // defined(NDEBUG) && defined(PROTECTION)
+
 	SetEnvironmentVariableW(L"LANG", L"en_US");
 	setlocale(LC_CTYPE, "");
 
@@ -8385,46 +8399,6 @@ RisohEditor_Main(
 }
 
 ////////////////////////////////////////////////////////////////////////////
-// Digital signature
-
-#if defined(NDEBUG) && defined(PROTECTION)
-#include <wintrust.h>
-#include <softpub.h>
-#pragma comment(lib, "wintrust.lib")
-#pragma comment(lib, "crypt32.lib")
-BOOL IsSelfSigned(VOID)
-{
-    WCHAR szPath[MAX_PATH] = {0};
-    if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
-        return FALSE;
-
-    WINTRUST_FILE_INFO fileInfo = {0};
-    fileInfo.cbStruct      = sizeof(WINTRUST_FILE_INFO);
-    fileInfo.pcwszFilePath = szPath;
-    fileInfo.hFile         = NULL;
-    fileInfo.pgKnownSubject = NULL;
-
-    GUID action = WINTRUST_ACTION_GENERIC_VERIFY_V2;
-
-    WINTRUST_DATA trustData = {0};
-    trustData.cbStruct            = sizeof(WINTRUST_DATA);
-    trustData.dwUIChoice          = WTD_UI_NONE;
-    trustData.fdwRevocationChecks = WTD_REVOKE_NONE;
-    trustData.dwUnionChoice       = WTD_CHOICE_FILE;
-    trustData.pFile               = &fileInfo;
-    trustData.dwStateAction       = WTD_STATEACTION_VERIFY;
-    trustData.hWVTStateData       = NULL;
-
-    LONG status = WinVerifyTrust(NULL, &action, &trustData);
-
-    trustData.dwStateAction = WTD_STATEACTION_CLOSE;
-    WinVerifyTrust(NULL, &action, &trustData);
-
-    return (status == ERROR_SUCCESS);
-}
-#endif // defined(NDEBUG) && defined(PROTECTION)
-
-////////////////////////////////////////////////////////////////////////////
 
 #include "WowFsRedirection.h"
 
@@ -8439,11 +8413,6 @@ wWinMain(HINSTANCE   hInstance,
 #if defined(NDEBUG) && defined(PROTECTION)
 	if (IsDebuggerPresent())
 		return 1;
-	if (!IsSelfSigned())
-	{
-		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
-		return 1;
-	}
 #endif // defined(NDEBUG) && defined(PROTECTION)
 
 #if defined(_MSC_VER) && !defined(NDEBUG)
