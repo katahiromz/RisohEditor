@@ -1139,6 +1139,19 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 	return bOK;
 }
 
+void MMainWnd::UpdateHexViewerContent()
+{
+	if (m_strHexCache.empty())
+	{
+		auto entry = g_res.get_entry();
+		if (entry && !entry->m_data.empty())
+		{
+			m_strHexCache = DumpBinaryAsText(entry->m_data);
+		}
+	}
+	SetWindowTextW(m_hHexViewer, m_strHexCache.c_str());
+}
+
 void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 {
 	m_bShowBinEdit = bShowBinary;
@@ -1152,6 +1165,8 @@ void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 		ShowWindow(m_hHexViewer, SW_SHOWNOACTIVATE);
 		m_splitter2.SetPaneCount(1);
 		m_splitter2.SetPane(0, m_hHexViewer);
+
+		UpdateHexViewerContent();
 	}
 	else
 	{

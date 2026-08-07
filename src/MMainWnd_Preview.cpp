@@ -497,9 +497,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 	if (stv == STV_DONTRESET)
 		return IsEntryTextEditable(entry);
 
-	// show the binary
-	MStringW str = DumpBinaryAsText(entry->m_data);
-	SetWindowTextW(m_hHexViewer, str.c_str());
+	ClearHexCache();
 
 	// code only
 	SetShowMode(SHOW_CODEONLY);

@@ -90,7 +90,11 @@ protected:
 	MIdOrString     m_type;
 	MIdOrString     m_name;
 	LANGID          m_lang;
-    BOOL            m_bShowBinEdit;
+	BOOL            m_bShowBinEdit;
+	MStringW        m_strHexCache;
+
+	void UpdateHexViewerContent();
+	void ClearHexCache() { m_strHexCache.clear(); }
 
 	// classes
 	MRadWindow      m_rad_window;               // the RADical window
