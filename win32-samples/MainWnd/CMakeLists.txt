@@ -38,6 +38,13 @@ if(PROTECTION)
     add_definitions(-DPROTECTION)
 endif()
 
+# RESOURCE_PROTECTION option
+option(RESOURCE_PROTECTION "Resource Protection on Release" OFF)
+message(STATUS "RESOURCE_PROTECTION: ${RESOURCE_PROTECTION}")
+if(RESOURCE_PROTECTION)
+    add_definitions(-DRESOURCE_PROTECTION)
+endif()
+
 # MainWnd.exe
 add_executable(MainWnd WIN32 MainWnd.cpp MainWnd_res.rc)
 target_link_libraries(MainWnd comctl32)
