@@ -305,27 +305,51 @@ public:
 	// move the selected RADical controls
 	static void MoveSelection(HWND hwnd, INT dx, INT dy)
 	{
-		// for each target
-		for (auto target : GetTargets())
+		auto& targets = GetTargets();
+		if (targets.empty())
+			return;
+
+		for (auto target : targets)
 		{
 			if (hwnd == target)
-				continue;   // care the others only
-
-			if (auto pCtrl = GetRadCtrl(target))    // RADical control?
-			{
-				// get the window rectangle relative to the parent
-				RECT rc;
-				GetWindowRect(*pCtrl, &rc);
-				MapWindowRect(NULL, ::GetParent(*pCtrl), &rc);
-
-				// move the offset by dx and dy
-				OffsetRect(&rc, dx, dy);
-
-				// move it
+				continue;
+			if (auto pCtrl = GetRadCtrl(target))
 				pCtrl->m_bMoving = TRUE;
-				pCtrl->SetWindowPosDx((LPPOINT)&rc);
-				pCtrl->m_bMoving = FALSE;
+		}
+
+		HDWP hdwp = BeginDeferWindowPos(static_cast<int>(targets.size()));
+		if (hdwp)
+		{
+			for (auto target : targets)
+			{
+				if (hwnd == target)
+					continue;
+
+				if (auto pCtrl = GetRadCtrl(target))
+				{
+					RECT rc;
+					GetWindowRect(*pCtrl, &rc);
+					MapWindowRect(NULL, ::GetParent(*pCtrl), &rc);
+					OffsetRect(&rc, dx, dy);
+
+					hdwp = DeferWindowPos(hdwp, *pCtrl, NULL,
+										  rc.left, rc.top, 0, 0,
+										  SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+					if (!hdwp)
+						break;
+				}
 			}
+
+			if (hdwp)
+				EndDeferWindowPos(hdwp);
+		}
+
+		for (auto target : targets)
+		{
+			if (hwnd == target)
+				continue;
+			if (auto pCtrl = GetRadCtrl(target))
+				pCtrl->m_bMoving = FALSE;
 		}
 
 		PostMessage(GetParent(hwnd), MYWM_REDRAW, 0, 0);
@@ -334,27 +358,51 @@ public:
 	// resize the selected RADical controls
 	static void ResizeSelection(HWND hwnd, INT cx, INT cy)
 	{
-		// for each target
-		for (auto target : GetTargets())
+		auto& targets = GetTargets();
+		if (targets.empty())
+			return;
+
+		for (auto target : targets)
 		{
 			if (hwnd == target)
-				continue;   // care the others only
-
-			// is it a resizing RADical control?
-			auto pCtrl = GetRadCtrl(target);
-			if (pCtrl && !pCtrl->m_bSizing)
-			{
-				// resize it
+				continue;
+			if (auto pCtrl = GetRadCtrl(target))
 				pCtrl->m_bSizing = TRUE;
-				SIZE siz = { cx , cy };
-				pCtrl->SetWindowPosDx(NULL, &siz);
-				pCtrl->m_bSizing = FALSE;
+		}
 
-				// also move the rubber band
-				if (auto band = pCtrl->GetRubberBand())
+		HDWP hdwp = BeginDeferWindowPos(static_cast<int>(targets.size()));
+		if (hdwp)
+		{
+			for (auto target : targets)
+			{
+				if (hwnd == target)
+					continue;
+
+				if (auto pCtrl = GetRadCtrl(target))
 				{
-					band->FitToTarget();
+					hdwp = DeferWindowPos(hdwp, *pCtrl, NULL,
+										  0, 0, cx, cy,
+										  SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+					if (!hdwp)
+						break;
 				}
+			}
+
+			if (hdwp)
+				EndDeferWindowPos(hdwp);
+		}
+
+		for (auto target : targets)
+		{
+			if (hwnd == target)
+				continue;
+
+			if (auto pCtrl = GetRadCtrl(target))
+			{
+				if (auto band = pCtrl->GetRubberBand())
+					band->FitToTarget();
+
+				pCtrl->m_bSizing = FALSE;
 			}
 		}
 
@@ -556,7 +604,7 @@ public:
 			// redraw
 			RECT rc;
 			GetClientRect(hwnd, &rc);
-			InvalidateRect(hwnd, &rc, TRUE);
+			InvalidateRect(hwnd, &rc, FALSE);
 
 			// send MYWM_CTRLMOVE to the parent
 			DoSendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
@@ -583,7 +631,7 @@ public:
 			DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
 
 			// redraw
-			InvalidateRect(hwnd, NULL, TRUE);
+			InvalidateRect(hwnd, NULL, FALSE);
 		}
 	}
 
@@ -1053,7 +1101,7 @@ public:
 	// MRadDialog MYWM_REDRAW
 	LRESULT OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	{
-		InvalidateRect(hwnd, NULL, TRUE);
+		InvalidateRect(hwnd, NULL, FALSE);
 		return 0;
 	}
 
@@ -1222,13 +1270,31 @@ public:
 		if (m_hbrBack == NULL)
 			ReCreateBackBrush();
 
-		// get the client rectangle
 		RECT rc;
-		GetClientRect(hwnd, &rc);
+		if (!GetUpdateRect(hwnd, &rc, FALSE))
+			GetClientRect(hwnd, &rc);
 
-		// fill the rectangle by the brush
+		WCHAR cls[MAX_PATH];
+		RECT rcCtrl;
+		MRubberBand band;
+		PCWSTR rubber_cls = band.GetWndClassNameDx();
+
+		for (HWND hCtrl = GetTopWindow(hwnd); hCtrl; hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
+		{
+			if (!IsWindowVisible(hCtrl))
+				continue;
+
+			GetClassNameW(hCtrl, cls, _countof(cls));
+			if (lstrcmpiW(cls, rubber_cls) == 0)
+				continue;
+
+			GetWindowRect(hCtrl, &rcCtrl);
+			MapWindowRect(NULL, hwnd, &rcCtrl);
+
+			ExcludeClipRect(hdc, rcCtrl.left, rcCtrl.top, rcCtrl.right, rcCtrl.bottom);
+		}
+
 		FillRect(hdc, &rc, m_hbrBack);
-
 		return TRUE;    // processed
 	}
 
