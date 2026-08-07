@@ -962,15 +962,18 @@ inline BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc)
 	return TRUE;
 }
 
+// This is a buggy function. Don't use it for new code
 inline BOOL MZCAPI
 SetWindowPosDx(HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
 	HWND hwndInsertAfter/* = NULL*/,
 	UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
 {
+#if 1 // This is a fatal bug. Don't use this function.
 	if (hwndInsertAfter == NULL)
 	{
 		uFlags |= SWP_NOZORDER;
 	}
+#endif
 
 	INT x = 0, y = 0;
 	if (ppt == NULL)
