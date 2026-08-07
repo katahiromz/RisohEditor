@@ -22,7 +22,7 @@ class MAddResDlg : public MDialogBase
 public:
 	MIdOrString m_type;
 	MIdOrString m_name;
-	LANGID m_lang;
+	LANGID m_lang = BAD_LANG;
 	MStringW m_strTemplate;
 	LPCTSTR m_file;
 	MStringW m_strText;
