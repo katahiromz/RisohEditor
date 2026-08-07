@@ -243,7 +243,7 @@ WinMain(HINSTANCE   hInstance,
 		return 1;
 	if (!IsSelfSigned())
 	{
-		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
+		MessageBoxA(NULL, "No valid digital signature.", NULL, MB_ICONERROR);
 		return 1;
 	}
 #endif // defined(NDEBUG) && defined(PROTECTION)
