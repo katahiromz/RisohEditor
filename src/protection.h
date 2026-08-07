@@ -17,7 +17,7 @@
 
 #ifndef DO_FORCE_INLINE
 	#ifdef _MSC_VER
-		#define DO_FORCE_INLINE __foceinline
+		#define DO_FORCE_INLINE __forceinline
 	#else
 		#define DO_FORCE_INLINE __attribute__((always_inline))
 	#endif
