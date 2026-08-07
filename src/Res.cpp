@@ -7,6 +7,9 @@
 #include "Res.hpp"
 #include "ToolbarRes.hpp"
 #include "resource.h"
+#ifdef ENABLE_CRYPTO
+#include "WonRes.h"
+#endif
 
 #ifdef ENABLE_CRYPTO
 extern BOOL g_bEnableCrypto2;
@@ -2093,6 +2096,7 @@ BOOL EntrySet::from_res(HMODULE hMod)
 	return !ers.failed;
 }
 
+#ifdef ENABLE_CRYPTO
 struct EnumResStruct2
 {
 	EntrySet *this_;
@@ -2119,7 +2123,7 @@ EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 		LPVOID pv = ::LockResource(hGlobal);
 		if (pv && dwSize)
 		{
-			if (dwSize >= 8 && std::memcmp(pv, "WONRSRC1", 8) == 0)
+			if (dwSize >= 8 && std::memcmp(pv, WON_CRYPT_MAGIC, 8) == 0)
 			{
 				ers->is_protected = TRUE;
 				return FALSE;
@@ -2143,14 +2147,19 @@ EnumResTypeProc2(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 {
 	return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc2, lParam);
 }
+#endif // def ENABLE_CRYPTO
 
 BOOL EntrySet::is_protected(HMODULE hMod)
 {
+#ifdef ENABLE_CRYPTO
 	EnumResStruct2 ers;
 	ers.this_ = this;
 	ers.is_protected = FALSE;
 	EnumResourceTypesW(hMod, EnumResTypeProc2, (LPARAM)&ers);
 	return ers.is_protected;
+#else
+	return FALSE;
+#endif
 }
 
 // delete all the entries

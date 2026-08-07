@@ -25,6 +25,7 @@ add_library(libRisohEditor STATIC
     Utils.cpp
     VersionRes.cpp
     WonResWrap.cpp)
+target_link_libraries(libRisohEditor PUBLIC WonRes)
 set_target_properties(libRisohEditor PROPERTIES PREFIX "")
 
 # Create object libraries for shared source files.
@@ -32,6 +33,9 @@ add_library(RisohEditorMain_obj OBJECT RisohEditor.cpp)
 add_library(settings_obj OBJECT settings.cpp)
 add_library(settingsPortable_obj OBJECT settings.cpp)
 target_compile_definitions(settingsPortable_obj PRIVATE PORTABLE)
+target_link_libraries(RisohEditorMain_obj PRIVATE WonRes)
+target_link_libraries(settings_obj PRIVATE WonRes)
+target_link_libraries(settingsPortable_obj PRIVATE WonRes)
 
 # RisohEditor.exe
 add_executable(RisohEditor WIN32

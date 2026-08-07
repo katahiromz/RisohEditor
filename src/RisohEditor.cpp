@@ -9,7 +9,6 @@
 #include "LineNumEdit.hpp"
 #include "ToolbarRes.hpp"
 #include "Utils.h"
-#define WONRES_ENABLE_CRYPTO
 #include "WonRes.h"
 #include "resource.h"
 #include <process.h>   // _beginthreadex

@@ -79,7 +79,6 @@ endif()
 
 ##############################################################################
 
-include_directories(WonRes)
 include_directories(WonSetThreadUILanguage)
 
 add_subdirectory(WonRes)

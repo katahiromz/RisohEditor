@@ -3,7 +3,6 @@
 // License: GPL-3 or later
 #include <windows.h>
 #include "settings.h"
-#define WONRES_ENABLE_CRYPTO
 #include "WonRes.h"
 
 #ifdef ENABLE_CRYPTO
