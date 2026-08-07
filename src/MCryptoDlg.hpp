@@ -42,6 +42,7 @@ public:
 		EnableWindow(GetDlgItem(hwnd, edt2), FALSE);
 		EnableWindow(GetDlgItem(hwnd, edt3), FALSE);
 		EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
+		EnableWindow(GetDlgItem(hwnd, psh2), FALSE);
 #endif
 		CenterWindowDx();
 		return TRUE;
