@@ -124,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
     // TODO: Conceal the final string values trickly from digital forensic
     WCHAR password[] = L"my password";
     WCHAR salt[] = L"my salt my salt my salt my salt";
-    WonSetEncryptionPasswordW(password, salt, sizeof(salt), WON_ENCRYPTION_MIN_ITERATIONS);
+    WonSetEncryptionPasswordW(password, salt, lstrlenW(salt) * sizeof(WCHAR), WON_ENCRYPTION_MIN_ITERATIONS);
     SecureZeroMemory(password, sizeof(password));
     SecureZeroMemory(salt, sizeof(salt));
 #endif
