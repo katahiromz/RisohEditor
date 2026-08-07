@@ -71,7 +71,7 @@ if(ENABLE_CRYPTO)
 endif()
 
 # PROTECTION option
-option(PROTECTION "Software Protection" OFF)
+option(PROTECTION "Software Protection on Release" OFF)
 message(STATUS "PROTECTION: ${PROTECTION}")
 if(PROTECTION)
     add_definitions(-DPROTECTION)

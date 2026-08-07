@@ -151,6 +151,7 @@ Source: "win32-samples\MainWnd\.gitignore"; DestDir: "{app}\win32-samples\MainWn
 Source: "win32-samples\MainWnd\CMakeLists.txt"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\MainWnd.cpp"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\MainWnd_res.rc"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\stdafx.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\resource.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\lang\en_US.rc"; DestDir: "{app}\win32-samples\MainWnd\lang"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\res\Icon_100.ico"; DestDir: "{app}\win32-samples\MainWnd\res"; Flags: ignoreversion

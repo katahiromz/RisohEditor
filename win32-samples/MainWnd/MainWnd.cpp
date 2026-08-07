@@ -1,10 +1,8 @@
-// MainWnd.cpp --- A Windows application
+// MainWnd.cpp --- A protected Windows application
 // Author: katahiromz
 // License: CC0
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
-#include "resource.h"
+
+#include "stdafx.h"
 
 HINSTANCE g_hInst = NULL;
 HWND g_hMainWnd = NULL;
@@ -122,6 +120,15 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 
     g_hInst = hInstance;
 
+#if defined(NDEBUG) && defined(PROTECTION)
+    // TODO: Conceal the final string values trickly from digital forensic
+    WCHAR password[] = L"my password";
+    WCHAR salt[] = L"my salt my salt my salt my salt";
+    WonSetEncryptionPasswordW(password, salt, sizeof(salt), WON_ENCRYPTION_MIN_ITERATIONS);
+    SecureZeroMemory(password, sizeof(password));
+    SecureZeroMemory(salt, sizeof(salt));
+#endif
+
     WNDCLASSEX wcx = { sizeof(wcx) };
     wcx.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wcx.lpfnWndProc = WindowProc;
@@ -185,12 +192,67 @@ INT Run(VOID)
     return ExitInstance(msg);
 }
 
+////////////////////////////////////////////////////////////////////////////
+// Digital signature
+
+#if defined(NDEBUG) && defined(PROTECTION)
+#include <wintrust.h>
+#include <softpub.h>
+#pragma comment(lib, "wintrust.lib")
+#pragma comment(lib, "crypt32.lib")
+BOOL IsSelfSigned(VOID)
+{
+    WCHAR szPath[MAX_PATH] = {0};
+    if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
+        return FALSE;
+
+    WINTRUST_FILE_INFO fileInfo = {0};
+    fileInfo.cbStruct      = sizeof(WINTRUST_FILE_INFO);
+    fileInfo.pcwszFilePath = szPath;
+    fileInfo.hFile         = NULL;
+    fileInfo.pgKnownSubject = NULL;
+
+    GUID action = WINTRUST_ACTION_GENERIC_VERIFY_V2;
+
+    WINTRUST_DATA trustData = {0};
+    trustData.cbStruct            = sizeof(WINTRUST_DATA);
+    trustData.dwUIChoice          = WTD_UI_NONE;
+    trustData.fdwRevocationChecks = WTD_REVOKE_NONE;
+    trustData.dwUnionChoice       = WTD_CHOICE_FILE;
+    trustData.pFile               = &fileInfo;
+    trustData.dwStateAction       = WTD_STATEACTION_VERIFY;
+    trustData.hWVTStateData       = NULL;
+
+    LONG status = WinVerifyTrust(NULL, &action, &trustData);
+
+    trustData.dwStateAction = WTD_STATEACTION_CLOSE;
+    WinVerifyTrust(NULL, &action, &trustData);
+
+    return (status == ERROR_SUCCESS);
+}
+#endif // defined(NDEBUG) && defined(PROTECTION)
+
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
         LPSTR       lpCmdLine,
         INT         nCmdShow)
 {
+#if defined(NDEBUG) && defined(PROTECTION)
+	if (IsDebuggerPresent())
+		return 1;
+	if (!IsSelfSigned())
+	{
+		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
+		return 1;
+	}
+#endif // defined(NDEBUG) && defined(PROTECTION)
+
+#if defined(_MSC_VER) && !defined(NDEBUG)
+	// for detecting memory leak (MSVC only)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
     if (!InitInstance(hInstance, nCmdShow))
         return EXIT_FAILURE;
 

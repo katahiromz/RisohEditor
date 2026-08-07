@@ -31,6 +31,13 @@ elseif (MSVC)
     endforeach()
 endif()
 
+# PROTECTION option
+option(PROTECTION "Software Protection on Release" OFF)
+message(STATUS "PROTECTION: ${PROTECTION}")
+if(PROTECTION)
+    add_definitions(-DPROTECTION)
+endif()
+
 # MainWnd.exe
 add_executable(MainWnd WIN32 MainWnd.cpp MainWnd_res.rc)
 target_link_libraries(MainWnd comctl32)
