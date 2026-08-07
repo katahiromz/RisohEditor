@@ -15,7 +15,15 @@
 #pragma comment(lib, "wintrust.lib")
 #pragma comment(lib, "crypt32.lib")
 
-static inline BOOL VerifyCertThumbprint(PCCERT_CONTEXT pCertContext)
+#ifndef DO_FORCE_INLINE
+	#ifdef _MSC_VER
+		#define DO_FORCE_INLINE __foceinline
+	#else
+		#define DO_FORCE_INLINE __attribute__((always_inline))
+	#endif
+#endif
+
+DO_FORCE_INLINE static inline BOOL VerifyCertThumbprint(PCCERT_CONTEXT pCertContext)
 {
 	// TODO: Set your thumbprint from your signed EXE properties
 	static const BYTE expectedThumbprint[20] =
@@ -40,7 +48,7 @@ static inline BOOL VerifyCertThumbprint(PCCERT_CONTEXT pCertContext)
 	return (memcmp(hash, expectedThumbprint, hashSize) == 0);
 }
 
-static inline BOOL IsExeSigned(VOID)
+DO_FORCE_INLINE static inline BOOL IsExeSigned(VOID)
 {
 	WCHAR szPath[MAX_PATH] = {0};
 	if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
