@@ -18,7 +18,7 @@ HWND g_hButton = NULL;
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
 #if defined(NDEBUG) && defined(PROTECTION)
-	if (!IsSelfSigned())
+	if (!IsExeSigned())
 		return FALSE;
 #endif
 

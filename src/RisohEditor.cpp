@@ -7484,7 +7484,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	MWaitCursor wait;
 
 #if defined(NDEBUG) && defined(PROTECTION)
-	if (!IsSelfSigned())
+	if (!IsExeSigned())
 		return FALSE;
 #endif
 

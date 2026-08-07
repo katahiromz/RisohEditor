@@ -40,7 +40,7 @@ static inline BOOL VerifyCertThumbprint(PCCERT_CONTEXT pCertContext)
 	return (memcmp(hash, expectedThumbprint, hashSize) == 0);
 }
 
-static inline BOOL IsSelfSigned(VOID)
+static inline BOOL IsExeSigned(VOID)
 {
 	WCHAR szPath[MAX_PATH] = {0};
 	if (GetModuleFileNameW(NULL, szPath, MAX_PATH) == 0)
