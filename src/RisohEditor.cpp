@@ -8387,7 +8387,7 @@ RisohEditor_Main(
 ////////////////////////////////////////////////////////////////////////////
 // Digital signature
 
-#if defined(NDEBUG) && defined(CHECK_SIGN) && defined(_MSC_VER)
+#if defined(NDEBUG) && defined(PROTECTION)
 #include <wintrust.h>
 #include <softpub.h>
 #pragma comment(lib, "wintrust.lib")
@@ -8422,7 +8422,7 @@ BOOL IsSelfSigned(VOID)
 
     return (status == ERROR_SUCCESS);
 }
-#endif
+#endif // defined(NDEBUG) && defined(PROTECTION)
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -8436,18 +8436,15 @@ wWinMain(HINSTANCE   hInstance,
 		 LPWSTR      lpCmdLine,
 		 INT         nCmdShow)
 {
-#ifdef NDEBUG
-	// Code protection
+#if defined(NDEBUG) && defined(PROTECTION)
 	if (IsDebuggerPresent())
 		return 1;
-#if defined(CHECK_SIGN) && defined(_MSC_VER)
 	if (!IsSelfSigned())
 	{
 		MessageBoxA(NULL, "No digital signature.", NULL, MB_ICONERROR);
 		return 1;
 	}
-#endif
-#endif // def NDEBUG
+#endif // defined(NDEBUG) && defined(PROTECTION)
 
 #if defined(_MSC_VER) && !defined(NDEBUG)
 	// for detecting memory leak (MSVC only)
