@@ -56,6 +56,12 @@ The portable version doesn't use registry but an ini file.
 
 Yes, it does.
 
+### Question 7. What is WonRes?
+
+It's my Win32 resource data manipulator. It can load and save resource data and has encryption and decryption feature.
+
+For details, see [katahiromz/WonRes](https://github.com/katahiromz/WonRes) .
+
 ## Contact Us
 
 katayama.hirofumi.mz@gmail.com
