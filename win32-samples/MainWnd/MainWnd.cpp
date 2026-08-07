@@ -239,18 +239,18 @@ WinMain(HINSTANCE   hInstance,
         INT         nCmdShow)
 {
 #if defined(NDEBUG) && defined(PROTECTION)
-	if (IsDebuggerPresent())
-		return 1;
-	if (!IsSelfSigned())
-	{
-		MessageBoxA(NULL, "No valid digital signature.", NULL, MB_ICONERROR);
-		return 1;
-	}
+    if (IsDebuggerPresent())
+        return 1;
+    if (!IsSelfSigned())
+    {
+        MessageBoxA(NULL, "No valid digital signature.", NULL, MB_ICONERROR);
+        return 1;
+    }
 #endif // defined(NDEBUG) && defined(PROTECTION)
 
 #if defined(_MSC_VER) && !defined(NDEBUG)
-	// for detecting memory leak (MSVC only)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    // for detecting memory leak (MSVC only)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
     if (!InitInstance(hInstance, nCmdShow))
