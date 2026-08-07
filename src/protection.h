@@ -1,6 +1,6 @@
 // protection.h
 // Author: katahiromz
-// License: GPL v3
+// License: CC0
 
 #pragma once
 

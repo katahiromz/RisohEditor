@@ -19,10 +19,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
 #if defined(NDEBUG) && defined(PROTECTION)
 	if (!IsSelfSigned())
-	{
-		char *p = nullptr;
-		*p = 0;
-	}
+		return FALSE;
 #endif
 
 	g_hMainWnd = hwnd;
@@ -37,9 +34,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 #if defined(NDEBUG) && defined(PROTECTION)
 	if (IsDebuggerPresent())
-	{
 		return FALSE;
-	}
 #endif
 
     DWORD style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
@@ -51,7 +46,7 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
 #if defined(NDEBUG) && defined(PROTECTION)
-	if (!IsDebuggerPresent())
+	if (IsDebuggerPresent())
 		return FALSE;
 #endif
 
