@@ -335,9 +335,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
 #ifdef ENABLE_CRYPTO
 	keyRisoh.QueryDword(TEXT("EnableCrypto"), (DWORD&)g_bEnableCrypto);
-	if (keyRisoh.QuerySz(TEXT("Password"), szText, _countof(szText)) == ERROR_SUCCESS)
+    ZeroMemory(szText, sizeof(szText));
+	if (keyRisoh.QueryBinary(TEXT("Password"), szText, sizeof(szText) - sizeof(UNICODE_NULL)) == ERROR_SUCCESS)
 		g_password = szText;
-	if (keyRisoh.QuerySz(TEXT("Salt"), szText, _countof(szText)) == ERROR_SUCCESS)
+    ZeroMemory(szText, sizeof(szText));
+	if (keyRisoh.QueryBinary(TEXT("Salt"), szText, sizeof(szText) - sizeof(UNICODE_NULL)) == ERROR_SUCCESS)
 		g_salt = szText;
 	g_encrypted_types.clear();
 	DWORD cEncrypedTypes = 0;
@@ -672,8 +674,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
 #ifdef ENABLE_CRYPTO
 	keyRisoh.SetDword(TEXT("EnableCrypto"), g_bEnableCrypto);
-	keyRisoh.SetSz(L"Password", g_password.c_str());
-	keyRisoh.SetSz(L"Salt", g_salt.c_str());
+	keyRisoh.SetBinary(L"Password", g_password.c_str(), g_password.size() * sizeof(WCHAR));
+	keyRisoh.SetBinary(L"Salt", g_salt.c_str(), g_salt.size() * sizeof(WCHAR));
 
 	DWORD cEncrypedTypes = DWORD(g_encrypted_types.size());
 	keyRisoh.SetDword(TEXT("NumEncryptedTypes"), cEncrypedTypes);
