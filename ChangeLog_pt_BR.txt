@@ -6,6 +6,7 @@
     - Acelere o OnNew.
     - Adicionado suporte para BMP comprimido com RLE.
     - Reduz a cintilação na janela MRadWindow.
+    - Reduz a cintilação na janela m_hCodeEditor.
 - v.6.1.2 (2026-08-05)
     - Possibilidade de compilar novamente com MinGW ou RosBE.
     - Capacidade de alterar o tipo de recurso.

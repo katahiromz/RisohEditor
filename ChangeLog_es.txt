@@ -6,6 +6,7 @@
     - Acelerar OnNew.
     - Se ha añadido compatibilidad con archivos BMP comprimidos con RLE.
     - Reduce el parpadeo en MRadWindow.
+    - Reduce el parpadeo en m_hCodeEditor.
 - v.6.1.2 (2026-08-05)
     - Se puede compilar de nuevo con MinGW o RosBE.
     - Capaz de cambiar el tipo de recurso.

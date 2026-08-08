@@ -7696,6 +7696,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
 		DO_MSG(WM_SETFOCUS, OnSetFocus);
 		DO_MSG(WM_KILLFOCUS, OnKillFocus);
+		DO_MSG(WM_TIMER, OnTimer);
 		DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
 		DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
 		DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
@@ -7852,16 +7853,17 @@ LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	return -1;
 }
 
-// MYWM_UPDATEDLGRES
-LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
+void MMainWnd::OnTimer(HWND hwnd, UINT id)
 {
-	DoSetFileModified(TRUE);
+	if (id != 999)
+		return;
+	::KillTimer(hwnd, 999);
 
 	// get the selected language entry
 	auto entry = g_res.get_lang_entry();
 	if (!entry || entry->m_type != RT_DIALOG)
 	{
-		return 0;
+		return;
 	}
 
 	auto& dialog_res = m_rad_window.m_dialog_res;
@@ -7872,17 +7874,31 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	entry->m_data = stream.data();
 
 	// entry->m_lang + dialog_res --> str --> m_hCodeEditor (text)
+	// Suppress redraw on the LineNumEdit (and its line-number static, via the
+	// WM_SETREDRAW forwarding in LineNumEdit) so a single coherent paint
+	// happens after the text is fully replaced. Without this the gutter and
+	// edit can each repaint mid-update and show as flicker, especially when
+	// RAD repeatedly posts MYWM_UPDATEDLGRES while the user drags controls.
 	MString str = GetLanguageStatement(entry->m_lang);
 	str += dialog_res.Dump(entry->m_name);
 	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
 	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
-	InvalidateRect(m_hCodeEditor, nullptr, FALSE);
+	// Invalidate the edit and its children (the line-number static) together.
+	::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 
 	// entry->m_data --> m_hHexViewer (binary)
 	str = DumpBinaryAsText(entry->m_data);
 	SetWindowTextW(m_hHexViewer, str.c_str());
+}
 
+// MYWM_UPDATEDLGRES
+LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+	DoSetFileModified(TRUE);
+
+	::KillTimer(hwnd, 999);
+	::SetTimer(hwnd, 999, 200, nullptr);
 	return 0;
 }
 

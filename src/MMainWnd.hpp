@@ -410,6 +410,7 @@ protected:
 	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
 	void OnClose(HWND hwnd);
 	void OnDestroy(HWND hwnd);
+	void OnTimer(HWND hwnd, UINT id);
 
 	void OnSelChange(HWND hwnd, INT iSelected);
 	void OnCancelEdit(HWND hwnd);
