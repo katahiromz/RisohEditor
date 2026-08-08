@@ -1735,13 +1735,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 			m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
 		}
 
-		// Opening the GUI editor must not repaint m_hCodeEditor repeatedly.
-		// CreateDx/ReCreateRadDialog used to queue MYWM_UPDATEDLGRES (via
-		// dialog WM_SIZE) and Edit_SetReadOnly also invalidates; fold those
-		// into one paint. Kill any leftover update timer from a previous
-		// RAD session as well.
+		// Opening the GUI editor does not change the dialog source text.
+		// Avoid any forced repaint of m_hCodeEditor: a WM_SETREDRAW +
+		// RedrawWindow pair was itself flashing the LineNumEdit even when
+		// the text was identical. Just drop a leftover update timer and
+		// clear ES_READONLY only when it is actually set.
 		::KillTimer(hwnd, 999);
-		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
 
 		// recreate the RADical dialog
 		if (::IsWindow(m_rad_window))
@@ -1752,18 +1751,17 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		{
 			if (!m_rad_window.CreateDx(m_hwnd))
 			{
-				::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
-				::InvalidateRect(m_hCodeEditor, NULL, FALSE);
 				ErrorBoxDx(IDS_DLGFAIL);
 				return;
 			}
 		}
 
-		// make it non-read-only
-		Edit_SetReadOnly(m_hCodeEditor, FALSE);
+		// Swallow any MYWM_UPDATEDLGRES timer that may have been armed
+		// while the RAD window was shown/sized.
+		::KillTimer(hwnd, 999);
 
-		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
-		::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
+		if (GetWindowStyle(m_hCodeEditor) & ES_READONLY)
+			Edit_SetReadOnly(m_hCodeEditor, FALSE);
 	}
 	else if (entry->m_type == RT_DLGINIT)
 	{

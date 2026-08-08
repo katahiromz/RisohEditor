@@ -1967,10 +1967,10 @@ BOOL MRadWindow::ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex)
 	// adjust the MRadWindow's size to MRadDialog
 	FitToRadDialog();
 
-	// unlock
-	m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
-
-	// show the dialog
+	// Keep m_bMovingSizing locked across ShowWindow/UpdateWindow so the
+	// resulting WM_SIZE does not fire MYWM_DLGSIZE Å® UpdateRes Å® the
+	// deferred m_hCodeEditor SetWindowText path (visible as a flash when
+	// opening or refreshing the GUI editor).
 	ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);
 	UpdateWindow(m_rad_dialog);
 
@@ -1979,6 +1979,9 @@ BOOL MRadWindow::ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex)
 
 	// update the mappings
 	update_maps();
+
+	// unlock after the window is up
+	m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
 
 	// select the RADical control of the specified index
 	if (nSelectStartIndex != -1)
