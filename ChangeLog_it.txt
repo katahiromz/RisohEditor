@@ -1,6 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.1.3 (2026-XX-YY)
+- v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.
     - Accelerare OnNew.

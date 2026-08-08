@@ -1,6 +1,6 @@
 ﻿## SEJARAH
 
-- v.6.1.3 (2026-XX-YY)
+- v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.
     - Percepat OnNew.
