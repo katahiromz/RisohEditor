@@ -1199,7 +1199,11 @@ void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 			break;
 		}
 	}
-	PostMessage(m_hwnd, WM_SIZE, 0, 0);
+
+	// skipped while Preview() is batching UI updates; EndPreviewBatch() posts
+	// a single WM_SIZE for the whole batch once it's done (see MMainWnd.hpp)
+	if (!m_nPreviewBatchDepth)
+		PostMessage(m_hwnd, WM_SIZE, 0, 0);
 }
 
 // show the status bar or not
@@ -7870,7 +7874,10 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	// entry->m_lang + dialog_res --> str --> m_hCodeEditor (text)
 	MString str = GetLanguageStatement(entry->m_lang);
 	str += dialog_res.Dump(entry->m_name);
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+	InvalidateRect(m_hCodeEditor, nullptr, FALSE);
 
 	// entry->m_data --> m_hHexViewer (binary)
 	str = DumpBinaryAsText(entry->m_data);

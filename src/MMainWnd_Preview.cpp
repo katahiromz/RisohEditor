@@ -454,6 +454,33 @@ BOOL MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 	return TRUE;
 }
 
+// Begin/EndPreviewBatch --- see the comment next to m_nPreviewBatchDepth in
+// MMainWnd.hpp. These bracket a whole Preview() call so that the several
+// SetWindowText/ShowWindow/WM_SIZE steps it triggers internally collapse
+// into a single repaint/relayout of m_hCodeEditor instead of several,
+// visible ones.
+void MMainWnd::BeginPreviewBatch()
+{
+	if (m_nPreviewBatchDepth++ == 0)
+	{
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
+	}
+}
+
+void MMainWnd::EndPreviewBatch()
+{
+	assert(m_nPreviewBatchDepth > 0);
+	if (--m_nPreviewBatchDepth == 0)
+	{
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+		::InvalidateRect(m_hCodeEditor, NULL, FALSE);
+
+		// this is the single WM_SIZE for the whole batch; the WM_SIZE posts
+		// inside HidePreview()/SetShowMode() are skipped while batching
+		PostMessageDx(WM_SIZE);
+	}
+}
+
 // close the preview
 VOID MMainWnd::HidePreview(STV stv)
 {
@@ -484,18 +511,26 @@ VOID MMainWnd::HidePreview(STV stv)
 	// Code Viewer only
 	SetShowMode(SHOW_CODEONLY);
 
-	// recalculate the splitter
-	PostMessageDx(WM_SIZE);
+	// recalculate the splitter (skipped while Preview() is batching; it will
+	// post a single WM_SIZE itself once the whole batch is done, via
+	// EndPreviewBatch, instead of one per internal step)
+	if (!m_nPreviewBatchDepth)
+		PostMessageDx(WM_SIZE);
 }
 
 // do preview the resource item
 BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 {
+	BeginPreviewBatch();
+
 	// close the preview
 	HidePreview(stv);
 
 	if (stv == STV_DONTRESET)
+	{
+		EndPreviewBatch();
 		return IsEntryTextEditable(entry);
+	}
 
 	ClearHexCache();
 
@@ -613,8 +648,8 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 		}
 	}
 
-	// recalculate the splitter
-	PostMessageDx(WM_SIZE);
+	// re-enable redraw on m_hCodeEditor and recalculate the splitter
+	EndPreviewBatch();
 
 	return bEditable && IsEntryTextEditable(entry);
 }

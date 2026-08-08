@@ -253,6 +253,18 @@ public:
 	VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
 	BOOL Preview(HWND hwnd, const EntryBase *entry, STV stv = STV_RESETTEXTANDMODIFIED);
 
+	// Preview() internally calls HidePreview(), SetShowMode(), and one of the
+	// PreviewXxx() helpers, each of which can touch m_hCodeEditor (SetWindowText,
+	// ShowWindow, EM_SETSEL, ...) and each of which used to post its own WM_SIZE.
+	// That meant a single tree-view selection change could repaint/relayout
+	// m_hCodeEditor several times in a row, which is what showed up as flicker.
+	// BeginPreviewBatch()/EndPreviewBatch() bracket that whole sequence: redraw
+	// is suppressed on m_hCodeEditor and the several WM_SIZE posts are coalesced
+	// into a single one, so the control updates in one paint instead of several.
+	INT  m_nPreviewBatchDepth = 0;
+	void BeginPreviewBatch();
+	void EndPreviewBatch();
+
 	// actions
 	BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
 	void DoLoadLangInfo(VOID);
