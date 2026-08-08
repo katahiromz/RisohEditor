@@ -1444,9 +1444,13 @@ LRESULT MRadDialog::OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // MRadDialog WM_SIZE
 void MRadDialog::OnSize(HWND hwnd, UINT state, int cx, int cy)
 {
-	// moving or resizing?
+	// While ReCreateRadDialog/CreateDx is building the dialog it sets
+	// m_bMovingSizing so intermediate size changes do not push
+	// MYWM_UPDATEDLGRES (and the deferred SetWindowText on m_hCodeEditor).
+	// Without this, opening GUI edit rewrites the code pane for an
+	// unchanged dialog and shows up as flicker.
 	if (m_bMovingSizing)
-		return;     // ignore
+		return;
 
 	// send MYWM_DLGSIZE to the parent
 	DoSendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
@@ -1991,8 +1995,13 @@ BOOL MRadWindow::ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex)
 		}
 	}
 
-	// notify MYWM_SELCHANGE to the parent
-	DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+	// Only notify when a selection was actually restored. On a plain open
+	// (nSelectStartIndex == -1, empty targets) MYWM_SELCHANGE would only
+	// clear line marks and invalidate m_hCodeEditor for no visible change.
+	if (nSelectStartIndex != -1 || !MRadCtrl::GetTargets().empty())
+	{
+		DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+	}
 
 	return TRUE;
 }
@@ -2123,9 +2132,6 @@ void MRadWindow::OnDestroy(HWND hwnd)
 	MRadCtrl::GetTargets().clear();
 	MRadCtrl::GetLastSel() = NULL;
 	MRadCtrl::IndexToCtrlMap().clear();
-
-	// notify selection change to the owner
-	DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
 	// destroy the icons
 	if (m_hIcon)

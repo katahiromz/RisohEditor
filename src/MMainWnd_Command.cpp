@@ -1735,6 +1735,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 			m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
 		}
 
+		// Opening the GUI editor must not repaint m_hCodeEditor repeatedly.
+		// CreateDx/ReCreateRadDialog used to queue MYWM_UPDATEDLGRES (via
+		// dialog WM_SIZE) and Edit_SetReadOnly also invalidates; fold those
+		// into one paint. Kill any leftover update timer from a previous
+		// RAD session as well.
+		::KillTimer(hwnd, 999);
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
+
 		// recreate the RADical dialog
 		if (::IsWindow(m_rad_window))
 		{
@@ -1744,12 +1752,18 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		{
 			if (!m_rad_window.CreateDx(m_hwnd))
 			{
+				::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+				::InvalidateRect(m_hCodeEditor, NULL, FALSE);
 				ErrorBoxDx(IDS_DLGFAIL);
+				return;
 			}
 		}
 
 		// make it non-read-only
 		Edit_SetReadOnly(m_hCodeEditor, FALSE);
+
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+		::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 	}
 	else if (entry->m_type == RT_DLGINIT)
 	{
@@ -3260,13 +3274,23 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 // ID_CANCELEDIT: cancel edit
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
+	// A pending MYWM_UPDATEDLGRES timer can still fire after the RAD window
+	// is gone and rewrite m_hCodeEditor a second time, which is one of the
+	// sources of the flicker seen when closing the GUI editor.
+	::KillTimer(hwnd, 999);
+
 	// clear modification flag
 	Edit_SetModify(m_hCodeEditor, FALSE);
 	Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
-	// reselect to update the m_hCodeEditor
+	// Collapse the SelectTV/Preview path (and the line-mark clear) into a
+	// single paint of the LineNumEdit, matching the anti-flicker approach
+	// already used for tree-view selection changes.
+	BeginPreviewBatch();
+	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 	auto entry = g_res.get_entry();
 	SelectTV(entry, FALSE);
+	EndPreviewBatch();
 }
 
 // ID_NEXTPANE, ID_PREVPANE
