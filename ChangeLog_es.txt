@@ -1,5 +1,6 @@
 ﻿## HISTORIA
 
+- v.6.1.4 (2026-XX-YY)
 - v.6.1.3 (2026-08-08)
     - Menú [Editar] simplificado.
     - Se implementó el cifrado de recursos mediante WonRes.
