@@ -12,6 +12,8 @@
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd --- the main window
 
+#define CODE_REFRESH_TIMER_ID 999
+
 // the file type
 enum FileType
 {

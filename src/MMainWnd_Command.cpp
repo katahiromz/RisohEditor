@@ -1740,7 +1740,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 		// RedrawWindow pair was itself flashing the LineNumEdit even when
 		// the text was identical. Just drop a leftover update timer and
 		// clear ES_READONLY only when it is actually set.
-		::KillTimer(hwnd, 999);
+		::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
 
 		// recreate the RADical dialog
 		if (::IsWindow(m_rad_window))
@@ -1758,7 +1758,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
 		// Swallow any MYWM_UPDATEDLGRES timer that may have been armed
 		// while the RAD window was shown/sized.
-		::KillTimer(hwnd, 999);
+		::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
 
 		if (GetWindowStyle(m_hCodeEditor) & ES_READONLY)
 			Edit_SetReadOnly(m_hCodeEditor, FALSE);
@@ -3294,7 +3294,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 	// A pending MYWM_UPDATEDLGRES timer can still fire after the RAD window
 	// is gone and rewrite m_hCodeEditor a second time, which is one of the
 	// sources of the flicker seen when closing the GUI editor.
-	::KillTimer(hwnd, 999);
+	::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
 
 	// clear modification flag
 	Edit_SetModify(m_hCodeEditor, FALSE);

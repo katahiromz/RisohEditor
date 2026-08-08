@@ -7870,9 +7870,9 @@ LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 void MMainWnd::OnTimer(HWND hwnd, UINT id)
 {
-	if (id != 999)
+	if (id != CODE_REFRESH_TIMER_ID)
 		return;
-	::KillTimer(hwnd, 999);
+	::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
 
 	// get the selected language entry
 	auto entry = g_res.get_lang_entry();
@@ -7903,8 +7903,9 @@ void MMainWnd::OnTimer(HWND hwnd, UINT id)
 	::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 
 	// entry->m_data --> m_hHexViewer (binary)
-	str = DumpBinaryAsText(entry->m_data);
-	SetWindowTextW(m_hHexViewer, str.c_str());
+	ClearHexCache();
+	if (m_bShowBinEdit)
+		UpdateHexViewerContent();
 }
 
 // MYWM_UPDATEDLGRES
@@ -7912,8 +7913,8 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	DoSetFileModified(TRUE);
 
-	::KillTimer(hwnd, 999);
-	::SetTimer(hwnd, 999, 200, nullptr);
+	::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
+	::SetTimer(hwnd, CODE_REFRESH_TIMER_ID, 200, nullptr);
 	return 0;
 }
 
