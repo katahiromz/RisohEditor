@@ -674,8 +674,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
 #ifdef ENABLE_CRYPTO
 	keyRisoh.SetDword(TEXT("EnableCrypto"), g_bEnableCrypto);
-	keyRisoh.SetBinary(L"Password", g_password.c_str(), g_password.size() * sizeof(WCHAR));
-	keyRisoh.SetBinary(L"Salt", g_salt.c_str(), g_salt.size() * sizeof(WCHAR));
+	keyRisoh.SetBinary(L"Password", g_password.c_str(), DWORD(g_password.size() * sizeof(WCHAR)));
+	keyRisoh.SetBinary(L"Salt", g_salt.c_str(), DWORD(g_salt.size() * sizeof(WCHAR)));
 
 	DWORD cEncrypedTypes = DWORD(g_encrypted_types.size());
 	keyRisoh.SetDword(TEXT("NumEncryptedTypes"), cEncrypedTypes);

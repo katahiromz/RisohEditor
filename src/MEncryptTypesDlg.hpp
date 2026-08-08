@@ -66,7 +66,7 @@ public:
 		g_encrypted_types.clear();
 		for (iItem = 0; iItem < cItems; ++iItem)
 		{
-			INT cch = SendMessageW(hLst1, LB_GETTEXTLEN, iItem, 0);
+			INT cch = (INT)SendMessageW(hLst1, LB_GETTEXTLEN, iItem, 0);
 			if (cch + 1 < (INT)_countof(text))
 			{
 				SendMessageW(hLst1, LB_GETTEXT, iItem, (LPARAM)text);
