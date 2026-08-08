@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <unordered_set>     // for std::unordered_set
+#include <vector>            // for std::vector
 #include <climits>
 #include "MOleHost.hpp"
 
@@ -194,6 +195,85 @@ public:
 		return s_bRangeSelect;
 	}
 
+	// Keep every group box pinned at the very back of the Z order. Group
+	// boxes in this app paint a solid opaque fill over their whole client
+	// rect (see OnEraseBkgnd below), so if an ordinary control ever ends up
+	// Z-order-behind one, that control gets completely hidden -- calling
+	// this after any Z-order change that sends something to HWND_BOTTOM
+	// guarantees a group box can never be "passed" by a regular control.
+	//
+	// If a group box happens to be selected (has its own rubber band) when
+	// this runs, its band is kept directly above it -- just enough for the
+	// selection outline to still be visible over the group box's own
+	// opaque fill -- but still below every ordinary control. Selecting a
+	// group box must never visually cover anything else, the same as the
+	// group box's own body never does.
+	static void PinGroupBoxesToBack(HWND hwndParent)
+	{
+		if (!hwndParent || !IsWindow(hwndParent))
+			return;
+
+		// collect the group boxes in front-to-back order first, since
+		// reordering while walking the sibling chain would disturb the
+		// walk itself
+		std::vector<HWND> groupBoxes;
+		for (HWND hCtrl = GetTopWindow(hwndParent); hCtrl; hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
+		{
+			auto pCtrl = GetRadCtrl(hCtrl);
+			if (pCtrl && pCtrl->m_bTopCtrl && IsGroupBox(hCtrl))
+				groupBoxes.push_back(hCtrl);
+		}
+
+		// send them to the very bottom, processing back-to-front so their
+		// relative order among themselves is preserved (the one that was
+		// frontmost among group boxes ends up frontmost among group boxes
+		// again, just now below every non-group-box control)
+		for (auto it = groupBoxes.rbegin(); it != groupBoxes.rend(); ++it)
+		{
+			HWND hGroupBox = *it;
+
+			// if this group box is currently selected, sink its own band
+			// first, so that after the group box itself is sunk right
+			// after, the band ends up directly ABOVE the group box (a
+			// SetWindowPos(..., HWND_BOTTOM) always becomes the new
+			// absolute bottom, pushing whatever was already there up by
+			// exactly one slot)
+			auto pCtrl = GetRadCtrl(hGroupBox);
+			if (pCtrl)
+			{
+				if (auto pBand = pCtrl->GetRubberBand())
+				{
+					::SetWindowPos(*pBand, HWND_BOTTOM, 0, 0, 0, 0,
+						SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+				}
+			}
+
+			::SetWindowPos(hGroupBox, HWND_BOTTOM, 0, 0, 0, 0,
+				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		}
+	}
+
+	// Undo the Z-order elevation that Select()/OnNCLButtonDown() gave a
+	// control while it was selected. Without this, a control that was once
+	// selected (then deselected, e.g. by Ctrl-click, or by clicking
+	// elsewhere) stays parked at the very top of the Z order forever, and
+	// can end up covering another control's rubber band later even though
+	// it isn't selected itself anymore -- that's the "sometimes the rubber
+	// band gets partially hidden" bug.
+	static void UnelevateZOrder(HWND hwnd)
+	{
+		if (hwnd && IsWindow(hwnd) && !MRadCtrl::IsGroupBox(hwnd))
+		{
+			::SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0,
+				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+			// we just sent a regular control to the very bottom, which
+			// would otherwise put it *behind* any group box -- re-sink the
+			// group box(es) below it again right away
+			PinGroupBoxesToBack(GetParent(hwnd));
+		}
+	}
+
 	// deselect the selection
 	static BOOL DeselectSelection()
 	{
@@ -209,6 +289,9 @@ public:
 				// destroy the rubber band of the control
 				DestroyWindow(pCtrl->m_hwndRubberBand);
 				pCtrl->m_hwndRubberBand.m_hwnd = NULL;
+
+				// give up the Z-order elevation now that it's deselected
+				UnelevateZOrder(target);
 			}
 		}
 
@@ -251,6 +334,9 @@ public:
 
 		// clear the last selection
 		GetLastSel() = NULL;
+
+		// give up the Z-order elevation now that it's deselected
+		UnelevateZOrder(m_hwnd);
 	}
 
 	// is it selected?
@@ -267,17 +353,41 @@ public:
 		if (pCtrl == NULL)
 			return;
 
-		// create the rubber band for the control
+		// destroy any stale rubber band
 		::DestroyWindow(pCtrl->m_hwndRubberBand);
-		pCtrl->m_hwndRubberBand.CreateDx(GetParent(hwnd), hwnd, TRUE);
 
-		// if not group box
+		// Bring the selected control itself to the front first. A selected
+		// control (and its rubber band) must never be hidden behind other,
+		// unselected sibling controls -- that was the old HWND_BOTTOM
+		// behavior, and it's exactly backwards from what the user sees:
+		// "selected" should mean "on top", not "sent to the back".
+		// A group box is left alone since it's meant to sit behind the
+		// controls it visually contains.
 		if (!MRadCtrl::IsGroupBox(hwnd))
 		{
-			// go to bottom! (for better hittest & drawing)
-			SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+			// NOTE: SetWindowPosDx() treats a NULL hwndInsertAfter as "no
+			// z-order change requested" and quietly adds SWP_NOZORDER --
+			// but HWND_TOP is defined as ((HWND)0), i.e. it IS NULL, so
+			// SetWindowPosDx(hwnd, NULL, NULL, HWND_TOP) would silently do
+			// nothing. Call the raw API directly here to actually move it.
+			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
+				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		}
 
-			// NOTE: The index top control is drawed on background. The index bottom control is drawed on foreground.
+		// Create the rubber band for the control. Newly created child
+		// windows are placed at the top of the Z order by default, so the
+		// rubber band naturally ends up in front of the control it wraps
+		// (which we just brought to the front above).
+		pCtrl->m_hwndRubberBand.CreateDx(GetParent(hwnd), hwnd, TRUE);
+
+		if (MRadCtrl::IsGroupBox(hwnd))
+		{
+			// The band we just created defaults to the very top of the Z
+			// order, same as for any other control -- but a group box (and
+			// so its own selection outline doesn't cover anything else
+			// either) must stay at the very back. Sink both the group box
+			// and its brand-new band back down together.
+			PinGroupBoxesToBack(GetParent(hwnd));
 		}
 
 		// add the handle to the targets
@@ -523,7 +633,8 @@ public:
 		// special rendering for specific classes
 		if (lstrcmpiW(szClass, TOOLBARCLASSNAMEW) == 0 ||
 			lstrcmpiW(szClass, REBARCLASSNAMEW) == 0 ||
-			lstrcmpiW(szClass, WC_PAGESCROLLERW) == 0)
+			lstrcmpiW(szClass, WC_PAGESCROLLERW) == 0 ||
+			IsGroupBox(hwnd))
 		{
 			RECT rc;
 			GetClientRect(hwnd, &rc);
@@ -595,10 +706,30 @@ public:
 				m_pt = pt;  // remember the position
 			}
 
+			// Re-assert the front-of-Z-order position on every move tick,
+			// not just once at mouse-down. During a plain "press and drag
+			// in one motion" (the most common gesture), a very large
+			// number of WM_MOVE messages can fire back-to-back while the
+			// button stays down, and depending on exactly how that
+			// interacts with sibling controls' own repaints, the one-time
+			// elevation from OnNCLButtonDown()/Select() isn't always
+			// enough to keep the band fully on top the whole time it's
+			// being dragged. Doing it every tick is cheap (SetWindowPos
+			// with SWP_NOMOVE|SWP_NOSIZE is a no-op position-wise) and
+			// makes the "stay on top" guarantee hold continuously rather
+			// than only at the start/end of the drag.
+			if (!IsGroupBox(hwnd))
+			{
+				::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
+					SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			}
+
 			// move the rubber band
 			if (auto band = GetRubberBand())
 			{
 				band->FitToTarget();
+				::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0,
+					SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 			}
 
 			// redraw
@@ -626,6 +757,20 @@ public:
 			// resize if necessary
 			if (!m_bSizing)
 				ResizeSelection(hwnd, cx, cy);
+
+			// re-assert the front-of-Z-order position and keep the band
+			// synced to the new size, for the same reason as in OnMove()
+			if (!IsGroupBox(hwnd))
+			{
+				::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
+					SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			}
+			if (auto band = GetRubberBand())
+			{
+				band->FitToTarget();
+				::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0,
+					SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			}
 
 			// send MYWM_CTRLSIZE to the parent
 			DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
@@ -697,17 +842,56 @@ public:
 			Select(hwnd);
 		}
 
-		// enable dragging by emulating the title bar dragging
-		DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
-
-		// if not group box
+		// Bring the control (and, in front of it, its rubber band) to the
+		// front of the Z order right now, immediately on mouse-down --
+		// BEFORE starting the drag below. DefWindowProc(..., HTCAPTION, ...)
+		// below enters a modal loop that doesn't return until the mouse
+		// button is released, so anything placed after it only takes
+		// effect once the drag/click is already over. Doing it here
+		// instead means a plain press-and-drag (no separate click first)
+		// already has the control on top for the very first frame of the
+		// drag, not just from the second WM_MOVE onward.
 		if (!IsGroupBox(hwnd) && IsWindow(hwnd))
 		{
-			// go to bottom (for better hittest & drawing)
-			SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+			// Use the raw API, not SetWindowPosDx() -- see the NOTE in
+			// Select() about HWND_TOP being indistinguishable from NULL to
+			// that wrapper.
+			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
+				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			HWND hwndBand = NULL;
+			if (auto pBand = GetRubberBand())
+			{
+				hwndBand = *pBand;
+				::SetWindowPos(hwndBand, HWND_TOP, 0, 0, 0, 0,
+					SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			}
 
-			// NOTE: The index top control is drawed on background. The index bottom control is drawed on foreground.
+			// SetWindowPos() only *requests* a repaint; the actual WM_PAINT
+			// is normally delivered later through the ordinary message
+			// queue. But DefWindowProc(..., HTCAPTION, ...) right below
+			// enters its own modal loop the instant we call it, and that
+			// loop won't necessarily get around to painting before the
+			// user starts moving the mouse. So force it to happen right
+			// now, synchronously, while we're still in plain control here
+			// -- otherwise the very first on-screen frame after the click
+			// (before any movement) can still show the old stacking order.
+			RECT rc;
+			GetWindowRect(hwnd, &rc);
+			if (hwndBand)
+			{
+				RECT rcBand;
+				GetWindowRect(hwndBand, &rcBand);
+				UnionRect(&rc, &rc, &rcBand);
+			}
+			InflateRect(&rc, 4, 4);
+			HWND hwndParent = GetParent(hwnd);
+			MapWindowRect(NULL, hwndParent, &rc);
+			RedrawWindow(hwndParent, &rc, NULL,
+				RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_ERASE);
 		}
+
+		// enable dragging by emulating the title bar dragging
+		DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
 	}
 
 	// MRadCtrl WM_NCMOUSEMOVE
@@ -738,9 +922,12 @@ public:
 		HWND hLast;
 		HWND hGroupBox;
 		POINT pt;
+		std::vector<HWND> matches;  // filled in front-to-back (Z-order) order
 	};
 
-	// the helper function for hittest
+	// the helper function for hittest: just collect every overlapping
+	// descendant that could matter, in Z-order (EnumChildWindows visits
+	// front-to-back, i.e. topmost/frontmost window first).
 	static BOOL CALLBACK EnumHitTestChildProc(HWND hwnd, LPARAM lParam)
 	{
 		// NOTE: EnumChildWindows scans not only children but descendants.
@@ -755,46 +942,68 @@ public:
 		if (!PtInRect(&rc, pmht->pt))
 			return TRUE;    // if not, ignore
 
-		// the control has a rubber band?
-		if (auto pBand = MRubberBand::GetRubberBand(hwnd))
+		if (MRubberBand::GetRubberBand(hwnd) || MRadCtrl::GetRadCtrl(hwnd))
 		{
-			// the rubber band's target is the control?
-			auto pCtrl = MRadCtrl::GetRadCtrl(pBand->m_hwndTarget);
-			if (pCtrl && pCtrl->m_bTopCtrl)
-			{
-				// clear the candidate
-				pmht->hCandidate = NULL;
-
-				// if the window is sgroupbox
-				if (IsGroupBox(*pCtrl))
-				{
-					// set to hGroupBox
-					pmht->hGroupBox = *pCtrl;
-				}
-				else
-				{
-					// otherwise, set to the last target
-					pmht->hLast = pBand->m_hwndTarget;
-				}
-			}
-		}
-		else if (auto pCtrl = MRadCtrl::GetRadCtrl(hwnd))   // is it a RADical control?
-		{
-			if (pCtrl->m_bTopCtrl)  // a top control
-			{
-				// set to the last target
-				pmht->hLast = hwnd;
-
-				// is it not group box?
-				if (!IsGroupBox(hwnd))
-				{
-					// it's a candidate
-					pmht->hCandidate = hwnd;
-				}
-			}
+			pmht->matches.push_back(hwnd);
 		}
 
 		return TRUE;    // continue
+	}
+
+	// resolve the collected matches into hCandidate/hLast/hGroupBox, giving
+	// priority to the frontmost (topmost in Z-order) one. Selected controls
+	// are kept at the front of the Z order (see Select() and
+	// OnNCLButtonDown()), so the frontmost match is the one the user
+	// actually sees on top and expects clicks to go to.
+	static void ResolveHitTestMatches(MYHITTEST *pmht)
+	{
+		// walk the matches back-to-front (rearmost first) so that the
+		// frontmost one is applied last and "wins" -- this reuses the exact
+		// same per-node logic that used to run directly inside
+		// EnumChildWindows, just applied in the opposite order.
+		for (auto it = pmht->matches.rbegin(); it != pmht->matches.rend(); ++it)
+		{
+			HWND hwnd = *it;
+
+			// the control has a rubber band?
+			if (auto pBand = MRubberBand::GetRubberBand(hwnd))
+			{
+				// the rubber band's target is the control?
+				auto pCtrl = MRadCtrl::GetRadCtrl(pBand->m_hwndTarget);
+				if (pCtrl && pCtrl->m_bTopCtrl)
+				{
+					// clear the candidate
+					pmht->hCandidate = NULL;
+
+					// if the window is a group box
+					if (IsGroupBox(*pCtrl))
+					{
+						// set to hGroupBox
+						pmht->hGroupBox = *pCtrl;
+					}
+					else
+					{
+						// otherwise, set to the last (i.e. frontmost so far) target
+						pmht->hLast = pBand->m_hwndTarget;
+					}
+				}
+			}
+			else if (auto pCtrl = MRadCtrl::GetRadCtrl(hwnd))   // is it a RADical control?
+			{
+				if (pCtrl->m_bTopCtrl)  // a top control
+				{
+					// set to the last (i.e. frontmost so far) target
+					pmht->hLast = hwnd;
+
+					// is it not group box?
+					if (!IsGroupBox(hwnd))
+					{
+						// it's a candidate
+						pmht->hCandidate = hwnd;
+					}
+				}
+			}
+		}
 	}
 
 	// MRadCtrl WM_NCHITTEST
@@ -843,8 +1052,10 @@ public:
 			mht.hGroupBox = NULL;
 			mht.pt = pt;
 
-			// try to hittest
+			// collect every overlapping descendant, then resolve them
+			// giving priority to the frontmost one
 			EnumChildWindows(mht.hParent, EnumHitTestChildProc, (LPARAM)&mht);
+			ResolveHitTestMatches(&mht);
 
 			//if (GetAsyncKeyState(VK_RBUTTON) < 0)
 			//    DebugBreak();
@@ -1274,26 +1485,15 @@ public:
 		if (!GetUpdateRect(hwnd, &rc, FALSE))
 			GetClientRect(hwnd, &rc);
 
-		WCHAR cls[MAX_PATH];
-		RECT rcCtrl;
-		MRubberBand band;
-		PCWSTR rubber_cls = band.GetWndClassNameDx();
-
-		for (HWND hCtrl = GetTopWindow(hwnd); hCtrl; hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
-		{
-			if (!IsWindowVisible(hCtrl))
-				continue;
-
-			GetClassNameW(hCtrl, cls, _countof(cls));
-			if (lstrcmpiW(cls, rubber_cls) == 0)
-				continue;
-
-			GetWindowRect(hCtrl, &rcCtrl);
-			MapWindowRect(NULL, hwnd, &rcCtrl);
-
-			ExcludeClipRect(hdc, rcCtrl.left, rcCtrl.top, rcCtrl.right, rcCtrl.bottom);
-		}
-
+		// NOTE: hwnd now has WS_CLIPCHILDREN (see OnInitDialog), so the
+		// window manager already excludes every child window's rectangle
+		// (rubber bands included) from hdc's clip region for us. We used to
+		// do that by hand here with GetWindowRect/ExcludeClipRect for every
+		// single child on every single erase, which is both slow (an
+		// EnumChildWindows-scale scan on every redraw while dragging) and a
+		// visible source of flicker, since the manual exclusion could lag a
+		// frame behind the child that just moved. Just fill; the clipping
+		// is free and always correct now.
 		FillRect(hdc, &rc, m_hbrBack);
 		return TRUE;    // processed
 	}
@@ -1438,6 +1638,15 @@ public:
 		{
 			// update the index-to-control mapping
 			MRadCtrl::IndexToCtrlMap()[nIndex] = hCtrl;
+
+			// Top controls are free-standing siblings that the user can
+			// overlap (e.g. move one on top of another) while editing, so
+			// give each of them WS_CLIPSIBLINGS: without it, an overlapping
+			// sibling and the control underneath can each repaint over the
+			// other's area, which is another visible flicker source
+			// (especially noticeable while dragging a selection over other
+			// controls).
+			pCtrl->ModifyStyleDx(0, WS_CLIPSIBLINGS);
 		}
 
 		pCtrl->PostSubclass();
@@ -1560,8 +1769,25 @@ public:
 		POINT pt = { 0, 0 };
 		SetWindowPosDx(hwnd, &pt);
 
+		// Let the OS clip the children out of our own background painting
+		// instead of us manually excluding every child rectangle by hand in
+		// OnEraseBkgnd on every single redraw (see OnEraseBkgnd below). This
+		// is a big part of fixing the flicker: without it, the pattern-brush
+		// background gets drawn, then every child repaints on top of it,
+		// which is visibly a two-step (flickering) redraw.
+		// NOTE: 'hwnd' is used here explicitly (not the ModifyStyleDx()
+		// helper / m_hwnd) because this dialog isn't subclassed yet at this
+		// point -- SubclassDx(hwnd) only happens further down below.
+		SetWindowLongPtr(hwnd, GWL_STYLE,
+			GetWindowLongPtr(hwnd, GWL_STYLE) | WS_CLIPCHILDREN);
+
 		// do subclassing the children of this dialog
 		DoSubclassChildren(hwnd, TRUE);
+
+		// pin any group boxes to the very back right away, so a control
+		// that just happens to sit in front of one in the dialog template's
+		// original order doesn't get hidden by it later
+		MRadCtrl::PinGroupBoxesToBack(hwnd);
 
 		// if indeces are visible
 		if (m_index_visible)
@@ -2301,8 +2527,16 @@ public:
 		HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
 		DoSendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
 
-		// redraw the labels
-		m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
+		// NOTE: UpdateRes is called continuously while dragging/resizing a
+		// control (once per mouse-move). The index-label positions are
+		// computed live from the controls in MIndexLabels::OnPaint, so we
+		// only need to repaint that overlay here, not destroy and recreate
+		// its window every time. Recreating the window on every mouse-move
+		// was the main cause of the flicker during dragging.
+		if (m_rad_dialog.m_index_visible && m_rad_dialog.m_labels.m_hwnd)
+		{
+			InvalidateRect(m_rad_dialog.m_labels, NULL, TRUE);
+		}
 	}
 
 	// MRadWindow MYWM_DLGSIZE

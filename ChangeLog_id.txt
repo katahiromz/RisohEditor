@@ -5,6 +5,7 @@
     - Menerapkan enkripsi sumber daya menggunakan WonRes.
     - Percepat OnNew.
     - Menambahkan dukungan untuk BMP yang dikompresi RLE.
+    - Mengurangi kedipan pada MRadWindow.
 - v.6.1.2 (2026-08-05)
     - Dapat dibangun kembali menggunakan MinGW atau RosBE.
     - Dapat mengubah jenis sumber daya.

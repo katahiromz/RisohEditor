@@ -5,6 +5,7 @@
     - Implementei a criptografia de recursos usando o WonRes.
     - Acelere o OnNew.
     - Adicionado suporte para BMP comprimido com RLE.
+    - Reduz a cintilação na janela MRadWindow.
 - v.6.1.2 (2026-08-05)
     - Possibilidade de compilar novamente com MinGW ou RosBE.
     - Capacidade de alterar o tipo de recurso.

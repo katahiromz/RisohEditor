@@ -5,6 +5,7 @@
     - Implementata la crittografia delle risorse tramite WonRes.
     - Accelerare OnNew.
     - Aggiunto il supporto per i file BMP compressi con RLE.
+    - Riduce lo sfarfallio in MRadWindow.
 - v.6.1.2 (05.08.2026)
     - Possibilità di effettuare nuovamente la compilazione con MinGW o RosBE.
     - Possibilità di modificare il tipo di risorsa.

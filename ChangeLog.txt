@@ -5,6 +5,7 @@
     - Implemented resource encryption using WonRes.
     - Accelerated OnNew.
     - Added support for RLE-compressed BMPs.
+    - Reduced flickering of MRadWindow.
 - v.6.1.2 (2026-08-05)
     - Able to build with MinGW or RosBE again.
     - Able to change resource type.
