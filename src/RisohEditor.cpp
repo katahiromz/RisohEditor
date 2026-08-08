@@ -5566,12 +5566,11 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+	// Try to cancel searching
+	m_search.bCancelled = TRUE;
+
 	StopMP3();
 	StopAvi();
-
-	// Try to cancel searching
-	m_search.bCancelled = FALSE;
-	::Sleep(100);
 
 	// release auto complete
 	DoTVEditAutoCompleteRelease(hwnd);
@@ -5587,9 +5586,6 @@ void MMainWnd::OnDestroy(HWND hwnd)
 
 	// unselect
 	SelectTV(NULL, FALSE);
-
-	// clean up
-	g_res.delete_all();
 
 	// save the settings
 	SaveSettings(hwnd);
