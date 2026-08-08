@@ -14,6 +14,7 @@
 #include "MCtrlDataDlg.hpp"
 #include "MStringListDlg.hpp"
 #include "Common.hpp"
+#include "Res.hpp"
 #include <oledlg.h>
 
 class MAddCtrlDlg;

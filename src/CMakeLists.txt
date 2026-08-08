@@ -16,6 +16,7 @@ add_library(libRisohEditor STATIC
     MMainWnd_EGA.cpp
     MMainWnd_Tests.cpp
     MOleHost.cpp
+    MRadWindow.cpp
     MSplitterWnd.cpp
     PackedDIB.cpp
     Res.cpp

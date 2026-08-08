@@ -12,6 +12,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <climits>
+#include "ConstantsDB.hpp"
 
 enum LANG_TYPE
 {

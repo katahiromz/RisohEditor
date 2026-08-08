@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <unordered_map>
 #include <unordered_set>
+#include "ConstantsDB.hpp"
 #include "Common.hpp"
 #include "StringRes.hpp"
 #include "MessageRes.hpp"
