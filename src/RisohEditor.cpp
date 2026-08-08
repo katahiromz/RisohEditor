@@ -2016,11 +2016,14 @@ void MMainWnd::MarkErrorLine(INT iLine)
 		iLine = iMaxLine;
 	if (iLine <= 0)
 		iLine = 1;
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
 	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 	::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
 	LRESULT ichLine = ::SendMessageW(m_hCodeEditor, EM_LINEINDEX, iLine - 1, 0);
 	::SendMessageW(m_hCodeEditor, EM_SETSEL, ichLine, ichLine);
 	::SendMessageW(m_hCodeEditor, EM_SCROLLCARET, 0, 0);
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+	::InvalidateRect(m_hCodeEditor, nullptr, FALSE);
 }
 
 // compile a resource item source
@@ -7905,9 +7908,15 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // MYWM_SELCHANGE
 LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
 	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+
 	if (!IsWindow(m_rad_window))
+	{
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+		::InvalidateRect(m_hCodeEditor, nullptr, FALSE);
 		return 0;
+	}
 
 	INT cHeads = INT(SendMessageW(hwnd, MYWM_GETDLGHEADLINES, 0, 0)) + 1;
 	auto indeces = MRadCtrl::GetTargetIndeces();
@@ -7915,6 +7924,8 @@ LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	{
 		::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, cHeads + index, RGB(255, 255, 120));
 	}
+	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+	::InvalidateRect(m_hCodeEditor, nullptr, FALSE);
 	return 0;
 }
 
