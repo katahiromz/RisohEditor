@@ -3104,10 +3104,29 @@ void MMainWnd::OnEdit(HWND hwnd)
 	if (!IsEntryTextEditable(entry))
 		return;
 
-	// make it non-read-only
-	Edit_SetReadOnly(m_hCodeEditor, FALSE);
+	// Tree double-click / ID_EDIT on an already-selected, unmodified entry
+	// must not run HidePreview¨Preview. That path clears m_hCodeEditor and
+	// writes the same text back, which is the remaining flicker even with
+	// PreviewBatch (SetWindowText still rebuilds the edit buffer).
+	HTREEITEM hSel = TreeView_GetSelection(m_hwndTV);
+	if (entry->m_hItem == hSel &&
+		!Edit_GetModify(m_hCodeEditor) &&
+		GetWindowTextLengthW(m_hCodeEditor) > 0)
+	{
+		if (GetWindowStyle(m_hCodeEditor) & ES_READONLY)
+			Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
-	// select the entry
+		if (entry->is_testable())
+			UpdateOurToolBarButtons(0);
+		else if (entry->can_gui_edit())
+			UpdateOurToolBarButtons(4);
+		else
+			UpdateOurToolBarButtons(3);
+		return;
+	}
+
+	// make it non-read-only and (re)load the entry text once
+	Edit_SetReadOnly(m_hCodeEditor, FALSE);
 	SelectTV(entry, TRUE);
 }
 

@@ -1,4 +1,4 @@
-// MRadWindow.cpp --- RADical development window
+Ôªø// MRadWindow.cpp --- RADical development window
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -1968,7 +1968,7 @@ BOOL MRadWindow::ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex)
 	FitToRadDialog();
 
 	// Keep m_bMovingSizing locked across ShowWindow/UpdateWindow so the
-	// resulting WM_SIZE does not fire MYWM_DLGSIZE Å® UpdateRes Å® the
+	// resulting WM_SIZE does not fire MYWM_DLGSIZE ‚Üí UpdateRes ‚Üí the
 	// deferred m_hCodeEditor SetWindowText path (visible as a flash when
 	// opening or refreshing the GUI editor).
 	ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);

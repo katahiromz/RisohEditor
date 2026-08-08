@@ -1397,14 +1397,18 @@ MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
 				   const MIdOrString& name, LANGID lang,
 				   BOOL bDoubleClick, STV stv)
 {
-	// close the preview
-	HidePreview(stv);
-
 	// find the entry
 	if (auto entry = g_res.find(et, type, name, lang))
 	{
 		// select it
 		SelectTV(entry, bDoubleClick, stv);
+	}
+	else
+	{
+		BeginPreviewBatch();
+		HidePreview(stv);
+		EndPreviewBatch();
+		UpdateOurToolBarButtons(3);
 	}
 }
 
@@ -1413,11 +1417,18 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 {
 	BOOL bModified = Edit_GetModify(m_hCodeEditor);
 
+	// HidePreview() clears m_hCodeEditor, then Preview()/PreviewStringTable()
+	// rewrite it. Without batching those steps together, a tree double-click
+	// (OnEdit → SelectTV) flashes an empty editor between the clear and the
+	// rewrite — the same class of flicker PreviewBatch was meant to stop.
+	BeginPreviewBatch();
+
 	// close the preview
 	HidePreview(stv);
 
 	if (!entry)     // not selected
 	{
+		EndPreviewBatch();
 		UpdateOurToolBarButtons(3);
 		return;
 	}
@@ -1518,8 +1529,9 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	// update show
 	SetShowMode(m_nShowMode, m_bShowBinEdit);
 
-	// recalculate the splitter
-	PostMessageDx(WM_SIZE);
+	// EndPreviewBatch posts a single WM_SIZE when the depth returns to zero;
+	// do not post another one here or the splitter/layout will animate twice.
+	EndPreviewBatch();
 }
 
 // dump all the macros
