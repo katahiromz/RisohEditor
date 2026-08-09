@@ -2497,8 +2497,15 @@ void MMainWnd::OnDialogFontSubst(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
+	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
+	if (bRadWasVisible)
+		GetWindowRect(m_rad_window, &m_rcRadWindow);
+
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_FONTSUBST);
+	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_FONTSUBST);
+
+	if (ret == IDOK && bRadWasVisible)
+		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
 }
 
 // ID_TEST: do resource test
