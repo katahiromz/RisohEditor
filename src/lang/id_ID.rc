@@ -903,8 +903,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CTEXT "Sumber", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Binary", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "&Mengatur ulang", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1643,6 +1641,7 @@ STRINGTABLE
     IDS_MACROS "Makro"
     IDS_CONFIG "Konfigurasi"
     IDS_PATHS "Tentukan Jalur"
+    IDS_FONTS "Font"
 }
 
 //////////////////////////////////////////////////////////////////////////////

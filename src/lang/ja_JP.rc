@@ -903,8 +903,6 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     CTEXT "ソース", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "バイナリー", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "リセット(&R)", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1643,6 +1641,7 @@ STRINGTABLE
     IDS_MACROS "マクロ"
     IDS_CONFIG "設定"
     IDS_PATHS "PATHの設定"
+    IDS_FONTS "フォント"
 }
 
 //////////////////////////////////////////////////////////////////////////////

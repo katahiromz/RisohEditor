@@ -900,8 +900,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     CTEXT "Źródło", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Binarny", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "&Ustaw", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1640,6 +1638,7 @@ STRINGTABLE
     IDS_MACROS "Makroskładniki"
     IDS_CONFIG "Konfiguracja"
     IDS_PATHS "Ustawienia katalogów/ścieżek"
+    IDS_FONTS "Czcionki"
 }
 
 //////////////////////////////////////////////////////////////////////////////

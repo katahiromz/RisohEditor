@@ -901,8 +901,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     CTEXT "Источник", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Двоичный", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "&Перезагрузить", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "Отмена", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1641,6 +1639,7 @@ STRINGTABLE
     IDS_MACROS "Макросы"
     IDS_CONFIG "Конфигурация"
     IDS_PATHS "Задать пути"
+    IDS_FONTS "Шрифты"
 }
 
 //////////////////////////////////////////////////////////////////////////////

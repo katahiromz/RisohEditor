@@ -900,8 +900,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     CTEXT "소스", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "바이너리", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "재설정(&R)", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "확인", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1640,6 +1638,7 @@ STRINGTABLE
     IDS_MACROS "매크로"
     IDS_CONFIG "구성"
     IDS_PATHS "경로 설정"
+    IDS_FONTS "글꼴"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -312,6 +312,7 @@ public:
 
 	void ReCreateFonts(HWND hwnd);
 	void ReSetPaths(HWND hwnd);
+	void RefreshFonts(HFONT hBinFont, HFONT hSrcFont);
 	BOOL DoItemSearch(ITEM_SEARCH& search);
 	BOOL DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
 	void search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog);

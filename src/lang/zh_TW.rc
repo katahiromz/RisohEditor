@@ -898,8 +898,6 @@ FONT 9, "宋體", 0, 0, 136 // CHINESEBIG5_CHARSET
     CTEXT "資源", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "二進位制", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "重置(&R)", psh3, 5, 90, 50, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
-    PUSHBUTTON "取消", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOGEX 0, 0, 265, 165
@@ -1638,6 +1636,7 @@ STRINGTABLE
     IDS_MACROS "宏"
     IDS_CONFIG "配置"
     IDS_PATHS "設置PATH"
+    IDS_FONTS "字體"
 }
 
 //////////////////////////////////////////////////////////////////////////////

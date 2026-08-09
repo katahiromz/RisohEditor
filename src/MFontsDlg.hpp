@@ -7,6 +7,8 @@
 #pragma once
 
 #include "resource.h"
+#include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "MHyperLinkCtrl.hpp"
 #include "MString.hpp"
 #include <commdlg.h>
@@ -15,13 +17,16 @@ class MFontsDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MFontsDlg : public MDialogBase
+class MFontsDlg : public MPropSheetPage
 {
 public:
 	HFONT m_hSrcFont;
 	HFONT m_hBinFont;
 
-	MFontsDlg() : MDialogBase(IDD_FONTS), m_hSrcFont(NULL), m_hBinFont(NULL)
+	MFontsDlg()
+		: MPropSheetPage(IDD_FONTS, LoadStringDx(IDS_FONTS))
+		, m_hSrcFont(NULL)
+		, m_hBinFont(NULL)
 	{
 	}
 
@@ -85,7 +90,7 @@ public:
 		return TRUE;
 	}
 
-	void OnOK(HWND hwnd)
+	BOOL ApplyFonts(HWND hwnd)
 	{
 		MString str1 = GetDlgItemText(edt1);
 		MString str2 = GetDlgItemText(edt2);
@@ -96,7 +101,7 @@ public:
 		size_t k2 = str2.find(L", ");
 		if (k1 == MString::npos || k2 == MString::npos)
 		{
-			return;
+			return FALSE;
 		}
 
 		g_settings.strSrcFont = str1.substr(0, k1);
@@ -109,7 +114,14 @@ public:
 		DestroyBinFont();
 		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 
-		EndDialog(IDOK);
+		s_pMainWnd->RefreshFonts(m_hBinFont, m_hSrcFont);
+		return TRUE;
+	}
+
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplyFonts(hwnd);
 	}
 
 	HFONT CreateMyFont(const TCHAR *pszName, INT nPointSize)
@@ -166,6 +178,7 @@ public:
 			m_hSrcFont = CreateMyFont(lf.lfFaceName, nPointSize);
 
 			SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
+			SetModifiedDx();
 		}
 	}
 
@@ -208,12 +221,13 @@ public:
 			m_hBinFont = CreateMyFont(lf.lfFaceName, nPointSize);
 
 			SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
+			SetModifiedDx();
 		}
 	}
 
-    void OnPsh3(HWND hwnd)
-    {
-    	HFONT hFont;
+	void OnPsh3(HWND hwnd)
+	{
+		HFONT hFont;
 		LOGFONTW lf, lfBin, lfSrc;
 		GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
 
@@ -271,19 +285,32 @@ public:
 		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 
-		EndDialog(IDOK);
-    }
+		MString str;
+
+		str = g_settings.strSrcFont;
+		str += L", ";
+		str += mstr_dec_short(g_settings.nSrcFontSize);
+		str += L"pt";
+		SetDlgItemText(hwnd, edt1, str.c_str());
+		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
+		SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
+
+		str = g_settings.strBinFont;
+		str += L", ";
+		str += mstr_dec_short(g_settings.nBinFontSize);
+		str += L"pt";
+		SetDlgItemText(hwnd, edt2, str.c_str());
+		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
+		SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
+
+		s_pMainWnd->RefreshFonts(m_hBinFont, m_hSrcFont);
+		SetModifiedDx();
+	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
 		{
-		case IDOK:
-			OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			EndDialog(IDCANCEL);
-			break;
 		case psh1: // Source font
 			OnPsh1(hwnd);
 			break;
@@ -291,9 +318,14 @@ public:
 			OnPsh2(hwnd);
 			break;
 		case psh3: // Reset
-		    OnPsh3(hwnd);
-		    break;
+			OnPsh3(hwnd);
+			break;
 		}
+	}
+
+	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+	{
+		return 0;
 	}
 
 	INT_PTR CALLBACK
@@ -303,6 +335,15 @@ public:
 		{
 		HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		default:
 			return 0;
 		}

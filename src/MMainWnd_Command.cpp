@@ -1125,6 +1125,11 @@ void MMainWnd::OnAbout(HWND hwnd)
 	dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::RefreshFonts(HFONT hBinFont, HFONT hSrcFont)
+{
+	ReCreateFonts(m_hwnd);
+}
+
 // ID_FONTS: show the MFontsDlg to allow the user to change the font settings
 void MMainWnd::OnFonts(HWND hwnd)
 {
@@ -1132,20 +1137,9 @@ void MMainWnd::OnFonts(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
-	// show the fonts dialog
-	MFontsDlg dialog;
-	if (dialog.DialogBoxDx(hwnd) == IDOK)
-	{
-		// update m_hBinFont and set it to m_hHexViewer
-		DeleteObject(m_hBinFont);
-		m_hBinFont = dialog.DetachBinFont();
-		SetWindowFont(m_hHexViewer, m_hBinFont, TRUE);
-
-		// update m_hSrcFont and set it to m_hCodeEditor
-		DeleteObject(m_hSrcFont);
-		m_hSrcFont = dialog.DetachSrcFont();
-		SetWindowFont(m_hCodeEditor, m_hSrcFont, TRUE);
-	}
+	// show the dialog
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, 3);
 }
 
 // ID_EXPORT: export all the resource items to an RC file
@@ -2044,12 +2038,6 @@ void MMainWnd::OnConfig(HWND hwnd)
 	MConfigPropSheet dialog;
 	if (dialog.DoModalDx(hwnd) == IDOK)
 	{
-		// update word wrapping
-		ReCreateSrcEdit(hwnd);
-
-		// update the fonts
-		ReCreateFonts(hwnd);
-
 		// update the labels of the entries
 		UpdateNames(FALSE);
 

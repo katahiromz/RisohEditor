@@ -188,8 +188,7 @@ public:
 
 	void OnPsh4(HWND hwnd)
 	{
-		MFontsDlg dialog;
-		dialog.DialogBoxDx(hwnd);
+		PropSheet_SetCurSelByID(GetSheetDx(), IDD_FONTS);
 	}
 
 	void OnPsh5(HWND hwnd)

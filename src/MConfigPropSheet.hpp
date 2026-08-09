@@ -10,6 +10,7 @@
 #include "MConfigDlg.hpp"
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
+#include "MFontsDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +24,7 @@ public:
 	MConfigDlg  m_pageConfig;
 	MMacrosDlg  m_pageMacros;
 	MPathsDlg   m_pagePaths;
+	MFontsDlg   m_pageFonts;
 
 	MConfigPropSheet(LPCTSTR pszCaption = LoadStringDx(IDS_CONFIG))
 		: MPropSheet(NULL, pszCaption)
@@ -30,6 +32,7 @@ public:
 		AddPage(m_pageConfig);
 		AddPage(m_pageMacros);
 		AddPage(m_pagePaths);
+		AddPage(m_pageFonts);
 	}
 
 	// Mirrors MDialogBase::DialogBoxDx(hwndOwner)'s call shape so callers
