@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "settings.h"
 #include "MComboBoxAutoComplete.hpp"
 #include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MDialogFontSubstDlg : public MDialogBase
+class MDialogFontSubstDlg : public MPropSheetPage
 {
 public:
 	MComboBoxAutoComplete m_cmb1;
@@ -23,7 +23,8 @@ public:
 	MComboBoxAutoComplete m_cmb5;
 	MComboBoxAutoComplete m_cmb6;
 
-	MDialogFontSubstDlg() : MDialogBase(IDD_FONTSUBST)
+	MDialogFontSubstDlg()
+		: MPropSheetPage(IDD_FONTSUBST, LoadStringDx(IDS_DIALOGFONTSUBST))
 	{
 	}
 
@@ -54,7 +55,13 @@ public:
 		return TRUE;
 	}
 
-	BOOL OnOK(HWND hwnd)
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplySubst(hwnd);
+	}
+
+	BOOL ApplySubst(HWND hwnd)
 	{
 		g_settings.strFontReplaceFrom1 = GetDlgItemText(cmb1);
 		g_settings.strFontReplaceTo1 = GetDlgItemText(cmb2);
@@ -73,69 +80,70 @@ public:
 		SetDlgItemTextW(hwnd, cmb4, L"MS Shell Dlg 2");
 		SetDlgItemTextW(hwnd, cmb5, L"");
 		SetDlgItemTextW(hwnd, cmb6, L"");
+		SetModifiedDx();
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
 		{
-		case IDOK:
-			if (OnOK(hwnd))
-			{
-				EndDialog(hwnd, id);
-			}
-			break;
-
-		case IDCANCEL:
-			EndDialog(hwnd, id);
-			break;
-
 		case psh1:
 			OnReset(hwnd);
 			break;
 
 		case cmb1:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb1.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 
 		case cmb2:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb2.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 
 		case cmb3:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb3.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 
 		case cmb4:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb4.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 
 		case cmb5:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb5.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 
 		case cmb6:
-			if (codeNotify == CBN_EDITCHANGE)
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
 			{
 				m_cmb6.OnEditChange();
+				SetModifiedDx();
 			}
 			break;
 		}
+	}
+
+	LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+	{
+		return 0;
 	}
 
 	INT_PTR CALLBACK
@@ -145,6 +153,15 @@ public:
 		{
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		}
 		return 0;
 	}

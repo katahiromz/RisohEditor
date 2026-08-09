@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "A&juste de línea", ID_WORD_WRAP
         MENUITEM "Usar BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Sustituir &fuentes del Diálogo...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "Ac&tualizar", ID_REFRESHALL
     }
     POPUP "&Automatización"
@@ -1173,8 +1171,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "Cancelar", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Restablecer", psh1, 5, 160, 55, 14
 }
 
@@ -1630,6 +1626,7 @@ STRINGTABLE
     IDS_FONTS "Fuentes"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID Association"
+    IDS_DIALOGFONTSUBST "Sustituir Fuentes del Diálogo"
 }
 
 //////////////////////////////////////////////////////////////////////////////

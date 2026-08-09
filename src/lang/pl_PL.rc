@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
         MENUITEM "Użyj BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Okno dialogowe zastępczych czcionek...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "O&dśwież", ID_REFRESHALL
     }
     POPUP "&Automatyzacja"
@@ -1171,8 +1169,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Resetuj", psh1, 5, 160, 55, 14
 }
 
@@ -1628,6 +1624,7 @@ STRINGTABLE
     IDS_FONTS "Czcionki"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "Skojarzenia ID"
+    IDS_DIALOGFONTSUBST "Zastępcze czcionki w oknach dialogowych"
 }
 
 //////////////////////////////////////////////////////////////////////////////

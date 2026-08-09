@@ -113,8 +113,6 @@ IDR_MAINMENU MENU
         MENUITEM "S&özcük Kaydırma", ID_WORD_WRAP
         MENUITEM "BE&GIN/END Kullan", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "İ&letişim kutusu yazı tipi yerine geçerleri...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "Ye&nile", ID_REFRESHALL
     }
     POPUP "&Otomatikleştirme"
@@ -1171,8 +1169,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "Tamam", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "İptal", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Sıfırla", psh1, 5, 160, 55, 14
 }
 
@@ -1628,6 +1624,7 @@ STRINGTABLE
     IDS_FONTS "Yazı Tipleri"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID İlişkisi"
+    IDS_DIALOGFONTSUBST "Diyalog Yazı Tipi Yedekleri"
 }
 
 //////////////////////////////////////////////////////////////////////////////

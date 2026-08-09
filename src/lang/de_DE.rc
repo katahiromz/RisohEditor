@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Zeilenumbruch", ID_WORD_WRAP
         MENUITEM "BEGIN/END &verwenden", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Dialog-Schriftart-Ersatz...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "Aktualisieren", ID_REFRESHALL
     }
     POPUP "&Automatisierung"
@@ -1170,8 +1168,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "Abbrechen", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Zurücksetzen", psh1, 5, 160, 55, 14
 }
 
@@ -1627,6 +1623,7 @@ STRINGTABLE
     IDS_FONTS "Schriftarten"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID Association"
+    IDS_DIALOGFONTSUBST "Ersatzschriften für Dialoge"
 }
 
 //////////////////////////////////////////////////////////////////////////////

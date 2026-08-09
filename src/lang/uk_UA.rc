@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "П&еренос по словах", ID_WORD_WRAP
         MENUITEM "Використов&увати BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Замінники &шрифтів діалогів...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "О&новити", ID_REFRESHALL
     }
     POPUP "&Автоматизація"
@@ -1173,8 +1171,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "Скасувати", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Скидання", psh1, 5, 160, 55, 14
 }
 
@@ -1630,6 +1626,7 @@ STRINGTABLE
     IDS_FONTS "Шрифти"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "Асоціація ID"
+    IDS_DIALOGFONTSUBST "Замінники шрифтів діалогових вікон"
 }
 
 //////////////////////////////////////////////////////////////////////////////

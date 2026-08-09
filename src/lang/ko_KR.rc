@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "단어 줄바꿈(&W)", ID_WORD_WRAP
         MENUITEM "BEGIN/END 사용(&G)", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "대화상자 글꼴 대체(&F)...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "새로 고침(&U)", ID_REFRESHALL
     }
     POPUP "자동화(&A)"
@@ -1171,8 +1169,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "확인", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "취소", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "재설정(&R)", psh1, 5, 160, 55, 14
 }
 
@@ -1628,6 +1624,7 @@ STRINGTABLE
     IDS_FONTS "글꼴"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID 연결"
+    IDS_DIALOGFONTSUBST "대화상자 글꼴 대체"
 }
 
 //////////////////////////////////////////////////////////////////////////////

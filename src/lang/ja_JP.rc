@@ -114,8 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "ダイアログ フォント代替(&F)...", ID_DIALOG_FONT_SUBSTITUTES
-        MENUITEM SEPARATOR
         MENUITEM "最新の情報に更新(&U)", ID_REFRESHALL
     }
     POPUP "自動化(&A)"
@@ -1174,8 +1172,6 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "リセット(&R)", psh1, 5, 160, 55, 14
 }
 
@@ -1631,6 +1627,7 @@ STRINGTABLE
     IDS_FONTS "フォント"
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID の関連付け"
+    IDS_DIALOGFONTSUBST "ダイアログ フォントの代替"
 }
 
 //////////////////////////////////////////////////////////////////////////////

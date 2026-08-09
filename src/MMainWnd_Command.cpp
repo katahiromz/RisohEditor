@@ -2504,8 +2504,8 @@ void MMainWnd::OnDialogFontSubst(HWND hwnd)
 		m_rad_window.DestroyWindow();
 	}
 
-	MDialogFontSubstDlg dialog;
-	dialog.DialogBoxDx(hwnd);
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, PAGE_FONTSUBST);
 }
 
 // ID_TEST: do resource test
