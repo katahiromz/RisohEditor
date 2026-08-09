@@ -1502,9 +1502,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 	// get the selected entry
 	if (auto entry = g_res.get_entry())
 	{
-		// delete it
-		if (!TreeView_DeleteItem(m_hwndTV, entry->m_hItem))
-			assert(0);
+		entry->mark_invalid();
 	}
 
 	DoRefreshIDList(hwnd);

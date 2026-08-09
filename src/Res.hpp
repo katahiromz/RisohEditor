@@ -165,11 +165,7 @@ struct EntryBase : EntryBaseBase
 	}
 
 	// make it invalid
-	void mark_invalid()
-	{
-		m_valid = false;
-		m_data.clear();
-	}
+	void mark_invalid();
 
 	// can it be editted by GUI?
 	bool can_gui_edit() const
