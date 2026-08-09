@@ -1152,6 +1152,8 @@ void MMainWnd::UpdateHexViewerContent()
 
 void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 {
+	if (m_bShowBinEdit == bShowBinary && m_nShowMode == mode)
+		return;
 	m_bShowBinEdit = bShowBinary;
 	m_nShowMode = mode;
 	if (m_bShowBinEdit)
