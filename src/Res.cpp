@@ -15,8 +15,6 @@
 extern BOOL g_bEnableCrypto2;
 #endif
 
-bool g_res_has_any_invalid = false;
-
 struct AutoDeleteFileW
 {
 	std::wstring m_file;
@@ -170,7 +168,6 @@ void EntryBase::mark_invalid()
 {
 	m_valid = false;
 	m_data.clear();
-	g_res_has_any_invalid = true;
 }
 
 MStringW EntryBase::get_type_label() const
@@ -606,10 +603,6 @@ void EntrySet::delete_entry(EntryBase *entry)
 
 bool EntrySet::delete_invalid()
 {
-	if (!g_res_has_any_invalid)
-		return false;
-	g_res_has_any_invalid = false;
-
 	// search the invalid
 	super_type found;
 	search_invalid(found);

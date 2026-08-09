@@ -1502,7 +1502,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 	// get the selected entry
 	if (auto entry = g_res.get_entry())
 	{
-		entry->mark_invalid();
+		g_res.delete_entry(entry);
 	}
 
 	DoRefreshIDList(hwnd);
