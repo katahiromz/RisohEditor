@@ -164,38 +164,11 @@ public:
 		return ApplySettings(hwnd);
 	}
 
-	void OnPsh1(HWND hwnd)
-	{
-		PropSheet_SetCurSelByID(GetSheetDx(), IDD_MACROS);
-	}
-
-	void OnPsh2(HWND hwnd)
-	{
-		PropSheet_SetCurSelByID(GetSheetDx(), IDD_PATHS);
-	}
-
-	void OnPsh3(HWND hwnd)
-	{
-		// GetParent(hwnd) is now the property sheet frame, not the main
-		// window, so climb to the real top-level owner instead.
-		SendMessage(GetAncestorDx(), WM_COMMAND, ID_SETDEFAULTS, 0);
-		Reload(hwnd);
-		// A page can't EndDialog() itself; ask the sheet frame to close
-		// as if OK had been pressed (this also fires PSN_APPLY on every
-		// page, including this one).
-		PressButtonDx(PSBTN_OK);
-	}
-
-	void OnPsh4(HWND hwnd)
-	{
-		PropSheet_SetCurSelByID(GetSheetDx(), IDD_FONTS);
-	}
-
 	void OnPsh5(HWND hwnd)
 	{
+#ifdef ENABLE_CRYPTO
 		MCryptoDlg dialog;
 		dialog.DialogBoxDx(hwnd);
-#ifdef ENABLE_CRYPTO
 		if (g_bEnableCrypto && g_password.size())
 			CheckDlgButton(hwnd, chx11, BST_CHECKED);
 #endif
@@ -219,18 +192,6 @@ public:
 
 		switch (id)
 		{
-		case psh1:
-			OnPsh1(hwnd);
-			break;
-		case psh2:
-			OnPsh2(hwnd);
-			break;
-		case psh3:
-			OnPsh3(hwnd);
-			break;
-		case psh4:
-			OnPsh4(hwnd);
-			break;
 		case psh5:
 			OnPsh5(hwnd);
 			break;
