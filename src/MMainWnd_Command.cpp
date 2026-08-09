@@ -1139,7 +1139,7 @@ void MMainWnd::OnFonts(HWND hwnd)
 
 	// show the dialog
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, 3);
+	dialog.DoModalDx(hwnd, PAGE_FONTS);
 }
 
 // ID_EXPORT: export all the resource items to an RC file
@@ -2036,7 +2036,7 @@ void MMainWnd::OnConfig(HWND hwnd)
 
 	// show the dialog
 	MConfigPropSheet dialog;
-	if (dialog.DoModalDx(hwnd) == IDOK)
+	if (dialog.DoModalDx(hwnd, PAGE_CONFIG) == IDOK)
 	{
 		// update the labels of the entries
 		UpdateNames(FALSE);
@@ -2139,7 +2139,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
 
 	// show the dialog
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, 2);
+	dialog.DoModalDx(hwnd, PAGE_PATHS);
 }
 
 // ID_DFMSETTINGS
@@ -2205,7 +2205,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 		return;
 
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, 1);
+	dialog.DoModalDx(hwnd, PAGE_MACROS);
 }
 
 // ID_EXPAND_ALL: expand all the tree control items

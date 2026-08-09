@@ -14,6 +14,13 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+enum {
+	PAGE_CONFIG,
+	PAGE_MACROS,
+	PAGE_PATHS,
+	PAGE_FONTS,
+};
+
 // Replaces the old standalone "MConfigDlg dialog; dialog.DialogBoxDx(hwnd);"
 // call. MConfigDlg's "Edit Macros..." button used to launch MMacrosDlg as a
 // second, nested modal dialog; now both live as tabs of one sheet, and OK
