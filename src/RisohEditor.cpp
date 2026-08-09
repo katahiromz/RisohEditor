@@ -7591,7 +7591,17 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		return FALSE;
 
 	// create a treeview (tree control) window
-	style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
+	// NOTE: WS_CLIPCHILDREN is required here. m_arrow (the language
+	// drop-down arrow) is a WS_CHILD window layered on top of this
+	// treeview. Without WS_CLIPCHILDREN, the treeview's own DC (as
+	// used internally by comctl32's ScrollWindow() call for
+	// horizontal auto-scroll, see TREEVIEW_HScroll in treeview.c)
+	// is not clipped to exclude m_arrow's area, so whatever is
+	// currently drawn there gets dragged along by the scroll and
+	// left behind as a ghost image. WS_CLIPCHILDREN makes the OS
+	// exclude m_arrow's region from that DC, so this can't happen.
+	style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN |
+		WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
 		TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
 		TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
 	m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE,
