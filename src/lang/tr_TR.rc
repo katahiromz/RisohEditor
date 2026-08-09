@@ -80,8 +80,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Sil\tDel", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "&ID Eşlemesi...", ID_IDASSOC
-        MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Ya&pılandırma...\tAlt+Enter", ID_CONFIG
@@ -683,8 +681,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
     PUSHBUTTON "&Tümünü Sıfırla", psh2, 5, 175, 85, 14
     PUSHBUTTON "&Değiştir", psh1, 135, 175, 60, 14
-    DEFPUSHBUTTON "Tamam", IDOK, 70, 200, 60, 14
-    PUSHBUTTON "İptal", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOGEX 0, 0, 165, 68
@@ -1634,6 +1630,7 @@ STRINGTABLE
     IDS_PATHS "Yolları Ayarla"
     IDS_FONTS "Yazı Tipleri"
     IDS_DFMSETTINGS "Delphi DFM"
+    IDS_IDASSOC "ID İlişkisi"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -81,8 +81,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "삭제(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "ID 연결(&I)...", ID_IDASSOC
-        MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "구성(&C)...\tAlt+Enter", ID_CONFIG
@@ -683,8 +681,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
     PUSHBUTTON "모두 선택(&R)", psh2, 5, 175, 85, 14
     PUSHBUTTON "수정(&M)", psh1, 135, 175, 60, 14
-    DEFPUSHBUTTON "확인", IDOK, 70, 200, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOGEX 0, 0, 165, 68
@@ -1634,6 +1630,7 @@ STRINGTABLE
     IDS_PATHS "경로 설정"
     IDS_FONTS "글꼴"
     IDS_DFMSETTINGS "Delphi DFM"
+    IDS_IDASSOC "ID 연결"
 }
 
 //////////////////////////////////////////////////////////////////////////////

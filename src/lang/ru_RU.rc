@@ -81,8 +81,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Удалить\tDel", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "ID-&ассоциация...", ID_IDASSOC
-        MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Конфигурация...\tAlt+Enter", ID_CONFIG
@@ -684,8 +682,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
     PUSHBUTTON "&Сбросить все", psh2, 5, 175, 85, 14
     PUSHBUTTON "&Изменить", psh1, 135, 175, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 200, 60, 14
-    PUSHBUTTON "Отмена", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOGEX 0, 0, 165, 68
@@ -1635,6 +1631,7 @@ STRINGTABLE
     IDS_PATHS "Задать пути"
     IDS_FONTS "Шрифты"
     IDS_DFMSETTINGS "Delphi DFM"
+    IDS_IDASSOC "Ассоциация ID"
 }
 
 //////////////////////////////////////////////////////////////////////////////

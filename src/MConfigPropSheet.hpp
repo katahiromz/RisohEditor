@@ -12,6 +12,7 @@
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
 #include "MDfmSettingsDlg.hpp"
+#include "MIdAssocDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -21,6 +22,7 @@ enum {
 	PAGE_PATHS,
 	PAGE_FONTS,
 	PAGE_DFMSETTINGS,
+	PAGE_IDASSOC,
 };
 
 // Replaces the old standalone "MConfigDlg dialog; dialog.DialogBoxDx(hwnd);"
@@ -35,6 +37,7 @@ public:
 	MPathsDlg   m_pagePaths;
 	MFontsDlg   m_pageFonts;
 	MDfmSettingsDlg m_pageDfmSettings;
+	MIdAssocDlg m_pageIdAssoc;
 
 	MConfigPropSheet()
 		: MPropSheet(NULL, LoadStringDx(IDS_CONFIG))
@@ -44,6 +47,7 @@ public:
 		AddPage(m_pagePaths);
 		AddPage(m_pageFonts);
 		AddPage(m_pageDfmSettings);
+		AddPage(m_pageIdAssoc);
 	}
 
 	// Mirrors MDialogBase::DialogBoxDx(hwndOwner)'s call shape so callers

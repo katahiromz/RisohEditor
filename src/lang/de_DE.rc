@@ -81,8 +81,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Löschen\tDel", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "ID-&Zuordnung...", ID_IDASSOC
-        MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Konfiguration...\tAlt+Enter", ID_CONFIG
@@ -682,8 +680,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
     PUSHBUTTON "&Alles zurücksetzen", psh2, 5, 175, 85, 14
     PUSHBUTTON "&Ändern", psh1, 135, 175, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 200, 60, 14
-    PUSHBUTTON "Abbrechen", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOGEX 0, 0, 165, 68
@@ -1633,6 +1629,7 @@ STRINGTABLE
     IDS_PATHS "Pfade festlegen"
     IDS_FONTS "Schriftarten"
     IDS_DFMSETTINGS "Delphi DFM"
+    IDS_IDASSOC "ID Association"
 }
 
 //////////////////////////////////////////////////////////////////////////////

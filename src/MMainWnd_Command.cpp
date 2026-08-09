@@ -2094,13 +2094,8 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 	if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
 		return;
 
-	// show the dialog
-	MIdAssocDlg dialog;
-	if (dialog.DialogBoxDx(hwnd) == IDOK)
-	{
-		DoRefreshTVEntryNames(hwnd);
-		DoRefreshIDList(hwnd);
-	}
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, PAGE_IDASSOC);
 }
 
 // ID_SHOWLANGS: show the language list

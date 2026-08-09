@@ -6,19 +6,20 @@
 
 #pragma once
 
-#include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "MModifyAssocDlg.hpp"
 #include "settings.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MIdAssocDlg : public MDialogBase
+class MIdAssocDlg : public MPropSheetPage
 {
 public:
 	typedef std::map<MString, MString> map_type;
 	HWND m_hLst1;
 
-	MIdAssocDlg() : MDialogBase(IDD_IDASSOC)
+	MIdAssocDlg()
+		: MPropSheetPage(IDD_IDASSOC, LoadStringDx(IDS_IDASSOC))
 	{
 	}
 
@@ -84,6 +85,7 @@ public:
 	{
 		g_settings.ResetAssoc();
 		Lst1_Init(m_hLst1);
+		SetModifiedDx();
 	}
 
 	void OnPsh1(HWND hwnd)
@@ -105,10 +107,17 @@ public:
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPTSTR>(str2.c_str()));
+			SetModifiedDx();
 		}
 	}
 
-	void OnOK(HWND hwnd)
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplyAssoc(hwnd);
+	}
+
+	BOOL ApplyAssoc(HWND hwnd)
 	{
 		TCHAR szText[MAX_PATH];
 		MString str1, str2;
@@ -125,19 +134,13 @@ public:
 			g_settings.assoc_map[str1] = str2;
 		}
 
-		EndDialog(IDOK);
+		return TRUE;
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
 		{
-		case IDOK:
-			OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			EndDialog(IDCANCEL);
-			break;
 		case psh1:
 			OnPsh1(hwnd);
 			break;
@@ -197,7 +200,15 @@ public:
 		HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
-		HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		default:
 			return 0;
 		}
