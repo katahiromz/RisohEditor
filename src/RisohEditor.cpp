@@ -1200,9 +1200,15 @@ void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 		}
 	}
 
-	// skipped while Preview() is batching UI updates; EndPreviewBatch() posts
-	// a single WM_SIZE for the whole batch once it's done (see MMainWnd.hpp)
-	if (!m_nPreviewBatchDepth)
+	// We got past the early-out above, so the layout genuinely changed
+	// (ShowWindow/SetPane were just called on the splitter children).
+	// While Preview() is batching UI updates, just remember that a
+	// relayout is needed; EndPreviewBatch() posts a single WM_SIZE for
+	// the whole batch once it's done, and only because this flag is set
+	// (see MMainWnd.hpp / MMainWnd_Preview.cpp).
+	if (m_nPreviewBatchDepth)
+		m_bPreviewLayoutDirty = TRUE;
+	else
 		PostMessage(m_hwnd, WM_SIZE, 0, 0);
 }
 
@@ -1423,8 +1429,12 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 	// rewrite — the same class of flicker PreviewBatch was meant to stop.
 	BeginPreviewBatch();
 
-	// close the preview
-	HidePreview(stv);
+	// close the preview. If entry is non-NULL, one of the branches below
+	// (Preview(), PreviewStringTable(), or the explicit SetShowMode() in
+	// the default case) is about to establish the real target mode itself,
+	// so tell HidePreview() to skip its own SHOW_CODEONLY forcing -- see
+	// the bWillRePreview comment on HidePreview()'s declaration.
+	HidePreview(stv, entry != NULL);
 
 	if (!entry)     // not selected
 	{

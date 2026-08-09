@@ -209,6 +209,7 @@ BOOL MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += accel.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -226,6 +227,7 @@ BOOL MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += mes.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -243,6 +245,7 @@ BOOL MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 		// dump the text to m_hCodeEditor
 		MStringW str = str_res.Dump(nNameID);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -260,6 +263,7 @@ BOOL MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 
 	// dump the text to m_hCodeEditor
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	SetShowMode(SHOW_CODEONLY);
 	return TRUE;
 }
 
@@ -275,6 +279,7 @@ BOOL MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += menu_res.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -292,6 +297,7 @@ BOOL MMainWnd::PreviewToolbar(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += toolbar_res.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -308,6 +314,7 @@ BOOL MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += ver_res.Dump(entry.m_name);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -320,6 +327,7 @@ BOOL MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 	ResToText res2text;
 	MString str = res2text.DumpEntry(entry);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	SetShowMode(SHOW_CODEONLY);
 	return TRUE;
 }
 
@@ -331,6 +339,7 @@ BOOL MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
 	res2text.m_bHumanReadable = TRUE;
 	MString str = res2text.DumpEntry(entry);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	SetShowMode(SHOW_CODEONLY);
 	return TRUE;
 }
 
@@ -343,6 +352,7 @@ BOOL MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 	res2text.m_bHumanReadable = TRUE;
 	MString str = res2text.DumpEntry(entry);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	SetShowMode(SHOW_CODEONLY);
 	return TRUE;
 }
 
@@ -355,6 +365,7 @@ BOOL MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 	if (str.empty())
 		return FALSE;
 	SetWindowTextW(m_hCodeEditor, str.c_str());
+	SetShowMode(SHOW_CODEONLY);
 	return TRUE;
 }
 
@@ -370,6 +381,7 @@ BOOL MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
 		MString str = GetLanguageStatement(entry.m_lang);
 		str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
 		SetWindowTextW(m_hCodeEditor, str.c_str());
+		SetShowMode(SHOW_CODEONLY);
 		return TRUE;
 	}
 	return FALSE;
@@ -475,14 +487,23 @@ void MMainWnd::EndPreviewBatch()
 		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
 		::InvalidateRect(m_hCodeEditor, NULL, FALSE);
 
-		// this is the single WM_SIZE for the whole batch; the WM_SIZE posts
-		// inside HidePreview()/SetShowMode() are skipped while batching
-		PostMessageDx(WM_SIZE);
+		// Only relayout if SetShowMode() actually changed m_nShowMode/
+		// m_bShowBinEdit somewhere inside this batch. Switching between
+		// tree items of the same kind (the common, high-frequency case)
+		// never touches the layout, so skipping this avoids a pointless
+		// MoveWindow(..., TRUE) on m_splitter1/m_splitter2 -- and the
+		// full repaint that comes with it -- on every single selection
+		// change. This is what eliminates the flicker.
+		if (m_bPreviewLayoutDirty)
+		{
+			m_bPreviewLayoutDirty = FALSE;
+			PostMessageDx(WM_SIZE);
+		}
 	}
 }
 
 // close the preview
-VOID MMainWnd::HidePreview(STV stv)
+VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/)
 {
 	// destroy the RADical window if any
 	if (IsWindow(m_rad_window))
@@ -508,8 +529,13 @@ VOID MMainWnd::HidePreview(STV stv)
 	// close and hide m_hBmpView
 	m_hBmpView.DestroyView();
 
-	// Code Viewer only
-	SetShowMode(SHOW_CODEONLY);
+	// Code Viewer only -- but only as the resting state. If the caller is
+	// about to (re)establish the real target mode itself right after this
+	// (bWillRePreview), skip this: forcing CODEONLY here and then switching
+	// again a moment later is exactly the redundant transition that used to
+	// show up as m_hCodeEditor/m_hBmpView flicker.
+	if (!bWillRePreview)
+		SetShowMode(SHOW_CODEONLY);
 
 	// recalculate the splitter (skipped while Preview() is batching; it will
 	// post a single WM_SIZE itself once the whole batch is done, via
@@ -523,8 +549,12 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 {
 	BeginPreviewBatch();
 
-	// close the preview
-	HidePreview(stv);
+	// close the preview. If stv != STV_DONTRESET we're about to run one of
+	// the PreviewXxx() calls below, which sets the real target mode itself
+	// (see the bWillRePreview comment on HidePreview()'s declaration) --
+	// that's what actually eliminates the m_hCodeEditor/m_hBmpView flicker.
+	BOOL bWillRePreview = (stv != STV_DONTRESET);
+	HidePreview(stv, bWillRePreview);
 
 	if (stv == STV_DONTRESET)
 	{
@@ -534,8 +564,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 
 	ClearHexCache();
 
-	// code only
-	SetShowMode(SHOW_CODEONLY);
+	// NOTE: no SetShowMode(SHOW_CODEONLY) here anymore -- each PreviewXxx()
+	// call below now sets the mode it actually needs directly (including
+	// SHOW_CODEONLY for the text-only ones), so there is at most one real
+	// mode transition per selection change instead of two.
 
 	// do preview the resource item
 	BOOL bEditable = TRUE;
@@ -647,6 +679,13 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 			bEditable = PreviewUnknown(hwnd, *entry);
 		}
 	}
+
+	// Fallback: if the specific PreviewXxx() above failed before it got to
+	// its own SetShowMode() call (e.g. LoadFromStream() failed on a
+	// corrupt resource), make sure we don't leave a stale mode (e.g. still
+	// showing m_hBmpView from the previous, unrelated selection) behind.
+	if (!bEditable)
+		SetShowMode(SHOW_CODEONLY);
 
 	// re-enable redraw on m_hCodeEditor and recalculate the splitter
 	EndPreviewBatch();

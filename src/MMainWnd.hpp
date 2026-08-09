@@ -253,7 +253,17 @@ public:
 	void PostUpdateArrow(HWND hwnd);
 
 	// preview
-	VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
+	// bWillRePreview: pass TRUE when the caller is about to immediately
+	// establish the real target show mode itself (directly, or via
+	// Preview()'s PreviewXxx() dispatch). In that case HidePreview() does
+	// NOT force SHOW_CODEONLY; doing so unconditionally used to produce a
+	// spurious SHOW_CODEANDBMP -> SHOW_CODEONLY -> SHOW_CODEANDBMP round
+	// trip (a real, visible ShowWindow/SetPane resize of m_hCodeEditor and
+	// m_hBmpView) on every tree-view selection change whose old and new
+	// entries both want the same non-default mode, e.g. icon -> icon. Pass
+	// FALSE (the default) when hiding the preview for good, e.g. on
+	// deselection, where SHOW_CODEONLY really is the desired resting state.
+	VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED, BOOL bWillRePreview = FALSE);
 	BOOL Preview(HWND hwnd, const EntryBase *entry, STV stv = STV_RESETTEXTANDMODIFIED);
 
 	// Preview() internally calls HidePreview(), SetShowMode(), and one of the
@@ -265,6 +275,17 @@ public:
 	// is suppressed on m_hCodeEditor and the several WM_SIZE posts are coalesced
 	// into a single one, so the control updates in one paint instead of several.
 	INT  m_nPreviewBatchDepth = 0;
+	// Set by SetShowMode() only when it actually changes m_nShowMode/
+	// m_bShowBinEdit (and therefore ShowWindow's/SetPane's the splitter
+	// children) while a batch is open. EndPreviewBatch() posts WM_SIZE
+	// only if this is set, instead of unconditionally on every Preview()
+	// call. Most tree-view selection changes (switching between entries
+	// of the same show mode, e.g. dialog -> dialog) don't touch the
+	// layout at all, so without this flag EndPreviewBatch() was forcing
+	// a WM_SIZE -> MoveWindow(..., TRUE) -> full splitter repaint on
+	// every single selection change even though nothing visually needed
+	// to move, which is what showed up as flicker.
+	BOOL m_bPreviewLayoutDirty = FALSE;
 	void BeginPreviewBatch();
 	void EndPreviewBatch();
 
