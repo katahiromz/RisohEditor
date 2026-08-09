@@ -8,6 +8,7 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "settings.h"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
@@ -215,19 +216,19 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MMacrosDlg : public MDialogBase
+class MMacrosDlg : public MPropSheetPage
 {
 public:
 	macro_map_type m_map;
-	MResizable m_resizable;
+	//MResizable m_resizable;
 	HWND m_hLst1;
 	HICON m_hIcon;
 	HICON m_hIconSm;
 	MString m_strTemp;
 
 	MMacrosDlg()
-		: MDialogBase(IDD_MACROS),
-		  m_map(g_settings.macros)
+		: MPropSheetPage(IDD_MACROS, LoadStringDx(IDS_MACROS))
+		, m_map(g_settings.macros)
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -248,8 +249,8 @@ public:
 		ListView_DeleteItem(m_hLst1, iItem);
 
 		MString strKey = GetListViewItemText(m_hLst1, iItem, 0);
-
 		m_map.erase(strKey);
+		SetModifiedDx();
 	}
 
 	void OnAdd(HWND hwnd)
@@ -280,6 +281,8 @@ public:
 			UINT state = LVIS_SELECTED | LVIS_FOCUSED;
 			ListView_SetItemState(m_hLst1, iItem, state, state);
 			ListView_EnsureVisible(m_hLst1, iItem, FALSE);
+
+			SetModifiedDx();
 		}
 	}
 
@@ -318,10 +321,12 @@ public:
 			item.iSubItem = 1;
 			item.pszText = const_cast<LPTSTR>(entry.szValue.c_str());
 			ListView_SetItem(m_hLst1, &item);
+
+			SetModifiedDx();
 		}
 	}
 
-	void OnOK(HWND hwnd)
+	BOOL ApplyMacros(HWND hwnd)
 	{
 		INT nCount = ListView_GetItemCount(m_hLst1);
 
@@ -333,7 +338,14 @@ public:
 			m_map[strKey] = strValue;
 		}
 
-		EndDialog(IDOK);
+		g_settings.macros = m_map;
+		return TRUE;
+	}
+
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplyMacros(hwnd);
 	}
 
 	void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
@@ -363,24 +375,19 @@ public:
 		case ID_RENAME:
 			OnRename(hwnd);
 			break;
-		case IDOK:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-				OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-				EndDialog(IDCANCEL);
-			break;
 		case psh6:
 			if (codeNotify == 0 || codeNotify == BN_CLICKED)
 			{
-				EndDialog(psh6);
+				g_settings.ResetMacros(m_map);
+				ResetItems(hwnd, m_map);
+				SetModifiedDx();
 			}
 			break;
 		case psh7:
 			m_map.clear();
 			ListView_DeleteAllItems(m_hLst1);
 			OnItemChanged(hwnd);
+			SetModifiedDx();
 			break;
 		}
 	}
@@ -394,6 +401,7 @@ public:
 		}
 
 		ListView_EditLabel(m_hLst1, iItem);
+		SetModifiedDx();
 	}
 
 	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
@@ -511,17 +519,52 @@ public:
 		{
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-			HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 			HANDLE_MSG(hwnd, WM_SIZE, OnSize);
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
+
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		}
 		return 0;
 	}
 
 	void OnSize(HWND hwnd, UINT state, int cx, int cy)
 	{
-		m_resizable.OnSize();
+		//m_resizable.OnSize();
+	}
+
+	void ResetItems(HWND hwnd, const macro_map_type& map)
+	{
+		LV_ITEM item;
+		INT iItem = 0;
+
+		ListView_DeleteAllItems(m_hLst1);
+		for (auto& pair : map)
+		{
+			ZeroMemory(&item, sizeof(item));
+			item.iItem = iItem;
+			item.mask = LVIF_TEXT;
+			item.iSubItem = 0;
+			item.pszText = const_cast<LPTSTR>(pair.first.c_str());
+			ListView_InsertItem(m_hLst1, &item);
+
+			ZeroMemory(&item, sizeof(item));
+			item.iItem = iItem;
+			item.mask = LVIF_TEXT;
+			item.iSubItem = 1;
+			item.pszText = const_cast<LPTSTR>(pair.second.c_str());
+			ListView_SetItem(m_hLst1, &item);
+
+			++iItem;
+		}
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -546,40 +589,19 @@ public:
 		column.iSubItem = 1;
 		ListView_InsertColumn(m_hLst1, 1, &column);
 
-		LV_ITEM item;
-		INT iItem = 0;
+		ResetItems(hwnd, g_settings.macros);
 
-		for (auto& pair : m_map)
-		{
-			ZeroMemory(&item, sizeof(item));
-			item.iItem = iItem;
-			item.mask = LVIF_TEXT;
-			item.iSubItem = 0;
-			item.pszText = const_cast<LPTSTR>(pair.first.c_str());
-			ListView_InsertItem(m_hLst1, &item);
-
-			ZeroMemory(&item, sizeof(item));
-			item.iItem = iItem;
-			item.mask = LVIF_TEXT;
-			item.iSubItem = 1;
-			item.pszText = const_cast<LPTSTR>(pair.second.c_str());
-			ListView_SetItem(m_hLst1, &item);
-
-			++iItem;
-		}
-
-		m_resizable.OnParentCreate(hwnd);
-
-		m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh7, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
+		//m_resizable.OnParentCreate(hwnd);
+		//m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh7, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
 
 		SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
 		SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
@@ -590,7 +612,6 @@ public:
 
 		SetFocus(m_hLst1);
 
-		CenterWindowDx();
 		return TRUE;
 	}
 };

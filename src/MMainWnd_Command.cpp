@@ -1,4 +1,4 @@
-// MMainWnd_Command.cpp --- RisohEditor commands
+Ôªø// MMainWnd_Command.cpp --- RisohEditor commands
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -26,7 +26,7 @@
 #include "MCloneInNewLangDlg.hpp"
 #include "MCloneInNewNameDlg.hpp"
 #include "MCloneInNewTypeDlg.hpp"
-#include "MConfigDlg.hpp"
+#include "MConfigPropSheet.hpp"
 #include "MConstantDlg.hpp"
 #include "MCopyToMultiLangDlg.hpp"
 #include "MDfmSettingsDlg.hpp"
@@ -2041,8 +2041,8 @@ void MMainWnd::OnConfig(HWND hwnd)
 		return;
 
 	// show the dialog
-	MConfigDlg dialog;
-	if (dialog.DialogBoxDx(hwnd) == IDOK)
+	MConfigPropSheet dialog;
+	if (dialog.DoModalDx(hwnd) == IDOK)
 	{
 		// refresh PATHs
 		ReSetPaths(hwnd);
@@ -2222,18 +2222,8 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
-	// show the dialog
-	MMacrosDlg dialog;
-	INT_PTR nID = dialog.DialogBoxDx(hwnd);
-	switch (INT(nID))
-	{
-	case IDOK:
-		g_settings.macros = dialog.m_map;
-		break;
-	case psh6:
-		g_settings.ResetMacros();
-		break;
-	}
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, 1);
 }
 
 // ID_EXPAND_ALL: expand all the tree control items
@@ -3105,7 +3095,7 @@ void MMainWnd::OnEdit(HWND hwnd)
 		return;
 
 	// Tree double-click / ID_EDIT on an already-selected, unmodified entry
-	// must not run HidePreviewÅ®Preview. That path clears m_hCodeEditor and
+	// must not run HidePreview‚ÜíPreview. That path clears m_hCodeEditor and
 	// writes the same text back, which is the remaining flicker even with
 	// PreviewBatch (SetWindowText still rebuilds the edit buffer).
 	HTREEITEM hSel = TreeView_GetSelection(m_hwndTV);

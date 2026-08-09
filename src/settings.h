@@ -186,11 +186,11 @@ struct RisohSettings
 #undef DEFINE_IDTYPE
 	}
 
-	void ResetMacros()
+	void ResetMacros(macro_map_type& the_macros)
 	{
-		macros.clear();
+		the_macros.clear();
 
-#define DEF_VALUE(x, val)         macros.insert(std::make_pair(TEXT(#x), TEXT(#val)))
+#define DEF_VALUE(x, val) the_macros.insert(std::make_pair(TEXT(#x), TEXT(#val)))
 		// TODO: update these values
 		DEF_VALUE(_WIN32, 1);
 		DEF_VALUE(__GNUC__, 10);
@@ -209,7 +209,7 @@ struct RisohSettings
 		//#endif
 #undef DEF_VALUE
 
-#define DEF_LANG(lang) macros.insert(std::make_pair(TEXT(lang), TEXT("")))
+#define DEF_LANG(lang) the_macros.insert(std::make_pair(TEXT(lang), TEXT("")))
 	DEF_LANG("LANGUAGE_AR_SA");
 	DEF_LANG("LANGUAGE_BG_BG");
 	DEF_LANG("LANGUAGE_ZH_CN");

@@ -1,6 +1,7 @@
 ﻿## HISTÓRICO
 
 - v.6.1.4 (2026-XX-YY)
+    - Transformou a configuração em uma folha de propriedades.
 - v.6.1.3 (2026-08-08)
     - Menu [Editar] simplificado.
     - Implementei a criptografia de recursos usando o WonRes.

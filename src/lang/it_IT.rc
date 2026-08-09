@@ -740,9 +740,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Usa &WonRes", chx11, 5, 285, 90, 14
     PUSHBUTTON "Crittografia &delle risorse...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "Annulla", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "Ripri&stina tutto", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -918,8 +915,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Modifica...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Elimina", psh3, 200, 55, 60, 14
     PUSHBUTTON "Elimina t&utto", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "Annulla", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "&Ripristina tutto", psh6, 5, 145, 60, 14
 }
 
@@ -1643,6 +1638,9 @@ STRINGTABLE
     IDS_ENTERSALT "Inserisci una stringa di salt di almeno 16 caratteri."
     IDS_WANTCRYPTO "Desideri crittografare i dati delle risorse del file eseguibile nella posizione in cui verrà salvato?"
     IDS_CRYPTTARGETEMPTY "L'elenco dei tipi di risorsa da crittografare è vuoto. Va bene così?"
+    IDS_GENERAL "Generale"
+    IDS_MACROS "Macro"
+    IDS_CONFIG "Impostazioni"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -714,7 +714,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 325
+IDD_CONFIG DIALOGEX 0, 0, 210, 305
 CAPTION "Konfigurasi"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
@@ -743,9 +743,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Gunakan &WonRes", chx11, 5, 285, 90, 14
     PUSHBUTTON "Enkripsi sumber da&ya...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "Batal", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "S&et Ulang Semua", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -921,8 +918,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Edit...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Hapus", psh3, 200, 55, 60, 14
     PUSHBUTTON "H&apus Semua", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "Setel &Ulang Semua", psh6, 5, 145, 60, 14
 }
 
@@ -1646,6 +1641,9 @@ STRINGTABLE
     IDS_ENTERSALT "Silakan masukkan string garam dengan panjang 16 karakter atau lebih."
     IDS_WANTCRYPTO "Apakah Anda ingin mengenkripsi data sumber daya dari file yang dapat dieksekusi di tempat file tersebut akan disimpan?"
     IDS_CRYPTTARGETEMPTY "Jenis sumber daya yang akan dienkripsi kosong. Apakah ini tidak masalah?"
+    IDS_GENERAL "Umum"
+    IDS_MACROS "Makro"
+    IDS_CONFIG "Konfigurasi"
 }
 
 //////////////////////////////////////////////////////////////////////////////

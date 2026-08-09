@@ -8,9 +8,9 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "settings.h"
 #include "ConstantsDB.hpp"
-#include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
 #include "MCryptoDlg.hpp"
@@ -21,14 +21,14 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MConfigDlg : public MDialogBase
+class MConfigDlg : public MPropSheetPage
 {
 public:
 	MComboBoxAutoComplete m_cmb3;
 	MRisohAutoComplete *m_pAutoComplete2;
 
 	MConfigDlg()
-		: MDialogBase(IDD_CONFIG)
+		: MPropSheetPage(IDD_CONFIG, LoadStringDx(IDS_GENERAL))
 		, m_pAutoComplete2(new MRisohAutoComplete(2))
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
@@ -104,11 +104,13 @@ public:
 		}
 
 		Reload(hwnd);
-		CenterWindowDx();
 		return TRUE;
 	}
 
-	void OnOK(HWND hwnd)
+	// Was OnOK(HWND). Now invoked from OnApply (PSN_APPLY) instead of
+	// from an IDOK button, since a property page has no OK button of
+	// its own -- the sheet frame supplies one shared OK/Cancel/Apply.
+	BOOL ApplySettings(HWND hwnd)
 	{
 		HWND hCmb3 = GetDlgItem(hwnd, cmb3);
 		LANGID lang;
@@ -125,7 +127,7 @@ public:
 			Edit_SetSel(hEdt1, 0, -1);
 			SetFocus(hEdt1);
 			ErrorBoxDx(IDS_ENTERINT);
-			return;
+			return FALSE;
 		}
 		g_settings.nComboHeight = nHeight;
 
@@ -153,13 +155,21 @@ public:
 		if (strBackupSuffix.empty())
 			g_settings.bBackup = FALSE;
 
-		EndDialog(IDOK);
+		return TRUE;
+	}
+
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplySettings(hwnd);
 	}
 
 	void OnPsh1(HWND hwnd)
 	{
-		MMacrosDlg dialog;
-		dialog.DialogBoxDx(hwnd);
+		// Macros now live on their own "Macros" tab of this same
+		// property sheet, so just switch to it instead of popping up
+		// MMacrosDlg modally.
+		PropSheet_SetCurSelByID(GetSheetDx(), IDD_MACROS);
 	}
 
 	void OnPsh2(HWND hwnd)
@@ -170,9 +180,14 @@ public:
 
 	void OnPsh3(HWND hwnd)
 	{
-		SendMessage(GetParent(hwnd), WM_COMMAND, ID_SETDEFAULTS, 0);
+		// GetParent(hwnd) is now the property sheet frame, not the main
+		// window, so climb to the real top-level owner instead.
+		SendMessage(GetAncestorDx(), WM_COMMAND, ID_SETDEFAULTS, 0);
 		Reload(hwnd);
-		EndDialog(hwnd, IDOK);
+		// A page can't EndDialog() itself; ask the sheet frame to close
+		// as if OK had been pressed (this also fires PSN_APPLY on every
+		// page, including this one).
+		PressButtonDx(PSBTN_OK);
 	}
 
 	void OnPsh4(HWND hwnd)
@@ -193,14 +208,22 @@ public:
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
+		if (chx1 <= id && id <= chx11)
+		{
+			SetModifiedDx();
+		}
+		else if (id == edt1 && codeNotify == EN_CHANGE)
+		{
+			SetModifiedDx();
+		}
+		else if ((id == cmb1 || id == cmb2 || id == cmb3) &&
+			     (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK))
+		{
+			SetModifiedDx();
+		}
+
 		switch (id)
 		{
-		case IDOK:
-			OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			EndDialog(hwnd, IDCANCEL);
-			break;
 		case psh1:
 			OnPsh1(hwnd);
 			break;
@@ -239,6 +262,8 @@ public:
 			DO_MSG(WM_INITDIALOG, OnInitDialog);
 			DO_MSG(WM_COMMAND, OnCommand);
 		}
-		return 0;
+		// Handles WM_NOTIFY (PSN_SETACTIVE/PSN_KILLACTIVE/PSN_APPLY/...)
+		// among other defaults.
+		return MPropSheetPage::DialogProcDx(hwnd, uMsg, wParam, lParam);
 	}
 };

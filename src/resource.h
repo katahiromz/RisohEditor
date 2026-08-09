@@ -373,6 +373,9 @@
 #define IDS_ENTERSALT                       392
 #define IDS_WANTCRYPTO                      393
 #define IDS_CRYPTTARGETEMPTY                394
+#define IDS_GENERAL                         395
+#define IDS_MACROS                          396
+#define IDS_CONFIG                          397
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

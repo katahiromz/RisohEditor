@@ -711,7 +711,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 325
+IDD_CONFIG DIALOGEX 0, 0, 210, 305
 CAPTION "Konfiguracja"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
@@ -740,9 +740,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Użyj &WonRes", chx11, 5, 285, 90, 14
     PUSHBUTTON "Szyfrowanie zaso&bów...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "Re&setuj wszystko", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -918,8 +915,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Edytuj...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Usuń", psh3, 200, 55, 60, 14
     PUSHBUTTON "Usuń &wszystko", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "&Resetuj wszystko", psh6, 5, 145, 60, 14
 }
 
@@ -1643,6 +1638,9 @@ STRINGTABLE
     IDS_ENTERSALT "Proszę wprowadzić ciąg znaków składający się z 16 lub więcej znaków."
     IDS_WANTCRYPTO "Czy chcesz zaszyfrować dane zasobów pliku wykonywalnego, w którym zostaną zapisane?"
     IDS_CRYPTTARGETEMPTY "Typy zasobów do zaszyfrowania są puste. Czy to w porządku?"
+    IDS_GENERAL "Ogólny"
+    IDS_MACROS "Makroskładniki"
+    IDS_CONFIG "Konfiguracja"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -160,7 +160,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_settings.added_ids.clear();
 	g_settings.removed_ids.clear();
 
-	g_settings.ResetMacros();
+	g_settings.ResetMacros(g_settings.macros);
 
 	g_settings.includes.clear();
 

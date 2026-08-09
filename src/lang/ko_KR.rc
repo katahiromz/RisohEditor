@@ -711,7 +711,7 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 325
+IDD_CONFIG DIALOGEX 0, 0, 210, 305
 CAPTION "구성"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
@@ -740,9 +740,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&WonRes를 사용하세요", chx11, 5, 285, 90, 14
     PUSHBUTTON "리소스 암호화(&E)...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "확인", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "취소", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "모두 재설정(&S)", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -918,8 +915,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     PUSHBUTTON "편집(&E)...", psh2, 200, 35, 60, 14
     PUSHBUTTON "삭제(&D)", psh3, 200, 55, 60, 14
     PUSHBUTTON "모두 삭제(&L)...", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "확인", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "모두 재설정(&R)", psh6, 5, 145, 60, 14
 }
 
@@ -1643,6 +1638,9 @@ STRINGTABLE
     IDS_ENTERSALT "16자 이상의 솔트 문자열을 입력합니다."
     IDS_WANTCRYPTO "대상 실행 파일의 리소스 데이터를 암호화하고 싶습니까?"
     IDS_CRYPTTARGETEMPTY "암호화할 리소스 유형이 비어 있습니다. 괜찮으신가요?"
+    IDS_GENERAL "일반"
+    IDS_MACROS "매크로"
+    IDS_CONFIG "구성"
 }
 
 //////////////////////////////////////////////////////////////////////////////

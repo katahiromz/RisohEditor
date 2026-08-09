@@ -713,7 +713,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 325
+IDD_CONFIG DIALOGEX 0, 0, 210, 305
 CAPTION "Configuración"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
@@ -742,9 +742,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Utilice &WonRes", chx11, 5, 285, 90, 14
     PUSHBUTTON "Cifra&do de recursos...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "Cancelar", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "Re&stablecer todo", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -920,8 +917,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Editar...", psh2, 200, 35, 60, 14
     PUSHBUTTON "E&liminar", psh3, 200, 55, 60, 14
     PUSHBUTTON "Eliminar T&odo", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "Cancelar", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "&Restablecer Todo", psh6, 5, 145, 60, 14
 }
 
@@ -1645,6 +1640,9 @@ STRINGTABLE
     IDS_ENTERSALT "Introduzca una cadena de sal de 16 caracteres o más."
     IDS_WANTCRYPTO "¿Desea cifrar los datos de recursos del archivo ejecutable donde se guardarán?"
     IDS_CRYPTTARGETEMPTY "La lista de tipos de recursos que se van a cifrar está vacía. ¿Es correcto?"
+    IDS_GENERAL "General"
+    IDS_MACROS "Macros"
+    IDS_CONFIG "Configuración"
 }
 
 //////////////////////////////////////////////////////////////////////////////

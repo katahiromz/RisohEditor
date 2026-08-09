@@ -714,7 +714,7 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 325
+IDD_CONFIG DIALOGEX 0, 0, 210, 305
 CAPTION "設定"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
@@ -743,9 +743,6 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&WonRes を使う", chx11, 5, 285, 90, 14
     PUSHBUTTON "リソース暗号化(&E)...", psh5, 100, 285, 105, 15
-    DEFPUSHBUTTON "OK", IDOK, 100, 305, 50, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 155, 305, 50, 14
-    PUSHBUTTON "すべてリセット(&S)", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -921,8 +918,6 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     PUSHBUTTON "編集(&E)...", psh2, 200, 35, 60, 14
     PUSHBUTTON "削除(&D)", psh3, 200, 55, 60, 14
     PUSHBUTTON "すべて削除(&L)", psh7, 200, 105, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 200, 145, 60, 14
     PUSHBUTTON "すべてリセット(&R)", psh6, 5, 145, 60, 14
 }
 
@@ -1646,6 +1641,9 @@ STRINGTABLE
     IDS_ENTERSALT "16文字以上のソルト文字列を入力してください。"
     IDS_WANTCRYPTO "保存先の実行可能ファイルのリソースデータを暗号化したいですか？"
     IDS_CRYPTTARGETEMPTY "暗号化対象のリソース型が空です。これでよろしいですか？"
+    IDS_GENERAL "全般"
+    IDS_MACROS "マクロ"
+    IDS_CONFIG "設定"
 }
 
 //////////////////////////////////////////////////////////////////////////////
