@@ -13,6 +13,7 @@
 // MMainWnd --- the main window
 
 #define CODE_REFRESH_TIMER_ID 999
+#define TV_SELECTION_TIMER_ID 888
 
 // the file type
 enum FileType

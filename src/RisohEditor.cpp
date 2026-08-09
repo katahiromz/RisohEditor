@@ -1023,9 +1023,6 @@ void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
 		SetShowMode(m_nShowMode, TRUE);
 		break;
 	}
-
-	// relayout
-	PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
 // set error message
@@ -6551,9 +6548,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 		if (!m_bLoading && entry)
 		{
 			// select the entry to update the text
-			SelectTV(entry, FALSE);
+			::KillTimer(hwnd, TV_SELECTION_TIMER_ID);
+			::SetTimer(hwnd, TV_SELECTION_TIMER_ID, 150, nullptr);
 			OnSelChange(hwnd, 0);
-
 			PostUpdateArrow(hwnd);
 		}
 	}
@@ -7876,42 +7873,50 @@ LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 void MMainWnd::OnTimer(HWND hwnd, UINT id)
 {
-	if (id != CODE_REFRESH_TIMER_ID)
-		return;
-	::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
-
-	// get the selected language entry
-	auto entry = g_res.get_lang_entry();
-	if (!entry || entry->m_type != RT_DIALOG)
+	if (id == TV_SELECTION_TIMER_ID)
 	{
+		::KillTimer(hwnd, TV_SELECTION_TIMER_ID);
+		auto entry = g_res.get_entry();
+		SelectTV(entry, FALSE);
 		return;
 	}
+	if (id == CODE_REFRESH_TIMER_ID)
+	{
+		::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
 
-	auto& dialog_res = m_rad_window.m_dialog_res;
+		// get the selected language entry
+		auto entry = g_res.get_lang_entry();
+		if (!entry || entry->m_type != RT_DIALOG)
+		{
+			return;
+		}
 
-	// dialog_res --> entry->m_data
-	MByteStreamEx stream;
-	dialog_res.SaveToStream(stream);
-	entry->m_data = stream.data();
+		auto& dialog_res = m_rad_window.m_dialog_res;
 
-	// entry->m_lang + dialog_res --> str --> m_hCodeEditor (text)
-	// Suppress redraw on the LineNumEdit (and its line-number static, via the
-	// WM_SETREDRAW forwarding in LineNumEdit) so a single coherent paint
-	// happens after the text is fully replaced. Without this the gutter and
-	// edit can each repaint mid-update and show as flicker, especially when
-	// RAD repeatedly posts MYWM_UPDATEDLGRES while the user drags controls.
-	MString str = GetLanguageStatement(entry->m_lang);
-	str += dialog_res.Dump(entry->m_name);
-	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
-	SetWindowTextW(m_hCodeEditor, str.c_str());
-	::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
-	// Invalidate the edit and its children (the line-number static) together.
-	::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
+		// dialog_res --> entry->m_data
+		MByteStreamEx stream;
+		dialog_res.SaveToStream(stream);
+		entry->m_data = stream.data();
 
-	// entry->m_data --> m_hHexViewer (binary)
-	ClearHexCache();
-	if (m_bShowBinEdit)
-		UpdateHexViewerContent();
+		// entry->m_lang + dialog_res --> str --> m_hCodeEditor (text)
+		// Suppress redraw on the LineNumEdit (and its line-number static, via the
+		// WM_SETREDRAW forwarding in LineNumEdit) so a single coherent paint
+		// happens after the text is fully replaced. Without this the gutter and
+		// edit can each repaint mid-update and show as flicker, especially when
+		// RAD repeatedly posts MYWM_UPDATEDLGRES while the user drags controls.
+		MString str = GetLanguageStatement(entry->m_lang);
+		str += dialog_res.Dump(entry->m_name);
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
+		SetWindowTextW(m_hCodeEditor, str.c_str());
+		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
+		// Invalidate the edit and its children (the line-number static) together.
+		::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
+
+		// entry->m_data --> m_hHexViewer (binary)
+		ClearHexCache();
+		if (m_bShowBinEdit)
+			UpdateHexViewerContent();
+	}
 }
 
 // MYWM_UPDATEDLGRES
@@ -7920,7 +7925,7 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	DoSetFileModified(TRUE);
 
 	::KillTimer(hwnd, CODE_REFRESH_TIMER_ID);
-	::SetTimer(hwnd, CODE_REFRESH_TIMER_ID, 200, nullptr);
+	::SetTimer(hwnd, CODE_REFRESH_TIMER_ID, 150, nullptr);
 	return 0;
 }
 
