@@ -2497,13 +2497,6 @@ void MMainWnd::OnDialogFontSubst(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
-	// if RADical window is displayed
-	if (IsWindowVisible(m_rad_window))
-	{
-		// destroy it
-		m_rad_window.DestroyWindow();
-	}
-
 	MConfigPropSheet dialog;
 	dialog.DoModalDx(hwnd, PAGE_FONTSUBST);
 }

@@ -552,6 +552,8 @@ protected:
 	BOOL WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR szPayloadLoader, LANGID lang);
 	void MarkErrorLine(INT iLine);
 	RECT m_rcRadWindow = {};
+
+	friend class MDialogFontSubstDlg;
 };
 
 extern MMainWnd *s_pMainWnd;

@@ -1,7 +1,7 @@
 // MDialogFontSubstDlg --- "Replacing Dialog Fonts" Dialog
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2020-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
 #pragma once
@@ -22,6 +22,7 @@ public:
 	MComboBoxAutoComplete m_cmb4;
 	MComboBoxAutoComplete m_cmb5;
 	MComboBoxAutoComplete m_cmb6;
+	BOOL m_rad_was_visible = FALSE;
 
 	MDialogFontSubstDlg()
 		: MPropSheetPage(IDD_FONTSUBST, LoadStringDx(IDS_DIALOGFONTSUBST))
@@ -30,6 +31,10 @@ public:
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
+		m_rad_was_visible = IsWindowVisible(s_pMainWnd->m_rad_window);
+		if (m_rad_was_visible)
+			GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
+
 		InitFontComboBox(GetDlgItem(hwnd, cmb1));
 		InitFontComboBox(GetDlgItem(hwnd, cmb2));
 		InitFontComboBox(GetDlgItem(hwnd, cmb3));
@@ -69,6 +74,10 @@ public:
 		g_settings.strFontReplaceTo2 = GetDlgItemText(cmb4);
 		g_settings.strFontReplaceFrom3 = GetDlgItemText(cmb5);
 		g_settings.strFontReplaceTo3 = GetDlgItemText(cmb6);
+
+		if (m_rad_was_visible)
+			PostMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
+
 		return TRUE;
 	}
 
