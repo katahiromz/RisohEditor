@@ -271,15 +271,19 @@ class MPropSheet : public MWindowBase
 public:
 	PROPSHEETHEADER               m_psh;
 	std::vector<HPROPSHEETPAGE>   m_pages;
+	MStringW m_title;
 
 	MPropSheet(HWND hwndParent = NULL, LPCTSTR pszCaption = NULL, UINT nIconID = 0)
 	{
+		if (pszCaption)
+			m_title = pszCaption;
+
 		ZeroMemory(&m_psh, sizeof(m_psh));
 		m_psh.dwSize = sizeof(m_psh);
 		m_psh.dwFlags = PSH_USECALLBACK;
 		m_psh.hwndParent = hwndParent;
 		m_psh.hInstance = ::GetModuleHandle(NULL);
-		m_psh.pszCaption = pszCaption;
+		m_psh.pszCaption = m_title.c_str();
 		m_psh.nStartPage = 0;
 		m_psh.pfnCallback = MPropSheet::PropSheetProcDx;
 
