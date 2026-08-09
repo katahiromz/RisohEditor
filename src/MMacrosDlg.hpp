@@ -7,7 +7,6 @@
 #pragma once
 
 #include "resource.h"
-#include "MWindowBase.hpp"
 #include "MPropSheet.hpp"
 #include "settings.h"
 #include "MResizable.hpp"

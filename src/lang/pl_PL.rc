@@ -85,7 +85,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Ustawienia Delphi D&FM...", ID_DFMSETTINGS
         MENUITEM "Konfigura&cja...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Szukaj"
@@ -1203,8 +1202,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Wstaw ciągi raw komentarzy", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "Nie używaj &Unicode i UTF-8", chx2, 5, 70, 200, 14
-    DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 145, 115, 60, 14
 }
 
 IDD_COPYTOMULTILANG DIALOGEX 0, 0, 200, 195
@@ -1636,6 +1633,7 @@ STRINGTABLE
     IDS_CONFIG "Konfiguracja"
     IDS_PATHS "Ustawienia katalogów/ścieżek"
     IDS_FONTS "Czcionki"
+    IDS_DFMSETTINGS "Delphi DFM"
 }
 
 //////////////////////////////////////////////////////////////////////////////

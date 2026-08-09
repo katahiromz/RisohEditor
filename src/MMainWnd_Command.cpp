@@ -2149,17 +2149,8 @@ void MMainWnd::OnDfmSettings(HWND hwnd)
 	if (!CompileIfNecessary(TRUE))
 		return;
 
-	MDfmSettingsDlg dialog;
-	if (dialog.DialogBoxDx(hwnd) == IDOK)
-	{
-		g_settings.nDfmCodePage = dialog.m_nCodePage;
-		g_settings.bDfmRawTextComments = dialog.m_bComments;
-		g_settings.bDfmNoUnicode = dialog.m_bNoUnicode;
-
-		// select the entry to update the text
-		auto entry = g_res.get_entry();
-		SelectTV(entry, FALSE);
-	}
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, PAGE_DFMSETTINGS);
 }
 
 // ID_EDITLABEL: start changing the resource type/name/language

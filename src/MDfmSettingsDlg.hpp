@@ -6,7 +6,7 @@
 #pragma once
 
 #include "resource.h"
-#include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "settings.h"
 #include "Common.hpp"
 
@@ -14,14 +14,15 @@ BOOL IsCodePageReallyUsable(UINT cp);
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MDfmSettingsDlg : public MDialogBase
+class MDfmSettingsDlg : public MPropSheetPage
 {
 public:
 	INT m_nCodePage;
 	BOOL m_bComments;
 	BOOL m_bNoUnicode;
 
-	MDfmSettingsDlg() : MDialogBase(IDD_DFMSETTINGS)
+	MDfmSettingsDlg()
+        : MPropSheetPage(IDD_DFMSETTINGS, LoadStringDx(IDS_DFMSETTINGS))
 	{
 		m_nCodePage = g_settings.nDfmCodePage;
 		m_bComments = g_settings.bDfmRawTextComments;
@@ -65,7 +66,13 @@ public:
 		return TRUE;
 	}
 
-	void OnOK(HWND hwnd)
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+    {
+        return ApplySettings(hwnd);
+    }
+
+	BOOL ApplySettings(HWND hwnd)
 	{
 		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 
@@ -81,11 +88,11 @@ public:
 		}
 
 		INT nCodePage = _tcstoul(strText.c_str(), NULL, 0);
-		if (!IsCodePageReallyUsable(nCodePage))
+		if (nCodePage != 0 && !IsCodePageReallyUsable(nCodePage))
 		{
 			SetFocus(hCmb1);
 			MsgBoxDx(IDS_INVALIDCODEPAGE, MB_ICONERROR);
-			return;
+			return FALSE;
 		}
 		m_nCodePage = nCodePage;
 
@@ -99,20 +106,32 @@ public:
 		else
 			m_bNoUnicode = FALSE;
 
-		EndDialog(IDOK);
+		g_settings.nDfmCodePage = m_nCodePage;
+		g_settings.bDfmRawTextComments = m_bComments;
+		g_settings.bDfmNoUnicode = m_bNoUnicode;
+
+		return TRUE;
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
 		{
-		case IDOK:
-			OnOK(hwnd);
+		case chx1:
+		case chx2:
+			if (codeNotify == BN_CLICKED)
+				SetModifiedDx();
 			break;
-		case IDCANCEL:
-			EndDialog(IDCANCEL);
+		case cmb1:
+			if (codeNotify == CBN_EDITCHANGE || codeNotify == CBN_SELENDOK)
+				SetModifiedDx();
 			break;
 		}
+	}
+
+	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+	{
+	    return 0;
 	}
 
 	INT_PTR CALLBACK
@@ -122,6 +141,15 @@ public:
 		{
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		}
 		return 0;
 	}

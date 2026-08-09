@@ -85,7 +85,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Настройки Delphi DFM...", ID_DFMSETTINGS
         MENUITEM "&Конфигурация...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Поиск"
@@ -1204,8 +1203,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Вставлять необработанные строковые комментарии", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "Не использовать &Юникод и UTF-8", chx2, 5, 70, 200, 14
-    DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
-    PUSHBUTTON "Отмена", IDCANCEL, 145, 115, 60, 14
 }
 
 IDD_COPYTOMULTILANG DIALOGEX 0, 0, 200, 195
@@ -1637,6 +1634,7 @@ STRINGTABLE
     IDS_CONFIG "Конфигурация"
     IDS_PATHS "Задать пути"
     IDS_FONTS "Шрифты"
+    IDS_DFMSETTINGS "Delphi DFM"
 }
 
 //////////////////////////////////////////////////////////////////////////////

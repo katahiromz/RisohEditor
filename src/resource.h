@@ -378,6 +378,7 @@
 #define IDS_CONFIG                          397
 #define IDS_PATHS                           398
 #define IDS_FONTS                           399
+#define IDS_DFMSETTINGS                     400
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

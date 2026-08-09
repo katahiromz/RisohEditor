@@ -11,6 +11,7 @@
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
+#include "MDfmSettingsDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -19,6 +20,7 @@ enum {
 	PAGE_MACROS,
 	PAGE_PATHS,
 	PAGE_FONTS,
+	PAGE_DFMSETTINGS,
 };
 
 // Replaces the old standalone "MConfigDlg dialog; dialog.DialogBoxDx(hwnd);"
@@ -32,6 +34,7 @@ public:
 	MMacrosDlg  m_pageMacros;
 	MPathsDlg   m_pagePaths;
 	MFontsDlg   m_pageFonts;
+	MDfmSettingsDlg m_pageDfmSettings;
 
 	MConfigPropSheet(LPCTSTR pszCaption = LoadStringDx(IDS_CONFIG))
 		: MPropSheet(NULL, pszCaption)
@@ -40,6 +43,7 @@ public:
 		AddPage(m_pageMacros);
 		AddPage(m_pagePaths);
 		AddPage(m_pageFonts);
+		AddPage(m_pageDfmSettings);
 	}
 
 	// Mirrors MDialogBase::DialogBoxDx(hwndOwner)'s call shape so callers

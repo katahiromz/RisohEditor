@@ -85,7 +85,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Delphi DFM 설정(&S)...", ID_DFMSETTINGS
         MENUITEM "구성(&C)...\tAlt+Enter", ID_CONFIG
     }
     POPUP "검색(&S)"
@@ -1203,8 +1202,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "원시 문자열 주석 삽입(&I)", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "유니코드와 UTF-8을 사용하지 않음(&U)", chx2, 5, 70, 200, 14
-    DEFPUSHBUTTON "확인", IDOK, 80, 115, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 145, 115, 60, 14
 }
 
 IDD_COPYTOMULTILANG DIALOGEX 0, 0, 200, 195
@@ -1636,6 +1633,7 @@ STRINGTABLE
     IDS_CONFIG "구성"
     IDS_PATHS "경로 설정"
     IDS_FONTS "글꼴"
+    IDS_DFMSETTINGS "Delphi DFM"
 }
 
 //////////////////////////////////////////////////////////////////////////////

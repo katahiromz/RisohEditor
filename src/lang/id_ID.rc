@@ -86,7 +86,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Pengaturan &Delphi DFM...", ID_DFMSETTINGS
         MENUITEM "&Konfigurasi...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Cari"
@@ -1206,8 +1205,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Gunakan komentar raw string", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "Jangan gunakan &Unicode dan UTF-8", chx2, 5, 70, 200, 14
-    DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 145, 115, 60, 14
 }
 
 IDD_COPYTOMULTILANG DIALOGEX 0, 0, 200, 195
@@ -1639,6 +1636,7 @@ STRINGTABLE
     IDS_CONFIG "Konfigurasi"
     IDS_PATHS "Tentukan Jalur"
     IDS_FONTS "Font"
+    IDS_DFMSETTINGS "Delphi DFM"
 }
 
 //////////////////////////////////////////////////////////////////////////////
