@@ -220,6 +220,7 @@ public:
 		SelectTV(et, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE, stv);
 	}
 
+	INT m_iToolBarType = -1;
 	BOOL CompileIfNecessary(BOOL bReopen = FALSE);
 	BOOL ReCompileOnSelChange(BOOL bReopen = FALSE);
 	void SelectString(void);

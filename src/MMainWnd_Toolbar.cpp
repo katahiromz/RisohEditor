@@ -313,29 +313,33 @@ void MMainWnd::UpdateOurToolBarButtons(INT iType)
 	// Suppress redraw while replacing buttons to avoid flicker
 	SendMessageW(m_hToolBar, WM_SETREDRAW, FALSE, 0);
 
-	// delete all the buttons of toolbar
-	while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
-		;
-
-	// add the buttons
-	switch (iType)
+	if (m_iToolBarType != iType)
 	{
-	case 0:
-		SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
-		break;
-	case 1:
-		SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
-		break;
-	case 2:
-		SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
-		break;
-	case 3:
-		SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
-		break;
-	case 4:
-		SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
-		break;
+		// delete all the buttons of toolbar
+		while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
+			;
+
+		// add the buttons
+		switch (iType)
+		{
+		case 0:
+			SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
+			break;
+		case 1:
+			SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
+			break;
+		case 2:
+			SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
+			break;
+		case 3:
+			SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
+			break;
+		case 4:
+			SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
+			break;
+		}
 	}
+	m_iToolBarType = iType;
 
 	UpdateToolBarStatus();
 
