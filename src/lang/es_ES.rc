@@ -713,7 +713,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 305
+IDD_CONFIG DIALOGEX 0, 0, 210, 265
 CAPTION "Configuración"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
@@ -730,18 +730,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "&Ajuste de línea", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Preguntar al actualizar ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Comprimir EXE por &UPX al guardarlo", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Fuentes...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Mac&ros predefinidas...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Establecer ru&tas...", psh2, 107, 205, 98, 14
-    RTEXT "&Nombre de controles OLE:", -1, 5, 224, 80, 16
-    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Cr&ear copia de seguridad", chx10, 5, 245, 90, 15
-    RTEXT "Sufijo de la copia de seguridad:", -1, 101, 243, 54, 17
-    COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma del recurso:", -1, 5, 265, 110, 10
-    COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Utilice &WonRes", chx11, 5, 285, 90, 14
-    PUSHBUTTON "Cifra&do de recursos...", psh5, 100, 285, 105, 15
+    RTEXT "&Nombre de controles OLE:", -1, 5, 184, 80, 16
+    COMBOBOX cmb1, 90, 185, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Cr&ear copia de seguridad", chx10, 5, 205, 90, 15
+    RTEXT "Sufijo de la copia de seguridad:", -1, 101, 203, 54, 17
+    COMBOBOX cmb2, 158, 204, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Idioma del recurso:", -1, 5, 225, 110, 10
+    COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Utilice &WonRes", chx11, 5, 245, 90, 14
+    PUSHBUTTON "Cifra&do de recursos...", psh5, 100, 245, 105, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90

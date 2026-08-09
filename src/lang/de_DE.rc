@@ -710,7 +710,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 305
+IDD_CONFIG DIALOGEX 0, 0, 210, 265
 CAPTION "Aufbau"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
@@ -727,18 +727,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTOCHECKBOX "&Zeilenumbruch", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Fragen Sie nach dem Update von ""resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Komprimieren Sie EXE von UPX beim Speichern", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Schriftarten...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Vordefinierte Makros...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Pfade festlegen...", psh2, 107, 205, 98, 14
-    RTEXT "Name der OLE-Steuerelemente:", -1, 5, 222, 80, 18
-    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Ein Backup erstellen", chx10, 5, 245, 80, 15
-    RTEXT "Backup-Suffix:", -1, 90, 245, 60, 15
-    COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "St&andardressourcensprache:", -1, 5, 265, 110, 10
-    COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Use &WonRes", chx11, 5, 285, 90, 14
-    PUSHBUTTON "&Verschlüsselung...", psh5, 100, 285, 105, 15
+    RTEXT "Name der OLE-Steuerelemente:", -1, 5, 182, 80, 18
+    COMBOBOX cmb1, 90, 185, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Ein Backup erstellen", chx10, 5, 205, 80, 15
+    RTEXT "Backup-Suffix:", -1, 90, 205, 60, 15
+    COMBOBOX cmb2, 158, 204, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT "St&andardressourcensprache:", -1, 5, 225, 110, 10
+    COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Use &WonRes", chx11, 5, 245, 90, 14
+    PUSHBUTTON "&Verschlüsselung...", psh5, 100, 245, 105, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90

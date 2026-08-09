@@ -713,7 +713,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 305
+IDD_CONFIG DIALOGEX 0, 0, 210, 265
 CAPTION "Конфігурація"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
@@ -730,18 +730,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     AUTOCHECKBOX "П&еренос по словах", chx9, 126, 125, 78, 14
     AUTOCHECKBOX "Зап&ит оновлення ""resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Стисн&ути EXE за допом. UPX при збереженні", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Шрифти...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "&Макроси...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Шля&хи...", psh2, 107, 205, 98, 14
-    RTEXT "Ім&'я елементів OLE:", -1, 5, 227, 80, 12
-    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Створити &резер. копію", chx10, 5, 245, 89, 15
-    RTEXT "Су&фікс копії:", -1, 109, 248, 46, 11
-    COMBOBOX cmb2, 158, 246, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Мо&ва ресурсу:", -1, 5, 265, 110, 10
-    COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Застосу&вати WonRes", chx11, 5, 285, 90, 14
-    PUSHBUTTON "Шифрува&ння ресурсів...", psh5, 100, 285, 105, 15
+    RTEXT "Ім&'я елементів OLE:", -1, 5, 187, 80, 12
+    COMBOBOX cmb1, 90, 185, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Створити &резер. копію", chx10, 5, 205, 89, 15
+    RTEXT "Су&фікс копії:", -1, 109, 208, 46, 11
+    COMBOBOX cmb2, 158, 206, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT "Мо&ва ресурсу:", -1, 5, 225, 110, 10
+    COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Застосу&вати WonRes", chx11, 5, 245, 90, 14
+    PUSHBUTTON "Шифрува&ння ресурсів...", psh5, 100, 245, 105, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90

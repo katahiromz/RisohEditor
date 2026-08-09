@@ -711,7 +711,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 305
+IDD_CONFIG DIALOGEX 0, 0, 210, 265
 CAPTION "Konfiguracja"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
@@ -728,18 +728,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     AUTOCHECKBOX "Zawijanie &wyrazów", chx9, 130, 125, 75, 14
     AUTOCHECKBOX "Pytaj o aktualizacje ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Skompresuj EXE z &UPX podczas zapisywania", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Czcionki...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Predefiniowane &makra...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Ustaw &katalogi...", psh2, 107, 205, 98, 14
-    RTEXT "Nazwa &kontrolek OLE:", -1, 5, 227, 80, 12
-    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Utwórz kopię &zapasową", chx10, 5, 245, 75, 15
-    RTEXT "Sufiks kopii zapasowej:", -1, 90, 245, 60, 15
-    COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Język z&asobów:", -1, 5, 265, 110, 10
-    COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Użyj &WonRes", chx11, 5, 285, 90, 14
-    PUSHBUTTON "Szyfrowanie zaso&bów...", psh5, 100, 285, 105, 15
+    RTEXT "Nazwa &kontrolek OLE:", -1, 5, 187, 80, 12
+    COMBOBOX cmb1, 90, 185, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Utwórz kopię &zapasową", chx10, 5, 205, 75, 15
+    RTEXT "Sufiks kopii zapasowej:", -1, 90, 205, 60, 15
+    COMBOBOX cmb2, 158, 204, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT "Język z&asobów:", -1, 5, 225, 110, 10
+    COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Użyj &WonRes", chx11, 5, 245, 90, 14
+    PUSHBUTTON "Szyfrowanie zaso&bów...", psh5, 100, 245, 105, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90

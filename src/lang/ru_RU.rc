@@ -712,7 +712,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 305
+IDD_CONFIG DIALOGEX 0, 0, 210, 265
 CAPTION "Конфигурация"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
@@ -729,18 +729,15 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     AUTOCHECKBOX "&Заворот строк", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Зап&рос обновления ""resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "С&жимать EXE с помощью UPX при сохранении", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Шрифты...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "&Макросы...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "П&ути...", psh2, 107, 205, 98, 14
-    RTEXT "Имя OLE-&элементов:", -1, 5, 227, 80, 12
-    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Резервную копию", chx10, 5, 245, 75, 15
-    RTEXT "Су&ффикс копии:", -1, 92, 248, 60, 15
-    COMBOBOX cmb2, 158, 246, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", -1, 5, 265, 110, 10
-    COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Используйте &WonRes", chx11, 5, 285, 90, 14
-    PUSHBUTTON "Шифрование р&есурсов...", psh5, 100, 285, 105, 15
+    RTEXT "Имя OLE-&элементов:", -1, 5, 187, 80, 12
+    COMBOBOX cmb1, 90, 185, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "&Резервную копию", chx10, 5, 205, 75, 15
+    RTEXT "Су&ффикс копии:", -1, 92, 208, 60, 15
+    COMBOBOX cmb2, 158, 206, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Язык ресурса:", -1, 5, 225, 110, 10
+    COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Используйте &WonRes", chx11, 5, 245, 90, 14
+    PUSHBUTTON "Шифрование р&есурсов...", psh5, 100, 245, 105, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
