@@ -7,11 +7,10 @@
 #pragma once
 
 #include "resource.h"
-#include "MWindowBase.hpp"
+#include "MPropSheet.hpp"
 #include "settings.h"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 
 class MAddEncDlg;
@@ -117,11 +116,9 @@ public:
 		text = GetDlgItemText(hwnd, cmb2);
 		m_enc = txt2enc(text);
 		if (m_enc.empty())
-		{
 			return;
-		}
 
-		EndDialog(IDOK);
+		EndDialog(hwnd, IDOK);
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -132,7 +129,7 @@ public:
 			OnOK(hwnd);
 			break;
 		case IDCANCEL:
-			EndDialog(IDCANCEL);
+			EndDialog(hwnd, IDCANCEL);
 			break;
 		case cmb1:
 			if (codeNotify == CBN_EDITCHANGE)
@@ -263,15 +260,15 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MEncodingDlg : public MDialogBase
+class MEncodingDlg : public MPropSheetPage
 {
 public:
-	MResizable m_resizable;
 	HWND m_hLst1;
 	HICON m_hIcon;
 	HICON m_hIconSm;
 
-	MEncodingDlg() : MDialogBase(IDD_ENCODING)
+	MEncodingDlg()
+        : MPropSheetPage(IDD_ENCODING, LoadStringDx(IDS_ENCODING))
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -364,15 +361,20 @@ public:
 	{
 		g_settings.ResetEncoding();
 		InitLst1();
+		SetModifiedDx();
 	}
 
-	void OnOK(HWND hwnd)
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplyEncoding(hwnd);
+	}
+
+	BOOL ApplyEncoding(HWND hwnd)
 	{
 		INT iItem, nCount = ListView_GetItemCount(m_hLst1);
 		if (nCount == 0)
-		{
-			return;
-		}
+			return FALSE;
 
 		auto& map = g_settings.encoding_map;
 		map.clear();
@@ -394,7 +396,7 @@ public:
 			map.insert(std::make_pair(type.str(), enc));
 		}
 
-		EndDialog(IDOK);
+		return TRUE;
 	}
 
 	void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
@@ -411,6 +413,7 @@ public:
 		if (iItem >= 0)
 		{
 			ListView_DeleteItem(m_hLst1, iItem);
+			SetModifiedDx();
 		}
 	}
 
@@ -457,6 +460,7 @@ public:
 		UINT state = LVIS_SELECTED | LVIS_FOCUSED;
 		ListView_SetItemState(m_hLst1, iItem, state, state);
 		ListView_EnsureVisible(m_hLst1, iItem, FALSE);
+		SetModifiedDx();
 	}
 
 	void OnModify(HWND hwnd)
@@ -493,18 +497,13 @@ public:
 		UINT state = LVIS_SELECTED | LVIS_FOCUSED;
 		ListView_SetItemState(m_hLst1, iItem, state, state);
 		ListView_EnsureVisible(m_hLst1, iItem, FALSE);
+		SetModifiedDx();
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
 		{
-		case IDOK:
-			OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			EndDialog(IDCANCEL);
-			break;
 		case psh1:
 		case ID_ADD:
 			OnAdd(hwnd);
@@ -582,9 +581,17 @@ public:
 		{
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-			HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		}
 		return 0;
 	}

@@ -114,7 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Sanan rivitys", ID_WORD_WRAP
         MENUITEM "Käytä BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "R&esurssikohteen koodaus...", ID_ENCODING
         MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "&Päivitä", ID_REFRESHALL
@@ -1101,8 +1100,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Lisää...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Muokkaa...", psh2, 70, 125, 60, 14
     PUSHBUTTON "&Poista", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "Peruuta", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "P&alauta", psh5, 5, 149, 60, 14
 }
 

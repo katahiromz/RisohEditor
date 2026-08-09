@@ -114,7 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "단어 줄바꿈(&W)", ID_WORD_WRAP
         MENUITEM "BEGIN/END 사용(&G)", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "리소스 항목의 인코딩(&E)...", ID_ENCODING
         MENUITEM "대화상자 글꼴 대체(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "새로 고침(&U)", ID_REFRESHALL
@@ -1102,8 +1101,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     PUSHBUTTON "추가(&A)...", psh1, 5, 125, 60, 14
     PUSHBUTTON "수정(&M)...", psh2, 70, 125, 60, 14
     PUSHBUTTON "삭제(&D)", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "확인", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "재설정(&R)", psh5, 5, 149, 60, 14
 }
 

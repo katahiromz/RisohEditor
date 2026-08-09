@@ -114,7 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "ダイアログ フォント代替(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "最新の情報に更新(&U)", ID_REFRESHALL
@@ -1105,8 +1104,6 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     PUSHBUTTON "追加(&A)...", psh1, 5, 125, 60, 14
     PUSHBUTTON "変更(&M)...", psh2, 70, 125, 60, 14
     PUSHBUTTON "削除(&D)", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "リセット(&R)", psh5, 5, 149, 60, 14
 }
 

@@ -115,7 +115,6 @@ IDR_MAINMENU MENU
         MENUITEM "Kemas Ka&ta", ID_WORD_WRAP
         MENUITEM "G&unakan BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "&Enkoding Item Sumber Daya...", ID_ENCODING
         MENUITEM "Pengganti &font dialog...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Muat U&lang", ID_REFRESHALL
@@ -1105,8 +1104,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Tambah...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Ubah...", psh2, 70, 125, 60, 14
     PUSHBUTTON "&Hapus", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "&Set Ulang", psh5, 5, 149, 60, 14
 }
 

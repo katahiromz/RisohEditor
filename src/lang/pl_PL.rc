@@ -114,7 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
         MENUITEM "Użyj BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Kodowanie &elementu zasobu...", ID_ENCODING
         MENUITEM "Okno dialogowe zastępczych czcionek...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "O&dśwież", ID_REFRESHALL
@@ -1102,8 +1101,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
     PUSHBUTTON "&Dodaj...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Modyfikuj...", psh2, 70, 125, 60, 14
     PUSHBUTTON "&Usuń", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "Anuluj", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "&Resetuj", psh5, 5, 149, 60, 14
 }
 

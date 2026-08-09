@@ -113,7 +113,6 @@ IDR_MAINMENU MENU
         MENUITEM "S&özcük Kaydırma", ID_WORD_WRAP
         MENUITEM "BE&GIN/END Kullan", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Ka&ynak ögesi kodlaması...", ID_ENCODING
         MENUITEM "İ&letişim kutusu yazı tipi yerine geçerleri...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Ye&nile", ID_REFRESHALL
@@ -1102,8 +1101,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
     PUSHBUTTON "&Ekle...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Düzenle...", psh2, 70, 125, 60, 14
     PUSHBUTTON "&Sil", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "Tamam", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "İptal", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "S&ıfırla", psh5, 5, 149, 60, 14
 }
 

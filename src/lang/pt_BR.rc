@@ -114,7 +114,6 @@ IDR_MAINMENU MENU
         MENUITEM "Quebra de &Palavra", ID_WORD_WRAP
         MENUITEM "Usar BEGIN/EN&D", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Codifica&ção do item de recurso...", ID_ENCODING
         MENUITEM "Substituir fontes de diálogo...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Atuali&zar", ID_REFRESHALL
@@ -1104,8 +1103,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&Adicionar...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 70, 125, 60, 14
     PUSHBUTTON "&Excluir", psh3, 135, 125, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
-    PUSHBUTTON "Cancelar", IDCANCEL, 135, 150, 60, 14
     PUSHBUTTON "&Redefinir", psh5, 5, 149, 60, 14
 }
 

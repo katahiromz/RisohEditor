@@ -2287,13 +2287,8 @@ void MMainWnd::OnEncoding(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
-	MEncodingDlg dialog;
-	if (IDOK == dialog.DialogBoxDx(hwnd))
-	{
-		// select the entry
-		auto entry = g_res.get_entry();
-		SelectTV(entry, FALSE);
-	}
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, PAGE_ENCODING);
 }
 
 // ID_QUERYCONSTANT
