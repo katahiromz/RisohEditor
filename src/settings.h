@@ -37,6 +37,12 @@ extern std::vector<LPCWSTR> g_idtype_strings;
 
 MStringW MapIDTypeToPrefix(IDTYPE_ idtype);
 
+void GetDefaultMonoFonts(MString& strSrcFace, INT& nSrcPt,
+                         MString& strBinFace, INT& nBinPt);
+
+// Create a font from face name + point size (shared by font dialog and ReCreateFonts)
+HFONT CreateFontFromNameAndSize(LPCWSTR pszFaceName, INT nPointSize);
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct RisohSettings

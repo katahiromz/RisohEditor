@@ -75,7 +75,7 @@ public:
 		str += mstr_dec_short(g_settings.nSrcFontSize);
 		str += L"pt";
 		SetDlgItemText(hwnd, edt1, str.c_str());
-		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
+		m_hSrcFont = CreateFontFromNameAndSize(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 		SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
 
 		str = g_settings.strBinFont;
@@ -83,7 +83,7 @@ public:
 		str += mstr_dec_short(g_settings.nBinFontSize);
 		str += L"pt";
 		SetDlgItemText(hwnd, edt2, str.c_str());
-		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
+		m_hBinFont = CreateFontFromNameAndSize(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 		SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
 
 		CenterWindowDx();
@@ -107,12 +107,12 @@ public:
 		g_settings.strSrcFont = str1.substr(0, k1);
 		g_settings.nSrcFontSize = mstr_parse_int(str1.substr(k1 + 2).c_str());
 		DestroySrcFont();
-		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
+		m_hSrcFont = CreateFontFromNameAndSize(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 
 		g_settings.strBinFont = str2.substr(0, k2);
 		g_settings.nBinFontSize = mstr_parse_int(str2.substr(k2 + 2).c_str());
 		DestroyBinFont();
-		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
+		m_hBinFont = CreateFontFromNameAndSize(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 
 		s_pMainWnd->RefreshFonts(m_hBinFont, m_hSrcFont);
 		return TRUE;
@@ -122,21 +122,6 @@ public:
 	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
 	{
 		return ApplyFonts(hwnd);
-	}
-
-	HFONT CreateMyFont(const TCHAR *pszName, INT nPointSize)
-	{
-		HFONT hFont = NULL;
-		LOGFONT lf;
-		ZeroMemory(&lf, sizeof(lf));
-		if (HDC hDC = CreateCompatibleDC(NULL))
-		{
-			lf.lfHeight = -MulDiv(nPointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-			StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), pszName);
-			hFont = CreateFontIndirect(&lf);
-			DeleteDC(hDC);
-		}
-		return hFont;
 	}
 
 	void OnPsh1(HWND hwnd)
@@ -175,7 +160,7 @@ public:
 			SetDlgItemText(hwnd, edt1, str1.c_str());
 
 			DestroySrcFont();
-			m_hSrcFont = CreateMyFont(lf.lfFaceName, nPointSize);
+			m_hSrcFont = CreateFontFromNameAndSize(lf.lfFaceName, nPointSize);
 
 			SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
 			SetModifiedDx();
@@ -218,7 +203,7 @@ public:
 			SetDlgItemText(hwnd, edt2, str2.c_str());
 
 			DestroyBinFont();
-			m_hBinFont = CreateMyFont(lf.lfFaceName, nPointSize);
+			m_hBinFont = CreateFontFromNameAndSize(lf.lfFaceName, nPointSize);
 
 			SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
 			SetModifiedDx();
@@ -227,83 +212,24 @@ public:
 
 	void OnPsh3(HWND hwnd)
 	{
-		HFONT hFont;
-		LOGFONTW lf, lfBin, lfSrc;
-		GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+		MStringW strSrcFont, strBinFont;
+		INT nSrcFontSize, nBinFontSize;
+		GetDefaultMonoFonts(strSrcFont, nSrcFontSize,
+		                    strBinFont, nBinFontSize);
 
-		ZeroMemory(&lfBin, sizeof(lfBin));
-		lfBin.lfHeight = 10;
-		lfBin.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
-		lfBin.lfCharSet = lf.lfCharSet;
-		hFont = CreateFontIndirectW(&lfBin);
-		GetObject(hFont, sizeof(lfBin), &lfBin);
-		if (HDC hDC = CreateCompatibleDC(NULL))
-		{
-			SelectObject(hDC, hFont);
-			GetTextFace(hDC, LF_FACESIZE, lfBin.lfFaceName);
-			DeleteDC(hDC);
-		}
-		DeleteObject(hFont);
-
-		ZeroMemory(&lfSrc, sizeof(lfSrc));
-		lfSrc.lfHeight = 13;
-		lfSrc.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
-		lfSrc.lfCharSet = lf.lfCharSet;
-		hFont = CreateFontIndirectW(&lfSrc);
-		GetObject(hFont, sizeof(lfSrc), &lfSrc);
-		if (HDC hDC = CreateCompatibleDC(NULL))
-		{
-			SelectObject(hDC, hFont);
-			GetTextFace(hDC, LF_FACESIZE, lfSrc.lfFaceName);
-			DeleteDC(hDC);
-		}
-		DeleteObject(hFont);
-
-		g_settings.strSrcFont = lfSrc.lfFaceName;
-		g_settings.nSrcFontSize = 12;
 		DestroySrcFont();
-
-		g_settings.strBinFont = lfBin.lfFaceName;
-		g_settings.nBinFontSize = 9;
 		DestroyBinFont();
+		m_hSrcFont = CreateFontFromNameAndSize(strSrcFont.c_str(), nSrcFontSize);
+		m_hBinFont = CreateFontFromNameAndSize(strBinFont.c_str(), nBinFontSize);
 
-		if (HDC hDC = CreateCompatibleDC(NULL))
-		{
-			if (lfBin.lfHeight < 0)
-				g_settings.nBinFontSize = -MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-			else
-				g_settings.nBinFontSize = MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-
-			if (lfSrc.lfHeight < 0)
-				g_settings.nSrcFontSize = -MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-			else
-				g_settings.nSrcFontSize = MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-
-			DeleteDC(hDC);
-		}
-
-		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
-		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
-
-		MString str;
-
-		str = g_settings.strSrcFont;
-		str += L", ";
-		str += mstr_dec_short(g_settings.nSrcFontSize);
-		str += L"pt";
+		MString str = strSrcFont + L", " + mstr_dec_short(nSrcFontSize) + L"pt";
 		SetDlgItemText(hwnd, edt1, str.c_str());
-		m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 		SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
 
-		str = g_settings.strBinFont;
-		str += L", ";
-		str += mstr_dec_short(g_settings.nBinFontSize);
-		str += L"pt";
+		str = strBinFont + L", " + mstr_dec_short(nBinFontSize) + L"pt";
 		SetDlgItemText(hwnd, edt2, str.c_str());
-		m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 		SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
 
-		s_pMainWnd->RefreshFonts(m_hBinFont, m_hSrcFont);
 		SetModifiedDx();
 	}
 

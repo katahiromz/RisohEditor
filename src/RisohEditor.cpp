@@ -559,27 +559,9 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 		m_hSrcFont = NULL;
 	}
 
-	// initialize LOGFONT structures
-	LOGFONTW lfBin, lfSrc;
-	ZeroMemory(&lfBin, sizeof(lfBin));
-	ZeroMemory(&lfSrc, sizeof(lfSrc));
-
-	// set lfFaceName from settings
-	StringCchCopy(lfBin.lfFaceName, _countof(lfBin.lfFaceName), g_settings.strBinFont.c_str());
-	StringCchCopy(lfSrc.lfFaceName, _countof(lfSrc.lfFaceName), g_settings.strSrcFont.c_str());
-
-	// calculate the height
-	if (HDC hDC = CreateCompatibleDC(NULL))
-	{
-		lfBin.lfHeight = -MulDiv(g_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-		lfSrc.lfHeight = -MulDiv(g_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-		DeleteDC(hDC);
-	}
-
-	// create the fonts
-	m_hBinFont = CreateFontIndirectW(&lfBin);
+	m_hBinFont = CreateFontFromNameAndSize(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 	assert(m_hBinFont);
-	m_hSrcFont = ::CreateFontIndirectW(&lfSrc);
+	m_hSrcFont = CreateFontFromNameAndSize(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 	assert(m_hSrcFont);
 
 	// set the fonts to the controls

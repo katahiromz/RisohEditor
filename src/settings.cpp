@@ -95,60 +95,12 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 	g_encrypted_types.clear();
 #endif
 
-	HFONT hFont;
-	LOGFONTW lf, lfBin, lfSrc;
-
 	// get GUI font
-	GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+	LOGFONTW lf;
+	GetObjectW(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
 
-	ZeroMemory(&lfBin, sizeof(lfBin));
-	lfBin.lfHeight = 10;
-	lfBin.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
-	lfBin.lfCharSet = lf.lfCharSet;
-	hFont = CreateFontIndirectW(&lfBin);
-	GetObject(hFont, sizeof(lfBin), &lfBin);
-	if (HDC hDC = CreateCompatibleDC(NULL))
-	{
-		SelectObject(hDC, hFont);
-		GetTextFace(hDC, LF_FACESIZE, lfBin.lfFaceName);
-		DeleteDC(hDC);
-	}
-	DeleteObject(hFont);
-
-	ZeroMemory(&lfSrc, sizeof(lfSrc));
-	lfSrc.lfHeight = 13;
-	lfSrc.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
-	lfSrc.lfCharSet = lf.lfCharSet;
-	hFont = CreateFontIndirectW(&lfSrc);
-	GetObject(hFont, sizeof(lfSrc), &lfSrc);
-	if (HDC hDC = CreateCompatibleDC(NULL))
-	{
-		SelectObject(hDC, hFont);
-		GetTextFace(hDC, LF_FACESIZE, lfSrc.lfFaceName);
-		DeleteDC(hDC);
-	}
-	DeleteObject(hFont);
-
-	g_settings.strSrcFont = lfSrc.lfFaceName;
-	g_settings.strBinFont = lfBin.lfFaceName;
-
-	g_settings.nSrcFontSize = 12;
-	g_settings.nBinFontSize = 9;
-
-	if (HDC hDC = CreateCompatibleDC(NULL))
-	{
-		if (lfBin.lfHeight < 0)
-			g_settings.nBinFontSize = -MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-		else
-			g_settings.nBinFontSize = MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-
-		if (lfSrc.lfHeight < 0)
-			g_settings.nSrcFontSize = -MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-		else
-			g_settings.nSrcFontSize = MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-
-		DeleteDC(hDC);
-	}
+	GetDefaultMonoFonts(g_settings.strSrcFont, g_settings.nSrcFontSize,
+	                    g_settings.strBinFont, g_settings.nBinFontSize);
 
 	g_settings.assoc_map.clear();
 #define DEFINE_IDTYPE(index, idtype, str, wstr, ids, prefix) \
@@ -777,4 +729,74 @@ LANGID GetUILang(void)
 	if (langid == 0)
 		langid = GetThreadUILanguage();
 	return LANGID(langid);
+}
+
+void GetDefaultMonoFonts(MString& strSrcFace, INT& nSrcPt,
+                         MString& strBinFace, INT& nBinPt)
+{
+	LOGFONTW lf;
+	GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+
+	LOGFONTW lfBin = {};
+	lfBin.lfHeight = 10;
+	lfBin.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+	lfBin.lfCharSet = lf.lfCharSet;
+	HFONT hFont = CreateFontIndirectW(&lfBin);
+	GetObject(hFont, sizeof(lfBin), &lfBin);
+	if (HDC hDC = CreateCompatibleDC(NULL)) {
+		SelectObject(hDC, hFont);
+		GetTextFaceW(hDC, LF_FACESIZE, lfBin.lfFaceName);
+		DeleteDC(hDC);
+	}
+	DeleteObject(hFont);
+	strBinFace = lfBin.lfFaceName;
+
+	LOGFONTW lfSrc = {};
+	lfSrc.lfHeight = 13;
+	lfSrc.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+	lfSrc.lfCharSet = lf.lfCharSet;
+	hFont = CreateFontIndirectW(&lfSrc);
+	GetObject(hFont, sizeof(lfSrc), &lfSrc);
+	if (HDC hDC = CreateCompatibleDC(NULL)) {
+		SelectObject(hDC, hFont);
+		GetTextFaceW(hDC, LF_FACESIZE, lfSrc.lfFaceName);
+		DeleteDC(hDC);
+	}
+	DeleteObject(hFont);
+	strSrcFace = lfSrc.lfFaceName;
+
+	if (HDC hDC = CreateCompatibleDC(NULL)) {
+		INT dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+		nBinPt = (lfBin.lfHeight < 0)
+			? -MulDiv(lfBin.lfHeight, 72, dpi)
+			:  MulDiv(lfBin.lfHeight, 72, dpi);
+		nSrcPt = (lfSrc.lfHeight < 0)
+			? -MulDiv(lfSrc.lfHeight, 72, dpi)
+			:  MulDiv(lfSrc.lfHeight, 72, dpi);
+		DeleteDC(hDC);
+	} else {
+		nBinPt = 9;
+		nSrcPt = 12;
+	}
+}
+
+HFONT CreateFontFromNameAndSize(LPCWSTR pszFaceName, INT nPointSize)
+{
+	if (!pszFaceName || !*pszFaceName || nPointSize <= 0)
+		return NULL;
+
+	LOGFONTW lf = {};
+	if (HDC hDC = CreateCompatibleDC(NULL))
+	{
+		lf.lfHeight = -MulDiv(nPointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+		StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), pszFaceName);
+		DeleteDC(hDC);
+	}
+	else
+	{
+		// fallback (should rarely happen)
+		lf.lfHeight = -nPointSize;
+		StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), pszFaceName);
+	}
+	return CreateFontIndirectW(&lf);
 }
