@@ -1093,16 +1093,16 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
     PUSHBUTTON "Отмена", IDCANCEL, 185, 205, 60, 14
 }
 
-IDD_ENCODING DIALOGEX 0, 0, 200, 170
+IDD_ENCODING DIALOGEX 0, 0, 200, 200
 CAPTION "Кодировка элемента ресурса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
 {
-    CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER, 5, 5, 190, 115
-    PUSHBUTTON "&Добавить...", psh1, 5, 125, 60, 14
-    PUSHBUTTON "&Изменить...", psh2, 70, 125, 60, 14
-    PUSHBUTTON "&Удалить", psh3, 135, 125, 60, 14
-    PUSHBUTTON "&Сброс", psh5, 5, 149, 60, 14
+    CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER, 5, 5, 190, 145
+    PUSHBUTTON "&Добавить...", psh1, 5, 155, 60, 14
+    PUSHBUTTON "&Изменить...", psh2, 70, 155, 60, 14
+    PUSHBUTTON "&Удалить", psh3, 135, 155, 60, 14
+    PUSHBUTTON "&Сброс", psh5, 5, 179, 60, 14
 }
 
 IDD_ADDENC DIALOGEX 0, 0, 215, 80
