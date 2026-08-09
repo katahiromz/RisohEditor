@@ -529,10 +529,20 @@ LRESULT MMainWnd::OnEgaFinish(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+void MMainWnd::RefreshCode()
+{
+	auto entry = g_res.get_entry();
+	if (!entry)
+		return;
+
+	Preview(m_hwnd, entry, STV_RESETTEXT);
+}
+
 void MMainWnd::RefreshRadBackBrush()
 {
 	m_rad_window.m_rad_dialog.DeleteBackBrush();
-	InvalidateRect(m_rad_window.m_rad_dialog, nullptr, TRUE);
+	if (IsWindow(m_rad_window.m_rad_dialog))
+		InvalidateRect(m_rad_window.m_rad_dialog, nullptr, TRUE);
 }
 
 BOOL MMainWnd::DoQuerySaveChange(HWND hwnd)

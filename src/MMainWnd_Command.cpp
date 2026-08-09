@@ -1125,7 +1125,7 @@ void MMainWnd::OnAbout(HWND hwnd)
 	dialog.DialogBoxDx(hwnd);
 }
 
-void MMainWnd::RefreshFonts(HFONT hBinFont, HFONT hSrcFont)
+void MMainWnd::RefreshFonts()
 {
 	ReCreateFonts(m_hwnd);
 }

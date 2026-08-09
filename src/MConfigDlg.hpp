@@ -156,6 +156,8 @@ public:
 			g_settings.bBackup = FALSE;
 
 		s_pMainWnd->RefreshRadBackBrush();
+		s_pMainWnd->RefreshFonts();
+		s_pMainWnd->RefreshCode();
 		return TRUE;
 	}
 

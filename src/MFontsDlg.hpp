@@ -114,7 +114,7 @@ public:
 		DestroyBinFont();
 		m_hBinFont = CreateFontFromNameAndSize(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 
-		s_pMainWnd->RefreshFonts(m_hBinFont, m_hSrcFont);
+		s_pMainWnd->RefreshFonts();
 		return TRUE;
 	}
 
