@@ -620,9 +620,6 @@ bool EntrySet::delete_invalid()
 	// for all the invalid entries
 	for (auto entry : found)
 	{
-		if (super()->find(entry) == super()->end())
-			continue;   // not owned. skip it
-
 		if (m_hwndTV && entry->m_hItem && entry == get_entry(entry->m_hItem))
 		{
 			// delete from treeview

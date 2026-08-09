@@ -2,6 +2,7 @@
 
 - v.6.1.4 (2026-XX-YY)
     - Se convirtió la configuración en una hoja de propiedades.
+    - Acelerar OnDeleteRes.
 - v.6.1.3 (2026-08-08)
     - Menú [Editar] simplificado.
     - Se implementó el cifrado de recursos mediante WonRes.
