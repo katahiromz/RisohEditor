@@ -30,6 +30,7 @@ class MPropSheetPage : public MDialogBase
 public:
 	PROPSHEETPAGE   m_psp;
 	HPROPSHEETPAGE  m_hPage;
+	MString m_title;
 
 	MPropSheetPage(INT nDialogID, LPCTSTR pszTitle = NULL, UINT nIconID = 0)
 		: MDialogBase(nDialogID), m_hPage(NULL)
@@ -44,7 +45,8 @@ public:
 
 		if (pszTitle)
 		{
-			m_psp.pszTitle = pszTitle;
+			m_title = pszTitle;
+			m_psp.pszTitle = m_title.c_str();
 			m_psp.dwFlags |= PSP_USETITLE;
 		}
 		if (nIconID)

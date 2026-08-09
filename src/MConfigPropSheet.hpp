@@ -36,8 +36,8 @@ public:
 	MFontsDlg   m_pageFonts;
 	MDfmSettingsDlg m_pageDfmSettings;
 
-	MConfigPropSheet(LPCTSTR pszCaption = LoadStringDx(IDS_CONFIG))
-		: MPropSheet(NULL, pszCaption)
+	MConfigPropSheet()
+		: MPropSheet(NULL, LoadStringDx(IDS_CONFIG))
 	{
 		AddPage(m_pageConfig);
 		AddPage(m_pageMacros);
@@ -50,7 +50,7 @@ public:
 	// only need to change the class name at the call site, e.g.:
 	//     MConfigPropSheet dialog;
 	//     if (dialog.DoModalDx(hwnd) == IDOK) { ... }
-	INT_PTR DoModalDx(HWND hwndOwner, INT iPage = 0)
+	INT_PTR DoModalDx(HWND hwndOwner, INT iPage = PAGE_CONFIG)
 	{
 		m_psh.hwndParent = hwndOwner;
 		SetCurSelDx(iPage);
