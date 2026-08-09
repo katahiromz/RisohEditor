@@ -705,7 +705,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     CONTROL "", lst1, "SysListView32", LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOGEX 0, 0, 210, 265
+IDD_CONFIG DIALOGEX 0, 0, 230, 265
 CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
@@ -730,7 +730,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "Langue de la ressource :", -1, 5, 225, 110, 10
     COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Utiliser &WonRes", chx11, 5, 245, 90, 14
-    PUSHBUTTON "Chiffrement &des ressources...", psh5, 100, 245, 105, 15
+    PUSHBUTTON "WonRes Chiffrement &des ressources...", psh5, 100, 245, 125, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
