@@ -310,6 +310,9 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 // update the toolbar buttons
 void MMainWnd::UpdateOurToolBarButtons(INT iType)
 {
+	// Suppress redraw while replacing buttons to avoid flicker
+	SendMessageW(m_hToolBar, WM_SETREDRAW, FALSE, 0);
+
 	// delete all the buttons of toolbar
 	while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
 		;
@@ -335,6 +338,10 @@ void MMainWnd::UpdateOurToolBarButtons(INT iType)
 	}
 
 	UpdateToolBarStatus();
+
+	// Re-enable redraw and force a single paint
+	SendMessageW(m_hToolBar, WM_SETREDRAW, TRUE, 0);
+	InvalidateRect(m_hToolBar, nullptr, FALSE);
 
 	// show/hide the toolbar by settings
 	if (g_settings.bShowToolBar)
