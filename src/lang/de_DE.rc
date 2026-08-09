@@ -974,8 +974,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "&cpp.exe:", stc2, 5, 177, 55, 12
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Durchsuchen...", psh8, 230, 175, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
-    PUSHBUTTON "Abbrechen", IDCANCEL, 230, 200, 60, 14
     PUSHBUTTON "Alles &zurücksetzen", psh9, 5, 200, 95, 14
     LTEXT "* TDM-GCC wird empfohlen. Keine UTF-16-Unterstützung bei cpp.exe.", -1, 115, 130, 170, 20
 }
@@ -1640,6 +1638,7 @@ STRINGTABLE
     IDS_GENERAL "Allgemein"
     IDS_MACROS "Makros"
     IDS_CONFIG "Aufbau"
+    IDS_PATHS "Pfade festlegen"
 }
 
 //////////////////////////////////////////////////////////////////////////////

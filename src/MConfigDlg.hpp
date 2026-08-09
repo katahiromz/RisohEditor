@@ -166,16 +166,12 @@ public:
 
 	void OnPsh1(HWND hwnd)
 	{
-		// Macros now live on their own "Macros" tab of this same
-		// property sheet, so just switch to it instead of popping up
-		// MMacrosDlg modally.
 		PropSheet_SetCurSelByID(GetSheetDx(), IDD_MACROS);
 	}
 
 	void OnPsh2(HWND hwnd)
 	{
-		MPathsDlg dialog;
-		dialog.DialogBoxDx(hwnd);
+		PropSheet_SetCurSelByID(GetSheetDx(), IDD_PATHS);
 	}
 
 	void OnPsh3(HWND hwnd)

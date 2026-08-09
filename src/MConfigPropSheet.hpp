@@ -9,6 +9,7 @@
 #include "MPropSheet.hpp"
 #include "MConfigDlg.hpp"
 #include "MMacrosDlg.hpp"
+#include "MPathsDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -21,12 +22,14 @@ class MConfigPropSheet : public MPropSheet
 public:
 	MConfigDlg  m_pageConfig;
 	MMacrosDlg  m_pageMacros;
+	MPathsDlg   m_pagePaths;
 
 	MConfigPropSheet(LPCTSTR pszCaption = LoadStringDx(IDS_CONFIG))
 		: MPropSheet(NULL, pszCaption)
 	{
 		AddPage(m_pageConfig);
 		AddPage(m_pageMacros);
+		AddPage(m_pagePaths);
 	}
 
 	// Mirrors MDialogBase::DialogBoxDx(hwndOwner)'s call shape so callers

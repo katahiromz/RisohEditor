@@ -16,16 +16,17 @@ class MPathsDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MPathsDlg : public MDialogBase
+class MPathsDlg : public MPropSheetPage
 {
 public:
 	HWND m_hLst1;
-	MResizable m_resizable;
+	//MResizable m_resizable;
 	HICON m_hIcon;
 	HICON m_hIconSm;
 	std::vector<MString> m_list;
 
-	MPathsDlg() : MDialogBase(IDD_PATHS)
+	MPathsDlg()
+		: MPropSheetPage(IDD_PATHS, LoadStringDx(IDS_PATHS))
 	{
 		m_hIcon = LoadIconDx(IDI_SMILY);
 		m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -45,6 +46,7 @@ public:
 
 		ListBox_DeleteString(m_hLst1, iItem);
 		OnSelChange(hwnd);
+		SetModifiedDx();
 	}
 
 	void OnAdd(HWND hwnd)
@@ -66,6 +68,7 @@ public:
 			{
 				ListBox_SetCurSel(m_hLst1, iItem);
 				OnSelChange(hwnd);
+				SetModifiedDx();
 			}
 		}
 	}
@@ -111,10 +114,17 @@ public:
 			SHGetPathFromIDList(pidl, szPath);
 			SetItemText(m_hLst1, iItem, szPath);
 			CoTaskMemFree(pidl);
+			SetModifiedDx();
 		}
 	}
 
-	void OnOK(HWND hwnd)
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplyPaths(hwnd);
+	}
+
+	BOOL ApplyPaths(HWND hwnd)
 	{
 		m_list.clear();
 		INT i, nCount = ListBox_GetCount(m_hLst1);
@@ -138,7 +148,7 @@ public:
 			ComboBox_SetEditSel(hCmb1, 0, -1);
 			SetFocus(hCmb1);
 			ErrorBoxDx(IDS_INVALIDPATH);
-			return;
+			return FALSE;
 		}
 
 		if (strCppExe.size() &&
@@ -148,14 +158,17 @@ public:
 			ComboBox_SetEditSel(hCmb2, 0, -1);
 			SetFocus(hCmb2);
 			ErrorBoxDx(IDS_INVALIDPATH);
-			return;
+			return FALSE;
 		}
 
 		g_settings.includes = m_list;
 		g_settings.strWindResExe = std::move(strWindResExe);
 		g_settings.strCppExe = std::move(strCppExe);
 
-		EndDialog(IDOK);
+		// refresh PATHs
+	    s_pMainWnd->ReSetPaths(hwnd);
+
+		return TRUE;
 	}
 
 	void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
@@ -180,6 +193,7 @@ public:
 
 		ListBox_SetCurSel(m_hLst1, iItem - 1);
 		OnSelChange(hwnd);
+		SetModifiedDx();
 	}
 
 	void OnPsh5(HWND hwnd)
@@ -200,12 +214,14 @@ public:
 
 		ListBox_SetCurSel(m_hLst1, iItem + 1);
 		OnSelChange(hwnd);
+		SetModifiedDx();
 	}
 
 	void OnPsh6(HWND hwnd)
 	{
 		ListBox_ResetContent(m_hLst1);
 		OnSelChange(hwnd);
+		SetModifiedDx();
 	}
 
 	void OnPsh7(HWND hwnd)
@@ -229,6 +245,7 @@ public:
 		{
 			SetDlgItemText(hwnd, cmb1, file);
 			OnSelChange(hwnd);
+			SetModifiedDx();
 		}
 	}
 
@@ -253,6 +270,7 @@ public:
 		{
 			SetDlgItemText(hwnd, cmb2, file);
 			OnSelChange(hwnd);
+			SetModifiedDx();
 		}
 	}
 
@@ -262,6 +280,7 @@ public:
 		SetDlgItemText(hwnd, cmb1, NULL);
 		SetDlgItemText(hwnd, cmb2, NULL);
 		OnSelChange(hwnd);
+		SetModifiedDx();
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -279,14 +298,6 @@ public:
 		case psh3:
 		case ID_DELETE:
 			OnDelete(hwnd);
-			break;
-		case IDOK:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-				OnOK(hwnd);
-			break;
-		case IDCANCEL:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-				EndDialog(IDCANCEL);
 			break;
 		case psh4:
 			if (codeNotify == 0 || codeNotify == BN_CLICKED)
@@ -357,10 +368,18 @@ public:
 		{
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-			HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
 			HANDLE_MSG(hwnd, WM_SIZE, OnSize);
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
+		case WM_NOTIFY:
+			{
+				LPNMHDR pnmhdr = (LPNMHDR)lParam;
+				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
+				{
+					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
+				}
+				return OnNotify(hwnd, (INT)wParam, pnmhdr);
+			}
 		}
 		return 0;
 	}
@@ -389,7 +408,7 @@ public:
 
 	void OnSize(HWND hwnd, UINT state, int cx, int cy)
 	{
-		m_resizable.OnSize();
+		//m_resizable.OnSize();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -411,24 +430,23 @@ public:
 		FileSystemAutoComplete(GetDlgItem(hwnd, cmb1));
 		FileSystemAutoComplete(GetDlgItem(hwnd, cmb2));
 
-		m_resizable.OnParentCreate(hwnd);
-
-		m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
-		m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
-		m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
-		m_resizable.SetLayoutAnchor(stc2, mzcLA_BOTTOM_LEFT);
-		m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(cmb2, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh7, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh8, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
-		m_resizable.SetLayoutAnchor(psh9, mzcLA_BOTTOM_LEFT);
+		//m_resizable.OnParentCreate(hwnd);
+		//m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
+		//m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
+		//m_resizable.SetLayoutAnchor(stc2, mzcLA_BOTTOM_LEFT);
+		//m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(cmb2, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh7, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh8, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+		//m_resizable.SetLayoutAnchor(psh9, mzcLA_BOTTOM_LEFT);
 
 		SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
 		SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);

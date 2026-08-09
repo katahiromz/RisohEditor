@@ -2044,9 +2044,6 @@ void MMainWnd::OnConfig(HWND hwnd)
 	MConfigPropSheet dialog;
 	if (dialog.DoModalDx(hwnd) == IDOK)
 	{
-		// refresh PATHs
-		ReSetPaths(hwnd);
-
 		// update word wrapping
 		ReCreateSrcEdit(hwnd);
 
@@ -2153,11 +2150,8 @@ void MMainWnd::OnSetPaths(HWND hwnd)
 		return;
 
 	// show the dialog
-	MPathsDlg dialog;
-	if (dialog.DialogBoxDx(hwnd) == IDOK)
-	{
-		ReSetPaths(hwnd);
-	}
+	MConfigPropSheet dialog;
+	dialog.DoModalDx(hwnd, 2);
 }
 
 // ID_DFMSETTINGS
