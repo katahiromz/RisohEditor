@@ -1066,8 +1066,16 @@ MRadDialog::MRadDialog()
 
 MRadDialog::~MRadDialog()
 {
-	// delete the brush
-	DeleteObject(m_hbrBack);
+	DeleteBackBrush();
+}
+
+void MRadDialog::DeleteBackBrush()
+{
+	if (m_hbrBack)
+	{
+		DeleteObject(m_hbrBack);
+		m_hbrBack = nullptr;
+	}
 }
 
 // EnumChildWindows' callback function to get the target
@@ -1604,12 +1612,7 @@ void MRadDialog::DoSubclassChildren(HWND hwnd, BOOL bTop)
 // create the background brush
 BOOL MRadDialog::ReCreateBackBrush()
 {
-	// delete the previous
-	if (m_hbrBack)
-	{
-		DeleteObject(m_hbrBack);
-		m_hbrBack = NULL;
-	}
+	DeleteBackBrush();
 
 	// 3D face collor
 	COLORREF rgb = GetSysColor(COLOR_3DFACE);

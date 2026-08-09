@@ -529,6 +529,12 @@ LRESULT MMainWnd::OnEgaFinish(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+void MMainWnd::RefreshRadBackBrush()
+{
+	m_rad_window.m_rad_dialog.DeleteBackBrush();
+	InvalidateRect(m_rad_window.m_rad_dialog, nullptr, TRUE);
+}
+
 BOOL MMainWnd::DoQuerySaveChange(HWND hwnd)
 {
 	if (!s_bModified)

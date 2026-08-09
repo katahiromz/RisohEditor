@@ -273,6 +273,7 @@ public:
 	HWND GetPrevCtrl(HWND hwndCtrl) const;
 	static HWND GetFirstCtrl(HWND hwndParent);
 	static HWND GetLastCtrl(HWND hwndParent);
+	void DeleteBackBrush();
 
 	// the dialog procedure of MRadDialog
 	INT_PTR CALLBACK

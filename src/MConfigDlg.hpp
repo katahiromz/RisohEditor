@@ -155,6 +155,7 @@ public:
 		if (strBackupSuffix.empty())
 			g_settings.bBackup = FALSE;
 
+		s_pMainWnd->RefreshRadBackBrush();
 		return TRUE;
 	}
 
