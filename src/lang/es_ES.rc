@@ -1628,6 +1628,7 @@ STRINGTABLE
     IDS_IDASSOC "ID Association"
     IDS_DIALOGFONTSUBST "Sustituir Fuentes del Diálogo"
     IDS_CANNOTOPENPROTECTED "No se puede abrir el archivo. Probablemente esté cifrado con WonRes."
+    IDS_FORCEOPENCRYPTOWARN "Es probable que el archivo especificado esté cifrado con WonRes. Aunque lo abriste sin contraseña, es posible que parte o la totalidad de los datos no estén disponibles."
 }
 
 //////////////////////////////////////////////////////////////////////////////

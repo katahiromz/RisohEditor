@@ -1626,6 +1626,7 @@ STRINGTABLE
     IDS_IDASSOC "Skojarzenia ID"
     IDS_DIALOGFONTSUBST "Zastępcze czcionki w oknach dialogowych"
     IDS_CANNOTOPENPROTECTED "Nie można otworzyć pliku. Prawdopodobnie jest zaszyfrowany za pomocą WonRes."
+    IDS_FORCEOPENCRYPTOWARN "Podany plik jest prawdopodobnie zaszyfrowany za pomocą WonRes. Mimo że otworzyłeś go bez hasła, część lub całość danych może być niedostępna."
 }
 
 //////////////////////////////////////////////////////////////////////////////

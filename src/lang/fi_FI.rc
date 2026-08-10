@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_IDASSOC "ID assosiaatio"
     IDS_DIALOGFONTSUBST "Valintaikkunan fontin korvaajat"
     IDS_CANNOTOPENPROTECTED "Tiedostoa ei voida avata. Se on luultavasti salattu WonRes-salauksella."
+    IDS_FORCEOPENCRYPTOWARN "Määritetty tiedosto on todennäköisesti salattu WonRes-salaustekniikalla. Vaikka avasit sen ilman salasanaa, osa tai kaikki tiedot eivät välttämättä ole käytettävissä."
 }
 
 //////////////////////////////////////////////////////////////////////////////

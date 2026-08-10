@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_IDASSOC "Association ID"
     IDS_DIALOGFONTSUBST "Substituts de police pour les boîtes de dialogue"
     IDS_CANNOTOPENPROTECTED "Impossible d'ouvrir le fichier. Il est probablement chiffré avec WonRes."
+    IDS_FORCEOPENCRYPTOWARN "Le fichier spécifié est probablement chiffré avec WonRes. Même si vous l'avez ouvert sans mot de passe, certaines données, voire la totalité, peuvent être inaccessibles."
 }
 
 //////////////////////////////////////////////////////////////////////////////

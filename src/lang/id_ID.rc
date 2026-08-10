@@ -1629,6 +1629,7 @@ STRINGTABLE
     IDS_IDASSOC "Asosiasi ID"
     IDS_DIALOGFONTSUBST "Penggantian Fon Dialog"
     IDS_CANNOTOPENPROTECTED "File tersebut tidak dapat dibuka. Kemungkinan besar file tersebut dienkripsi dengan WonRes."
+    IDS_FORCEOPENCRYPTOWARN "File yang dimaksud kemungkinan dienkripsi dengan WonRes. Meskipun Anda membukanya tanpa kata sandi, sebagian atau seluruh data mungkin tidak tersedia."
 }
 
 //////////////////////////////////////////////////////////////////////////////

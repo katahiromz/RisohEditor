@@ -3211,7 +3211,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 	// load all the resource items from the executable
 	m_bLoading = TRUE;
-	bool is_protected = false;
+	bool is_protected = false, encrypt = false;
 	BOOL bOK;
 	{
 		ShowTreeViewArrow(FALSE);
@@ -3256,6 +3256,9 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 		ErrorBoxDx(is_protected ? IDS_CANNOTOPENPROTECTED : IDS_CANNOTOPEN);
 		return FALSE;
 	}
+
+	if (is_protected && !(g_settings.bUseWonRes && g_bEnableCrypto && g_password.size()))
+		MsgBoxDx(LoadStringDx(IDS_FORCEOPENCRYPTOWARN), MB_ICONINFORMATION);
 
 	// update the file info (using the real path)
 	UpdateFileInfo(FT_EXECUTABLE, pszPath, bCompressed);

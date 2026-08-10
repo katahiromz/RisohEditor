@@ -1629,6 +1629,7 @@ STRINGTABLE
     IDS_IDASSOC "ID の関連付け"
     IDS_DIALOGFONTSUBST "ダイアログ フォントの代替"
     IDS_CANNOTOPENPROTECTED "ファイルが開けません。おそらく WonRes で暗号化されています。"
+    IDS_FORCEOPENCRYPTOWARN "指定したファイルは おそらく WonRes で暗号化されています。パスワードなしで開きましたが、一部または全部のデータは利用できないかもしれません。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

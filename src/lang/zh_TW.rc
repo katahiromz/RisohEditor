@@ -1624,6 +1624,7 @@ STRINGTABLE
     IDS_IDASSOC "ID 關聯列表"
     IDS_DIALOGFONTSUBST "對話框字型替換"
     IDS_CANNOTOPENPROTECTED "文件無法開啟。它可能使用 WonRes 加密了。"
+    IDS_FORCEOPENCRYPTOWARN "指定的檔案很可能已使用 WonRes 加密。即使您未輸入密碼就開啟了該文件，部分或全部資料也可能無法存取。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

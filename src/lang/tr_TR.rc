@@ -1626,6 +1626,7 @@ STRINGTABLE
     IDS_IDASSOC "ID İlişkisi"
     IDS_DIALOGFONTSUBST "Diyalog Yazı Tipi Yedekleri"
     IDS_CANNOTOPENPROTECTED "Dosya açılamıyor. Muhtemelen WonRes ile şifrelenmiş."
+    IDS_FORCEOPENCRYPTOWARN "Belirtilen dosya büyük olasılıkla WonRes ile şifrelenmiştir. Dosyayı parola olmadan açmış olsanız bile, verilerin bir kısmı veya tamamı erişilemez olabilir."
 }
 
 //////////////////////////////////////////////////////////////////////////////

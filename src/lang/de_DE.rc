@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_IDASSOC "ID Association"
     IDS_DIALOGFONTSUBST "Ersatzschriften für Dialoge"
     IDS_CANNOTOPENPROTECTED "Die Datei kann nicht geöffnet werden. Sie ist wahrscheinlich mit WonRes verschlüsselt."
+    IDS_FORCEOPENCRYPTOWARN "Die angegebene Datei ist wahrscheinlich mit WonRes verschlüsselt. Obwohl Sie sie ohne Passwort geöffnet haben, sind möglicherweise einige oder alle Daten nicht verfügbar."
 }
 
 //////////////////////////////////////////////////////////////////////////////
