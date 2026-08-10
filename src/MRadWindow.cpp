@@ -208,28 +208,7 @@ void MRadCtrl::PinGroupBoxesToBack(HWND hwndParent)
 
 	// group-box sinking must not leave the index labels buried under
 	// whatever was pushed up in the process
-	BringIndexLabelsToFront(hwndParent);
-}
-
-// Keep the index-label overlay above every control and rubber band.
-void MRadCtrl::BringIndexLabelsToFront(HWND hwndParent)
-{
-	if (!hwndParent || !IsWindow(hwndParent))
-		return;
-
-	// MIndexLabels registers as this class name (see MIndexLabels.hpp).
-	HWND hwndLabels = ::FindWindowEx(hwndParent, NULL,
-		TEXT("katahiromz's Index Labels Class"), NULL);
-	if (hwndLabels && IsWindow(hwndLabels))
-	{
-		::SetWindowPos(hwndLabels, HWND_TOP, 0, 0, 0, 0,
-			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-		// Mark dirty so the numbers are redrawn after any sibling (and
-		// that sibling's own children, e.g. COMBOBOX's EDIT) that may
-		// have just drawn over us. Callers that need it synchronous
-		// (e.g. OnShowIndex) should follow up with UpdateWindow.
-		::InvalidateRect(hwndLabels, NULL, TRUE);
-	}
+	MRadDialog::PaintIndexLabels(hwndParent);
 }
 
 // Undo the Z-order elevation that Select()/OnNCLButtonDown() gave a
@@ -370,9 +349,9 @@ void MRadCtrl::Select(HWND hwnd)
 	}
 	else
 	{
-		// rubber band creation puts a new sibling at HWND_TOP; put the
-		// index labels back above it so they are never clipped/covered
-		BringIndexLabelsToFront(GetParent(hwnd));
+		// rubber band creation puts a new sibling on top of everything;
+		// re-overwrite the index labels so they are never covered
+		MRadDialog::PaintIndexLabels(GetParent(hwnd));
 	}
 
 	// add the handle to the targets
@@ -731,8 +710,9 @@ void MRadCtrl::OnMove(HWND hwnd, int x, int y)
 				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
-		// keep index labels above the control / band we just raised
-		BringIndexLabelsToFront(GetParent(hwnd));
+		// keep the index-label overwrite in sync with the control we
+		// just moved
+		MRadDialog::PaintIndexLabels(GetParent(hwnd));
 
 		// redraw
 		RECT rc;
@@ -772,8 +752,9 @@ void MRadCtrl::OnSize(HWND hwnd, UINT state, int cx, int cy)
 			::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
-		// keep index labels above the control / band we just raised
-		BringIndexLabelsToFront(GetParent(hwnd));
+		// keep the index-label overwrite in sync with the control we
+		// just resized
+		MRadDialog::PaintIndexLabels(GetParent(hwnd));
 
 		// send MYWM_CTRLSIZE to the parent
 		DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
@@ -887,12 +868,12 @@ void MRadCtrl::OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 		InflateRect(&rc, 4, 4);
 		HWND hwndParent = GetParent(hwnd);
 		MapWindowRect(NULL, hwndParent, &rc);
-		// raise index labels above the control/band before the forced
-		// synchronous redraw, so the first painted frame already has
-		// them on top
-		BringIndexLabelsToFront(hwndParent);
 		RedrawWindow(hwndParent, &rc, NULL,
 			RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_ERASE);
+
+		// re-overwrite the index labels so the first painted frame
+		// already has them on top of the control/band we just raised
+		MRadDialog::PaintIndexLabels(hwndParent);
 	}
 
 	// enable dragging by emulating the title bar dragging
@@ -1100,6 +1081,7 @@ void MRadCtrl::DoTest()
 // contructor
 MRadDialog::MRadDialog()
 	: m_index_visible(FALSE)
+	, m_hFontLabel(NULL)
 	, m_bMovingSizing(FALSE)
 {
 	// get the dialog base units
@@ -1114,8 +1096,7 @@ MRadDialog::MRadDialog()
 	LOGFONT lf;
 	GetObject(hFont, sizeof(lf), &lf);
 	lf.lfHeight = 14;
-	hFont = ::CreateFontIndirect(&lf);
-	m_labels.m_hFont = hFont;
+	m_hFontLabel = ::CreateFontIndirect(&lf);
 
 	// create the background brush
 	m_hbrBack = NULL;
@@ -1125,6 +1106,12 @@ MRadDialog::MRadDialog()
 MRadDialog::~MRadDialog()
 {
 	DeleteBackBrush();
+
+	if (m_hFontLabel)
+	{
+		DeleteObject(m_hFontLabel);
+		m_hFontLabel = NULL;
+	}
 }
 
 void MRadDialog::DeleteBackBrush()
@@ -1284,12 +1271,10 @@ void MRadDialog::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 // MRadDialog MYWM_REDRAW
 LRESULT MRadDialog::OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-	// re-assert index-label Z-order before the repaint so a preceding
-	// HWND_TOP elevation of a control/band cannot leave the labels buried
-	MRadCtrl::BringIndexLabelsToFront(hwnd);
 	InvalidateRect(hwnd, NULL, FALSE);
-	if (m_index_visible && m_labels.m_hwnd)
-		InvalidateRect(m_labels, NULL, TRUE);
+
+	// stably overwrite the index labels on top of everything else
+	PaintIndexLabels(hwnd);
 	return 0;
 }
 
@@ -1473,6 +1458,81 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 	// is free and always correct now.
 	FillRect(hdc, &rc, m_hbrBack);
 	return TRUE;    // processed
+}
+
+// Stably "overwrite" the index-number overlay on top of hwndDialog.
+// There is no separate window for the numbers, no hit-testing, and no
+// Z-order to maintain here -- we simply force hwndDialog and every one
+// of its children to finish painting themselves first (which also
+// erases whatever numbers a previous call drew, since it's a real
+// repaint through WM_ERASEBKGND), and then, if the owning MRadDialog's
+// m_index_visible is TRUE, draw the numbers straight onto hwndDialog's
+// own client DC.
+//
+// hwndDialog has WS_CLIPCHILDREN (see OnInitDialog), so a plain
+// GetDC(hwndDialog) already has every child control's rectangle
+// excluded from its visible region -- SelectClipRgn(hdc, NULL) alone
+// cannot undo that, since it only resets an application's own *extra*
+// clip region, not the clipping baked in by the window's style.
+// GetDC() is really just GetDCEx(hwnd, NULL, DCX_USESTYLE | DCX_CACHE)
+// under the hood -- DCX_USESTYLE is what makes it consult the window's
+// WS_CLIPCHILDREN/WS_CLIPSIBLINGS bits. Calling GetDCEx() ourselves
+// without DCX_USESTYLE (and without DCX_CLIPCHILDREN) skips that, so
+// the returned DC paints over every child instead of excluding them.
+//
+// NOTE: we deliberately do NOT use GetDC(NULL) (the screen DC) here,
+// even though that also bypasses WS_CLIPCHILDREN. Under DWM (on by
+// default since Vista), each window is composited from its own
+// off-screen surface; writing straight to the screen DC lands outside
+// that surface, so the very next time DWM recomposites the area our
+// pixels vanish, and until then they can linger as ghosting or flash
+// an uncomposited black frame. Drawing into hwndDialog's own DC keeps
+// the numbers part of the window's real content, so they behave like
+// any other GDI drawing under composition.
+/*static*/ void MRadDialog::PaintIndexLabels(HWND hwndDialog)
+{
+	if (!hwndDialog || !IsWindow(hwndDialog))
+		return;
+
+	// make sure the background and every child control have already
+	// painted themselves before we either leave it at that (labels
+	// hidden) or draw fresh numbers on top of it (labels shown)
+	::RedrawWindow(hwndDialog, NULL, NULL,
+		RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_ERASE);
+
+	MRadDialog *pDialog = static_cast<MRadDialog *>(MDialogBase::GetUserData(hwndDialog));
+	if (!pDialog || !pDialog->m_index_visible)
+		return;
+
+	// a client-area DC for hwndDialog that, unlike plain GetDC(), does
+	// NOT exclude the area covered by child windows -- omitting
+	// DCX_USESTYLE (and DCX_CLIPCHILDREN) is what makes the difference
+	HDC hdc = ::GetDCEx(hwndDialog, NULL, DCX_CACHE);
+	if (!hdc)
+		return;
+
+	// make sure no leftover application clip region restricts where we
+	// can draw within that (already unclipped-from-children) DC
+	::SelectClipRgn(hdc, NULL);
+
+	HGDIOBJ hFontOld = ::SelectObject(hdc, pDialog->m_hFontLabel);
+	::SetTextColor(hdc, RGB(255, 255, 255));
+	::SetBkMode(hdc, OPAQUE);
+	::SetBkColor(hdc, RGB(0, 0, 255));
+
+	for (auto& pair : MRadCtrl::IndexToCtrlMap())
+	{
+		RECT rc;
+		::GetWindowRect(pair.second, &rc);
+		::MapWindowRect(NULL, hwndDialog, &rc);   // -> hwndDialog client coords
+
+		TCHAR szText[32];
+		StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
+		::TextOut(hdc, rc.left, rc.top, szText, lstrlen(szText));
+	}
+
+	::SelectObject(hdc, hFontOld);
+	::ReleaseDC(hwndDialog, hdc);
 }
 
 // the window procedure of MRadDialog
@@ -1768,7 +1828,6 @@ BOOL MRadDialog::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	if (m_index_visible)
 	{
 		ShowIndexLabels(TRUE);   // show the labels
-		MRadCtrl::BringIndexLabelsToFront(hwnd);
 	}
 
 	// do subclassing this dialog
@@ -1777,18 +1836,15 @@ BOOL MRadDialog::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	return FALSE;
 }
 
-// show/hide the labels
+// show/hide the index-number overlay. There is no separate window to
+// create or destroy any more -- just flip the flag and let
+// PaintIndexLabels() do the actual (re)painting: a real repaint erases
+// whatever numbers were drawn before, and then draws fresh ones only
+// if bShow is TRUE.
 void MRadDialog::ShowIndexLabels(BOOL bShow)
 {
 	m_index_visible = bShow;
-	if (bShow)
-	{
-		m_labels.ReCreate(m_hwnd, MRadCtrl::IndexToCtrlMap());
-	}
-	else
-	{
-		m_labels.Destroy();
-	}
+	PaintIndexLabels(m_hwnd);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2504,15 +2560,11 @@ void MRadWindow::UpdateRes()
 	DoSendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
 
 	// NOTE: UpdateRes is called continuously while dragging/resizing a
-	// control (once per mouse-move). The index-label positions are
-	// computed live from the controls in MIndexLabels::OnPaint, so we
-	// only need to repaint that overlay here, not destroy and recreate
-	// its window every time. Recreating the window on every mouse-move
-	// was the main cause of the flicker during dragging.
-	if (m_rad_dialog.m_index_visible && m_rad_dialog.m_labels.m_hwnd)
-	{
-		InvalidateRect(m_rad_dialog.m_labels, NULL, TRUE);
-	}
+	// control (once per mouse-move). The index labels have no window of
+	// their own -- they are just numbers drawn straight onto
+	// m_rad_dialog with SelectClipRgn(hdc, NULL) -- so keeping them in
+	// sync here just means re-overwriting that overlay.
+	MRadDialog::PaintIndexLabels(m_rad_dialog);
 }
 
 // MRadWindow MYWM_DLGSIZE
@@ -2637,7 +2689,6 @@ void MRadWindow::OnShowIndex(HWND hwnd)
 {
 	m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
 	m_rad_dialog.ShowIndexLabels(m_rad_dialog.m_index_visible);
-	MRadCtrl::BringIndexLabelsToFront(m_rad_dialog);
 }
 
 // get the selected dialog items

@@ -9,7 +9,6 @@
 #include "resource.h"
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
-#include "MIndexLabels.hpp"
 #include "MOleHost.hpp"
 #include "Res.hpp"
 #include "DialogRes.hpp"
@@ -119,13 +118,6 @@ public:
 	// it isn't selected itself anymore -- that's the "sometimes the rubber
 	// band gets partially hidden" bug.
 	static void UnelevateZOrder(HWND hwnd);
-
-	// Keep the index-label overlay (MIndexLabels) above every control and
-	// rubber band. Those siblings are frequently raised to HWND_TOP during
-	// selection / drag / resize; without this, the labels end up buried
-	// and either clipped or drawn underneath. The labels window is
-	// WS_EX_TRANSPARENT / HTTRANSPARENT so it never steals hits.
-	static void BringIndexLabelsToFront(HWND hwndParent);
 
 	// deselect the selection
 	static BOOL DeselectSelection();
@@ -245,7 +237,7 @@ public:
 	BOOL            m_index_visible;        // indeces are visible
 	POINT           m_ptClicked;            // the clicked position
 	POINT           m_ptDragging;           // the dragging position
-	MIndexLabels    m_labels;               // the labels
+	HFONT           m_hFontLabel;           // the font used to draw the index labels
 	BOOL            m_bMovingSizing;        // the lock of moving and/or resizing
 	INT             m_xDialogBaseUnit;      // the X dialog base unit
 	INT             m_yDialogBaseUnit;      // the Y dialog base unit
@@ -373,8 +365,29 @@ public:
 	// MRadDialog WM_INITDIALOG
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
 
-	// show/hide the labels
+	// show/hide the index labels
 	void ShowIndexLabels(BOOL bShow = TRUE);
+
+	// Stably "overwrite" the index-number overlay on top of hwndDialog
+	// (an MRadDialog window). There is no separate window for the
+	// numbers, no hit-testing, and no Z-order to maintain -- this just
+	// forces hwndDialog and all of its children to finish painting
+	// themselves, then (if the owning MRadDialog's m_index_visible is
+	// TRUE) draws the numbers onto hwndDialog's own client DC, obtained
+	// via GetDCEx(hwndDialog, NULL, DCX_CACHE) -- deliberately without
+	// DCX_USESTYLE (what plain GetDC() passes under the hood) or
+	// DCX_CLIPCHILDREN, so the WS_CLIPCHILDREN style (see OnInitDialog)
+	// (see OnInitDialog) doesn't exclude the area under every child
+	// control -- plain GetDC()/SelectClipRgn(hdc, NULL) can't undo that
+	// exclusion, since SelectClipRgn only resets an application's own
+	// extra clip region, not one baked in by the window's style. We
+	// also deliberately avoid the screen DC (GetDC(NULL)): under DWM
+	// composition, pixels written straight to the screen sit outside
+	// the window's own backing surface and get wiped/ghosted/flashed
+	// black the next time DWM recomposites that area. Call this after
+	// anything that could have moved, resized, or re-stacked a control
+	// so the numbers never lag behind or end up hidden underneath.
+	static void PaintIndexLabels(HWND hwndDialog);
 };
 
 //////////////////////////////////////////////////////////////////////////////
