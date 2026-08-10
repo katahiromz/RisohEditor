@@ -1767,7 +1767,7 @@ BOOL MRadDialog::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	// if indeces are visible
 	if (m_index_visible)
 	{
-		ShowHideLabels(TRUE);   // show the labels
+		ShowIndexLabels(TRUE);   // show the labels
 		MRadCtrl::BringIndexLabelsToFront(hwnd);
 	}
 
@@ -1778,7 +1778,7 @@ BOOL MRadDialog::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 }
 
 // show/hide the labels
-void MRadDialog::ShowHideLabels(BOOL bShow)
+void MRadDialog::ShowIndexLabels(BOOL bShow)
 {
 	m_index_visible = bShow;
 	if (bShow)
@@ -2636,7 +2636,7 @@ void MRadWindow::OnRefresh(HWND hwnd)
 void MRadWindow::OnShowIndex(HWND hwnd)
 {
 	m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
-	m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
+	m_rad_dialog.ShowIndexLabels(m_rad_dialog.m_index_visible);
 	MRadCtrl::BringIndexLabelsToFront(m_rad_dialog);
 }
 

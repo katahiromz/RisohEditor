@@ -374,7 +374,7 @@ public:
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
 
 	// show/hide the labels
-	void ShowHideLabels(BOOL bShow = TRUE);
+	void ShowIndexLabels(BOOL bShow = TRUE);
 };
 
 //////////////////////////////////////////////////////////////////////////////
