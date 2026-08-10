@@ -5,6 +5,7 @@
     - Percepat OnDeleteRes.
     - Memperbaiki masalah di mana panah tarik-turun pada tampilan pohon tidak terduplikasi.
     - Memperbaiki MIndexLabels.
+    - Mendukung kompresi sumber daya oleh WonRes.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.

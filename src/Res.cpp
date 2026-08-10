@@ -2127,7 +2127,8 @@ EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 		LPVOID pv = ::LockResource(hGlobal);
 		if (pv && dwSize)
 		{
-			if (dwSize >= 8 && std::memcmp(pv, WON_CRYPT_MAGIC, 8) == 0)
+			if ((dwSize >= 8 && std::memcmp(pv, WON_CRYPT_MAGIC, 8) == 0) ||
+				(dwSize >= 8 && std::memcmp(pv, WON_CRYPT_MAGIC_COMPRESSED, 8) == 0))
 			{
 				ers->is_protected = TRUE;
 				return FALSE;
