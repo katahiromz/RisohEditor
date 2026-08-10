@@ -44,6 +44,12 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
     답변. 예, 지원합니다.
 
+질문 7. WonRes란 무엇인가요? 
+
+    답변. Win32 리소스 데이터를 조작하는 도구입니다. 리소스 데이터를 불러오거나 저장할 수 있으며,
+    암호화 및 복호화 기능도 갖추고 있습니다.
+    자세한 내용은 https://github.com/katahiromz/WonRes 를 참조하세요.
+
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Webpage (한국어):   https://katahiromz.web.fc2.com/re/ko

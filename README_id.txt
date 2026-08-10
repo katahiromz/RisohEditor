@@ -44,6 +44,13 @@ Pertanyaan 6. Apakah mendukung 64-bit?
 
      Jawaban. Ya, mendukung.
 
+Pertanyaan 7. Apa itu WonRes? 
+
+     Jawaban. Ini adalah alat manipulasi data sumber daya (resource) Win32 buatan saya.
+     Alat ini dapat memuat dan menyimpan data sumber daya serta memiliki fitur enkripsi
+     dan dekripsi.
+     Untuk detailnya, silakan lihat https://github.com/katahiromz/WonRes .
+
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Laman web (Inggris): https://katahiromz.web.fc2.com/re/en

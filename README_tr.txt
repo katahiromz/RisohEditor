@@ -20,7 +20,7 @@ Telif hakları(copyrights) ve lisans anlaşmasının detayları için
 Soru 1. "Risoh" ne demek?
 
     Cevap. "Risoh" kelimesi japoncada "ideal" anlamına gelmektedir.
-	
+    
 Soru 2. edt1, edt2 ve cmb1 nedir?
 
     Cevap. Bunlar <dlgs.h> dosyasında tanımlanmış standart kontrol ID makrolarıdır.
@@ -28,7 +28,7 @@ Soru 2. edt1, edt2 ve cmb1 nedir?
 Soru 3. mcdx nedir?
 
     Cevap. O benim yapmış olduğum özel mesaj derleyicisdir.
-	   Detaylar için mcdx/MESSAGETABLEDX.md dosyasına bakınız.
+       Detaylar için mcdx/MESSAGETABLEDX.md dosyasına bakınız.
 
 Soru 4. Visual studio ile derlediğim zaman neden anlamsız karakterler görüyorum/alıyorum?
 
@@ -40,11 +40,17 @@ Soru 4. Visual studio ile derlediğim zaman neden anlamsız karakterler görüyo
 Soru 5. Kurulumsuz(no installer) ve taşınabilir(portable) versiyon arasındaki fark nedir?
 
     Cevap. Taşınabilir(portable) versiyon kayıt defterini(registry)' i kullanmaz 
-	onun yerine bir ini dosyasını kullanır.
+    onun yerine bir ini dosyasını kullanır.
 
 Soru 6. 64-bit'i destekliyor mu?
 
     Cevap. Evet, destekliyor.
+
+Soru 7. WonRes nedir?
+
+    Cevap. Win32 kaynak verisi düzenleme aracımdır. Kaynak verilerini yükleyip
+           kaydedebilir; ayrıca şifreleme ve şifre çözme özelliklerine sahiptir. 
+           Ayrıntılar için bkz. https://github.com/katahiromz/WonRes .
  
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

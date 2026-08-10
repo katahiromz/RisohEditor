@@ -44,6 +44,13 @@ Pytanie 6. Czy obsługuje wersję 64-bit?
 
     Odpowiedź. Tak, to prawda.
 
+Pytanie 7. Czym jest WonRes? 
+
+    Odpowiedź. To moje narzędzie do manipulacji danymi zasobów Win32. Potrafi ono
+               wczytywać i zapisywać dane zasobów oraz oferuje funkcje szyfrowania i
+               deszyfrowania.
+               Szczegóły można znaleźć pod adresem https://github.com/katahiromz/WonRes .
+
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Webpage (English):    https://katahiromz.web.fc2.com/re/en

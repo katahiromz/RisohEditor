@@ -45,6 +45,13 @@ Questão 6. Suporta 64 bits?
 
   Resposta. Sim, suporta.
 
+Pergunta 7. O que é o WonRes? 
+
+  Resposta. É a minha ferramenta de manipulação de dados de recursos Win32.
+            Ele pode carregar e salvar dados de recursos e possui funcionalidades
+            de criptografia e descriptografia. 
+            Para mais detalhes, consulte https://github.com/katahiromz/WonRes .
+
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Página Web (Inglês):    https://katahiromz.web.fc2.com/re/en

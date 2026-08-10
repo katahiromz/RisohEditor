@@ -44,6 +44,12 @@ Question 6. Does it support 64-bit?
 
     Answer. Yes, it does.
 
+Question 7. What is WonRes?
+
+    Answer. It's my Win32 resource data manipulator. It can load and save
+            resource data and has encryption and decryption feature.
+            For details, see https://github.com/katahiromz/WonRes .
+
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Webpage (English):    https://katahiromz.web.fc2.com/re/en
