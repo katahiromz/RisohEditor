@@ -4,7 +4,7 @@
     - Transformou a configuração em uma folha de propriedades.
     - Acelere o OnDeleteRes.
     - Corrigido o problema em que as setas suspensas na visualização em árvore não eram duplicadas.
-    - Corrigido MIndexLabels.
+    - Corrigidos os rótulos de índice do MRadWindow.
     - Suporte à compressão de recursos pelo WonRes.
 - v.6.1.3 (2026-08-08)
     - Menu [Editar] simplificado.

@@ -4,7 +4,7 @@
     - Mengubah konfigurasi menjadi lembar properti.
     - Percepat OnDeleteRes.
     - Memperbaiki masalah di mana panah tarik-turun pada tampilan pohon tidak terduplikasi.
-    - Memperbaiki MIndexLabels.
+    - Memperbaiki label indeks MRadWindow.
     - Mendukung kompresi sumber daya oleh WonRes.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].

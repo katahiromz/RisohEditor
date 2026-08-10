@@ -4,7 +4,7 @@
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerare OnDeleteRes.
     - Risolto il problema per cui le frecce a discesa nella visualizzazione ad albero non venivano duplicate.
-    - Corretto MIndexLabels.
+    - Corrette le etichette degli indici di MRadWindow.
     - Supporto per la compressione delle risorse tramite WonRes.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
