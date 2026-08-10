@@ -4,6 +4,7 @@
     - Mengubah konfigurasi menjadi lembar properti.
     - Percepat OnDeleteRes.
     - Memperbaiki masalah di mana panah tarik-turun pada tampilan pohon tidak terduplikasi.
+    - Memperbaiki MIndexLabels.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.

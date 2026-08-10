@@ -55,6 +55,11 @@ public:
 		GetClientRect(hwndOwner, &rc);
 		MoveWindow(m_hwnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 
+		// Always sit above every control and rubber band so the index
+		// numbers are never clipped or covered. Hit-testing is already
+		// HTTRANSPARENT / WS_EX_TRANSPARENT, so this does not steal clicks.
+		::SetWindowPos(m_hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
 		return TRUE;
 	}
 

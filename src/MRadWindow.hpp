@@ -120,6 +120,13 @@ public:
 	// band gets partially hidden" bug.
 	static void UnelevateZOrder(HWND hwnd);
 
+	// Keep the index-label overlay (MIndexLabels) above every control and
+	// rubber band. Those siblings are frequently raised to HWND_TOP during
+	// selection / drag / resize; without this, the labels end up buried
+	// and either clipped or drawn underneath. The labels window is
+	// WS_EX_TRANSPARENT / HTTRANSPARENT so it never steals hits.
+	static void BringIndexLabelsToFront(HWND hwndParent);
+
 	// deselect the selection
 	static BOOL DeselectSelection();
 

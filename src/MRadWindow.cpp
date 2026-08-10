@@ -205,6 +205,31 @@ void MRadCtrl::PinGroupBoxesToBack(HWND hwndParent)
 		::SetWindowPos(hGroupBox, HWND_BOTTOM, 0, 0, 0, 0,
 			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 	}
+
+	// group-box sinking must not leave the index labels buried under
+	// whatever was pushed up in the process
+	BringIndexLabelsToFront(hwndParent);
+}
+
+// Keep the index-label overlay above every control and rubber band.
+void MRadCtrl::BringIndexLabelsToFront(HWND hwndParent)
+{
+	if (!hwndParent || !IsWindow(hwndParent))
+		return;
+
+	// MIndexLabels registers as this class name (see MIndexLabels.hpp).
+	HWND hwndLabels = ::FindWindowEx(hwndParent, NULL,
+		TEXT("katahiromz's Index Labels Class"), NULL);
+	if (hwndLabels && IsWindow(hwndLabels))
+	{
+		::SetWindowPos(hwndLabels, HWND_TOP, 0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		// Mark dirty so the numbers are redrawn after any sibling (and
+		// that sibling's own children, e.g. COMBOBOX's EDIT) that may
+		// have just drawn over us. Callers that need it synchronous
+		// (e.g. OnShowHideIndex) should follow up with UpdateWindow.
+		::InvalidateRect(hwndLabels, NULL, TRUE);
+	}
 }
 
 // Undo the Z-order elevation that Select()/OnNCLButtonDown() gave a
@@ -324,8 +349,7 @@ void MRadCtrl::Select(HWND hwnd)
 		// but HWND_TOP is defined as ((HWND)0), i.e. it IS NULL, so
 		// SetWindowPosDx(hwnd, NULL, NULL, HWND_TOP) would silently do
 		// nothing. Call the raw API directly here to actually move it.
-		::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
-			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 	}
 
 	// Create the rubber band for the control. Newly created child
@@ -341,7 +365,14 @@ void MRadCtrl::Select(HWND hwnd)
 		// so its own selection outline doesn't cover anything else
 		// either) must stay at the very back. Sink both the group box
 		// and its brand-new band back down together.
+		// (PinGroupBoxesToBack also re-raises the index labels.)
 		PinGroupBoxesToBack(GetParent(hwnd));
+	}
+	else
+	{
+		// rubber band creation puts a new sibling at HWND_TOP; put the
+		// index labels back above it so they are never clipped/covered
+		BringIndexLabelsToFront(GetParent(hwnd));
 	}
 
 	// add the handle to the targets
@@ -559,6 +590,28 @@ MRadCtrl::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MESSAGE(hwnd, MYWM_REDRAW, OnRedraw);
 		case WM_MOVING: case WM_SIZING:
 			return 0;
+		case WM_PAINT:
+		{
+			// Let the control paint first, then schedule the index-label
+			// overlay to repaint on top. This is required for nested
+			// children (the EDIT inside a COMBOBOX, etc.): those HWNDs
+			// are not siblings of the labels window, so HWND_TOP on the
+			// labels cannot stop them from covering the numbers.
+			LRESULT ret = DefaultProcDx(hwnd, uMsg, wParam, lParam);
+			// Search ancestors for the labels window (child of MRadDialog).
+			HWND hwndLabels = NULL;
+			for (HWND hwndAnc = ::GetParent(hwnd); hwndAnc;
+			     hwndAnc = ::GetParent(hwndAnc))
+			{
+				hwndLabels = ::FindWindowEx(hwndAnc, NULL,
+					TEXT("katahiromz's Index Labels Class"), NULL);
+				if (hwndLabels)
+					break;
+			}
+			if (hwndLabels)
+				::InvalidateRect(hwndLabels, NULL, FALSE);
+			return ret;
+		}
 	}
 	return DefaultProcDx(hwnd, uMsg, wParam, lParam);
 }
@@ -667,8 +720,7 @@ void MRadCtrl::OnMove(HWND hwnd, int x, int y)
 		// than only at the start/end of the drag.
 		if (!IsGroupBox(hwnd))
 		{
-			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
-				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
 		// move the rubber band
@@ -678,6 +730,9 @@ void MRadCtrl::OnMove(HWND hwnd, int x, int y)
 			::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0,
 				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
+
+		// keep index labels above the control / band we just raised
+		BringIndexLabelsToFront(GetParent(hwnd));
 
 		// redraw
 		RECT rc;
@@ -709,15 +764,16 @@ void MRadCtrl::OnSize(HWND hwnd, UINT state, int cx, int cy)
 		// synced to the new size, for the same reason as in OnMove()
 		if (!IsGroupBox(hwnd))
 		{
-			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
-				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 		if (auto band = GetRubberBand())
 		{
 			band->FitToTarget();
-			::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0,
-				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
+
+		// keep index labels above the control / band we just raised
+		BringIndexLabelsToFront(GetParent(hwnd));
 
 		// send MYWM_CTRLSIZE to the parent
 		DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
@@ -803,14 +859,12 @@ void MRadCtrl::OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 		// Use the raw API, not SetWindowPosDx() -- see the NOTE in
 		// Select() about HWND_TOP being indistinguishable from NULL to
 		// that wrapper.
-		::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
-			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		HWND hwndBand = NULL;
 		if (auto pBand = GetRubberBand())
 		{
 			hwndBand = *pBand;
-			::SetWindowPos(hwndBand, HWND_TOP, 0, 0, 0, 0,
-				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			::SetWindowPos(hwndBand, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
 		// SetWindowPos() only *requests* a repaint; the actual WM_PAINT
@@ -833,6 +887,10 @@ void MRadCtrl::OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 		InflateRect(&rc, 4, 4);
 		HWND hwndParent = GetParent(hwnd);
 		MapWindowRect(NULL, hwndParent, &rc);
+		// raise index labels above the control/band before the forced
+		// synchronous redraw, so the first painted frame already has
+		// them on top
+		BringIndexLabelsToFront(hwndParent);
 		RedrawWindow(hwndParent, &rc, NULL,
 			RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_ERASE);
 	}
@@ -1226,7 +1284,12 @@ void MRadDialog::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 // MRadDialog MYWM_REDRAW
 LRESULT MRadDialog::OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+	// re-assert index-label Z-order before the repaint so a preceding
+	// HWND_TOP elevation of a control/band cannot leave the labels buried
+	MRadCtrl::BringIndexLabelsToFront(hwnd);
 	InvalidateRect(hwnd, NULL, FALSE);
+	if (m_index_visible && m_labels.m_hwnd)
+		InvalidateRect(m_labels, NULL, TRUE);
 	return 0;
 }
 
@@ -1703,7 +1766,10 @@ BOOL MRadDialog::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
 	// if indeces are visible
 	if (m_index_visible)
+	{
 		ShowHideLabels(TRUE);   // show the labels
+		MRadCtrl::BringIndexLabelsToFront(hwnd);
+	}
 
 	// do subclassing this dialog
 	SubclassDx(hwnd);
@@ -1716,9 +1782,13 @@ void MRadDialog::ShowHideLabels(BOOL bShow)
 {
 	m_index_visible = bShow;
 	if (bShow)
+	{
 		m_labels.ReCreate(m_hwnd, MRadCtrl::IndexToCtrlMap());
+	}
 	else
+	{
 		m_labels.Destroy();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2567,6 +2637,7 @@ void MRadWindow::OnShowHideIndex(HWND hwnd)
 {
 	m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
 	m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
+	MRadCtrl::BringIndexLabelsToFront(m_rad_dialog);
 }
 
 // get the selected dialog items

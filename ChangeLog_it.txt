@@ -4,6 +4,7 @@
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerare OnDeleteRes.
     - Risolto il problema per cui le frecce a discesa nella visualizzazione ad albero non venivano duplicate.
+    - Corretto MIndexLabels.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.
