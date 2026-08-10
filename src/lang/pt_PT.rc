@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "Associação ID"
     IDS_DIALOGFONTSUBST "Substitutos de tipos de letra do diálogo"
+    IDS_CANNOTOPENPROTECTED "O ficheiro não pode ser aberto. Provavelmente está encriptado com WonRes."
 }
 
 //////////////////////////////////////////////////////////////////////////////

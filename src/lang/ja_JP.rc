@@ -1628,6 +1628,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID の関連付け"
     IDS_DIALOGFONTSUBST "ダイアログ フォントの代替"
+    IDS_CANNOTOPENPROTECTED "ファイルが開けません。おそらく WonRes で暗号化されています。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

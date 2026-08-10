@@ -1624,6 +1624,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID Association"
     IDS_DIALOGFONTSUBST "Ersatzschriften für Dialoge"
+    IDS_CANNOTOPENPROTECTED "Die Datei kann nicht geöffnet werden. Sie ist wahrscheinlich mit WonRes verschlüsselt."
 }
 
 //////////////////////////////////////////////////////////////////////////////

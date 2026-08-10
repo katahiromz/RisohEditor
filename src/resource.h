@@ -381,6 +381,7 @@
 #define IDS_DFMSETTINGS                     400
 #define IDS_IDASSOC                         401
 #define IDS_DIALOGFONTSUBST                 402
+#define IDS_CANNOTOPENPROTECTED             403
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

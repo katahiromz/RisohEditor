@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "Associazione ID"
     IDS_DIALOGFONTSUBST "Sostituzione font finestra"
+    IDS_CANNOTOPENPROTECTED "Impossibile aprire il file. Probabilmente è crittografato con WonRes."
 }
 
 //////////////////////////////////////////////////////////////////////////////

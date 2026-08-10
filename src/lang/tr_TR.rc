@@ -1625,6 +1625,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID İlişkisi"
     IDS_DIALOGFONTSUBST "Diyalog Yazı Tipi Yedekleri"
+    IDS_CANNOTOPENPROTECTED "Dosya açılamıyor. Muhtemelen WonRes ile şifrelenmiş."
 }
 
 //////////////////////////////////////////////////////////////////////////////

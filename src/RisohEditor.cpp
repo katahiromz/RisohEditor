@@ -3211,6 +3211,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 	// load all the resource items from the executable
 	m_bLoading = TRUE;
+	bool is_protected = false;
 	BOOL bOK;
 	{
 		ShowTreeViewArrow(FALSE);
@@ -3218,13 +3219,21 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 #ifdef ENABLE_CRYPTO
 		SetWonResPassword(nullptr, nullptr);
-		if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size() && g_res.is_protected(hMod))
+		if (g_res.is_protected(hMod))
 		{
-			for (auto& ch : g_password) ch ^= 0xFFFF;
-			for (auto& ch : g_salt) ch ^= 0xFFFF;
-			SetWonResPassword(g_password.c_str(), g_salt.c_str());
-			for (auto& ch : g_password) ch ^= 0xFFFF;
-			for (auto& ch : g_salt) ch ^= 0xFFFF;
+			is_protected = true;
+			if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size())
+			{
+				for (auto& ch : g_password) ch ^= 0xFFFF;
+				for (auto& ch : g_salt) ch ^= 0xFFFF;
+				SetWonResPassword(g_password.c_str(), g_salt.c_str());
+				for (auto& ch : g_password) ch ^= 0xFFFF;
+				for (auto& ch : g_salt) ch ^= 0xFFFF;
+			}
+			else
+			{
+				SetWonResPassword(nullptr, nullptr);
+			}
 		}
 		else
 		{
@@ -3244,7 +3253,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 	if (!bOK)
 	{
-		ErrorBoxDx(IDS_CANNOTOPEN);
+		ErrorBoxDx(is_protected ? IDS_CANNOTOPENPROTECTED : IDS_CANNOTOPEN);
 		return FALSE;
 	}
 

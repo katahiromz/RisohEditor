@@ -1623,6 +1623,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID 關聯列表"
     IDS_DIALOGFONTSUBST "對話框字型替換"
+    IDS_CANNOTOPENPROTECTED "文件無法開啟。它可能使用 WonRes 加密了。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

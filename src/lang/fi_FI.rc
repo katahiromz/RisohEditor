@@ -1624,6 +1624,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "ID assosiaatio"
     IDS_DIALOGFONTSUBST "Valintaikkunan fontin korvaajat"
+    IDS_CANNOTOPENPROTECTED "Tiedostoa ei voida avata. Se on luultavasti salattu WonRes-salauksella."
 }
 
 //////////////////////////////////////////////////////////////////////////////

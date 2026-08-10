@@ -1628,6 +1628,7 @@ STRINGTABLE
     IDS_DFMSETTINGS "Delphi DFM"
     IDS_IDASSOC "Asosiasi ID"
     IDS_DIALOGFONTSUBST "Penggantian Fon Dialog"
+    IDS_CANNOTOPENPROTECTED "File tersebut tidak dapat dibuka. Kemungkinan besar file tersebut dienkripsi dengan WonRes."
 }
 
 //////////////////////////////////////////////////////////////////////////////
