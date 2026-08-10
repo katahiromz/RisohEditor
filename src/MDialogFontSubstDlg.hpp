@@ -22,7 +22,6 @@ public:
 	MComboBoxAutoComplete m_cmb4;
 	MComboBoxAutoComplete m_cmb5;
 	MComboBoxAutoComplete m_cmb6;
-	BOOL m_rad_was_visible = FALSE;
 
 	MDialogFontSubstDlg()
 		: MPropSheetPage(IDD_FONTSUBST, LoadStringDx(IDS_DIALOGFONTSUBST))
@@ -31,10 +30,6 @@ public:
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
-		m_rad_was_visible = IsWindowVisible(s_pMainWnd->m_rad_window);
-		if (m_rad_was_visible)
-			GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
-
 		InitFontComboBox(GetDlgItem(hwnd, cmb1));
 		InitFontComboBox(GetDlgItem(hwnd, cmb2));
 		InitFontComboBox(GetDlgItem(hwnd, cmb3));
@@ -68,6 +63,13 @@ public:
 
 	BOOL ApplySubst(HWND hwnd)
 	{
+		BOOL bRadWasVisible = IsWindowVisible(s_pMainWnd->m_rad_window);
+		if (bRadWasVisible)
+		{
+			GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
+			s_pMainWnd->DestroyRadWindow();
+		}
+
 		g_settings.strFontReplaceFrom1 = GetDlgItemText(cmb1);
 		g_settings.strFontReplaceTo1 = GetDlgItemText(cmb2);
 		g_settings.strFontReplaceFrom2 = GetDlgItemText(cmb3);
@@ -75,9 +77,8 @@ public:
 		g_settings.strFontReplaceFrom3 = GetDlgItemText(cmb5);
 		g_settings.strFontReplaceTo3 = GetDlgItemText(cmb6);
 
-		if (m_rad_was_visible)
-			PostMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
-
+		if (bRadWasVisible)
+			SendMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
 		return TRUE;
 	}
 

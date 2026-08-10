@@ -535,7 +535,7 @@ void MMainWnd::RefreshCode()
 	if (!entry)
 		return;
 
-	Preview(m_hwnd, entry, STV_RESETTEXT);
+	Preview(m_hwnd, entry, STV_RESETTEXT, FALSE);
 }
 
 // destroy the RADical window if any
@@ -6013,9 +6013,6 @@ void MMainWnd::UpdateNames(BOOL bModified)
 	{
 		UpdateEntryName(entry);
 	}
-
-	auto entry = g_res.get_entry();
-	SelectTV(entry, FALSE);
 
 	if (bModified)
 		DoSetFileModified(TRUE);

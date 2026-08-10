@@ -263,8 +263,10 @@ public:
 	// entries both want the same non-default mode, e.g. icon -> icon. Pass
 	// FALSE (the default) when hiding the preview for good, e.g. on
 	// deselection, where SHOW_CODEONLY really is the desired resting state.
-	VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED, BOOL bWillRePreview = FALSE);
-	BOOL Preview(HWND hwnd, const EntryBase *entry, STV stv = STV_RESETTEXTANDMODIFIED);
+	VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED, BOOL bWillRePreview = FALSE,
+	                 BOOL bDestroyRad = TRUE);
+	BOOL Preview(HWND hwnd, const EntryBase *entry, STV stv = STV_RESETTEXTANDMODIFIED,
+	             BOOL bDestroyRad = TRUE);
 
 	// Preview() internally calls HidePreview(), SetShowMode(), and one of the
 	// PreviewXxx() helpers, each of which can touch m_hCodeEditor (SetWindowText,

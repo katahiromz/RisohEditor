@@ -503,10 +503,14 @@ void MMainWnd::EndPreviewBatch()
 }
 
 // close the preview
-VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/)
+VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/,
+                           BOOL bDestroyRad/* = TRUE*/)
 {
-	// destroy the RADical window if any
-	DestroyRadWindow();
+	if (bDestroyRad)
+	{
+		// destroy the RADical window if any
+		DestroyRadWindow();
+	}
 
 	// clear m_hHexViewer
 	SetWindowTextW(m_hHexViewer, NULL);
@@ -542,7 +546,7 @@ VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/)
 }
 
 // do preview the resource item
-BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
+BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroyRad)
 {
 	BeginPreviewBatch();
 
@@ -551,7 +555,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 	// (see the bWillRePreview comment on HidePreview()'s declaration) --
 	// that's what actually eliminates the m_hCodeEditor/m_hBmpView flicker.
 	BOOL bWillRePreview = (stv != STV_DONTRESET);
-	HidePreview(stv, bWillRePreview);
+	HidePreview(stv, bWillRePreview, bDestroyRad);
 
 	if (stv == STV_DONTRESET)
 	{

@@ -1137,9 +1137,16 @@ void MMainWnd::OnFonts(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
+	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
+	if (bRadWasVisible)
+		GetWindowRect(m_rad_window, &m_rcRadWindow);
+
 	// show the dialog
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_FONTS);
+	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_FONTS);
+
+	if (ret == IDOK && bRadWasVisible)
+		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
 }
 
 // ID_EXPORT: export all the resource items to an RC file
@@ -1953,6 +1960,10 @@ void MMainWnd::OnLoadResH(HWND hwnd)
 
 		// update the names
 		UpdateNames();
+
+		// re-select the selected entry
+		auto entry = g_res.get_entry();
+		SelectTV(entry, FALSE);
 	}
 }
 
@@ -2032,9 +2043,16 @@ void MMainWnd::OnConfig(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
+	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
+	if (bRadWasVisible)
+		GetWindowRect(m_rad_window, &m_rcRadWindow);
+
 	// show the dialog
 	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_CONFIG);
+	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_CONFIG);
+
+	if (ret == IDOK && bRadWasVisible)
+		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
 }
 
 // ID_USEIDC_STATIC: use IDC_STATIC macro or not
