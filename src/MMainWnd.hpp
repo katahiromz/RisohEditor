@@ -236,7 +236,7 @@ public:
 	void OnEditLabel(HWND hwnd);
 	void OnSetPaths(HWND hwnd);
 	void OnShowLangs(HWND hwnd);
-	void OnShowHideToolBar(HWND hwnd);
+	void OnShowToolBar(HWND hwnd);
 
 	// show/hide
 	void ShowIDList(HWND hwnd, BOOL bShow = TRUE);

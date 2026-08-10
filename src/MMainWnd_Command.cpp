@@ -2095,7 +2095,7 @@ void MMainWnd::OnShowLangs(HWND hwnd)
 }
 
 // ID_SHOWHIDETOOLBAR: show/hide the toolbar
-void MMainWnd::OnShowHideToolBar(HWND hwnd)
+void MMainWnd::OnShowToolBar(HWND hwnd)
 {
 	// toggle the flag
 	g_settings.bShowToolBar = !g_settings.bShowToolBar;
@@ -4183,7 +4183,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnShowLangs(hwnd);
 		break;
 	case ID_SHOWHIDETOOLBAR:
-		OnShowHideToolBar(hwnd);
+		OnShowToolBar(hwnd);
 		break;
 	case ID_EXPAND_ALL:
 		OnExpandAll(hwnd);
