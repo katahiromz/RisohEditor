@@ -506,10 +506,7 @@ void MMainWnd::EndPreviewBatch()
 VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/)
 {
 	// destroy the RADical window if any
-	if (IsWindow(m_rad_window))
-	{
-		m_rad_window.DestroyWindow();
-	}
+	DestroyRadWindow();
 
 	// clear m_hHexViewer
 	SetWindowTextW(m_hHexViewer, NULL);

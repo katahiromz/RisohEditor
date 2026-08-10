@@ -538,6 +538,13 @@ void MMainWnd::RefreshCode()
 	Preview(m_hwnd, entry, STV_RESETTEXT);
 }
 
+// destroy the RADical window if any
+void MMainWnd::DestroyRadWindow()
+{
+	if (::IsWindow(m_rad_window))
+		::DestroyWindow(m_rad_window);
+}
+
 void MMainWnd::RefreshRadBackBrush()
 {
 	m_rad_window.m_rad_dialog.DeleteBackBrush();
@@ -1303,12 +1310,8 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 	if (hwndContext != m_hwndTV)
 		return;     // ignore
 
-	// if RADical window is displayed
-	if (IsWindowVisible(m_rad_window))
-	{
-		// destroy it
-		m_rad_window.DestroyWindow();
-	}
+	// destroy the RADical window if any
+	DestroyRadWindow();
 
 	// get screen coordinates from xPos and yPos
 	POINT pt = {(SHORT)xPos, (SHORT)yPos};
@@ -2333,10 +2336,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 	Edit_SetModify(m_hCodeEditor, FALSE);
 
 	// destroy the RADical window if any
-	if (IsWindow(m_rad_window))
-	{
-		m_rad_window.DestroyWindow();
-	}
+	DestroyRadWindow();
 
 	// reopen if necessary
 	if (bReopen)
@@ -2375,8 +2375,7 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 			Edit_SetModify(m_hCodeEditor, FALSE);
 
 			// destroy the RADical window if any
-			if (IsWindow(m_rad_window))
-				m_rad_window.DestroyWindow();
+			DestroyRadWindow();
 			break;
 
 		case IDCANCEL:
@@ -5621,7 +5620,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
 	g_res.delete_invalid();
 
 	// destroy the window's
-	m_rad_window.DestroyWindow();
+	DestroyRadWindow();
 	DestroyWindow(m_hHexViewer);
 	DestroyWindow(m_hCodeEditor);
 	m_hBmpView.DestroyView();
@@ -6547,10 +6546,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			if (!CompileIfNecessary(FALSE))
 				return TRUE;
 		}
-		if (IsWindow(m_rad_window))
-		{
-			m_rad_window.DestroyWindow();
-		}
+		DestroyRadWindow();
 	}
 	else if (pnmhdr->code == TVN_SELCHANGED)
 	{
