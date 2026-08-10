@@ -84,7 +84,7 @@ void MMainWnd::OnNew(HWND hwnd)
 	// update modified flag
 	DoSetFileModified(FALSE);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 }
 
@@ -2196,7 +2196,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
 	// select the entry
 	SelectTV(entry, FALSE);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 }
 
@@ -2215,7 +2215,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
 	// select the entry
 	SelectTV(NULL, FALSE);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 }
 

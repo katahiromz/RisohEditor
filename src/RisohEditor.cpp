@@ -3268,7 +3268,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 
 	DoSetFileModified(FALSE);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(m_hwnd);
 
 	return TRUE; // success
@@ -5420,7 +5420,7 @@ IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
 	// select none
 	SelectTV(NULL, FALSE);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 
 	DoSetFileModified(TRUE);
@@ -5478,7 +5478,7 @@ IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
 	// refresh the ID list window
 	DoRefreshIDList(hwnd);
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 
 	return IMPORTED;
@@ -5551,7 +5551,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 		DoLoadFile(hwnd, file);
 	}
 
-	// update language arrow
+	// update drop-down arrow
 	PostUpdateArrow(hwnd);
 
 	// remove the command lock
@@ -7475,7 +7475,7 @@ MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL: case WM_KEYDOWN: case WM_CHAR:
 		if (IsWindow(m_arrow))
 		{
-			// hide language arrow
+			// hide drop-down arrow
 			ShowTreeViewArrow(FALSE);
 
 			// get selected item rect
@@ -7489,7 +7489,7 @@ MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// redraw the rect
 			InvalidateRect(hwnd, &rc, TRUE);
 
-			// restore language arrow
+			// restore drop-down arrow
 			PostUpdateArrow(m_hwnd);
 
 			return ret;
