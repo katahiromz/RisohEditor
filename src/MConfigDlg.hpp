@@ -158,6 +158,9 @@ public:
 		s_pMainWnd->RefreshRadBackBrush();
 		s_pMainWnd->RefreshFonts();
 		s_pMainWnd->RefreshCode();
+		s_pMainWnd->UpdateTitleBar();
+		s_pMainWnd->UpdateNames(FALSE);
+		s_pMainWnd->UpdateMenu();
 		return TRUE;
 	}
 

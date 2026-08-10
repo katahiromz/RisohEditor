@@ -86,9 +86,6 @@ protected:
 	WCHAR       m_szResourceH[MAX_PATH];        // the resource.h file location
 	BOOL        m_bUpxCompressed;               // is the real file compressed?
 
-	BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed);
-	void UpdateTitleBar();
-
 	// selection
 	MIdOrString     m_type;
 	MIdOrString     m_name;
@@ -197,11 +194,10 @@ public:
 		SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
 	}
 
-	// utilities
 	BOOL CheckDataFolder(VOID);
 	INT CheckData(VOID);
-
 	void UpdateMenu();
+	void UpdateNames(BOOL bModified = TRUE);
 
 	enum STV
 	{
@@ -229,6 +225,9 @@ public:
 	void UpdateOurToolBarButtons(INT iType);
 	void UpdateToolBarStatus();
 	bool IsEntryTextEditable(const EntryBase *entry);
+
+	BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed);
+	void UpdateTitleBar();
 
 	// ID list
 	void OnIDList(HWND hwnd);
@@ -558,7 +557,6 @@ protected:
 		return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
 	}
 
-	void UpdateNames(BOOL bModified = TRUE);
 	void UpdateEntryType(EntryBase *e, LPWSTR pszText = NULL);
 	void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
 	void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);

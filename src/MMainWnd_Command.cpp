@@ -2034,21 +2034,7 @@ void MMainWnd::OnConfig(HWND hwnd)
 
 	// show the dialog
 	MConfigPropSheet dialog;
-	if (dialog.DoModalDx(hwnd, PAGE_CONFIG) == IDOK)
-	{
-		// update the labels of the entries
-		UpdateNames(FALSE);
-
-		// select the entry to update the text
-		auto entry = g_res.get_entry();
-		SelectTV(entry, FALSE);
-
-		// update title bar
-		UpdateTitleBar();
-	}
-
-	// update menu
-	UpdateMenu();
+	dialog.DoModalDx(hwnd, PAGE_CONFIG);
 }
 
 // ID_USEIDC_STATIC: use IDC_STATIC macro or not
