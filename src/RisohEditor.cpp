@@ -5187,20 +5187,27 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 	// The executable is updated. Wait for virus scan
 	WaitForVirusScan(pszExeFile, 10 * 1000);
 
-#ifdef ENABLE_CRYPTO
 	BOOL bEnableCrypt = FALSE;
+#ifdef ENABLE_CRYPTO
 	if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size())
 	{
-		switch (MsgBoxDx(LoadStringDx(IDS_WANTCRYPTO), MB_YESNOCANCEL))
+		if (bCompression)
 		{
-		case IDYES:
 			bEnableCrypt = TRUE;
-			break;
-		case IDNO:
-			break;
-		case IDCANCEL:
-			DeleteFileW(pszExeFile);
-			return TRUE;
+		}
+		else
+		{
+			switch (MsgBoxDx(LoadStringDx(IDS_WANTCRYPTO), MB_YESNOCANCEL))
+			{
+			case IDYES:
+				bEnableCrypt = TRUE;
+				break;
+			case IDNO:
+				break;
+			case IDCANCEL:
+				DeleteFileW(pszExeFile);
+				return TRUE;
+			}
 		}
 	}
 #else
@@ -5215,11 +5222,8 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 	// update file info
 	UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
-	// do compress by UPX
-	if (g_settings.bCompressByUPX || bCompression)
-	{
+	if (!bEnableCrypt && (g_settings.bCompressByUPX || bCompression))
 		DoUpxCompress(m_szUpxExe, pszExeFile);
-	}
 
 	// Notify change of file icon
 	MyChangeNotify(pszExeFile);
@@ -5257,7 +5261,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 		return FALSE;
 	}
 
-	// is the file compressed?
+	// is file UPX-compressed?
 	if (m_bUpxCompressed)
 	{
 		// build a temporary file path
