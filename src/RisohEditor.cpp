@@ -6510,13 +6510,19 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			switch (entry->m_et)
 			{
 			case ET_LANG:
-				OnEdit(hwnd);
-				if (g_settings.bGuiByDblClick)
-				{
-					OnGuiEdit(hwnd);
-				}
-				return 1;
 			case ET_STRING:
+				// The preceding TVN_SELCHANGED (from the first click of this
+				// double-click) armed a 150ms TV_SELECTION_TIMER_ID to run a
+				// deferred SelectTV(). OnEdit()/OnGuiEdit() below already
+				// handle the selection synchronously, so that timer is now
+				// redundant -- and dangerous: if left alone, it fires shortly
+				// after OnGuiEdit() creates m_rad_window, and the deferred
+				// SelectTV() -> Preview() -> HidePreview() unconditionally
+				// destroys m_rad_window, making the RAD window flash open
+				// and immediately close. Cancel it before handling the
+				// double-click.
+				::KillTimer(hwnd, TV_SELECTION_TIMER_ID);
+
 				OnEdit(hwnd);
 				if (g_settings.bGuiByDblClick)
 				{
@@ -6571,13 +6577,13 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			switch (entry->m_et)
 			{
 			case ET_LANG:
-				OnEdit(hwnd);
-				if (g_settings.bGuiByDblClick)
-				{
-					OnGuiEdit(hwnd);
-				}
-				return 1;
 			case ET_STRING:
+				// See the matching comment in the NM_DBLCLK handler above:
+				// cancel any pending deferred-SelectTV timer so it can't
+				// destroy the m_rad_window that OnGuiEdit() is about to
+				// create/show.
+				::KillTimer(hwnd, TV_SELECTION_TIMER_ID);
+
 				OnEdit(hwnd);
 				if (g_settings.bGuiByDblClick)
 				{
