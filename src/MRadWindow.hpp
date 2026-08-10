@@ -491,7 +491,7 @@ public:
 	void OnRefresh(HWND hwnd);
 
 	// show/hide the indeces
-	void OnShowHideIndex(HWND hwnd);
+	void OnShowIndex(HWND hwnd);
 
 	// get the selected dialog items
 	BOOL GetSelectedItems(DialogItems& items);

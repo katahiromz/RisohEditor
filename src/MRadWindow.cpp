@@ -227,7 +227,7 @@ void MRadCtrl::BringIndexLabelsToFront(HWND hwndParent)
 		// Mark dirty so the numbers are redrawn after any sibling (and
 		// that sibling's own children, e.g. COMBOBOX's EDIT) that may
 		// have just drawn over us. Callers that need it synchronous
-		// (e.g. OnShowHideIndex) should follow up with UpdateWindow.
+		// (e.g. OnShowIndex) should follow up with UpdateWindow.
 		::InvalidateRect(hwndLabels, NULL, TRUE);
 	}
 }
@@ -2633,7 +2633,7 @@ void MRadWindow::OnRefresh(HWND hwnd)
 }
 
 // show/hide the indeces
-void MRadWindow::OnShowHideIndex(HWND hwnd)
+void MRadWindow::OnShowIndex(HWND hwnd)
 {
 	m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
 	m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);

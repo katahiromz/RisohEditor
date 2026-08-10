@@ -3928,7 +3928,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 		break;
 	case ID_SHOWHIDEINDEX:
-		m_rad_window.OnShowHideIndex(m_rad_window);
+		m_rad_window.OnShowIndex(m_rad_window);
 		break;
 	case ID_TOPALIGN:
 		m_rad_window.OnTopAlign(m_rad_window);
