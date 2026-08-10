@@ -377,16 +377,11 @@ public:
 	// via GetDCEx(hwndDialog, NULL, DCX_CACHE) -- deliberately without
 	// DCX_USESTYLE (what plain GetDC() passes under the hood) or
 	// DCX_CLIPCHILDREN, so the WS_CLIPCHILDREN style (see OnInitDialog)
-	// (see OnInitDialog) doesn't exclude the area under every child
-	// control -- plain GetDC()/SelectClipRgn(hdc, NULL) can't undo that
-	// exclusion, since SelectClipRgn only resets an application's own
-	// extra clip region, not one baked in by the window's style. We
-	// also deliberately avoid the screen DC (GetDC(NULL)): under DWM
-	// composition, pixels written straight to the screen sit outside
-	// the window's own backing surface and get wiped/ghosted/flashed
-	// black the next time DWM recomposites that area. Call this after
-	// anything that could have moved, resized, or re-stacked a control
-	// so the numbers never lag behind or end up hidden underneath.
+	// doesn't exclude the area under every child control. Prefer
+	// posting MYWM_REDRAW to the dialog over calling this directly from
+	// hot paths (WM_MOVE/WM_SIZE/UpdateRes): each call can RDW_ERASE the
+	// whole dialog, so stacking synchronous calls was the main source of
+	// index-label flicker while dragging or multi-selecting.
 	static void PaintIndexLabels(HWND hwndDialog);
 };
 

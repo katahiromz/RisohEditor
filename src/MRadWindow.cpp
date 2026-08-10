@@ -207,8 +207,10 @@ void MRadCtrl::PinGroupBoxesToBack(HWND hwndParent)
 	}
 
 	// group-box sinking must not leave the index labels buried under
-	// whatever was pushed up in the process
-	MRadDialog::PaintIndexLabels(hwndParent);
+	// whatever was pushed up in the process. Post rather than paint
+	// synchronously: coalesces with any pending MYWM_REDRAW and avoids
+	// a full erase/repaint on every Z-order tweak.
+	::PostMessage(hwndParent, MYWM_REDRAW, 0, 0);
 }
 
 // Undo the Z-order elevation that Select()/OnNCLButtonDown() gave a
@@ -350,8 +352,10 @@ void MRadCtrl::Select(HWND hwnd)
 	else
 	{
 		// rubber band creation puts a new sibling on top of everything;
-		// re-overwrite the index labels so they are never covered
-		MRadDialog::PaintIndexLabels(GetParent(hwnd));
+		// re-overwrite the index labels so they are never covered.
+		// Post so multiple Select() calls (range-select, SelectAll) share
+		// a single paint rather than flashing once per control.
+		::PostMessage(GetParent(hwnd), MYWM_REDRAW, 0, 0);
 	}
 
 	// add the handle to the targets
@@ -569,28 +573,6 @@ MRadCtrl::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MESSAGE(hwnd, MYWM_REDRAW, OnRedraw);
 		case WM_MOVING: case WM_SIZING:
 			return 0;
-		case WM_PAINT:
-		{
-			// Let the control paint first, then schedule the index-label
-			// overlay to repaint on top. This is required for nested
-			// children (the EDIT inside a COMBOBOX, etc.): those HWNDs
-			// are not siblings of the labels window, so HWND_TOP on the
-			// labels cannot stop them from covering the numbers.
-			LRESULT ret = DefaultProcDx(hwnd, uMsg, wParam, lParam);
-			// Search ancestors for the labels window (child of MRadDialog).
-			HWND hwndLabels = NULL;
-			for (HWND hwndAnc = ::GetParent(hwnd); hwndAnc;
-			     hwndAnc = ::GetParent(hwndAnc))
-			{
-				hwndLabels = ::FindWindowEx(hwndAnc, NULL,
-					TEXT("katahiromz's Index Labels Class"), NULL);
-				if (hwndLabels)
-					break;
-			}
-			if (hwndLabels)
-				::InvalidateRect(hwndLabels, NULL, FALSE);
-			return ret;
-		}
 	}
 	return DefaultProcDx(hwnd, uMsg, wParam, lParam);
 }
@@ -710,9 +692,10 @@ void MRadCtrl::OnMove(HWND hwnd, int x, int y)
 				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
-		// keep the index-label overwrite in sync with the control we
-		// just moved
-		MRadDialog::PaintIndexLabels(GetParent(hwnd));
+		// Index labels are refreshed via the single MYWM_REDRAW that
+		// OnCtrlMove posts after UpdateRes -- do not PaintIndexLabels
+		// here; a full RDW_ERASE redraw on every WM_MOVE is the main
+		// source of label flicker while dragging.
 
 		// redraw
 		RECT rc;
@@ -752,9 +735,9 @@ void MRadCtrl::OnSize(HWND hwnd, UINT state, int cx, int cy)
 			::SetWindowPos(*band, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 
-		// keep the index-label overwrite in sync with the control we
-		// just resized
-		MRadDialog::PaintIndexLabels(GetParent(hwnd));
+		// Index labels are refreshed via the single MYWM_REDRAW that
+		// OnCtrlSize posts after UpdateRes -- avoid a second full
+		// dialog erase/repaint from every WM_SIZE.
 
 		// send MYWM_CTRLSIZE to the parent
 		DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
@@ -1271,9 +1254,10 @@ void MRadDialog::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT 
 // MRadDialog MYWM_REDRAW
 LRESULT MRadDialog::OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-	InvalidateRect(hwnd, NULL, FALSE);
-
-	// stably overwrite the index labels on top of everything else
+	// PaintIndexLabels already forces a synchronous update of the
+	// dialog and its children before drawing the numbers; a prior
+	// InvalidateRect only added an extra paint pass and contributed
+	// to index-label flicker under rapid MYWM_REDRAW posting.
 	PaintIndexLabels(hwnd);
 	return 0;
 }
@@ -1494,14 +1478,22 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 	if (!hwndDialog || !IsWindow(hwndDialog))
 		return;
 
-	// make sure the background and every child control have already
-	// painted themselves before we either leave it at that (labels
-	// hidden) or draw fresh numbers on top of it (labels shown)
-	::RedrawWindow(hwndDialog, NULL, NULL,
-		RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_ERASE);
-
 	MRadDialog *pDialog = static_cast<MRadDialog *>(MDialogBase::GetUserData(hwndDialog));
-	if (!pDialog || !pDialog->m_index_visible)
+	if (!pDialog)
+		return;
+
+	// When labels are hidden we only need children/background to finish
+	// painting (to erase any previous numbers). Skip RDW_ERASE -- the
+	// window already has a valid background and erasing here is a major
+	// flicker source during selection/Z-order changes with labels off.
+	// When labels are shown we still need a full erase so leftover blue
+	// number cells at previous control positions do not ghost.
+	UINT flags = RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN;
+	if (pDialog->m_index_visible)
+		flags |= RDW_ERASE;
+	::RedrawWindow(hwndDialog, NULL, NULL, flags);
+
+	if (!pDialog->m_index_visible)
 		return;
 
 	// a client-area DC for hwndDialog that, unlike plain GetDC(), does
@@ -2560,11 +2552,11 @@ void MRadWindow::UpdateRes()
 	DoSendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
 
 	// NOTE: UpdateRes is called continuously while dragging/resizing a
-	// control (once per mouse-move). The index labels have no window of
-	// their own -- they are just numbers drawn straight onto
-	// m_rad_dialog with SelectClipRgn(hdc, NULL) -- so keeping them in
-	// sync here just means re-overwriting that overlay.
-	MRadDialog::PaintIndexLabels(m_rad_dialog);
+	// control (once per mouse-move). Do NOT call PaintIndexLabels here
+	// -- OnCtrlMove/OnCtrlSize already post a single MYWM_REDRAW that
+	// refreshes the index-number overlay. Painting synchronously on
+	// every mouse-move (with RDW_ERASE) was the main cause of index
+	// label flicker during drag.
 }
 
 // MRadWindow MYWM_DLGSIZE
