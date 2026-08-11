@@ -38,7 +38,7 @@ public:
 		MString str = GetDlgItemText(edt1);
 
 		std::vector<MString> vec;
-		mstr_split(vec, str, TEXT(" \t\n\r\f\v, "));
+		mstr_split(vec, str, TEXT(" \t\n\r\f\v,"));
 
 		if (vec.size() > 0x10000 / sizeof(WORD))
 		{

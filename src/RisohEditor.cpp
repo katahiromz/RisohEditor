@@ -8512,6 +8512,8 @@ wWinMain(HINSTANCE   hInstance,
 	PVOID OldValue;
 	BOOL bWowFsDisabled = DisableWow64FsRedirection(&OldValue);
 
+	std::srand(GetTickCount());
+
 	// Initialize OLE
 	HRESULT hrOleInit = OleInitialize(NULL);
 
