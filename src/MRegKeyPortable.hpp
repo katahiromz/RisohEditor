@@ -175,11 +175,15 @@ LONG MRegKeyPortable::QueryExpandSz(LPCTSTR pszValueName, T_STRING& strValue)
 	{
 		result = RegQueryValueEx(pszValueName, NULL, NULL,
 								 reinterpret_cast<LPBYTE>(psz), &cbData);
-		if (result != ERROR_SUCCESS)
+		if (result == ERROR_SUCCESS)
 		{
 			strValue = psz;
 		}
 		delete[] psz;
+	}
+	else
+	{
+		return ERROR_OUTOFMEMORY;
 	}
 	return result;
 }
