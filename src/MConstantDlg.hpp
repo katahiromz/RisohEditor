@@ -61,7 +61,7 @@ public:
 		case WM_LBUTTONUP:
 		case WM_COPY:
 			{
-				LRESULT ret = ::CallWindowProcW(pThis->m_fnOldEdt2WndProc, hwnd, uMsg, wParam, lParam);
+				LRESULT ret = ::CallWindowProcW(pThis->m_fnOldEdt3WndProc, hwnd, uMsg, wParam, lParam);
 				if (uMsg == WM_COPY)
 					PostMessageW(hwnd, EM_SETSEL, -1, -1); // Select none
 				else
