@@ -63,22 +63,48 @@ public:
 
 	BOOL ApplySubst(HWND hwnd)
 	{
-		BOOL bRadWasVisible = IsWindowVisible(s_pMainWnd->m_rad_window);
-		if (bRadWasVisible)
+		auto strFontReplaceFrom1 = GetDlgItemText(cmb1);
+		auto strFontReplaceTo1 = GetDlgItemText(cmb2);
+		auto strFontReplaceFrom2 = GetDlgItemText(cmb3);
+		auto strFontReplaceTo2 = GetDlgItemText(cmb4);
+		auto strFontReplaceFrom3 = GetDlgItemText(cmb5);
+		auto strFontReplaceTo3 = GetDlgItemText(cmb6);
+
+		mstr_trim(strFontReplaceFrom1);
+		mstr_trim(strFontReplaceTo1);
+		mstr_trim(strFontReplaceFrom2);
+		mstr_trim(strFontReplaceTo2);
+		mstr_trim(strFontReplaceFrom3);
+		mstr_trim(strFontReplaceTo3);
+
+		BOOL bChanged = FALSE;
+		bChanged = (g_settings.strFontReplaceFrom1 != strFontReplaceFrom1) || bChanged;
+		bChanged = (g_settings.strFontReplaceTo1 != strFontReplaceTo1) || bChanged;
+		bChanged = (g_settings.strFontReplaceFrom2 != strFontReplaceFrom2) || bChanged;
+		bChanged = (g_settings.strFontReplaceTo2 != strFontReplaceTo2) || bChanged;
+		bChanged = (g_settings.strFontReplaceFrom3 != strFontReplaceFrom3) || bChanged;
+		bChanged = (g_settings.strFontReplaceTo3 != strFontReplaceTo3) || bChanged;
+
+		if (bChanged)
 		{
-			GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
-			s_pMainWnd->DestroyRadWindow();
+			g_settings.strFontReplaceFrom1 = strFontReplaceFrom1;
+			g_settings.strFontReplaceTo1 = strFontReplaceTo1;
+			g_settings.strFontReplaceFrom2 = strFontReplaceFrom2;
+			g_settings.strFontReplaceTo2 = strFontReplaceTo2;
+			g_settings.strFontReplaceFrom3 = strFontReplaceFrom3;
+			g_settings.strFontReplaceTo3 = strFontReplaceTo3;
+
+			BOOL bRadWasVisible = IsWindowVisible(s_pMainWnd->m_rad_window);
+			if (bRadWasVisible)
+			{
+				GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
+				s_pMainWnd->DestroyRadWindow();
+			}
+
+			if (bRadWasVisible)
+				SendMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
 		}
 
-		g_settings.strFontReplaceFrom1 = GetDlgItemText(cmb1);
-		g_settings.strFontReplaceTo1 = GetDlgItemText(cmb2);
-		g_settings.strFontReplaceFrom2 = GetDlgItemText(cmb3);
-		g_settings.strFontReplaceTo2 = GetDlgItemText(cmb4);
-		g_settings.strFontReplaceFrom3 = GetDlgItemText(cmb5);
-		g_settings.strFontReplaceTo3 = GetDlgItemText(cmb6);
-
-		if (bRadWasVisible)
-			SendMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
 		return TRUE;
 	}
 
