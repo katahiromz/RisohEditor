@@ -35,7 +35,9 @@ bool RowKey::operator==(const RowKey& other) const {
 };
 
 size_t std::hash<RowKey>::operator()(const RowKey& k) const {
-	return std::hash<MString>()(k.name) ^ std::hash<MString>()(k.value);
+	size_t h1 = std::hash<MString>()(k.name);
+	size_t h2 = std::hash<MString>()(k.value);
+	return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
 }
 
 MIDListDlg::MIDListDlg()

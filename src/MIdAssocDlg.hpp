@@ -37,20 +37,20 @@ public:
 			item.mask = LVIF_TEXT;
 			item.iSubItem = 0;
 			item.pszText = const_cast<LPTSTR>(pair.first.c_str());
-			ListView_InsertItem(m_hLst1, &item);
+			ListView_InsertItem(hLst1, &item);
 
 			ZeroMemory(&item, sizeof(item));
 			item.iItem = iItem;
 			item.mask = LVIF_TEXT;
 			item.iSubItem = 1;
 			item.pszText = const_cast<LPTSTR>(pair.second.c_str());
-			ListView_SetItem(m_hLst1, &item);
+			ListView_SetItem(hLst1, &item);
 
 			++iItem;
 		}
 
 		UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-		ListView_SetItemState(m_hLst1, 0, state, state);
+		ListView_SetItemState(hLst1, 0, state, state);
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
