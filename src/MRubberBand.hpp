@@ -169,8 +169,10 @@ public:
 	void SetRgn(HRGN hRgn, BOOL bClient = TRUE)
 	{
 		DeleteObject(m_hRgn);
-		SetWindowRgn(m_hwnd, hRgn, TRUE);
-		m_hRgn = hRgn;
+		if (SetWindowRgn(m_hwnd, hRgn, TRUE))
+			m_hRgn = hRgn;
+		else
+			DeleteObject(hRgn);
 	}
 
 	// MRubberBand WM_NCPAINT
