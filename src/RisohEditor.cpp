@@ -5239,7 +5239,9 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 	UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
 	if (!bEnableCrypt && (g_settings.bCompressByUPX || bCompression))
+	{
 		DoUpxCompress(m_szUpxExe, pszExeFile);
+	}
 
 	// Notify change of file icon
 	MyChangeNotify(pszExeFile);
@@ -5380,12 +5382,16 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 		MStringA strOutput;
 		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
+		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
 
 		if (pmaker.GetExitCode() == 0 && bOK)
 		{
 			bOK = (strOutput.find("Packed") != MStringA::npos);
 		}
 	}
+
+	if (bOK)
+		m_bUpxCompressed = TRUE;
 
 	return bOK;
 }
