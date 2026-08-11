@@ -243,7 +243,7 @@ public:
 	{
 		MString strCaption = GetDlgItemText(cmb2);
 		g_settings.AddCaption(strCaption.c_str());
-		if (strCaption[0] == TEXT('"'))
+		if (strCaption.size() && strCaption[0] == TEXT('"'))
 		{
 			mstr_unquote(strCaption);
 		}
@@ -255,8 +255,8 @@ public:
 		MString strID = GetDlgItemText(cmb3);
 		mstr_trim(strID);
 		WORD id;
-		if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
-			strID[0] == TEXT('-') || strID[0] == TEXT('+'))
+		if (strID.size() && ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
+		                     strID[0] == TEXT('-') || strID[0] == TEXT('+')))
 		{
 			id = (WORD)mstr_parse_int(strID.c_str());
 		}
@@ -279,7 +279,7 @@ public:
 
 		MString strClass = GetDlgItemText(cmb4);
 		mstr_trim(strClass);
-		if (strClass[0] == TEXT('"'))
+		if (strClass.size() && strClass[0] == TEXT('"'))
 		{
 			mstr_unquote(strClass);
 		}
@@ -331,7 +331,7 @@ public:
 			if ((style & SS_TYPEMASK) == SS_ICON ||
 				(style & SS_TYPEMASK) == SS_BITMAP)
 			{
-				if (mchr_is_digit(strCaption[0]))
+				if (strCaption.size() && mchr_is_digit(strCaption[0]))
 				{
 					LONG n = mstr_parse_int(strCaption.c_str());
 					item.m_title = WORD(n);
