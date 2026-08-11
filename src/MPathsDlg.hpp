@@ -182,7 +182,7 @@ public:
 	void OnPsh4(HWND hwnd)
 	{
 		INT iItem = ListBox_GetCurSel(m_hLst1);
-		if (iItem == LB_ERR)
+		if (iItem <= 0)
 			return;
 
 		MString szPath1 = GetListBoxText(m_hLst1, iItem - 1);
