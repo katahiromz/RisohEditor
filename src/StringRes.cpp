@@ -86,18 +86,11 @@ StringRes::Dump(WORD wName)
 			continue;
 
 		ret += L"    ";
-		if (0)
-		{
-			ret += mstr_dec_word(i);
-		}
-		else
-		{
 #ifndef NO_CONSTANTS_DB
-			ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, i);
+		ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, i);
 #else
-			ret += mstr_dec_short(i);
+		ret += mstr_dec_short(i);
 #endif
-		}
 
 		ret += L" \"";
 		ret += mstr_escape_with_wrap(it->second);
@@ -129,18 +122,11 @@ StringRes::Dump()
 			continue;
 
 		ret += L"    ";
-		if (0)
-		{
-			ret += mstr_dec_word(pair.first);
-		}
-		else
-		{
 #ifndef NO_CONSTANTS_DB
-			ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, pair.first);
+		ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, pair.first);
 #else
-			ret += mstr_dec_short(pair.first);
+		ret += mstr_dec_short(pair.first);
 #endif
-		}
 
 		ret += L" \"";
 		ret += mstr_escape_with_wrap(pair.second);
