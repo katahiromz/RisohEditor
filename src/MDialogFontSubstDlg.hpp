@@ -78,12 +78,12 @@ public:
 		mstr_trim(strFontReplaceTo3);
 
 		BOOL bChanged = FALSE;
-		bChanged = (g_settings.strFontReplaceFrom1 != strFontReplaceFrom1) || bChanged;
-		bChanged = (g_settings.strFontReplaceTo1 != strFontReplaceTo1) || bChanged;
-		bChanged = (g_settings.strFontReplaceFrom2 != strFontReplaceFrom2) || bChanged;
-		bChanged = (g_settings.strFontReplaceTo2 != strFontReplaceTo2) || bChanged;
-		bChanged = (g_settings.strFontReplaceFrom3 != strFontReplaceFrom3) || bChanged;
-		bChanged = (g_settings.strFontReplaceTo3 != strFontReplaceTo3) || bChanged;
+		if (!bChanged) bChanged = (g_settings.strFontReplaceFrom1 != strFontReplaceFrom1);
+		if (!bChanged) bChanged = (g_settings.strFontReplaceTo1 != strFontReplaceTo1);
+		if (!bChanged) bChanged = (g_settings.strFontReplaceFrom2 != strFontReplaceFrom2);
+		if (!bChanged) bChanged = (g_settings.strFontReplaceTo2 != strFontReplaceTo2);
+		if (!bChanged) bChanged = (g_settings.strFontReplaceFrom3 != strFontReplaceFrom3);
+		if (!bChanged) bChanged = (g_settings.strFontReplaceTo3 != strFontReplaceTo3);
 
 		if (bChanged)
 		{
@@ -94,15 +94,12 @@ public:
 			g_settings.strFontReplaceFrom3 = strFontReplaceFrom3;
 			g_settings.strFontReplaceTo3 = strFontReplaceTo3;
 
-			BOOL bRadWasVisible = IsWindowVisible(s_pMainWnd->m_rad_window);
-			if (bRadWasVisible)
+			if (IsWindowVisible(s_pMainWnd->m_rad_window))
 			{
 				GetWindowRect(s_pMainWnd->m_rad_window, &s_pMainWnd->m_rcRadWindow);
 				s_pMainWnd->DestroyRadWindow();
-			}
-
-			if (bRadWasVisible)
 				SendMessageW(*s_pMainWnd, MYWM_REOPENRAD, 0, 0);
+			}
 		}
 
 		return TRUE;
