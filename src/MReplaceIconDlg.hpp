@@ -83,7 +83,7 @@ public:
 		}
 
 		BOOL bAni = FALSE;
-		size_t ich = file.find(L'.');
+		size_t ich = file.rfind(L'.');
 		if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
 			bAni = TRUE;
 
