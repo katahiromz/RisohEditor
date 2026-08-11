@@ -112,10 +112,16 @@ public:
 		{
 			const MESSAGE_RESOURCE_BLOCK& block = blocks[i];
 
+			if (block.LowId > block.HighId)
+				return false;
+
 			DWORD dwOffset = block.OffsetToEntries;
 			stream.pos(dwOffset);
 
-			for (DWORD dwID = block.LowId; dwID <= block.HighId; ++dwID)
+			DWORD dwID = block.LowId;
+			DWORD dwCount = block.HighId - block.LowId + 1;
+
+			for (DWORD n = 0; n < dwCount; ++n, ++dwID)
 			{
 				size_t pos = stream.pos();
 
@@ -123,12 +129,19 @@ public:
 				if (!stream.ReadRaw(entry_head))
 					return false;
 
+				if (entry_head.Length < sizeof(entry_head))
+					return false;
+
 				if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
 				{
-					size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(WCHAR);
+					size_t remaining = entry_head.Length - sizeof(entry_head);
+					if (remaining % sizeof(WCHAR) != 0)
+						return false;
+
+					size_t len = remaining / sizeof(WCHAR);
 					MStringW str;
 					str.resize(len);
-					if (!stream.ReadData(&str[0], len * sizeof(WCHAR)))
+					if (len > 0 && !stream.ReadData(&str[0], len * sizeof(WCHAR)))
 					{
 						return false;
 					}
@@ -140,7 +153,7 @@ public:
 					size_t len = entry_head.Length - sizeof(entry_head);
 					MStringA str;
 					str.resize(len);
-					if (!stream.ReadData(&str[0], len * sizeof(char)))
+					if (len > 0 && !stream.ReadData(&str[0], len * sizeof(char)))
 					{
 						return false;
 					}
