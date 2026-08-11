@@ -550,6 +550,7 @@ VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/,
 	{
 		SetWindowTextW(m_hCodeEditor, NULL);
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+		Edit_SetReadOnly(m_hCodeEditor, TRUE);
 	}
 	if (stv != STV_DONTRESET)
 	{

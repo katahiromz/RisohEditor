@@ -1373,7 +1373,7 @@ EntryBase *EntrySet::on_insert_entry(EntryBase *entry)
 	{
 		entry->m_valid = true;
 		insert(entry);
-		return NULL;
+		return entry;
 	}
 
 	// get/insert the insertion parent

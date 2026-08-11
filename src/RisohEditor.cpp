@@ -3204,19 +3204,12 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 		}
 	}
 
-	// unload the resource.h file
-	UnloadResourceH(hwnd);
-	if (g_settings.bAutoLoadNearbyResH)
-		CheckResourceH(hwnd, pszPath);
-
 	// load all the resource items from the executable
 	m_bLoading = TRUE;
 	bool is_protected = false, encrypt = false;
+	EntrySet res;
 	BOOL bOK;
 	{
-		ShowTreeViewArrow(FALSE);
-		SendMessageW(m_hwndTV, WM_SETREDRAW, FALSE, 0);
-
 #ifdef ENABLE_CRYPTO
 		if (g_res.is_protected(hMod))
 		{
@@ -3239,11 +3232,7 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 			SetWonResPassword(nullptr, nullptr);
 		}
 #endif
-		g_res.delete_all();
-		bOK = g_res.from_res(hMod);
-
-		SendMessageW(m_hwndTV, WM_SETREDRAW, TRUE, 0);
-		InvalidateRect(m_hwndTV, NULL, TRUE);
+		bOK = res.from_res(hMod);
 	}
 	m_bLoading = FALSE;
 
@@ -3255,6 +3244,21 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 		ErrorBoxDx(is_protected ? IDS_CANNOTOPENPROTECTED : IDS_CANNOTOPEN);
 		return FALSE;
 	}
+
+	// unload the resource.h file
+	UnloadResourceH(hwnd);
+	if (g_settings.bAutoLoadNearbyResH)
+		CheckResourceH(hwnd, pszPath);
+
+	ShowTreeViewArrow(FALSE);
+	SendMessageW(m_hwndTV, WM_SETREDRAW, FALSE, 0);
+
+	g_res.delete_all();
+	g_res.merge(res);
+	res.delete_all();
+
+	SendMessageW(m_hwndTV, WM_SETREDRAW, TRUE, 0);
+	InvalidateRect(m_hwndTV, NULL, TRUE);
 
 	if (is_protected && !(g_settings.bUseWonRes && g_bEnableCrypto && g_password.size()))
 		MsgBoxDx(LoadStringDx(IDS_FORCEOPENCRYPTOWARN), MB_ICONINFORMATION);
@@ -3357,6 +3361,8 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 		it->second.clear();
 	}
 
+	BOOL bChanged = g_settings.id_map.size() || m_szResourceH[0];
+
 	// reset the settings of the resource.h file
 	g_settings.AddIDC_STATIC();
 	g_settings.id_map.clear();
@@ -3364,8 +3370,8 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 	g_settings.removed_ids.clear();
 	m_szResourceH[0] = 0;
 
-	// update the names
-	UpdateNames();
+	if (bChanged)
+		UpdateNames();
 
 	// select the selected entry
 	auto entry = g_res.get_entry();
