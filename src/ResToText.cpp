@@ -783,7 +783,7 @@ ResToText::DoImage(const EntryBase& entry)
 
 	if (m_bHumanReadable)
 	{
-		HBITMAP hbm = NULL;
+		HBITMAP hbm = nullptr;
 
 		MBitmapDx bitmap;
 		if (bitmap.CreateFromMemory(&entry[0], entry.size()))
@@ -1188,6 +1188,9 @@ MString ResToText::DoRCData(const EntryBase& entry)
 
 MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 {
+	if (entry.m_data.empty())
+		return L"";
+
 	MString str;
 	if (m_bHumanReadable)
 	{
@@ -1335,23 +1338,24 @@ MString ResToText::DoFontDir(const EntryBase& entry)
 	}
 
 	pb += 2;
+	size -= 2;
 	for (UINT i = 0; i < wCount; ++i)
 	{
 		StringCbPrintf(szText, sizeof(szText), TEXT("Font #%u: Ordinal %u ("),
 					   i, *(const WORD *)pb);
 		str += szText;
 
-		if (memcmp(&pb[2], "OTTO", 4) == 0)
+		if (size >= 2 + 4 && memcmp(&pb[2], "OTTO", 4) == 0)
 		{
 			// OpenType
 			str += TEXT("OpenType");
 		}
-		else if (memcmp(&pb[2], "\x00\x01\x00\x00", 4) == 0)
+		else if (size >= 2 + 4 && memcmp(&pb[2], "\x00\x01\x00\x00", 4) == 0)
 		{
 			// TrueType
 			str += TEXT("TrueType");
 		}
-		else if (memcmp(&pb[2], "ttcf", 4) == 0)
+		else if (size >= 2 + 4 && memcmp(&pb[2], "ttcf", 4) == 0)
 		{
 			// TrueType Collection
 			str += TEXT("TrueType Collection");
@@ -1364,6 +1368,7 @@ MString ResToText::DoFontDir(const EntryBase& entry)
 
 		str += TEXT(")\r\n");
 		pb += FONTDIRENTRYSIZE;
+		size -= FONTDIRENTRYSIZE;
 	}
 
 	return str;
@@ -1392,17 +1397,17 @@ HBITMAP
 CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 {
 	if (!hIcon)
-		return NULL;
+		return nullptr;
 	HBITMAP hbm = Create24BppBitmapDx(width, height);
-	if (hbm == NULL)
+	if (hbm == nullptr)
 	{
 		assert(0);
-		return NULL;
+		return nullptr;
 	}
 	HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
 	FillBitmapDx(hbm, hbr);
 
-	HDC hDC = CreateCompatibleDC(NULL);
+	HDC hDC = CreateCompatibleDC(nullptr);
 	HGDIOBJ hbmOld = SelectObject(hDC, hbm);
 	{
 		DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
@@ -1576,8 +1581,8 @@ DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
 	BITMAP bmSrc;
 	GetObject(hbmSrc, sizeof(bmSrc), &bmSrc);
 
-	HDC hDC = CreateCompatibleDC(NULL);
-	HDC hDC2 = CreateCompatibleDC(NULL);
+	HDC hDC = CreateCompatibleDC(nullptr);
+	HDC hDC2 = CreateCompatibleDC(nullptr);
 	{
 		HGDIOBJ hbmOld = SelectObject(hDC, hbm);
 		HGDIOBJ hbm2Old = SelectObject(hDC2, hbmSrc);
@@ -1610,20 +1615,20 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 	if (entry.size() < sizeof(dir))
 	{
 		assert(0);
-		return NULL;
+		return nullptr;
 	}
 
 	memcpy(&dir, &entry[0], sizeof(dir));
 
 	if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
 	{
 		assert(0);
-		return FALSE;
+		return nullptr;
 	}
 
 	const GRPICONDIRENTRY *pEntries;
@@ -1640,7 +1645,7 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 		if (!e)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 
 		auto& icon_entry = (EntryBase&)*e;
@@ -1656,10 +1661,10 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 	}
 
 	HBITMAP hbm = Create24BppBitmapDx(cx, cy);
-	if (hbm == NULL)
+	if (hbm == nullptr)
 	{
 		assert(0);
-		return NULL;
+		return nullptr;
 	}
 
 	HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
@@ -1680,7 +1685,7 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
 		if (!e)
 		{
 			DeleteObject(hbm);
-			return NULL;
+			return nullptr;
 		}
 		auto icon_entry = (EntryBase&)*e;
 
@@ -1717,20 +1722,20 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 	if (entry.size() < sizeof(dir))
 	{
 		assert(0);
-		return NULL;
+		return nullptr;
 	}
 
 	memcpy(&dir, &entry[0], sizeof(dir));
 
 	if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
 	{
 		assert(0);
-		return FALSE;
+		return nullptr;
 	}
 
 	const GRPCURSORDIRENTRY *pEntries;
@@ -1747,7 +1752,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 		if (!e)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		auto cursor_entry = (EntryBase&)*e;
 
@@ -1765,18 +1770,18 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 	}
 
 	HBITMAP hbm = Create24BppBitmapDx(cx, cy);
-	if (hbm == NULL)
+	if (hbm == nullptr)
 	{
 		assert(0);
-		return NULL;
+		return nullptr;
 	}
 
 	HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
 	FillBitmapDx(hbm, hbr);
 	// NOTE: hbr is a stock brush obtained via GetStockBrush, so it should NOT be deleted.
 
-	HDC hDC = CreateCompatibleDC(NULL);
-	HDC hDC2 = CreateCompatibleDC(NULL);
+	HDC hDC = CreateCompatibleDC(nullptr);
+	HDC hDC2 = CreateCompatibleDC(nullptr);
 	HGDIOBJ hbmOld = SelectObject(hDC, hbm);
 	{
 		INT y = 0;
@@ -1791,7 +1796,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 			{
 				assert(0);
 				DeleteObject(hbm);
-				hbm = NULL;
+				hbm = nullptr;
 				break;
 			}
 			auto& cursor_entry = (EntryBase&)*e;
