@@ -274,8 +274,11 @@ public:
 	// That meant a single tree-view selection change could repaint/relayout
 	// m_hCodeEditor several times in a row, which is what showed up as flicker.
 	// BeginPreviewBatch()/EndPreviewBatch() bracket that whole sequence: redraw
-	// is suppressed on m_hCodeEditor and the several WM_SIZE posts are coalesced
-	// into a single one, so the control updates in one paint instead of several.
+	// is suppressed on both m_hCodeEditor *and* its parent m_splitter2 (so that
+	// SetShowMode's ShowWindow/SetPane mutations stay invisible), and the
+	// several WM_SIZE posts are coalesced into a single one. The control
+	// (and the splitter client) therefore update in one paint instead of
+	// several.
 	INT  m_nPreviewBatchDepth = 0;
 	// Set by SetShowMode() only when it actually changes m_nShowMode/
 	// m_bShowBinEdit (and therefore ShowWindow's/SetPane's the splitter

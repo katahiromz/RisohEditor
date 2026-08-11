@@ -471,11 +471,24 @@ BOOL MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 // SetWindowText/ShowWindow/WM_SIZE steps it triggers internally collapse
 // into a single repaint/relayout of m_hCodeEditor instead of several,
 // visible ones.
+//
+// In addition to suppressing redraw on m_hCodeEditor itself, we also
+// freeze m_splitter2 (the parent that owns the code / bitmap / hex panes).
+// Without that, SetShowMode()'s ShowWindow/SetPane calls still produce
+// intermediate paints of the splitter client area (empty background or
+// partially-moved panes) even while the editor's own WM_SETREDRAW is
+// FALSE -- which is the residual flicker that remained after the first
+// batching pass. Freezing the splitter makes those visibility/layout
+// mutations invisible until EndPreviewBatch restores redraw and issues
+// one coherent invalidate (plus a single WM_SIZE when the layout really
+// changed).
 void MMainWnd::BeginPreviewBatch()
 {
 	if (m_nPreviewBatchDepth++ == 0)
 	{
 		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, FALSE, 0);
+		if (::IsWindow(m_splitter2))
+			m_splitter2.SendMessageDx(WM_SETREDRAW, FALSE, 0);
 	}
 }
 
@@ -485,7 +498,15 @@ void MMainWnd::EndPreviewBatch()
 	if (--m_nPreviewBatchDepth == 0)
 	{
 		::SendMessageW(m_hCodeEditor, WM_SETREDRAW, TRUE, 0);
-		::InvalidateRect(m_hCodeEditor, NULL, FALSE);
+		if (::IsWindow(m_splitter2))
+			m_splitter2.SendMessageDx(WM_SETREDRAW, TRUE, 0);
+
+		// Redraw the editor *and* its line-number child in one shot.
+		// RDW_NOERASE avoids a blank background flash; RDW_ALLCHILDREN
+		// reaches the LineNumStatic that lives inside LineNumEdit.
+		// (InvalidateRect alone does not reliably dirty the static.)
+		::RedrawWindow(m_hCodeEditor, NULL, NULL,
+		               RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 
 		// Only relayout if SetShowMode() actually changed m_nShowMode/
 		// m_bShowBinEdit somewhere inside this batch. Switching between
@@ -498,6 +519,14 @@ void MMainWnd::EndPreviewBatch()
 		{
 			m_bPreviewLayoutDirty = FALSE;
 			PostMessageDx(WM_SIZE);
+		}
+		else if (::IsWindow(m_splitter2))
+		{
+			// No layout change, but the splitter was frozen; give it a
+			// single clean paint so any ShowWindow that happened under
+			// the freeze becomes visible together with the new text.
+			::RedrawWindow(m_splitter2, NULL, NULL,
+			               RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 		}
 	}
 }
