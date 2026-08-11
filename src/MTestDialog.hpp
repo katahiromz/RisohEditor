@@ -232,7 +232,7 @@ public:
 
 		if (m_pOleHost)
 		{
-			delete m_pOleHost;
+			m_pOleHost->Release();
 			m_pOleHost = NULL;
 		}
 	}
@@ -274,10 +274,7 @@ public:
 		}
 
 		if (m_pOleHost)
-		{
-			delete m_pOleHost;
-			m_pOleHost = NULL;
-		}
+			m_pOleHost->Release();
 		m_pOleHost = new MOleHost();
 		DoSetActiveOleHost(m_pOleHost);
 
@@ -294,7 +291,7 @@ public:
 #endif
 		if (m_pOleHost)
 		{
-			delete m_pOleHost;
+			m_pOleHost->Release();
 			m_pOleHost = NULL;
 		}
 		return nID;
@@ -308,10 +305,7 @@ public:
 		}
 
 		if (m_pOleHost)
-		{
-			delete m_pOleHost;
-			m_pOleHost = NULL;
-		}
+			m_pOleHost->Release();
 		m_pOleHost = new MOleHost();
 		DoSetActiveOleHost(m_pOleHost);
 
