@@ -550,20 +550,39 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 {
 	BeginPreviewBatch();
 
-	// close the preview. If stv != STV_DONTRESET we're about to run one of
-	// the PreviewXxx() calls below, which sets the real target mode itself
-	// (see the bWillRePreview comment on HidePreview()'s declaration) --
-	// that's what actually eliminates the m_hCodeEditor/m_hBmpView flicker.
 	BOOL bWillRePreview = (stv != STV_DONTRESET);
-	HidePreview(stv, bWillRePreview, bDestroyRad);
 
 	if (stv == STV_DONTRESET)
 	{
+		// Only the non-repreview path needs a full HidePreview (resting
+		// CODEONLY mode). The common path below does the minimal cleanup
+		// inline so we avoid the extra HidePreview -> SetShowMode/
+		// PostMessageDx hop that used to contribute to m_hCodeEditor
+		// flicker even under the batch.
+		HidePreview(stv, /*bWillRePreview=*/FALSE, bDestroyRad);
 		EndPreviewBatch();
 		return IsEntryTextEditable(entry);
 	}
 
+	// Minimal cleanup for the re-preview case (replaces HidePreview with
+	// bWillRePreview=TRUE). Skips SetShowMode / PostMessageDx entirely;
+	// each PreviewXxx() sets the real target mode, and EndPreviewBatch()
+	// posts a single WM_SIZE only if the layout actually changed.
+	if (bDestroyRad)
+		DestroyRadWindow();
+
+	SetWindowTextW(m_hHexViewer, NULL);
+	Edit_SetModify(m_hHexViewer, FALSE);
 	ClearHexCache();
+
+	if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
+	{
+		SetWindowTextW(m_hCodeEditor, NULL);
+		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+	}
+	Edit_SetModify(m_hCodeEditor, FALSE);
+
+	m_hBmpView.DestroyView();
 
 	// NOTE: no SetShowMode(SHOW_CODEONLY) here anymore -- each PreviewXxx()
 	// call below now sets the mode it actually needs directly (including
