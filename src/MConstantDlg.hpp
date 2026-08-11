@@ -89,7 +89,7 @@ public:
 		HWND hEdt2 = GetDlgItem(hwnd, edt2);
 		HWND hEdt3 = GetDlgItem(hwnd, edt3);
 		m_fnOldEdt2WndProc = (WNDPROC)SetWindowLongPtrW(hEdt2, GWLP_WNDPROC, (LONG_PTR)Edt2WndProc);
-		m_fnOldEdt3WndProc = (WNDPROC)SetWindowLongPtrW(hEdt3, GWLP_WNDPROC, (LONG_PTR)Edt2WndProc);
+		m_fnOldEdt3WndProc = (WNDPROC)SetWindowLongPtrW(hEdt3, GWLP_WNDPROC, (LONG_PTR)Edt3WndProc);
 		SetWindowLongPtrW(hEdt2, GWLP_USERDATA, (LONG_PTR)this);
 		SetWindowLongPtrW(hEdt3, GWLP_USERDATA, (LONG_PTR)this);
 
@@ -124,9 +124,12 @@ public:
 				if (codeNotify == CBN_SELCHANGE)
 				{
 					INT iItem = (INT)SendMessageW(m_cmb1, CB_GETCURSEL, 0, 0);
-					WCHAR szText[MAX_PATH];
-					SendMessageW(m_cmb1, CB_GETLBTEXT, iItem, (LPARAM)szText);
-					name = szText;
+					if (iItem != CB_ERR)
+					{
+						WCHAR szText[MAX_PATH];
+						SendMessageW(m_cmb1, CB_GETLBTEXT, iItem, (LPARAM)szText);
+						name = szText;
+					}
 				}
 				else
 				{
