@@ -30,7 +30,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 			pType->nEncoding = MTENC_UNICODE_LE;
 			pType->bHasBOM = true;
 		}
-		ret.assign((const WCHAR *)bin, len / sizeof(WCHAR));
+		ret.assign((const WCHAR *)((const char *)bin + 2), (len - 2) / sizeof(WCHAR));
 	}
 	else if (len >= 2 && std::memcmp(bin, "\xFE\xFF", 2) == 0)
 	{
@@ -40,8 +40,8 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 			pType->nEncoding = MTENC_UNICODE_BE;
 			pType->bHasBOM = true;
 		}
-		ret.assign((const WCHAR *)bin, len / sizeof(WCHAR));
-		mbin_swap_endian(&ret[0], len);
+		ret.assign((const WCHAR *)((const char *)bin + 2), (len - 2) / sizeof(WCHAR));
+		mbin_swap_endian(&ret[0], ret.size() * sizeof(WCHAR));
 	}
 	else
 	{
