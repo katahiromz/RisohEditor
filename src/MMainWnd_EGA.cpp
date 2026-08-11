@@ -57,6 +57,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 	BOOL bWrapManifest = g_settings.bWrapManifest;
 	BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
 	UINT nOldCodePageForRC = g_settings.nCodePageForRC;
+	BOOL bAddBomToRC = g_settings.bAddBomToRC;
 	BOOL bBackup = g_settings.bBackup;
 	BOOL bUseMSMSGTABLE = g_settings.bUseMSMSGTABLE;
 	g_settings.bUseIDC_STATIC = options.find(L"(idc-static)") != options.npos;
@@ -85,6 +86,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 	g_settings.bWrapManifest = bWrapManifest;
 	g_settings.bUseBeginEnd = bUseBeginEnd;
 	g_settings.nCodePageForRC = nOldCodePageForRC;
+	g_settings.bAddBomToRC = bAddBomToRC;
 	g_settings.bBackup = bBackup;
 	g_settings.bUseMSMSGTABLE = bUseMSMSGTABLE;
 
