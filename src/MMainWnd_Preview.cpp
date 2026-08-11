@@ -499,32 +499,15 @@ void MMainWnd::EndPreviewBatch()
 		if (::IsWindow(m_splitter2))
 			m_splitter2.SendMessageDx(WM_SETREDRAW, TRUE, 0);
 
-		// Redraw the editor *and* its line-number child in one shot.
-		// RDW_NOERASE avoids a blank background flash; RDW_ALLCHILDREN
-		// reaches the LineNumStatic that lives inside LineNumEdit.
-		// (InvalidateRect alone does not reliably dirty the static.)
-		::RedrawWindow(m_hCodeEditor, NULL, NULL,
-		               RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
+		InvalidateRect(m_hCodeEditor, nullptr, TRUE);
+		InvalidateRect(m_hHexViewer, nullptr, TRUE);
+		InvalidateRect(m_splitter2, nullptr, TRUE);
+		InvalidateRect(m_hBmpView, nullptr, TRUE);
 
-		// Only relayout if SetShowMode() actually changed m_nShowMode/
-		// m_bShowBinEdit somewhere inside this batch. Switching between
-		// tree items of the same kind (the common, high-frequency case)
-		// never touches the layout, so skipping this avoids a pointless
-		// MoveWindow(..., TRUE) on m_splitter1/m_splitter2 -- and the
-		// full repaint that comes with it -- on every single selection
-		// change. This is what eliminates the flicker.
 		if (m_bPreviewLayoutDirty)
 		{
 			m_bPreviewLayoutDirty = FALSE;
 			PostMessageDx(WM_SIZE);
-		}
-		else if (::IsWindow(m_splitter2))
-		{
-			// No layout change, but the splitter was frozen; give it a
-			// single clean paint so any ShowWindow that happened under
-			// the freeze becomes visible together with the new text.
-			::RedrawWindow(m_splitter2, NULL, NULL,
-			               RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 		}
 	}
 }

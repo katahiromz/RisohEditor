@@ -151,7 +151,15 @@ public:
 
 		if (type == L"avi") {
 			ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
-			return PlayAvi(m_hwnd, ptr, size);
+			BOOL bOK = PlayAvi(m_hwnd, ptr, size);
+			// Unlike SetBitmap/SetImage/SetIcon/SetPlay, nothing above
+			// invalidates the view. Whether or not MCI's video window ends
+			// up covering the whole client area, and especially if PlayAvi
+			// failed partway, force an erase+repaint so leftovers from the
+			// previous preview (e.g. a differently sized bitmap) don't stay
+			// visible around/behind it.
+			InvalidateRect(m_hwnd, NULL, TRUE);
+			return bOK;
 		}
 		return FALSE;
 	}
