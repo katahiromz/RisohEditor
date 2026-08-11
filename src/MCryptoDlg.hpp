@@ -36,6 +36,8 @@ public:
 		SetDlgItemTextW(hwnd, edt2, g_salt.c_str());
 		for (auto& ch : g_password) ch ^= 0xFFFF;
 		for (auto& ch : g_salt) ch ^= 0xFFFF;
+		SendDlgItemMessageW(hwnd, edt1, EM_LIMITTEXT, MAX_PATH - 1, 0);
+		SendDlgItemMessageW(hwnd, edt2, EM_LIMITTEXT, MAX_PATH - 1, 0);
 #else
 		EnableWindow(GetDlgItem(hwnd, chx1), FALSE);
 		EnableWindow(GetDlgItem(hwnd, edt1), FALSE);
