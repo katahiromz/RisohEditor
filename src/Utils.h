@@ -92,7 +92,6 @@ void Cmb1_InitVirtualKeys(HWND hCmb1);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str);
 MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 void DoSetFileModified(BOOL bModified);
-MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons);
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);

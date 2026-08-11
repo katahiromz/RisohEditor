@@ -147,7 +147,8 @@ void ReplaceFullWithHalf(LPWSTR pszText)
 // replace some fullwidth characters with halfwidth characters
 void ReplaceFullWithHalf(MStringW& strText)
 {
-	ReplaceFullWithHalf(&strText[0]);
+	if (strText.size())
+		ReplaceFullWithHalf(&strText[0]);
 }
 
 BOOL IsFileWritable(LPCWSTR pszFileName)
@@ -194,9 +195,8 @@ bool create_directories_recursive_win32(const std::wstring& path) {
 
 	std::wstring parent_path = path;
 
-	if (parent_path.back() == L'\\' || parent_path.back() == L'/') {
+	if (parent_path.size() && (parent_path.back() == L'\\' || parent_path.back() == L'/'))
 		parent_path.pop_back();
-	}
 
 	size_t last_separator = parent_path.find_last_of(L"\\/");
 	if (last_separator != std::wstring::npos) {
