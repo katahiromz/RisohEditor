@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MTOOLBARCTRL_HPP_
-#define MZC4_MTOOLBARCTRL_HPP_      5   /* Version 5 */
+#define MZC4_MTOOLBARCTRL_HPP_      6   /* Version 6 */
 
 class MToolBarCtrl;
 
@@ -77,7 +77,7 @@ public:
 	#endif  // (_WIN32_IE >= 0x0300)
 
 	#if (_WIN32_IE >= 0x400)
-		BOOL GetButtonInfo(INT nButtonID, TBBUTTONINFO* ptbbi) const;
+		INT GetButtonInfo(INT nButtonID, TBBUTTONINFO* ptbbi) const;
 		BOOL SetButtonInfo(INT nButtonID, TBBUTTONINFO* ptbbi);
 
 		DWORD SetDrawTextFlags(DWORD dwMask, DWORD dwDTFlags);
@@ -343,7 +343,7 @@ inline UINT MToolBarCtrl::GetBitmapFlags() const
 #endif  // (_WIN32_IE >= 0x0300)
 
 #if (_WIN32_IE >= 0x400)
-	inline BOOL MToolBarCtrl::GetButtonInfo(
+	inline INT MToolBarCtrl::GetButtonInfo(
 		INT nButtonID, TBBUTTONINFO* ptbbi) const
 	{
 		return (INT)SendMessageDx(TB_GETBUTTONINFO, (WPARAM)nButtonID, (LPARAM)ptbbi);
@@ -526,7 +526,7 @@ inline VOID MToolBarCtrl::RestoreState(
 #if (_WIN32_IE >= 0x0400)
 	inline BOOL MToolBarCtrl::MapAccelerator(TCHAR chAccel, UINT* pIDBtn)
 	{
-		return (BOOL)SendMessageDx(TB_MAPACCELERATOR, (WPARAM)chAccel, (LPARAM)&pIDBtn);
+		return (BOOL)SendMessageDx(TB_MAPACCELERATOR, (WPARAM)chAccel, (LPARAM)pIDBtn);
 	}
 
 	inline BOOL MToolBarCtrl::MarkButton(

@@ -265,7 +265,7 @@ protected:
 	MAnsiToWide::do_it(int codepage, const char *str, size_t count)
 	{
 		m_str.clear();
-		if (*str == 0)
+		if (*str == 0 || !count)
 			return;
 
 		iconv_t ic = iconv_open(text2text::get_wide_encoding(),
@@ -285,7 +285,7 @@ protected:
 		{
 			size_t wide_len = buf_len;
 			char *wide_ptr = buf;
-			if (buf && (size_t)-1 != iconv(ic, &ansi_ptr, &ansi_len, &wide_ptr, &wide_len))
+			if ((size_t)-1 != iconv(ic, &ansi_ptr, &ansi_len, &wide_ptr, &wide_len))
 			{
 				wide_len = buf_len - wide_len;
 				m_str.assign(reinterpret_cast<WCHAR *>(buf), wide_len / sizeof(WCHAR));
@@ -320,7 +320,7 @@ protected:
 		{
 			size_t ansi_len = buf_len;
 			char *ansi_ptr = buf;
-			if (buf && (size_t)-1 != iconv(ic, &wide_ptr, &wide_len, &ansi_ptr, &ansi_len))
+			if ((size_t)-1 != iconv(ic, &wide_ptr, &wide_len, &ansi_ptr, &ansi_len))
 			{
 				ansi_len = buf_len - ansi_len;
 				m_str.assign(buf, ansi_len / sizeof(char));
