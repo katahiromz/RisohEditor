@@ -35,11 +35,7 @@ public:
 
 	~MChooseLangDlg()
 	{
-		if (m_pAutoComplete)
-		{
-			m_pAutoComplete->Release();
-			m_pAutoComplete = NULL;
-		}
+		m_pAutoComplete->Release();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
