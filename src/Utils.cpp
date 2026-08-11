@@ -33,7 +33,7 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 		{
 			if (FILE *fp = _wfopen(g_pszLogFile, L"a"))
 			{
-				fprintf(fp, "%ls\n", title);
+				fprintf(fp, "%ls\n", text);
 				fclose(fp);
 			}
 		}
@@ -52,6 +52,7 @@ void StopMP3(void) {
 	if (g_szMP3TempFile[0]) {
 		mciSendString(TEXT("close myaudio"), NULL, 0, 0);
 		DeleteFile(g_szMP3TempFile);
+		g_szMP3TempFile[0] = 0;
 	}
 }
 
@@ -65,13 +66,27 @@ BOOL PlayMP3(LPCVOID ptr, size_t size) {
 		GetTempFileName(szTempPath, TEXT("MJB"), 0, g_szMP3TempFile);
 
 		if (!WriteBinaryFileDx(g_szMP3TempFile, ptr, size))
+		{
+			DeleteFile(g_szMP3TempFile);
+			g_szMP3TempFile[0] = 0;
 			return FALSE;
+		}
 
 		wnsprintf(szCommand, _countof(szCommand), TEXT("open \"%s\" type mpegvideo alias myaudio"), g_szMP3TempFile);
 	}
 
-	mciSendString(szCommand, NULL, 0, 0);
-	mciSendString(TEXT("play myaudio"), NULL, 0, 0); // Async (No wait)
+	if (mciSendString(szCommand, NULL, 0, 0) != 0)
+	{
+		StopMP3();
+		return FALSE;
+	}
+
+	if (mciSendString(TEXT("play myaudio"), NULL, 0, 0) != 0)
+	{
+		StopMP3();
+		return FALSE;
+	}
+
 	return TRUE;
 }
 
@@ -79,6 +94,7 @@ void StopAvi(void) {
 	if (g_szAviTempFile[0]) {
 		mciSendStringW(L"close myavi", NULL, 0, NULL);
 		DeleteFile(g_szAviTempFile);
+		g_szAviTempFile[0] = 0;
 	}
 }
 
@@ -96,7 +112,10 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	lstrcpyn(g_szAviTempFile, szTempFile, _countof(g_szAviTempFile));
 
 	if (!WriteBinaryFileDx(g_szAviTempFile, ptr, size))
+	{
+		StopAvi();
 		return FALSE;
+	}
 
 	TCHAR command[512];
 	MCIERROR err;
@@ -104,26 +123,53 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	// 1. Open AVI file
 	wnsprintf(command, _countof(command), L"open \"%s\" type AVIVideo alias myavi", g_szAviTempFile);
 	err = mciSendStringW(command, NULL, 0, NULL);
-	if (err) { LogMCIError(err, L"PlayAvi - Open"); return FALSE; }
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Open");
+		StopAvi();
+		return FALSE;
+	}
 
 	// 2. Set the window handle (and style child)
 	wnsprintf(command, _countof(command), L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
 	err = mciSendStringW(command, NULL, 0, NULL);
-	if (err) { LogMCIError(err, L"PlayAvi - Window Handle"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Window Handle");
+		StopAvi();
+		return FALSE;
+	}
 	err = mciSendStringW(L"window myavi style child", NULL, 0, NULL);
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Style Child");
+		StopAvi();
+		return FALSE;
+	}
 
 	// 3. Set the display area
 	RECT rc;
 	GetClientRect(hwnd, &rc);
 	wnsprintf(command, _countof(command), L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
-	mciSendStringW(command, NULL, 0, NULL);
+	err = mciSendStringW(command, NULL, 0, NULL);
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Set Display Area");
+		StopAvi();
+		return FALSE;
+	}
 
 	// 4. Show
-	mciSendStringW(L"window myavi state show", NULL, 0, NULL);
-	
+	err = mciSendStringW(L"window myavi state show", NULL, 0, NULL);
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Show");
+		StopAvi();
+		return FALSE;
+	}
+
 	// 5. Play with repeat
 	err = mciSendStringW(L"play myavi repeat", NULL, 0, NULL);
-	if (err) { LogMCIError(err, L"PlayAvi - Play"); mciSendStringW(L"close myavi", NULL, 0, NULL); return FALSE; }
+	if (err) {
+		LogMCIError(err, L"PlayAvi - Play");
+		StopAvi();
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -251,17 +297,11 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 		L"--------  -----------------------  -----------------------  ----------------\r\n";
 
 	// for all the addresses
-	bool ending_flag = false;
-	for (addr = 0; !ending_flag; ++addr)
+	for (addr = 0; addr < size; addr += 16)
 	{
-		if ((addr & 0xF) != 0)
-			continue;
-
 		// add the address
 		StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
 		ret += sz;
-
-		ending_flag = false;
 
 		// add the data
 		for (DWORD i = 0; i < 16; ++i)
@@ -280,7 +320,6 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 			else
 			{
 				ret += L"   ";
-				ending_flag = true;
 			}
 		}
 
@@ -303,7 +342,6 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 			else
 			{
 				ret += L' ';			// out of range
-				ending_flag = true;
 			}
 		}
 
@@ -3099,7 +3137,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 	MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
 	ReplaceFullWithHalf(str);
 
-	if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
+	if (str.size() && (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+'))
 	{
 		// numeric
 		LONG n = mstr_parse_int(str.c_str());
@@ -3119,7 +3157,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 	//mstr_trim(str);	 // trim it
 
 	// unquote if quoted
-	if (str[0] == L'"')
+	if (str.size() && str[0] == L'"')
 	{
 		mstr_unquote(str);
 	}
@@ -3153,7 +3191,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 	MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
 	ReplaceFullWithHalf(str);
 
-	if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
+	if (str.size() && (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+'))
 	{
 		// numeric
 		LONG n = mstr_parse_int(str.c_str());
@@ -3172,7 +3210,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 	str = MWindowBase::GetDlgItemText(hwnd, edt1);
 
 	// unquote if quoted
-	if (str[0] == L'"')
+	if (str.size() && str[0] == L'"')
 	{
 		mstr_unquote(str);
 	}
@@ -3231,6 +3269,8 @@ MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, LANG
 	HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
 	DWORD cb = SizeofResource(hInst, hRsrc);
 	const BYTE *pb = (const BYTE *)LockResource(hGlobal);
+	if (!pb)
+		return L"";
 
 	// ignore the BOM if any
 	if (cb >= 3 && pb && memcmp(pb, "\xEF\xBB\xBF", 3) == 0)
