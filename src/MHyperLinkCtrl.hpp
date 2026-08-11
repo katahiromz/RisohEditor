@@ -47,7 +47,11 @@ public:
 			HFONT hDefaultFont = (HFONT)SendMessageDx(WM_GETFONT, 0, 0);
 
 			LOGFONT lf;
-			GetObject(hDefaultFont, sizeof(lf), &lf);
+			ZeroMemory(&lf, sizeof(lf));
+			if (!hDefaultFont || !GetObject(hDefaultFont, sizeof(lf), &lf))
+			{
+				GetObject((HFONT)GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+			}
 			lf.lfUnderline = TRUE;
 
 			HFONT hFont = CreateFontIndirect(&lf);
