@@ -233,24 +233,24 @@ public:
 		case SB_THUMBTRACK:
 			info.nPos = pos;
 			break;
-		case SB_TOP:
+		case SB_LEFT:
 			info.nPos = 0;
 			break;
-		case SB_BOTTOM:
-			info.nPos = m_bm.bmHeight;
+		case SB_RIGHT:
+			info.nPos = m_bm.bmWidth;
 			break;
 		case SB_ENDSCROLL:
 			return;
-		case SB_LINEDOWN:
+		case SB_LINERIGHT:
 			info.nPos = GetScrollPos(hwnd, SB_HORZ) + 10;
 			break;
-		case SB_LINEUP:
+		case SB_LINELEFT:
 			info.nPos = GetScrollPos(hwnd, SB_HORZ) - 10;
 			break;
-		case SB_PAGEDOWN:
+		case SB_PAGERIGHT:
 			info.nPos = GetScrollPos(hwnd, SB_HORZ) + info.nPage;
 			break;
-		case SB_PAGEUP:
+		case SB_PAGELEFT:
 			info.nPos = GetScrollPos(hwnd, SB_HORZ) - info.nPage;
 			break;
 		}
