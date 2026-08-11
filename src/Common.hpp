@@ -24,14 +24,25 @@ enum LANG_TYPE
 // Helper function to get ComboBox edit text without buffer size limitations
 inline MStringW GetComboBoxText(HWND hwndCombo)
 {
-	INT cch = ComboBox_GetTextLength(hwndCombo);
-	if (cch <= 0)
-		return MStringW();
-
 	MStringW str;
-	str.resize(cch + 1);
-	ComboBox_GetText(hwndCombo, &str[0], cch + 1);
-	str.resize(cch);  // Remove null terminator from string length
+	INT cchBuffer = 256;
+
+	for (;;)
+	{
+		str.resize(cchBuffer);
+		INT cch = ComboBox_GetText(hwndCombo, &str[0], cchBuffer);
+		if (cch < cchBuffer - 1)
+		{
+			str.resize(cch);
+			break;
+		}
+		cchBuffer *= 2;
+		if (cchBuffer > 0xFFFF)
+		{
+			str.resize(cch);
+			break;
+		}
+	}
 	return str;
 }
 
@@ -54,16 +65,25 @@ inline MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex)
 // Helper function to get ListBox text without buffer size limitations
 inline MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
 {
-	INT cch = ListBox_GetTextLen(hwndListBox, nIndex);
-	if (cch == LB_ERR)
-		return MStringW();
-
 	MStringW str;
-	str.resize(cch);
-	cch = ListBox_GetText(hwndListBox, nIndex, &str[0]);
-	if (cch == LB_ERR)
-		return MStringW();
+	INT cchBuffer = 256;
 
+	for (;;)
+	{
+		str.resize(cchBuffer);
+		INT cch = ListBox_GetText(hwndListBox, &str[0], cchBuffer);
+		if (cch < cchBuffer - 1)
+		{
+			str.resize(cch);
+			break;
+		}
+		cchBuffer *= 2;
+		if (cchBuffer > 0xFFFF)
+		{
+			str.resize(cch);
+			break;
+		}
+	}
 	return str;
 }
  

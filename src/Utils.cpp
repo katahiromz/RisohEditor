@@ -2797,9 +2797,7 @@ BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type)
 	MStringW strLang = MWindowBase::GetWindowText(hCmb3);
 
 	// get the language ID from texts
-	WCHAR szPath[MAX_PATH];
-	StringCchCopyW(szPath, _countof(szPath), strLang.c_str());
-	ParseLang(szPath, lang);
+	ParseLang(strLang, lang);
 	if ((type != LANG_TYPE_1 || IsValidUILang(lang)) && lang != BAD_LANG)
 		return TRUE;	// success
 
