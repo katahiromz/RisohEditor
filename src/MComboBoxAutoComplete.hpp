@@ -103,7 +103,7 @@ public:
 			MString strInputUpper = strInput;
 			mstr_upper(strInputUpper);
 
-			iItem = FindString(-1, strInput.c_str());
+			iItem = FindString(-1, strInputUpper.c_str());
 			if (iItem == CB_ERR)
 				return;
 
