@@ -111,7 +111,8 @@ public:
 		MString name = GetDlgItemText(hwnd, edt1);
 		mstr_trim(name);
 
-		MString prefix = name.substr(0, name.find(L'_') + 1);
+		size_t pos = name.find(L'_');
+		MString prefix = (pos == MString::npos) ? MString() : name.substr(0, pos + 1);
 
 		std::vector<INT> indexes = GetPrefixIndexes(prefix);
 		if (indexes.size() == 1)
