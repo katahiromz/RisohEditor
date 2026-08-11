@@ -171,8 +171,6 @@ public:
 			return E_POINTER;
 
 		MRisohAutoComplete *cloned = new MRisohAutoComplete(m_type);
-
-		cloned->AddRef();
 		cloned->m_list = m_list;
 		cloned->m_set = std::unordered_set<std::wstring>(m_list.begin(), m_list.end());
 		*ppenum = cloned;
