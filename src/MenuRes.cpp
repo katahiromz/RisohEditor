@@ -15,8 +15,11 @@ MStringW GetMenuFlags(WORD fItemFlags)
 {
 	MStringW str;
 
-	if ((fItemFlags & MF_GRAYED) == MF_GRAYED)
+	if ((fItemFlags & (MF_GRAYED | MF_DISABLED)) == MF_GRAYED)
 		str += L"G ";
+
+	if ((fItemFlags & (MF_GRAYED | MF_DISABLED)) == MF_DISABLED)
+		str += L"D ";
 
 	if ((fItemFlags & MF_BITMAP) == MF_BITMAP)
 		str += L"B ";
@@ -46,6 +49,9 @@ void SetMenuFlags(WORD& fItemFlags, const MStringW& str)
 
 	if (str2.find(L" G ") != MStringW::npos)
 		fItemFlags |= MF_GRAYED;
+
+	if (str2.find(L" D ") != MStringW::npos)
+		fItemFlags |= MF_DISABLED;
 
 	if (str2.find(L" B ") != MStringW::npos)
 		fItemFlags |= MF_BITMAP;
