@@ -153,12 +153,7 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 		return FALSE;
 	}
 
-	err = mciSendStringW(L"window myavi style child", NULL, 0, NULL);
-	if (err) {
-		LogMCIError(err, L"PlayAvi - Style Child");
-		StopAvi();
-		return FALSE;
-	}
+	mciSendStringW(L"window myavi style child", NULL, 0, NULL);
 
 	RECT rc;
 	GetClientRect(hwnd, &rc);
