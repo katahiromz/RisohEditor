@@ -154,6 +154,9 @@ BOOL MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 	MString str = res2text.DumpEntry(entry);
 	SetWindowTextW(m_hCodeEditor, str.c_str());
 
+	if (entry.m_data.size() < 4 || std::memcmp(entry.m_data.data(), "RIFF", 4) != 0)
+		return FALSE;
+
 	// make it playable
 	m_hBmpView.SetPlay();
 
