@@ -3218,7 +3218,6 @@ BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
 		SendMessageW(m_hwndTV, WM_SETREDRAW, FALSE, 0);
 
 #ifdef ENABLE_CRYPTO
-		SetWonResPassword(nullptr, nullptr);
 		if (g_res.is_protected(hMod))
 		{
 			is_protected = true;
