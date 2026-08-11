@@ -101,7 +101,6 @@ void StopAvi(void) {
 BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	StopAvi();
 
-	// Create temporary file
 	TCHAR szTempPath[MAX_PATH], szTempFile[MAX_PATH];
 	GetTempPath(_countof(szTempPath), szTempPath);
 	GetTempFileName(szTempPath, TEXT("AVI"), 0, szTempFile);
@@ -118,18 +117,34 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	}
 
 	TCHAR command[512];
-	MCIERROR err;
+	MCIERROR err = 0;
+	const wchar_t* deviceTypes[] = {
+		L"type mpegvideo",
+		L"type AVIVideo",
+		L"" // Auto detect
+	};
 
-	// 1. Open AVI file
-	wnsprintf(command, _countof(command), L"open \"%s\" type AVIVideo alias myavi", g_szAviTempFile);
-	err = mciSendStringW(command, NULL, 0, NULL);
-	if (err) {
-		LogMCIError(err, L"PlayAvi - Open");
+	BOOL opened = FALSE;
+	for (UINT i = 0; i < _countof(deviceTypes); ++i) {
+		if (wcslen(deviceTypes[i]) > 0) {
+			wnsprintf(command, _countof(command), L"open \"%s\" %s alias myavi", g_szAviTempFile, deviceTypes[i]);
+		} else {
+			wnsprintf(command, _countof(command), L"open \"%s\" alias myavi", g_szAviTempFile);
+		}
+
+		err = mciSendStringW(command, NULL, 0, NULL);
+		if (err == 0) {
+			opened = TRUE;
+			break;
+		}
+	}
+
+	if (!opened) {
+		LogMCIError(err, L"PlayAvi - Open (All device types failed)");
 		StopAvi();
 		return FALSE;
 	}
 
-	// 2. Set the window handle (and style child)
 	wnsprintf(command, _countof(command), L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
 	err = mciSendStringW(command, NULL, 0, NULL);
 	if (err) {
@@ -137,6 +152,7 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 		StopAvi();
 		return FALSE;
 	}
+
 	err = mciSendStringW(L"window myavi style child", NULL, 0, NULL);
 	if (err) {
 		LogMCIError(err, L"PlayAvi - Style Child");
@@ -144,7 +160,6 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 		return FALSE;
 	}
 
-	// 3. Set the display area
 	RECT rc;
 	GetClientRect(hwnd, &rc);
 	wnsprintf(command, _countof(command), L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
@@ -155,7 +170,6 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 		return FALSE;
 	}
 
-	// 4. Show
 	err = mciSendStringW(L"window myavi state show", NULL, 0, NULL);
 	if (err) {
 		LogMCIError(err, L"PlayAvi - Show");
@@ -163,7 +177,6 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 		return FALSE;
 	}
 
-	// 5. Play with repeat
 	err = mciSendStringW(L"play myavi repeat", NULL, 0, NULL);
 	if (err) {
 		LogMCIError(err, L"PlayAvi - Play");
