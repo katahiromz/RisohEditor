@@ -397,11 +397,11 @@ public:
 		MModifyMsgDlg dialog(me, m_msg_res);
 		if (IDOK == dialog.DialogBoxDx(hwnd))
 		{
-			MString str = mstr_quote(me.MessageValue);
-			ListView_SetItemText(m_hLst1, iItem, 1, &str[0]);
+			MString strDisplay = mstr_quote(me.MessageValue);
+			ListView_SetItemText(m_hLst1, iItem, 1, &strDisplay[0]);
 
 			ULONG dwValue = g_db.GetResIDValue(me.MessageID);
-			m_msg_res.m_map[dwValue] = std::move(str);
+			m_msg_res.m_map[dwValue] = me.MessageValue;
 		}
 	}
 
