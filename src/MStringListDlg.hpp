@@ -58,7 +58,7 @@ public:
 		std::vector<MStringA> lines;
 		mstr_replace_all(strA, "\r", "");
 		mstr_split(lines, strA, "\n");
-		m_str_list = lines;
+		m_str_list = std::move(lines);
 
 		EndDialog(IDOK);
 	}
