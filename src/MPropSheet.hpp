@@ -190,7 +190,7 @@ public:
 		return TRUE;
 	}
 
-	virtual INT_PTR OnNotify(HWND hwnd, INT idFrom, LPNMHDR pnmhdr)
+	virtual LRESULT OnNotify(HWND hwnd, INT idFrom, LPNMHDR pnmhdr)
 	{
 		switch (pnmhdr->code)
 		{
