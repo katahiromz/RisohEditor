@@ -34,7 +34,7 @@ bool MMainWnd::DoResLoad(const MStringW& filename, const MStringW& options)
 	bool bOK;
 	++g_bNoGuiMode;
 	BOOL bAutoLoadNearbyResH = g_settings.bAutoLoadNearbyResH;
-	g_settings.bAutoLoadNearbyResH = options.find(L"(no-load-res-h)") != options.npos;
+	g_settings.bAutoLoadNearbyResH = options.find(L"(no-load-res-h)") == options.npos;
 	{
 		bOK = !!DoLoadFile(m_hwnd, filename.c_str(), 0, TRUE);
 	}

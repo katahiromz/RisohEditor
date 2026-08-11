@@ -35,15 +35,13 @@ BOOL MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
 	if (hIcon)
 	{
 		str = DumpIconInfo(bm, TRUE);
+		DestroyIcon(hIcon);
 	}
 	else
 	{
 		str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
 	}
 	SetWindowTextW(m_hCodeEditor, str.c_str());
-
-	// destroy the icon
-	DestroyIcon(hIcon);
 
 	// show
 	SetShowMode(SHOW_CODEANDBMP);
