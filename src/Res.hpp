@@ -48,6 +48,8 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 	#define PROCESS_TIMEOUT     (20 * 1000)     // 20 seconds
 #endif
 
+#define MYWM_TREEVIEWISEMPTY (WM_USER + 555)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // is the resource type an "entity type" ?

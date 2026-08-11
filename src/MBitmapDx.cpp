@@ -140,12 +140,17 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 				try
 				{
 					pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+
+					INT cx = pBitmap->GetWidth();
+					INT cy = pBitmap->GetHeight();
+					if (!cx || !cy)
+					{
+						delete pBitmap;
+						pBitmap = nullptr;
+					}
 				}
 				catch (...)
 				{
-#ifndef NDEBUG
-					DebugBreak();
-#endif
 					pBitmap = nullptr;
 				}
 				pStream->Release();

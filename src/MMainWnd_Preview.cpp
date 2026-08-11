@@ -601,81 +601,81 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 	// mode transition per selection change instead of two.
 
 	// do preview the resource item
-	BOOL bEditable = TRUE;
+	BOOL bValid = TRUE;
 	if (entry->m_type.m_id != 0)
 	{
 		WORD wType = entry->m_type.m_id;
 		if (wType == (WORD)(UINT_PTR)RT_ICON)
 		{
-			bEditable = PreviewIcon(hwnd, *entry);
+			bValid = PreviewIcon(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_CURSOR)
 		{
-			bEditable = PreviewCursor(hwnd, *entry);
+			bValid = PreviewCursor(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
 		{
-			bEditable = PreviewGroupIcon(hwnd, *entry);
+			bValid = PreviewGroupIcon(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
 		{
-			bEditable = PreviewGroupCursor(hwnd, *entry);
+			bValid = PreviewGroupCursor(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
 		{
-			bEditable = PreviewBitmap(hwnd, *entry);
+			bValid = PreviewBitmap(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
 		{
-			bEditable = PreviewAccel(hwnd, *entry);
+			bValid = PreviewAccel(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_STRING)
 		{
-			bEditable = PreviewString(hwnd, *entry);
+			bValid = PreviewString(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MENU)
 		{
-			bEditable = PreviewMenu(hwnd, *entry);
+			bValid = PreviewMenu(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_TOOLBAR)
 		{
-			bEditable = PreviewToolbar(hwnd, *entry);
+			bValid = PreviewToolbar(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
 		{
-			bEditable = PreviewDialog(hwnd, *entry);
+			bValid = PreviewDialog(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
 		{
-			bEditable = PreviewAniIcon(hwnd, *entry, TRUE);
+			bValid = PreviewAniIcon(hwnd, *entry, TRUE);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
 		{
-			bEditable = PreviewAniIcon(hwnd, *entry, FALSE);
+			bValid = PreviewAniIcon(hwnd, *entry, FALSE);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
 		{
-			bEditable = PreviewMessage(hwnd, *entry);
+			bValid = PreviewMessage(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_MANIFEST || wType == (WORD)(UINT_PTR)RT_HTML)
 		{
-			bEditable = PreviewHtml(hwnd, *entry);
+			bValid = PreviewHtml(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_VERSION)
 		{
-			bEditable = PreviewVersion(hwnd, *entry);
+			bValid = PreviewVersion(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
 		{
-			bEditable = PreviewRCData(hwnd, *entry);
+			bValid = PreviewRCData(hwnd, *entry);
 		}
 		else if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
 		{
-			bEditable = PreviewDlgInit(hwnd, *entry);
+			bValid = PreviewDlgInit(hwnd, *entry);
 		}
 		else
 		{
-			bEditable = PreviewUnknown(hwnd, *entry);
+			bValid = PreviewUnknown(hwnd, *entry);
 		}
 	}
 	else
@@ -687,39 +687,38 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 			entry->m_type == L"ENHMETAPICT" ||
 			entry->m_type == L"WMF" || entry->m_type == L"IMAGE")
 		{
-			bEditable = PreviewImage(hwnd, *entry);
+			bValid = PreviewImage(hwnd, *entry);
 		}
 		else if (entry->m_type == L"WAVE")
 		{
-			bEditable = PreviewWAVE(hwnd, *entry);
+			bValid = PreviewWAVE(hwnd, *entry);
 		}
 		else if (entry->m_type == L"MP3")
 		{
-			bEditable = PreviewMP3(hwnd, *entry);
+			bValid = PreviewMP3(hwnd, *entry);
 		}
 		else if (entry->m_type == L"AVI")
 		{
-			bEditable = PreviewAVI(hwnd, *entry);
+			bValid = PreviewAVI(hwnd, *entry);
 		}
 		else if (entry->m_type == L"TYPELIB")
 		{
-			bEditable = PreviewTypeLib(hwnd, *entry);
+			bValid = PreviewTypeLib(hwnd, *entry);
 		}
 		else
 		{
-			bEditable = PreviewUnknown(hwnd, *entry);
+			bValid = PreviewUnknown(hwnd, *entry);
 		}
 	}
 
-	// Fallback: if the specific PreviewXxx() above failed before it got to
-	// its own SetShowMode() call (e.g. LoadFromStream() failed on a
-	// corrupt resource), make sure we don't leave a stale mode (e.g. still
-	// showing m_hBmpView from the previous, unrelated selection) behind.
-	if (!bEditable)
+	if (!bValid)
+	{
+		SetWindowTextW(m_hCodeEditor, LoadStringDx(IDS_INVALIDDATA));
 		SetShowMode(SHOW_CODEONLY);
+	}
 
 	// re-enable redraw on m_hCodeEditor and recalculate the splitter
 	EndPreviewBatch();
 
-	return bEditable && IsEntryTextEditable(entry);
+	return bValid && IsEntryTextEditable(entry);
 }
