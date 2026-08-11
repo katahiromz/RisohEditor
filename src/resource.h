@@ -481,7 +481,6 @@
 #define ID_IDJUMP                           197
 #define ID_REFRESHALL                       198
 #define ID_EXPORT                           199
-#define ID_FONTS                            200
 #define ID_REFRESH                          201
 #define ID_PREDEFMACROS                     202
 #define ID_ADD                              203
@@ -533,7 +532,6 @@
 #define ID_EGA_PROGRAM                      252
 #define ID_OPENREADMEIT                     253
 #define ID_OPEN_EGA_MANUAL                  254
-#define ID_DIALOG_FONT_SUBSTITUTES          255
 #define ID_HELP                             256
 #define ID_NEXTPANE                         257
 #define ID_PREVPANE                         258

@@ -1130,25 +1130,6 @@ void MMainWnd::RefreshFonts()
 	ReCreateFonts(m_hwnd);
 }
 
-// ID_FONTS: show the MFontsDlg to allow the user to change the font settings
-void MMainWnd::OnFonts(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(FALSE))
-		return;
-
-	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
-	if (bRadWasVisible)
-		GetWindowRect(m_rad_window, &m_rcRadWindow);
-
-	// show the dialog
-	MConfigPropSheet dialog;
-	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_FONTS);
-
-	if (ret == IDOK && bRadWasVisible)
-		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
-}
-
 // ID_EXPORT: export all the resource items to an RC file
 void MMainWnd::OnExport(HWND hwnd)
 {
@@ -2043,16 +2024,9 @@ void MMainWnd::OnConfig(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
-	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
-	if (bRadWasVisible)
-		GetWindowRect(m_rad_window, &m_rcRadWindow);
-
 	// show the dialog
 	MConfigPropSheet dialog;
-	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_CONFIG);
-
-	if (ret == IDOK && bRadWasVisible)
-		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
+	dialog.DoModalDx(hwnd, PAGE_CONFIG);
 }
 
 // ID_USEIDC_STATIC: use IDC_STATIC macro or not
@@ -2490,24 +2464,6 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
 void MMainWnd::OnHelp(HWND hwnd)
 {
 	ShellExecuteW(hwnd, NULL, LoadStringDx(IDS_HOMEPAGE), NULL, NULL, SW_SHOWNORMAL);
-}
-
-// ID_DIALOG_FONT_SUBSTITUTES
-void MMainWnd::OnDialogFontSubst(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(FALSE))
-		return;
-
-	BOOL bRadWasVisible = IsWindowVisible(m_rad_window);
-	if (bRadWasVisible)
-		GetWindowRect(m_rad_window, &m_rcRadWindow);
-
-	MConfigPropSheet dialog;
-	INT_PTR ret = dialog.DoModalDx(hwnd, PAGE_FONTSUBST);
-
-	if (ret == IDOK && bRadWasVisible)
-		PostMessageW(hwnd, MYWM_REOPENRAD, 0, 0);
 }
 
 // ID_TEST: do resource test
@@ -4179,9 +4135,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_EXPORT:
 		OnExport(hwnd);
 		break;
-	case ID_FONTS:
-		OnFonts(hwnd);
-		break;
 	case ID_REFRESH:
 		DoRefreshTV(hwnd);
 		break;
@@ -4252,9 +4205,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_OPEN_EGA_MANUAL:
 		OnOpenLocalFile(hwnd, L"EGA\\EGA-Manual.pdf");
-		break;
-	case ID_DIALOG_FONT_SUBSTITUTES:
-		OnDialogFontSubst(hwnd);
 		break;
 	case ID_HELP:
 		OnHelp(hwnd);

@@ -534,7 +534,6 @@ protected:
 	void OnLoadResHBang(HWND hwnd);
 	void OnLoadWCLib(HWND hwnd);
 	void OnExport(HWND hwnd);
-	void OnFonts(HWND hwnd);
 	void OnAbout(HWND hwnd);
 	void OnConfig(HWND hwnd);
 	void OnOpenLocalFile(HWND hwnd, LPCWSTR filename);
@@ -544,7 +543,6 @@ protected:
 	void OnHideIDMacros(HWND hwnd);
 	void OnUseIDC_STATIC(HWND hwnd);
 	void OnTest(HWND hwnd);
-	void OnDialogFontSubst(HWND hwnd);
 	void OnHelp(HWND hwnd);
 	void OnNextPane(HWND hwnd, BOOL bNext);
 	void OnTreeItemHelp(HWND hwnd);
