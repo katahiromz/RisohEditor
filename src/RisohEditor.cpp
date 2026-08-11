@@ -7733,13 +7733,6 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	return TRUE;    // success
 }
 
-// MYWM_TREEVIEWISEMPTY
-LRESULT MMainWnd::OnTreeViewIsEmpty(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-	HidePreview(STV_RESETTEXT);
-	return 0;
-}
-
 // the window procedure of the main window
 /*virtual*/ LRESULT CALLBACK
 MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -7778,7 +7771,6 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DO_MESSAGE(MYWM_AUTOCOMPLETE, OnAutoComplete);
 		DO_MESSAGE(MYWM_AUTOCOMPLETEDONE, OnAutoCompleteDone);
 		DO_MESSAGE(WM_EGA_FINISH, OnEgaFinish);
-		DO_MESSAGE(MYWM_TREEVIEWISEMPTY, OnTreeViewIsEmpty);
 	default:
 		return DefaultProcDx();
 	}
