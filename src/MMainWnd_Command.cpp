@@ -4282,7 +4282,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		g_res.delete_invalid();     // clean up invalids
 		if (g_res.empty())
-			PostMessage(g_hMainWnd, MYWM_TREEVIEWISEMPTY, 0, 0);
+			PostMessage(hwnd, MYWM_TREEVIEWISEMPTY, 0, 0);
 	}
 
 	UpdateToolBarStatus();
