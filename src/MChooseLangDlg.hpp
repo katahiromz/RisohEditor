@@ -35,6 +35,7 @@ public:
 
 	~MChooseLangDlg()
 	{
+		m_pAutoComplete->unbind();
 		m_pAutoComplete->Release();
 	}
 
