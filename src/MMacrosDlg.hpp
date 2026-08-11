@@ -450,10 +450,19 @@ public:
 				if (pInfo->item.pszText == NULL)
 					return TRUE;
 
-				auto it = m_map.find(pInfo->item.pszText);
-				if (it != m_map.end())
+				MString strNewKey = pInfo->item.pszText;
+				mstr_trim(strNewKey);
+				if (strNewKey.empty())
+					return FALSE;
+
+				if (strNewKey != m_strTemp)
 				{
-					return TRUE;
+					auto it = m_map.find(strNewKey);
+					if (it != m_map.end())
+					{
+						ErrorBoxDx(IDS_ALREADYEXISTS);
+						return FALSE;
+					}
 				}
 
 				MString strValue = m_map[m_strTemp];
