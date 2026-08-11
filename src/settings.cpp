@@ -669,8 +669,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
 	keyRisoh.SetDword(TEXT("bWordWrap"), g_settings.bWordWrap);
 	keyRisoh.SetDword(TEXT("bBackup"), g_settings.bBackup);
-
-	keyRisoh.SetSz(TEXT("strBackupSuffix"), GetRisohEditorVersion().c_str());
 	keyRisoh.SetSz(L"strBackupSuffix", g_settings.strBackupSuffix.c_str());
 
 	keyRisoh.SetDword(TEXT("bRedundantComments"), g_settings.bRedundantComments);
