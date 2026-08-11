@@ -95,13 +95,10 @@ public:
 #endif
 
 		// auto complete
-		if (m_pAutoComplete2)
-		{
-			COMBOBOXINFO info = { sizeof(info) };
-			GetComboBoxInfo(m_cmb3, &info);
-			HWND hwndEdit = info.hwndItem;
-			m_pAutoComplete2->bind(hwndEdit);
-		}
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb3, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete2->bind(hwndEdit);
 
 		Reload(hwnd);
 		return TRUE;
