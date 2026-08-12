@@ -1360,6 +1360,7 @@ STRINGTABLE
     IDS_REPLACERES "Ganti Sumber Daya"
     IDS_ALLFILES "Semua Berkas (*.*)|*.*|"
     IDS_APPNAME "RisohEditor"
+    IDS_COMPRESSBYUPX "Apakah Anda ingin mengompresnya menggunakan UPX?"
     IDS_ENTERLANG "Mohon masukkan bahasa sumber daya."
     IDS_FILENOTFOUND "Berkas tidak bisa ditemukan."
     IDS_CANNOTREPLACE "Tidak bisa mengganti."

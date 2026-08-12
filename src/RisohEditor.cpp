@@ -5219,13 +5219,16 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile)
 	// Now the executable is updated. Wait a little for virus checker.
 	Sleep(300);
 
+	if (g_settings.bCompressByUPX || m_bUpxCompressed)
+	{
+		if (MsgBoxDx(IDS_COMPRESSBYUPX, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+			DoUpxCompress(m_szUpxExe, pszExeFile);
+		else
+			m_bUpxCompressed = FALSE;
+	}
+
 	// update file info
 	UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
-
-	if (!bEnableCrypt && g_settings.bCompressByUPX)
-	{
-		DoUpxCompress(m_szUpxExe, pszExeFile);
-	}
 
 	// Notify change of file icon
 	MyChangeNotify(pszExeFile);
@@ -5359,11 +5362,11 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
 	MFile hInputWrite, hOutputRead;
+	MStringA strOutput;
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
 		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
 	{
 		// read all output
-		MStringA strOutput;
 		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
@@ -5376,6 +5379,8 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
 	if (bOK)
 		m_bUpxCompressed = TRUE;
+	else
+		MessageBoxA(m_hwnd, strOutput.c_str(), "UPX", MB_ICONERROR);
 
 	return bOK;
 }

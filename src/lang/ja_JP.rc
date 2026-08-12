@@ -1360,6 +1360,7 @@ STRINGTABLE
     IDS_REPLACERES "リソースの置き換え"
     IDS_ALLFILES "すべてのファイル (*.*)|*.*|"
     IDS_APPNAME "リソーエディタ"
+    IDS_COMPRESSBYUPX "UPXで圧縮しますか？"
     IDS_ENTERLANG "リソース言語を入力して下さい。"
     IDS_FILENOTFOUND "ファイルが見つかりません。"
     IDS_CANNOTREPLACE "リソースの置き換えができませんでした。"

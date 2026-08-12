@@ -6,6 +6,7 @@
     - Se solucionó el problema por el cual las flechas desplegables en la vista de árbol no se duplicaban.
     - Se corrigieron las etiquetas de índice de MRadWindow.
     - Compatibilidad con la compresión de recursos mediante WonRes.
+    - Gestión de UPX mejorada.
 - v.6.1.3 (2026-08-08)
     - Menú [Editar] simplificado.
     - Se implementó el cifrado de recursos mediante WonRes.

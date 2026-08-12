@@ -6,6 +6,7 @@
     - Prevented the tree view's drop-down arrow from appearing twice.
     - Fixed MRadWindow index labels.
     - Supported resource compression by WonRes.
+    - Improved UPX handling.
 - v.6.1.3 (2026-08-08)
     - Simplified [Edit] menu.
     - Implemented resource encryption using WonRes.

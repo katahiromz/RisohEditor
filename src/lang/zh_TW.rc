@@ -1355,6 +1355,7 @@ STRINGTABLE
     IDS_REPLACERES "替換資源"
     IDS_ALLFILES "所有檔案 (*.*)|*.*|"
     IDS_APPNAME "RisohEditor"
+    IDS_COMPRESSBYUPX "您想使用 UPX 壓縮嗎？"
     IDS_ENTERLANG "請輸入資源語言類型。"
     IDS_FILENOTFOUND "未找到文件。"
     IDS_CANNOTREPLACE "替換失敗。"

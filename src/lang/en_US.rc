@@ -1357,6 +1357,7 @@ STRINGTABLE
     IDS_REPLACERES "Replace Resource"
     IDS_ALLFILES "All Files (*.*)|*.*|"
     IDS_APPNAME "RisohEditor"
+    IDS_COMPRESSBYUPX "Do you want to compress it with UPX?"
     IDS_ENTERLANG "Please enter a resource language."
     IDS_FILENOTFOUND "File could not be found."
     IDS_CANNOTREPLACE "Unable to replace."

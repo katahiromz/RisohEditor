@@ -6,6 +6,7 @@
     - Risolto il problema per cui le frecce a discesa nella visualizzazione ad albero non venivano duplicate.
     - Corrette le etichette degli indici di MRadWindow.
     - Supporto per la compressione delle risorse tramite WonRes.
+    - Migliorata la gestione di UPX.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.

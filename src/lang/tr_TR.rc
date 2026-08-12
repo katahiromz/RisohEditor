@@ -1357,6 +1357,7 @@ STRINGTABLE
     IDS_REPLACERES "Kaynağı Değiştir"
     IDS_ALLFILES "Tüm Dosyalar (*.*)|*.*|"
     IDS_APPNAME "RisohEditor"
+    IDS_COMPRESSBYUPX "UPX kullanarak sıkıştırmak ister misiniz?"
     IDS_ENTERLANG "Lütfen bir kaynak dili girin."
     IDS_FILENOTFOUND "Dosya bulunamadı."
     IDS_CANNOTREPLACE "Değiştirilemiyor."

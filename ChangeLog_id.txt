@@ -6,6 +6,7 @@
     - Memperbaiki masalah di mana panah tarik-turun pada tampilan pohon tidak terduplikasi.
     - Memperbaiki label indeks MRadWindow.
     - Mendukung kompresi sumber daya oleh WonRes.
+    - Penanganan UPX ditingkatkan.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.

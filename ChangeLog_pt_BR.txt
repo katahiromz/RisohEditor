@@ -6,6 +6,7 @@
     - Corrigido o problema em que as setas suspensas na visualização em árvore não eram duplicadas.
     - Corrigidos os rótulos de índice do MRadWindow.
     - Suporte à compressão de recursos pelo WonRes.
+    - Tratamento de UPX aprimorado.
 - v.6.1.3 (2026-08-08)
     - Menu [Editar] simplificado.
     - Implementei a criptografia de recursos usando o WonRes.

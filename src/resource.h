@@ -113,6 +113,7 @@
 #define IDS_REPLACERES                      106
 #define IDS_ALLFILES                        107
 #define IDS_APPNAME                         108
+#define IDS_COMPRESSBYUPX                   109
 #define IDS_ENTERLANG                       110
 #define IDS_FILENOTFOUND                    111
 #define IDS_CANNOTREPLACE                   112
