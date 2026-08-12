@@ -1078,7 +1078,7 @@ MRadDialog::MRadDialog()
 	HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
 	LOGFONT lf;
 	GetObject(hFont, sizeof(lf), &lf);
-	lf.lfHeight = 14;
+	lf.lfHeight = 13;
 	m_hFontLabel = ::CreateFontIndirect(&lf);
 
 	// create the background brush
@@ -1511,6 +1511,7 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 	::SetTextColor(hdc, RGB(255, 255, 255));
 	::SetBkMode(hdc, OPAQUE);
 	::SetBkColor(hdc, RGB(0, 0, 255));
+	HBRUSH hbr = CreateSolidBrush(RGB(0, 0, 255));
 
 	for (auto& pair : MRadCtrl::IndexToCtrlMap())
 	{
@@ -1520,9 +1521,16 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 
 		TCHAR szText[32];
 		StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
-		::TextOut(hdc, rc.left, rc.top, szText, lstrlen(szText));
+
+		RECT rcItem = { rc.left, rc.top };
+		DrawText(hdc, szText, -1, &rcItem, DT_SINGLELINE | DT_LEFT | DT_TOP | DT_CALCRECT);
+		rcItem.right += 2;
+		rcItem.bottom += 2;
+		FillRect(hdc, &rcItem, hbr);
+		DrawText(hdc, szText, -1, &rcItem, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 	}
 
+	::DeleteObject(hbr);
 	::SelectObject(hdc, hFontOld);
 	::ReleaseDC(hwndDialog, hdc);
 }
