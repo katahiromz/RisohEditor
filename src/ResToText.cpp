@@ -497,7 +497,7 @@ ResToText::DoMenu(const EntryBase& entry)
 		str += L"\r\n";
 		return str;
 	}
-	return LoadStringDx(IDS_INVALIDDATA);
+	return L"";
 }
 
 MString
@@ -512,7 +512,7 @@ ResToText::DoToolbar(const EntryBase& entry)
 		str += L"\r\n";
 		return str;
 	}
-	return LoadStringDx(IDS_INVALIDDATA);
+	return L"";
 }
 
 MString
@@ -527,7 +527,7 @@ ResToText::DoDialog(const EntryBase& entry)
 		str += L"\r\n";
 		return str;
 	}
-	return LoadStringDx(IDS_INVALIDDATA);
+	return L"";
 }
 
 MString
@@ -541,7 +541,7 @@ ResToText::DoString(const EntryBase& entry)
 	{
 		MByteStreamEx stream(e->m_data);
 		if (!str_res.LoadFromStream(stream, e->m_name.m_id))
-			return LoadStringDx(IDS_INVALIDDATA);
+			return L"";
 	}
 
 	MString str;
@@ -564,7 +564,7 @@ ResToText::DoMessage(const EntryBase& entry)
 	{
 		MByteStreamEx stream(e->m_data);
 		if (!msg_res.LoadFromStream(stream))
-			return LoadStringDx(IDS_INVALIDDATA);
+			return L"";
 		name = e->m_name;
 		break;
 	}
@@ -603,7 +603,7 @@ ResToText::DoAccel(const EntryBase& entry)
 		str += L"\r\n\r\n";
 		return str;
 	}
-	return LoadStringDx(IDS_INVALIDDATA);
+	return L"";
 }
 
 MString
@@ -661,7 +661,7 @@ ResToText::DoVersion(const EntryBase& entry)
 		str += L"\r\n";
 		return str;
 	}
-	return LoadStringDx(IDS_INVALIDDATA);
+	return L"";
 }
 
 MString
