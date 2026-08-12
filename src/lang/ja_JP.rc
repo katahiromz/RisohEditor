@@ -1633,6 +1633,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "ファイルが開けません。おそらく WonRes で暗号化されています。"
     IDS_FORCEOPENCRYPTOWARN "指定したファイルは おそらく WonRes で暗号化されています。パスワードなしで開きましたが、一部または全部のデータは利用できないかもしれません。"
     IDS_WARNRESETSETTINGS "アプリの設定内容が消えます。よろしいですか？"
+    IDS_WARNMENUITEMEXHELPID "1つ以上のメニュー項目にヘルプIDが設定されていますが、MENUEX形式においてヘルプIDが有効なのはサブメニュー（POPUP）項目のみです。サブメニュー以外の項目に設定されたヘルプIDは、保存時に破棄されます。"
+    IDS_WARNMENUHELPIDNOTSUPPORTED "拡張版ではないメニューではヘルプIDはサポートされません。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

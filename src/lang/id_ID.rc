@@ -1633,6 +1633,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "File tersebut tidak dapat dibuka. Kemungkinan besar file tersebut dienkripsi dengan WonRes."
     IDS_FORCEOPENCRYPTOWARN "File yang dimaksud kemungkinan dienkripsi dengan WonRes. Meskipun Anda membukanya tanpa kata sandi, sebagian atau seluruh data mungkin tidak tersedia."
     IDS_WARNRESETSETTINGS "Pengaturan aplikasi Anda akan dihapus. Apakah itu tidak masalah?"
+    IDS_WARNMENUITEMEXHELPID "Satu atau beberapa item menu memiliki Help ID, namun Help ID hanya berlaku untuk item submenu (POPUP) dalam format MENUEX. Help ID pada item yang bukan submenu akan dibuang saat disimpan."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "ID bantuan tidak didukung di menu standar."
 }
 
 //////////////////////////////////////////////////////////////////////////////

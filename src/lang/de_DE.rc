@@ -1629,6 +1629,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "Die Datei kann nicht geöffnet werden. Sie ist wahrscheinlich mit WonRes verschlüsselt."
     IDS_FORCEOPENCRYPTOWARN "Die angegebene Datei ist wahrscheinlich mit WonRes verschlüsselt. Obwohl Sie sie ohne Passwort geöffnet haben, sind möglicherweise einige oder alle Daten nicht verfügbar."
     IDS_WARNRESETSETTINGS "Ihre App-Einstellungen werden gelöscht. Ist das in Ordnung?"
+    IDS_WARNMENUITEMEXHELPID "Ein oder mehrere Menüelemente verfügen über eine Hilfe-ID; Hilfe-IDs gelten jedoch nur für Untermenüelemente (POPUP) im MENUEX-Format. Die Hilfe-ID bei Elementen, die keine Untermenüs sind, wird beim Speichern verworfen."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Hilfe-IDs werden im Standardmenü nicht unterstützt."
 }
 
 //////////////////////////////////////////////////////////////////////////////

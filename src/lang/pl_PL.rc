@@ -1630,6 +1630,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "Nie można otworzyć pliku. Prawdopodobnie jest zaszyfrowany za pomocą WonRes."
     IDS_FORCEOPENCRYPTOWARN "Podany plik jest prawdopodobnie zaszyfrowany za pomocą WonRes. Mimo że otworzyłeś go bez hasła, część lub całość danych może być niedostępna."
     IDS_WARNRESETSETTINGS "Ustawienia Twojej aplikacji zostaną usunięte. Czy to w porządku?"
+    IDS_WARNMENUITEMEXHELPID "Co najmniej jeden element menu posiada identyfikator pomocy (Help ID), jednak identyfikatory te dotyczą wyłącznie elementów podmenu (typu POPUP) w formacie MENUEX. Identyfikatory pomocy przypisane do elementów niebędących podmenu zostaną odrzucone podczas zapisu."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Identyfikatory pomocy nie są obsługiwane w menu standardowym."
 }
 
 //////////////////////////////////////////////////////////////////////////////

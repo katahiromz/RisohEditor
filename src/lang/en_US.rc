@@ -1630,6 +1630,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "The file cannot be opened. It is likely encrypted with WonRes."
     IDS_FORCEOPENCRYPTOWARN "The specified file appears to be encrypted with WonRes. It was opened without a password, but some or all of the data may be inaccessible."
     IDS_WARNRESETSETTINGS "The app's settings will be deleted. Is that okay?"
+    IDS_WARNMENUITEMEXHELPID "One or more menu items have a Help ID, but Help IDs only apply to submenu (POPUP) items in the MENUEX format. The Help ID on non-submenu items will be discarded when saved."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Help IDs are not supported in menus that are not extended."
 }
 
 //////////////////////////////////////////////////////////////////////////////

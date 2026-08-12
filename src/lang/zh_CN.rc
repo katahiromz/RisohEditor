@@ -1629,6 +1629,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "文件无法打开。它可能使用 WonRes 加密了。"
     IDS_FORCEOPENCRYPTOWARN "指定的文件很可能已使用 WonRes 加密。即使您未输入密码就打开了该文件，部分或全部数据也可能无法访问。"
     IDS_WARNRESETSETTINGS "您的应用设置将被清除。可以吗？"
+    IDS_WARNMENUITEMEXHELPID "一个或多个菜单项包含帮助 ID，但帮助 ID 仅适用于 MENUEX 格式中的子菜单（POPUP）项。非子菜单项上的帮助 ID 在保存时会被丢弃。"
+    IDS_WARNMENUHELPIDNOTSUPPORTED "标准菜单不支持帮助 ID。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

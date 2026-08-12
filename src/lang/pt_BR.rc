@@ -1632,6 +1632,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "O arquivo não pode ser aberto. Provavelmente está criptografado com WonRes."
     IDS_FORCEOPENCRYPTOWARN "O arquivo especificado provavelmente está criptografado com WonRes. Embora você o tenha aberto sem senha, alguns ou todos os dados podem estar indisponíveis."
     IDS_WARNRESETSETTINGS "As configurações do seu aplicativo serão apagadas. Tudo bem para você?"
+    IDS_WARNMENUITEMEXHELPID "Um ou mais itens de menu possuem um ID de Ajuda, mas IDs de Ajuda aplicam-se apenas a itens de submenu (POPUP) no formato MENUEX. O ID de Ajuda em itens que não são de submenu será descartado ao salvar."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Os IDs de ajuda não são suportados no menu padrão."
 }
 
 //////////////////////////////////////////////////////////////////////////////

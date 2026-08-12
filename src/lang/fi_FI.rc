@@ -1629,6 +1629,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "Tiedostoa ei voida avata. Se on luultavasti salattu WonRes-salauksella."
     IDS_FORCEOPENCRYPTOWARN "Määritetty tiedosto on todennäköisesti salattu WonRes-salaustekniikalla. Vaikka avasit sen ilman salasanaa, osa tai kaikki tiedot eivät välttämättä ole käytettävissä."
     IDS_WARNRESETSETTINGS "Sovelluksesi asetukset poistetaan. Onko se ok?"
+    IDS_WARNMENUITEMEXHELPID "Yhdellä tai useammalla valikkokohteella on ohje-ID, mutta ohje-ID:t koskevat vain MENUEX-muodossa olevia alivalikon (pikakuvakkeen) kohteita. Muiden kuin alivalikon kohteiden ohje-ID:t hylätään tallennuksen yhteydessä."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Ohjetunnuksia ei tueta vakiovalikossa."
 }
 
 //////////////////////////////////////////////////////////////////////////////

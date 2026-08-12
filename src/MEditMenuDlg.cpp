@@ -682,7 +682,7 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 	{
 		m_menu_res.header().wVersion = 1;
 		m_menu_res.header().wOffset = 4;
-		m_menu_res.header().dwHelpId = 0;
+		//m_menu_res.header().dwHelpId = 0;
 		m_menu_res.exitems().clear();
 		for (iItem = 0; iItem < nCount; ++iItem)
 		{
@@ -707,13 +707,36 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 		// only serializes dwHelpId for items with bResInfo & 0x01 set --
 		// must be recomputed from wDepth here.
 		m_menu_res.Update();
+
+		// Help ID only has meaning for a POPUP (submenu) item in the
+		// MENUEX format. Update() above clears the POPUP bit on any item
+		// that isn't actually a submenu, so a Help ID entered on a leaf
+		// item would otherwise be silently discarded on save -- warn the
+		// user instead of failing quietly.
+		for (auto& exitem : m_menu_res.exitems())
+		{
+			if (exitem.dwHelpId != 0 && !(exitem.bResInfo & 0x01))
+			{
+				MessageBoxW(hwnd,
+				            LoadStringDx(IDS_WARNMENUITEMEXHELPID),
+				            LoadStringDx(IDS_APPNAME), MB_ICONWARNING);
+				break;
+			}
+		}
 	}
 	else
 	{
 		m_menu_res.header().wVersion = 0;
 		m_menu_res.header().wOffset = 4;
-		m_menu_res.header().dwHelpId = 0;
+		//m_menu_res.header().dwHelpId = 0;
 		m_menu_res.items().clear();
+
+		// The classic (non-EX) MENU binary format has no Help ID field at
+		// all -- unlike MENUEX, not even POPUP items can carry one -- so
+		// any Help ID entered in the list is simply dropped below. Track
+		// that so we can warn instead of discarding it silently.
+		bool bHasHelpID = false;
+
 		for (iItem = 0; iItem < nCount; ++iItem)
 		{
 			GetEntry(hwnd, entry, iItem);
@@ -726,12 +749,26 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 			item.text = entry.szCaption;
 
 			m_menu_res.items().push_back(item);
+
+			DWORD dwHelpId = 0;
+			if (!entry.szHelpID.empty() &&
+			    IsValidHelpIDText(entry.szHelpID.c_str(), &dwHelpId) && dwHelpId != 0)
+			{
+				bHasHelpID = true;
+			}
 		}
 
 		// Same idea as above for the classic (non-EX) format: recompute
 		// MF_POPUP / MF_END from wDepth so the saved menu structure is
 		// actually valid.
 		m_menu_res.Update();
+
+		if (bHasHelpID)
+		{
+			MessageBoxW(hwnd,
+			            LoadStringDx(IDS_WARNMENUHELPIDNOTSUPPORTED),
+			            LoadStringDx(IDS_APPNAME), MB_ICONWARNING);
+		}
 	}
 
 	EndDialog(IDOK);

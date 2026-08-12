@@ -1630,6 +1630,8 @@ STRINGTABLE
     IDS_CANNOTOPENPROTECTED "Dosya açılamıyor. Muhtemelen WonRes ile şifrelenmiş."
     IDS_FORCEOPENCRYPTOWARN "Belirtilen dosya büyük olasılıkla WonRes ile şifrelenmiştir. Dosyayı parola olmadan açmış olsanız bile, verilerin bir kısmı veya tamamı erişilemez olabilir."
     IDS_WARNRESETSETTINGS "Uygulama ayarlarınız silinecek. Bu sorun olur mu?"
+    IDS_WARNMENUITEMEXHELPID "Bir veya daha fazla menü öğesi bir Yardım Kimliğine (Help ID) sahip; ancak Yardım Kimlikleri, MENUEX formatında yalnızca alt menü (POPUP) öğeleri için geçerlidir. Alt menü öğesi olmayanlardaki Yardım Kimlikleri, kaydetme sırasında atılacaktır."
+    IDS_WARNMENUHELPIDNOTSUPPORTED "Standart menüde yardım kimlikleri desteklenmemektedir."
 }
 
 //////////////////////////////////////////////////////////////////////////////
