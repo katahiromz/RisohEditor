@@ -2357,22 +2357,6 @@ void MMainWnd::OnWordWrap(HWND hwnd)
 	SelectTV(entry, FALSE, STV_DONTRESET);
 }
 
-// ID_USEMSMSGTBL
-void MMainWnd::OnUseMSMSGTBL(HWND hwnd)
-{
-	g_settings.bUseMSMSGTABLE = !g_settings.bUseMSMSGTABLE;
-
-	// create the source EDIT control
-	ReCreateSrcEdit(hwnd);
-
-	// reset fonts
-	ReCreateFonts(hwnd);
-
-	// select the entry to refresh
-	auto entry = g_res.get_entry();
-	SelectTV(entry, FALSE, STV_RESETTEXT);
-}
-
 // ID_USEBEGINEND
 void MMainWnd::OnUseBeginEnd(HWND hwnd)
 {
@@ -4126,9 +4110,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_USEBEGINEND:
 		OnUseBeginEnd(hwnd);
-		break;
-	case ID_USEMSMSGTBL:
-		OnUseMSMSGTBL(hwnd);
 		break;
 	case ID_SAVE:
 		OnSave(hwnd);

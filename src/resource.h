@@ -541,7 +541,6 @@
 #define ID_CHECKUPDATE                      261
 #define ID_DFMSETTINGS                      262
 #define ID_OPENREADMEKO                     265
-#define ID_USEMSMSGTBL                      266
 #define ID_CHOOSEUILANG                     267
 #define ID_COPYTOMULTILANG                  268
 #define ID_OPENHISTORY                      269

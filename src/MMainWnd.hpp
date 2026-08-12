@@ -467,7 +467,6 @@ protected:
 	void OnEncoding(HWND hwnd);
 	void OnQueryConstant(HWND hwnd);
 	void OnUseBeginEnd(HWND hwnd);
-	void OnUseMSMSGTBL(HWND hwnd);
 	void OnRefreshAll(HWND hwnd);
 
 	LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
