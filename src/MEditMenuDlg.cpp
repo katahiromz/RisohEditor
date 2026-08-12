@@ -700,6 +700,13 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 
 			m_menu_res.exitems().push_back(exitem);
 		}
+
+		// exitem.bResInfo above is left at 0 for every row; the POPUP
+		// (0x01) and last-item (0x80) bits -- and therefore whether
+		// dwHelpId actually gets written out by SaveToStreamEx, since it
+		// only serializes dwHelpId for items with bResInfo & 0x01 set --
+		// must be recomputed from wDepth here.
+		m_menu_res.Update();
 	}
 	else
 	{
@@ -720,6 +727,11 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 
 			m_menu_res.items().push_back(item);
 		}
+
+		// Same idea as above for the classic (non-EX) format: recompute
+		// MF_POPUP / MF_END from wDepth so the saved menu structure is
+		// actually valid.
+		m_menu_res.Update();
 	}
 
 	EndDialog(IDOK);
