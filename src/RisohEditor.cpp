@@ -5080,15 +5080,6 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 	return DoSaveExeAs(pszExeFile);
 }
 
-BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(TRUE))
-		return TRUE;
-
-	return DoSaveExeAs(pszExeFile, TRUE);
-}
-
 BOOL IsExeOrDll(LPCWSTR pszFileName)
 {
 	BYTE ab[2] = { 0, 0 };

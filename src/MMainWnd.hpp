@@ -318,7 +318,6 @@ public:
 	BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
 	BOOL DoSaveResAs(LPCWSTR pszResFile);
 	BOOL DoSaveAs(LPCWSTR pszExeFile);
-	BOOL DoSaveAsCompression(LPCWSTR pszExeFile);
 	BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
 	BOOL DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
 	BOOL DoSaveFile(HWND hwnd, LPCWSTR pszFile);
