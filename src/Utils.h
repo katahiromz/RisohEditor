@@ -115,3 +115,4 @@ BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_load
 BOOL CreateEmptyFile(PCWSTR filename);
 MStringA GetCannotCreateTempFile(VOID);
 MStringW GetResTypeEncoding(const MIdOrString& type);
+bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue = NULL);

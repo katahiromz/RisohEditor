@@ -6,6 +6,7 @@
 
 #include "RisohEditor.hpp"
 #include "MEditMenuDlg.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 // MAddMItemDlg
@@ -133,6 +134,10 @@ BOOL MModifyMItemDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	GetComboBoxInfo(m_cmb2, &info);
 	HWND hwndEdit = info.hwndItem;
 	m_pAutoComplete4->bind(hwndEdit);
+
+	GetComboBoxInfo(m_cmb3, &info);
+	hwndEdit = info.hwndItem;
+	m_pAutoComplete6->bind(hwndEdit);
 
 	if (lstrcmpiW(m_entry.szCaption.c_str(), LoadStringDx(IDS_SEPARATOR)) == 0 ||
 		(dwType & MFT_SEPARATOR))
@@ -689,7 +694,8 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 			exitem.menuId = g_db.GetResIDValue(entry.szCommandID);
 			exitem.bResInfo = 0;
 			exitem.text = entry.szCaption;
-			exitem.dwHelpId = g_db.GetResIDValue(entry.szHelpID);
+			exitem.dwHelpId = 0;
+			IsValidHelpIDText(entry.szHelpID.c_str(), &exitem.dwHelpId);
 			exitem.wDepth = entry.wDepth;
 
 			m_menu_res.exitems().push_back(exitem);

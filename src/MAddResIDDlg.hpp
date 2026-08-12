@@ -13,6 +13,7 @@
 #include "Res.hpp"
 #include "settings.h"
 #include "Common.hpp"
+#include "Utils.h"
 
 extern std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized;
 extern std::unordered_map<MStringW, INT> *g_pmapLocalizedToIDType;

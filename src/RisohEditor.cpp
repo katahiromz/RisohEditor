@@ -23,6 +23,7 @@ std::vector<MString> g_names;
 std::vector<MString> g_keys;
 std::vector<MString> g_ctrl_ids;
 std::vector<MString> g_string_ids;
+std::vector<MString> g_help_ids;
 std::vector<MString> g_encrypted_types;
 HWND s_hwndEga = NULL;
 
@@ -2740,6 +2741,25 @@ BOOL InitStringIDs(void)
 	for (auto& table_entry : table)
 	{
 		g_string_ids.push_back(table_entry.name);
+	}
+
+	return TRUE;
+}
+
+BOOL InitHelpIDs(void)
+{
+	g_help_ids.clear();
+
+	// get the prefix from IDTYPE_STRING
+	MStringW prefix = MapIDTypeToPrefix(IDTYPE_HELP);
+	if (prefix.empty())
+		return FALSE;
+
+	// get the resource IDs from the prefix
+	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+	for (auto& table_entry : table)
+	{
+		g_help_ids.push_back(table_entry.name);
 	}
 
 	return TRUE;
@@ -8078,6 +8098,16 @@ MRisohAutoComplete::MRisohAutoComplete(INT type, BOOL bUILanguage, const MIdOrSt
 			}
 		}
 	}
+	else if (type == 6) // Help IDs
+	{
+		if (InitHelpIDs())
+		{
+			for (auto& id : g_help_ids)
+			{
+				push_back(id);
+			}
+		}
+	}
 }
 
 // start up the program
@@ -8514,6 +8544,7 @@ wWinMain(HINSTANCE   hInstance,
 	g_keys.clear();
 	g_ctrl_ids.clear();
 	g_string_ids.clear();
+	g_help_ids.clear();
 	g_encrypted_types.clear();
 
 	// Revert WoW64 filesystem redirection

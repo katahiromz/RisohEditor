@@ -27,11 +27,13 @@ public:
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
 	MRisohAutoComplete *m_pAutoComplete4;
+	MRisohAutoComplete *m_pAutoComplete6;
 
 	MAddMItemDlg(MENU_ENTRY& entry)
 		: MDialogBase(IDD_ADDMITEM)
 		, m_entry(entry)
 		, m_pAutoComplete4(new MRisohAutoComplete(4))
+		, m_pAutoComplete6(new MRisohAutoComplete(6))
 	{
 	}
 
@@ -39,6 +41,8 @@ public:
 	{
 		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
+		m_pAutoComplete6->unbind();
+		m_pAutoComplete6->Release();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -55,6 +59,10 @@ public:
 		GetComboBoxInfo(m_cmb2, &info);
 		HWND hwndEdit = info.hwndItem;
 		m_pAutoComplete4->bind(hwndEdit);
+
+		GetComboBoxInfo(m_cmb3, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete6->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
@@ -89,11 +97,13 @@ public:
 	MComboBoxAutoComplete m_cmb2;
 	MComboBoxAutoComplete m_cmb3;
 	MRisohAutoComplete *m_pAutoComplete4;
+	MRisohAutoComplete *m_pAutoComplete6;
 
 	MModifyMItemDlg(MENU_ENTRY& entry)
 		: MDialogBase(IDD_MODIFYMITEM)
 		, m_entry(entry)
 		, m_pAutoComplete4(new MRisohAutoComplete(4))
+		, m_pAutoComplete6(new MRisohAutoComplete(6))
 	{
 	}
 
@@ -101,6 +111,8 @@ public:
 	{
 		m_pAutoComplete4->unbind();
 		m_pAutoComplete4->Release();
+		m_pAutoComplete6->unbind();
+		m_pAutoComplete6->Release();
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);

@@ -71,21 +71,6 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
 #include "MString.hpp"
 #include "MByteStream.hpp"
-
-// structure for language information
-struct LANG_ENTRY
-{
-	LANGID LangID;    // language ID
-	MStringW str;   // string
-
-	// for sorting
-	bool operator<(const LANG_ENTRY& ent) const
-	{
-		return str < ent.str;
-	}
-};
-extern std::vector<LANG_ENTRY> g_langs;
-
 #include "ConstantsDB.hpp"
 #include "PackedDIB.hpp"
 #include "Res.hpp"

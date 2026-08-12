@@ -3417,3 +3417,46 @@ MStringW GetResTypeEncoding(const MIdOrString& type)
 
 	return L"";
 }
+
+// Validate a string as a 32-bit signed or unsigned integer (for Help IDs).
+// Accepts signed range [-2147483648, 2147483647] and unsigned range [0, 4294967295].
+// Stores the two's-complement DWORD in *pValue if non-NULL and returns true on success.
+bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue)
+{
+	if (!str || !*str) return false;
+
+	MStringW s = str;
+	mstr_trim(s);
+
+	auto prefix = MapIDTypeToPrefix(IDTYPE_HELP);
+	if (prefix.size())
+	{
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			if (table_entry.name == s)
+			{
+				if (pValue)
+					*pValue = table_entry.value;
+				return true;
+			}
+		}
+	}
+
+	WCHAR *endp;
+	errno = 0;
+	LONGLONG val = wcstoll(s.c_str(), &endp, 0);
+
+	if (errno == ERANGE) return false;
+	if (endp == s.c_str()) return false; // No digits parsed
+
+	// Skip trailing whitespace; reject any other trailing chars
+	while (*endp == L' ' || *endp == L'\t') ++endp;
+	if (*endp) return false;
+
+	// Valid range: signed [-2147483648, 2147483647] or unsigned [0, 4294967295]
+	if (val < LONG_MIN || val > ULONG_MAX) return false;
+
+	if (pValue) *pValue = (DWORD)val;
+	return true;
+}
