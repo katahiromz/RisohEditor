@@ -3438,11 +3438,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 	else
 		CheckMenuItem(hMenu, ID_USEBEGINEND, MF_BYCOMMAND | MF_UNCHECKED);
 
-	if (g_settings.bUseMSMSGTABLE)
-		CheckMenuItem(hMenu, ID_USEMSMSGTBL, MF_BYCOMMAND | MF_CHECKED);
-	else
-		CheckMenuItem(hMenu, ID_USEMSMSGTBL, MF_BYCOMMAND | MF_UNCHECKED);
-
 	BOOL bCanEditLabel = TRUE;
 
 	// get the selected entry
