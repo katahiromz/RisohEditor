@@ -84,7 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuración...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Restablecer configuración...", ID_RESETSETTINGS
+        MENUITEM "Restablecer configuración", ID_RESETSETTINGS
     }
     POPUP "&Buscar"
     {

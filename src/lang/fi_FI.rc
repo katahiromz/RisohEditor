@@ -84,7 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Konfiguraatio...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Palauta asetukset...", ID_RESETSETTINGS
+        MENUITEM "Palauta asetukset", ID_RESETSETTINGS
     }
     POPUP "&Haku"
     {

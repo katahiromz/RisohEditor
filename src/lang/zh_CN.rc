@@ -84,7 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "设置(&C)...\tAlt+Enter", ID_CONFIG
-        MENUITEM "重置配置...", ID_RESETSETTINGS
+        MENUITEM "重置配置", ID_RESETSETTINGS
     }
     POPUP "搜索(&S)"
     {

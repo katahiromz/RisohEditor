@@ -84,7 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "구성(&C)...\tAlt+Enter", ID_CONFIG
-        MENUITEM "구성 재설정...", ID_RESETSETTINGS
+        MENUITEM "구성 재설정", ID_RESETSETTINGS
     }
     POPUP "검색(&S)"
     {
