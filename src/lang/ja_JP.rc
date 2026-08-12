@@ -1353,13 +1353,14 @@ FILETYPE        VFT_APP
 
 STRINGTABLE
 {
-    IDS_APPNAME "リソーエディタ 6.1.4 by 片山博文MZ"
+    IDS_TITLE "リソーエディタ 6.1.4 by 片山博文MZ"
     IDS_TITLEWITHFILE "リソーエディタ 6.1.4 - ファイル: %s"
     IDS_EXTRACTRES "リソースの抽出"
     IDS_RESBINFILTER "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE "保存できませんでした。"
     IDS_REPLACERES "リソースの置き換え"
     IDS_ALLFILES "すべてのファイル (*.*)|*.*|"
+    IDS_APPNAME "リソーエディタ"
     IDS_ENTERLANG "リソース言語を入力して下さい。"
     IDS_FILENOTFOUND "ファイルが見つかりません。"
     IDS_CANNOTREPLACE "リソースの置き換えができませんでした。"

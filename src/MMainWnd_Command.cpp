@@ -4312,16 +4312,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 			ChangeStatusText(IDS_READY);
 		}
 	}
-
-#if 0 && !defined(NDEBUG) && (WINVER >= 0x0500)
-	// show object counts (for debugging purpose)
-	HANDLE hProcess = GetCurrentProcess();
-	TCHAR szText[MAX_PATH];
-	StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"),
-			 GetGuiResources(hProcess, GR_GDIOBJECTS),
-			 GetGuiResources(hProcess, GR_USEROBJECTS));
-	ChangeStatusText(szText);
-#endif
 }
 
 // ID_DEBUGTREENODE: for debugging purpose

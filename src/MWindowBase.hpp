@@ -5,6 +5,8 @@
 #ifndef MZC4_MWINDOWBASE_HPP_
 #define MZC4_MWINDOWBASE_HPP_    174     /* Version 174 */
 
+#include "resource.h"
+
 class MWindowBase;
 class MDialogBase;
 
@@ -1281,23 +1283,7 @@ MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
 	MString Title;
 	if (pszTitle == NULL)
 	{
-#ifdef IDS_APPNAME
 		Title = LoadStringDx(IDS_APPNAME);
-#else
-		if (m_hwnd)
-		{
-			Title = GetWindowText(GetAncestorDx());
-			size_t i = Title.find(TEXT(" - "));
-			if (i != MString::npos)
-			{
-				Title = Title.substr(i + 3);
-			}
-		}
-		else
-		{
-			Title = TEXT("ERROR");
-		}
-#endif
 	}
 	else
 	{

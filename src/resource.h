@@ -105,13 +105,14 @@
 #define IDR_TINYDLL64                       109
 #define IDR_SEARCHINGANICUR                 110
 
-#define IDS_APPNAME                         101
+#define IDS_TITLE                           101
 #define IDS_TITLEWITHFILE                   102
 #define IDS_EXTRACTRES                      103
 #define IDS_RESBINFILTER                    104
 #define IDS_CANNOTSAVE                      105
 #define IDS_REPLACERES                      106
 #define IDS_ALLFILES                        107
+#define IDS_APPNAME                         108
 #define IDS_ENTERLANG                       110
 #define IDS_FILENOTFOUND                    111
 #define IDS_CANNOTREPLACE                   112

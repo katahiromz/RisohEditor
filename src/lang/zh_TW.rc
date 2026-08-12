@@ -1348,13 +1348,14 @@ FILETYPE        VFT_APP
 
 STRINGTABLE
 {
-    IDS_APPNAME "RisohEditor 6.1.4 by 片山博文MZ"
+    IDS_TITLE "RisohEditor 6.1.4 by 片山博文MZ"
     IDS_TITLEWITHFILE "RisohEditor 6.1.4 - 文件: %s"
     IDS_EXTRACTRES "導出資源"
     IDS_RESBINFILTER "二進位制資源檔 (*.res)|*.res|二進位制文件 (*.bin)|*.bin|所有檔案 (*.*)|*.*|"
     IDS_CANNOTSAVE "無法保存。"
     IDS_REPLACERES "替換資源"
     IDS_ALLFILES "所有檔案 (*.*)|*.*|"
+    IDS_APPNAME "RisohEditor"
     IDS_ENTERLANG "請輸入資源語言類型。"
     IDS_FILENOTFOUND "未找到文件。"
     IDS_CANNOTREPLACE "替換失敗。"

@@ -1350,13 +1350,14 @@ FILETYPE        VFT_APP
 
 STRINGTABLE
 {
-    IDS_APPNAME "RisohEditor 6.1.4 by Katayama Hirofumi MZ"
+    IDS_TITLE "RisohEditor 6.1.4 by Katayama Hirofumi MZ"
     IDS_TITLEWITHFILE "RisohEditor 6.1.4 - Dosya: %s"
     IDS_EXTRACTRES "Kaynağı Çıkart"
     IDS_RESBINFILTER "İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_CANNOTSAVE "Kaydedilemiyor."
     IDS_REPLACERES "Kaynağı Değiştir"
     IDS_ALLFILES "Tüm Dosyalar (*.*)|*.*|"
+    IDS_APPNAME "RisohEditor"
     IDS_ENTERLANG "Lütfen bir kaynak dili girin."
     IDS_FILENOTFOUND "Dosya bulunamadı."
     IDS_CANNOTREPLACE "Değiştirilemiyor."

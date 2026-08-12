@@ -1353,13 +1353,14 @@ FILETYPE        VFT_APP
 
 STRINGTABLE
 {
-    IDS_APPNAME "RisohEditor 6.1.4 oleh Katayama Hirofumi MZ"
+    IDS_TITLE "RisohEditor 6.1.4 oleh Katayama Hirofumi MZ"
     IDS_TITLEWITHFILE "RisohEditor 6.1.4 - Berkas: %s"
     IDS_EXTRACTRES "Ekstrak Sumber Daya"
     IDS_RESBINFILTER "Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_CANNOTSAVE "Tidak bisa disimpan."
     IDS_REPLACERES "Ganti Sumber Daya"
     IDS_ALLFILES "Semua Berkas (*.*)|*.*|"
+    IDS_APPNAME "RisohEditor"
     IDS_ENTERLANG "Mohon masukkan bahasa sumber daya."
     IDS_FILENOTFOUND "Berkas tidak bisa ditemukan."
     IDS_CANNOTREPLACE "Tidak bisa mengganti."

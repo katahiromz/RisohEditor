@@ -1349,13 +1349,14 @@ FILETYPE        VFT_APP
 
 STRINGTABLE
 {
-    IDS_APPNAME "RisohEditor 6.1.4 von Katayama Hirofumi MZ"
+    IDS_TITLE "RisohEditor 6.1.4 von Katayama Hirofumi MZ"
     IDS_TITLEWITHFILE "RisohEditor 6.1.4 - Datei: %s"
     IDS_EXTRACTRES "Ressource extrahieren"
     IDS_RESBINFILTER "Binäre Ressourcen (*.res)|*.res|Binärdateien (*.bin)|*.bin|Alle Dateien (*.*)|*.*|"
     IDS_CANNOTSAVE "Speichern nicht möglich."
     IDS_REPLACERES "Ressource ersetzen"
     IDS_ALLFILES "Alle Dateien (*.*)|*.*|"
+    IDS_APPNAME "RisohEditor"
     IDS_ENTERLANG "Bitte geben Sie eine Ressourcensprache ein."
     IDS_FILENOTFOUND "Datei konnte nicht gefunden werden."
     IDS_CANNOTREPLACE "Nicht ersetzbar."

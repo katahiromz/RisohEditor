@@ -7399,7 +7399,7 @@ void MMainWnd::UpdateTitleBar()
 {
 	if (m_szFile[0] == 0)
 	{
-		SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
+		SetWindowTextW(m_hwnd, LoadStringDx(IDS_TITLE));
 	}
 	else if (g_settings.bShowFullPath)
 	{
@@ -8106,7 +8106,7 @@ BOOL MMainWnd::StartDx()
 	m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(IDR_MAINACCEL));
 
 	// create the main window
-	if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
+	if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_TITLE),
 		WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
 	{
 		ErrorBoxDx(TEXT("failure of CreateWindow"));
@@ -8299,7 +8299,7 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
 		if (lstrcmpiW(arg, L"-version") == 0 ||
 			lstrcmpiW(arg, L"--version") == 0)
 		{
-			MessageBoxW(NULL, LoadStringDx(IDS_APPNAME), LoadStringDx(IDS_APPNAME), MB_ICONINFORMATION);
+			MessageBoxW(NULL, LoadStringDx(IDS_TITLE), LoadStringDx(IDS_APPNAME), MB_ICONINFORMATION);
 			return FALSE;
 		}
 
