@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "設定(&C)...\tAlt+Enter", ID_CONFIG
+        MENUITEM "設定をリセット...", ID_RESETSETTINGS
     }
     POPUP "検索(&S)"
     {
@@ -1630,6 +1631,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "ダイアログ フォントの代替"
     IDS_CANNOTOPENPROTECTED "ファイルが開けません。おそらく WonRes で暗号化されています。"
     IDS_FORCEOPENCRYPTOWARN "指定したファイルは おそらく WonRes で暗号化されています。パスワードなしで開きましたが、一部または全部のデータは利用できないかもしれません。"
+    IDS_WARNRESETSETTINGS "アプリの設定内容が消えます。よろしいですか？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

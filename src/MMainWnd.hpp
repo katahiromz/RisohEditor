@@ -526,7 +526,7 @@ protected:
 
 	BOOL DoQuerySaveChange(HWND hwnd);
 
-	void OnNew(HWND hwnd);
+	BOOL OnNew(HWND hwnd);
 	void OnOpen(HWND hwnd);
 	BOOL OnSave(HWND hwnd);
 	BOOL OnSaveAs(HWND hwnd);

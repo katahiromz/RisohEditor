@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "设置(&C)...\tAlt+Enter", ID_CONFIG
+        MENUITEM "重置配置...", ID_RESETSETTINGS
     }
     POPUP "搜索(&S)"
     {
@@ -1626,6 +1627,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "对话框字体替代"
     IDS_CANNOTOPENPROTECTED "文件无法打开。它可能使用 WonRes 加密了。"
     IDS_FORCEOPENCRYPTOWARN "指定的文件很可能已使用 WonRes 加密。即使您未输入密码就打开了该文件，部分或全部数据也可能无法访问。"
+    IDS_WARNRESETSETTINGS "您的应用设置将被清除。可以吗？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Impostazioni...\tAlt+Invio", ID_CONFIG
+        MENUITEM "Ripristina configurazione...", ID_RESETSETTINGS
     }
     POPUP "&Cerca"
     {
@@ -1627,6 +1628,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Sostituzione font finestra"
     IDS_CANNOTOPENPROTECTED "Impossibile aprire il file. Probabilmente è crittografato con WonRes."
     IDS_FORCEOPENCRYPTOWARN "Il file specificato è probabilmente crittografato con WonRes. Sebbene tu l'abbia aperto senza password, alcuni o tutti i dati potrebbero non essere disponibili."
+    IDS_WARNRESETSETTINGS "Le impostazioni dell'app verranno cancellate. Va bene?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

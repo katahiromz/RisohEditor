@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuration...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Réinitialiser la configuration...", ID_RESETSETTINGS
     }
     POPUP "&Chercher"
     {
@@ -1626,6 +1627,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Substituts de police pour les boîtes de dialogue"
     IDS_CANNOTOPENPROTECTED "Impossible d'ouvrir le fichier. Il est probablement chiffré avec WonRes."
     IDS_FORCEOPENCRYPTOWARN "Le fichier spécifié est probablement chiffré avec WonRes. Même si vous l'avez ouvert sans mot de passe, certaines données, voire la totalité, peuvent être inaccessibles."
+    IDS_WARNRESETSETTINGS "Les paramètres de votre application seront effacés. Êtes-vous d'accord ?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

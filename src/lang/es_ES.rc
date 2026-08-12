@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuración...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Restablecer configuración...", ID_RESETSETTINGS
     }
     POPUP "&Buscar"
     {
@@ -1629,6 +1630,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Sustituir Fuentes del Diálogo"
     IDS_CANNOTOPENPROTECTED "No se puede abrir el archivo. Probablemente esté cifrado con WonRes."
     IDS_FORCEOPENCRYPTOWARN "Es probable que el archivo especificado esté cifrado con WonRes. Aunque lo abriste sin contraseña, es posible que parte o la totalidad de los datos no estén disponibles."
+    IDS_WARNRESETSETTINGS "Se borrarán los ajustes de tu aplicación. ¿Te parece bien?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

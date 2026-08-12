@@ -83,6 +83,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Ya&pılandırma...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Yapılandırmayı sıfırla...", ID_RESETSETTINGS
     }
     POPUP "&Ara"
     {
@@ -1627,6 +1628,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Diyalog Yazı Tipi Yedekleri"
     IDS_CANNOTOPENPROTECTED "Dosya açılamıyor. Muhtemelen WonRes ile şifrelenmiş."
     IDS_FORCEOPENCRYPTOWARN "Belirtilen dosya büyük olasılıkla WonRes ile şifrelenmiştir. Dosyayı parola olmadan açmış olsanız bile, verilerin bir kısmı veya tamamı erişilemez olabilir."
+    IDS_WARNRESETSETTINGS "Uygulama ayarlarınız silinecek. Bu sorun olur mu?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

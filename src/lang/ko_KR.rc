@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "구성(&C)...\tAlt+Enter", ID_CONFIG
+        MENUITEM "구성 재설정...", ID_RESETSETTINGS
     }
     POPUP "검색(&S)"
     {
@@ -1627,6 +1628,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "대화상자 글꼴 대체"
     IDS_CANNOTOPENPROTECTED "파일을 열 수 없습니다. 아마 WonRes로 암호화된 것입니다."
     IDS_FORCEOPENCRYPTOWARN "지정한 파일은 아마 WonRes로 암호화되어 있을 것입니다. 비밀번호 없이 열었지만 일부 또는 전부 데이터를 사용할 수 없습니다."
+    IDS_WARNRESETSETTINGS "앱의 설정 내용이 사라집니다. 괜찮습니까?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

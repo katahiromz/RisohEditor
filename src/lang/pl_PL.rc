@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Konfigura&cja...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Resetuj konfigurację...", ID_RESETSETTINGS
     }
     POPUP "&Szukaj"
     {
@@ -1627,6 +1628,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Zastępcze czcionki w oknach dialogowych"
     IDS_CANNOTOPENPROTECTED "Nie można otworzyć pliku. Prawdopodobnie jest zaszyfrowany za pomocą WonRes."
     IDS_FORCEOPENCRYPTOWARN "Podany plik jest prawdopodobnie zaszyfrowany za pomocą WonRes. Mimo że otworzyłeś go bez hasła, część lub całość danych może być niedostępna."
+    IDS_WARNRESETSETTINGS "Ustawienia Twojej aplikacji zostaną usunięte. Czy to w porządku?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

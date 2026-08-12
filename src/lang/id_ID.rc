@@ -85,6 +85,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Konfigurasi...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Atur ulang konfigurasi...", ID_RESETSETTINGS
     }
     POPUP "&Cari"
     {
@@ -1630,6 +1631,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Penggantian Fon Dialog"
     IDS_CANNOTOPENPROTECTED "File tersebut tidak dapat dibuka. Kemungkinan besar file tersebut dienkripsi dengan WonRes."
     IDS_FORCEOPENCRYPTOWARN "File yang dimaksud kemungkinan dienkripsi dengan WonRes. Meskipun Anda membukanya tanpa kata sandi, sebagian atau seluruh data mungkin tidak tersedia."
+    IDS_WARNRESETSETTINGS "Pengaturan aplikasi Anda akan dihapus. Apakah itu tidak masalah?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

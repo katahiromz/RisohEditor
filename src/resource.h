@@ -383,6 +383,7 @@
 #define IDS_DIALOGFONTSUBST                 402
 #define IDS_CANNOTOPENPROTECTED             403
 #define IDS_FORCEOPENCRYPTOWARN             404
+#define IDS_WARNRESETSETTINGS               405
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -563,6 +564,7 @@
 #define ID_TREEITEMHELP                     287
 #define ID_OPENREADMERU                     288
 #define ID_SELECTALL                        289
+#define ID_RESETSETTINGS                    290
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -573,7 +575,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    111
-        #define _APS_NEXT_COMMAND_VALUE     290
+        #define _APS_NEXT_COMMAND_VALUE     291
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

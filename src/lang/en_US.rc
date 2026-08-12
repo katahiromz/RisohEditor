@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuration...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Reset configuration...", ID_RESETSETTINGS
     }
     POPUP "&Search"
     {
@@ -1627,6 +1628,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Dialog Font Substitutes"
     IDS_CANNOTOPENPROTECTED "The file cannot be opened. It is likely encrypted with WonRes."
     IDS_FORCEOPENCRYPTOWARN "The specified file appears to be encrypted with WonRes. It was opened without a password, but some or all of the data may be inaccessible."
+    IDS_WARNRESETSETTINGS "The app's settings will be deleted. Is that okay?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Konfiguraatio...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Palauta asetukset...", ID_RESETSETTINGS
     }
     POPUP "&Haku"
     {
@@ -1626,6 +1627,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Valintaikkunan fontin korvaajat"
     IDS_CANNOTOPENPROTECTED "Tiedostoa ei voida avata. Se on luultavasti salattu WonRes-salauksella."
     IDS_FORCEOPENCRYPTOWARN "Määritetty tiedosto on todennäköisesti salattu WonRes-salaustekniikalla. Vaikka avasit sen ilman salasanaa, osa tai kaikki tiedot eivät välttämättä ole käytettävissä."
+    IDS_WARNRESETSETTINGS "Sovelluksesi asetukset poistetaan. Onko se ok?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -61,10 +61,10 @@ extern BOOL s_bModified;
 extern INT s_ret;
 
 // ID_NEW: clear all the resource data
-void MMainWnd::OnNew(HWND hwnd)
+BOOL MMainWnd::OnNew(HWND hwnd)
 {
 	if (!DoQuerySaveChange(hwnd))
-		return;
+		return FALSE;
 
 	// close preview
 	HidePreview();
@@ -86,6 +86,7 @@ void MMainWnd::OnNew(HWND hwnd)
 
 	// update drop-down arrow
 	PostUpdateArrow(hwnd);
+	return TRUE;
 }
 
 // ID_OPEN: open a file
@@ -4269,6 +4270,17 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_TREEITEMHELP:
 		OnTreeItemHelp(hwnd);
+		break;
+	case ID_RESETSETTINGS:
+		if (!OnNew(hwnd))
+			break;
+		if (MsgBoxDx(IDS_WARNRESETSETTINGS, MB_ICONWARNING | MB_YESNOCANCEL) == IDYES)
+		{
+			DestroyRadWindow();
+			DestroyWindow(m_id_list_dlg);
+			DestroyWindow(s_hwndEga);
+			SetDefaultSettings(hwnd);
+		}
 		break;
 	default:
 		bUpdateStatus = FALSE;

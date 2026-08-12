@@ -84,6 +84,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Konfiguration...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Konfiguration zurücksetzen...", ID_RESETSETTINGS
     }
     POPUP "&Suche"
     {
@@ -1626,6 +1627,7 @@ STRINGTABLE
     IDS_DIALOGFONTSUBST "Ersatzschriften für Dialoge"
     IDS_CANNOTOPENPROTECTED "Die Datei kann nicht geöffnet werden. Sie ist wahrscheinlich mit WonRes verschlüsselt."
     IDS_FORCEOPENCRYPTOWARN "Die angegebene Datei ist wahrscheinlich mit WonRes verschlüsselt. Obwohl Sie sie ohne Passwort geöffnet haben, sind möglicherweise einige oder alle Daten nicht verfügbar."
+    IDS_WARNRESETSETTINGS "Ihre App-Einstellungen werden gelöscht. Ist das in Ordnung?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
