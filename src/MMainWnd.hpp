@@ -460,7 +460,6 @@ protected:
 	void Expand(HTREEITEM hItem);
 	void Collapse(HTREEITEM hItem);
 	void OnWordWrap(HWND hwnd);
-	void OnSaveAsWithCompression(HWND hwnd);
 	void OnClone(HWND hwnd);
 	void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
 	void OnExtractBang(HWND hwnd);

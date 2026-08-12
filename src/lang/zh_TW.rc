@@ -17,7 +17,6 @@ IDR_MAINMENU MENU
         MENUITEM "開啟(&O)...\tCtrl+O", ID_OPEN
         MENUITEM "覆寫(&S)...\tCtrl+S", ID_SAVE
         MENUITEM "另存為(&A)...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "另存壓縮(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "導入(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "導出(&E)...\tCtrl+P", ID_EXPORT

@@ -17,7 +17,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Відкрити...\tCtrl+O", ID_OPEN
         MENUITEM "&Зберегти...\tCtrl+S", ID_SAVE
         MENUITEM "З&берегти як...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Збе&регти зі стисненням...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Імпорт...\tCtrl+I", ID_IMPORT
         MENUITEM "&Експорт...\tCtrl+P", ID_EXPORT

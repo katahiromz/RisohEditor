@@ -521,7 +521,6 @@
 #define ID_EXPAND_ALL                       237
 #define ID_COLLAPSE_ALL                     238
 #define ID_WORD_WRAP                        239
-#define ID_SAVEASCOMPRESS                   241
 #define ID_CLONE                            242
 #define ID_ADDBANG                          243
 #define ID_EXTRACTBANG                      245

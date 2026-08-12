@@ -17,7 +17,6 @@ IDR_MAINMENU MENU
         MENUITEM "열기(&O)...\tCtrl+O", ID_OPEN
         MENUITEM "저장(&S)...\tCtrl+S", ID_SAVE
         MENUITEM "다른 이름으로 저장(&A)...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "압축으로 저장(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "가져오기(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "내보내기(&E)...\tCtrl+P", ID_EXPORT

@@ -2328,65 +2328,6 @@ void MMainWnd::OnExtractBang(HWND hwnd)
 	}
 }
 
-// ID_SAVEASCOMPRESS
-void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
-{
-	enum ResFileFilterIndex     // see also: IDS_EXEFILTER
-	{
-		RFFI2_NONE = 0,
-		RFFI2_EXECUTABLE = 1,
-		RFFI2_ALL = 2
-	};
-
-	// compile if necessary
-	if (!CompileIfNecessary(TRUE))
-		return;
-
-	// store m_szFile to szFile
-	WCHAR szFile[MAX_PATH];
-	StringCchCopyW(szFile, _countof(szFile), m_szFile);
-
-	// if not found, then make it empty
-	if (!PathFileExistsW(szFile))
-		szFile[0] = 0;
-
-	// initialize OPENFILENAME structure
-	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
-	ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-
-	// use the prefered filter by the entry
-	ofn.nFilterIndex = RFFI2_EXECUTABLE;
-
-	// use the preferred extension
-	WCHAR szExt[MAX_PATH];
-	LPWSTR pchDotExt = PathFindExtensionW(m_szFile);
-	if (pchDotExt && *pchDotExt == L'.')
-	{
-		StringCbCopyW(szExt, sizeof(szExt), pchDotExt + 1);
-		ofn.lpstrDefExt = szExt;
-	}
-	else
-	{
-		ofn.lpstrDefExt = L"exe";       // the default extension
-	}
-
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = _countof(szFile);
-	ofn.lpstrTitle = LoadStringDx(IDS_SAVEASCOMPRESS);
-	ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-				OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
-
-	// let the user choose the path
-	if (GetSaveFileNameW(&ofn))
-	{
-		// save it
-		if (!DoSaveAsCompression(szFile))
-		{
-			ErrorBoxDx(IDS_CANNOTSAVE);
-		}
-	}
-}
-
 // ID_WORD_WRAP: toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
@@ -4165,9 +4106,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_WORD_WRAP:
 		OnWordWrap(hwnd);
-		break;
-	case ID_SAVEASCOMPRESS:
-		OnSaveAsWithCompression(hwnd);
 		break;
 	case ID_CLONE:
 		OnClone(hwnd);

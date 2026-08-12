@@ -17,7 +17,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Avaa...\tCtrl+O", ID_OPEN
         MENUITEM "&Tallenna...\tCtrl+S", ID_SAVE
         MENUITEM "Ta&llenna nimellä...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Tallenna &pakattuna...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "Tu&o...\tCtrl+I", ID_IMPORT
         MENUITEM "&Vie...\tCtrl+P", ID_EXPORT

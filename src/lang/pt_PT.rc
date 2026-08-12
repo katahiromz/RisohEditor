@@ -17,7 +17,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Abrir...\tCtrl+O", ID_OPEN
         MENUITEM "&Guardar...\tCtrl+S", ID_SAVE
         MENUITEM "Guardar &Como...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Guardar com Co&mpressão...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Importar...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportar...\tCtrl+P", ID_EXPORT

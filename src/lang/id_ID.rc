@@ -18,7 +18,6 @@ IDR_MAINMENU MENU
         MENUITEM "B&uka...\tCtrl+O", ID_OPEN
         MENUITEM "Si&mpan...\tCtrl+S", ID_SAVE
         MENUITEM "Simpan Seba&gai...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Simpan dengan &Kompresi...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Impor...\tCtrl+I", ID_IMPORT
         MENUITEM "&Ekspor...\tCtrl+P", ID_EXPORT
