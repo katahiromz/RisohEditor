@@ -183,7 +183,7 @@ public:
 		SetDlgItemTextW(hwnd, edt1, szFile);
 		if (m_hIcon)
 			DestroyIcon(m_hIcon);
-		m_hIcon = ExtractIcon(GetModuleHandle(NULL), szFile, 0);
+		m_hIcon = (HICON)LoadImage(NULL, szFile, IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
 
 		// If name was empty, use file title
