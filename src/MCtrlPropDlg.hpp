@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MRisohAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"
 #include "MStringListDlg.hpp"
 #include "DialogRes.hpp"
@@ -65,11 +66,15 @@ public:
 	MComboBoxAutoComplete m_cmb3;
 	MComboBoxAutoComplete m_cmb4;
 	MComboBoxAutoComplete m_cmb5;
+	MRisohAutoComplete *m_pAutoComplete4;
+	MRisohAutoComplete *m_pAutoComplete6;
 
 	MCtrlPropDlg(DialogRes& dialog_res, const std::unordered_set<INT>& indeces)
 		: MDialogBase(IDD_CTRLPROP)
 		, m_dialog_res(dialog_res)
 		, m_indeces(indeces)
+		, m_pAutoComplete4(new MRisohAutoComplete(4))
+		, m_pAutoComplete6(new MRisohAutoComplete(6))
 	{
 		m_himlControls = NULL;
 		m_cmb2.m_bAcceptSpace = TRUE;
@@ -79,10 +84,11 @@ public:
 	~MCtrlPropDlg()
 	{
 		if (m_himlControls)
-		{
 			ImageList_Destroy(m_himlControls);
-			m_himlControls = NULL;
-		}
+		m_pAutoComplete4->unbind();
+		m_pAutoComplete4->Release();
+		m_pAutoComplete6->unbind();
+		m_pAutoComplete6->Release();
 	}
 
 	void GetInfo()
@@ -453,6 +459,15 @@ public:
 		HWND hCmb5 = GetDlgItem(hwnd, cmb5);
 		InitResNameComboBox(hCmb5, BAD_NAME, IDTYPE_HELP);
 		SubclassChildDx(m_cmb5, cmb5);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb5, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete6->bind(hwndEdit);
+
+		GetComboBoxInfo(m_cmb3, &info);
+		hwndEdit = info.hwndItem;
+		m_pAutoComplete4->bind(hwndEdit);
 
 		GetInfo();
 

@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MRisohAutoComplete.hpp"
 #include "DialogRes.hpp"
 #include "Common.hpp"
 
@@ -32,11 +33,21 @@ public:
 	MComboBoxAutoComplete m_cmb1;
 	MComboBoxAutoComplete m_cmb3;
 	MComboBoxAutoComplete m_cmb6;
+	MRisohAutoComplete *m_pAutoComplete6;
 
-	MDlgPropDlg(DialogRes& dialog_res) :
-		MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE)
+	MDlgPropDlg(DialogRes& dialog_res)
+		: MDialogBase(IDD_DLGPROP)
+		, m_dialog_res(dialog_res)
+		, m_bUpdating(FALSE)
+		, m_pAutoComplete6(new MRisohAutoComplete(6))
 	{
 		m_cmb1.m_bAcceptSpace = TRUE;
+	}
+
+	~MDlgPropDlg()
+	{
+		m_pAutoComplete6->unbind();
+		m_pAutoComplete6->Release();
 	}
 
 	void InitTables(LPCTSTR pszClass)
@@ -186,6 +197,11 @@ public:
 		SetDlgItemText(hwnd, cmb3, strHelp.c_str());
 		InitResNameComboBoxDword(GetDlgItem(hwnd, cmb3), m_dialog_res.m_help_id, IDTYPE_HELP);
 		SubclassChildDx(m_cmb3, cmb3);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb3, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete6->bind(hwndEdit);
 
 		SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().c_str_or_empty());
 		SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);

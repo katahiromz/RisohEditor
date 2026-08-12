@@ -7,6 +7,7 @@
     - Memperbaiki label indeks MRadWindow.
     - Mendukung kompresi sumber daya oleh WonRes.
     - Penanganan UPX ditingkatkan.
+    - Dukungan yang ditingkatkan untuk Help ID.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.
