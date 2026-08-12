@@ -318,8 +318,8 @@ public:
 	BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
 	BOOL DoSaveResAs(LPCWSTR pszResFile);
 	BOOL DoSaveAs(LPCWSTR pszExeFile);
-	BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
-	BOOL DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
+	BOOL DoSaveExeAs(LPCWSTR pszExeFile);
+	BOOL DoSaveInner(LPCWSTR pszExeFile);
 	BOOL DoSaveFile(HWND hwnd, LPCWSTR pszFile);
 	IMPORT_RESULT DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt);
 	IMPORT_RESULT DoImportRes(HWND hwnd, LPCWSTR pszFile);

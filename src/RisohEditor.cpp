@@ -5183,7 +5183,7 @@ BOOL DoResetCheckSum(LPCWSTR pszExeFile)
 	return stream.SaveToFile(pszExeFile);
 }
 
-BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
+BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile)
 {
 	// File might be updated. Wait for virus scan
 	WaitForVirusScan(pszExeFile, 10 * 1000);
@@ -5198,23 +5198,16 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 #ifdef ENABLE_CRYPTO
 	if (g_settings.bUseWonRes && g_bEnableCrypto && g_password.size())
 	{
-		if (bCompression)
+		switch (MsgBoxDx(LoadStringDx(IDS_WANTCRYPTO), MB_YESNOCANCEL))
 		{
+		case IDYES:
 			bEnableCrypt = TRUE;
-		}
-		else
-		{
-			switch (MsgBoxDx(LoadStringDx(IDS_WANTCRYPTO), MB_YESNOCANCEL))
-			{
-			case IDYES:
-				bEnableCrypt = TRUE;
-				break;
-			case IDNO:
-				break;
-			case IDCANCEL:
-				DeleteFileW(pszExeFile);
-				return TRUE;
-			}
+			break;
+		case IDNO:
+			break;
+		case IDCANCEL:
+			DeleteFileW(pszExeFile);
+			return TRUE;
 		}
 	}
 #else
@@ -5229,7 +5222,7 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 	// update file info
 	UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
-	if (!bEnableCrypt && (g_settings.bCompressByUPX || bCompression))
+	if (!bEnableCrypt && g_settings.bCompressByUPX)
 	{
 		DoUpxCompress(m_szUpxExe, pszExeFile);
 	}
@@ -5254,7 +5247,7 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 }
 
 // open the dialog to save the EXE file
-BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
+BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
 	LPCWSTR src = m_szFile;
 	LPCWSTR dest = pszExeFile;
@@ -5309,12 +5302,12 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 		if (lstrcmpiW(src, dest) == 0 ||
 			CopyFileW(src, dest, FALSE))
 		{
-			return DoSaveInner(dest, bCompression);
+			return DoSaveInner(dest);
 		}
 	}
 	else if (bDestExecutable)
 	{
-		return DoSaveInner(dest, bCompression);
+		return DoSaveInner(dest);
 	}
 	else
 	{
@@ -5327,7 +5320,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 			if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE))
 #endif
 			{
-				return DoSaveInner(dest, bCompression);
+				return DoSaveInner(dest);
 			}
 		}
 		else
@@ -5338,7 +5331,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 			if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL))
 #endif
 			{
-				return DoSaveInner(dest, bCompression);
+				return DoSaveInner(dest);
 			}
 		}
 	}
