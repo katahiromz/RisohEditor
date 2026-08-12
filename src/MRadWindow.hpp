@@ -238,6 +238,7 @@ public:
 	POINT           m_ptClicked;            // the clicked position
 	POINT           m_ptDragging;           // the dragging position
 	HFONT           m_hFontLabel;           // the font used to draw the index labels
+	HBRUSH          m_hLabelBrush;
 	BOOL            m_bMovingSizing;        // the lock of moving and/or resizing
 	INT             m_xDialogBaseUnit;      // the X dialog base unit
 	INT             m_yDialogBaseUnit;      // the Y dialog base unit

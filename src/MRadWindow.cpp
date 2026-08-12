@@ -1065,6 +1065,7 @@ void MRadCtrl::DoTest()
 MRadDialog::MRadDialog()
 	: m_index_visible(FALSE)
 	, m_hFontLabel(NULL)
+	, m_hLabelBrush(NULL)
 	, m_bMovingSizing(FALSE)
 {
 	// get the dialog base units
@@ -1081,6 +1082,8 @@ MRadDialog::MRadDialog()
 	lf.lfHeight = 13;
 	m_hFontLabel = ::CreateFontIndirect(&lf);
 
+	m_hLabelBrush = ::CreateSolidBrush(RGB(0, 0, 255));
+
 	// create the background brush
 	m_hbrBack = NULL;
 	ReCreateBackBrush();
@@ -1090,11 +1093,10 @@ MRadDialog::~MRadDialog()
 {
 	DeleteBackBrush();
 
+	if (m_hLabelBrush)
+		DeleteObject(m_hLabelBrush);
 	if (m_hFontLabel)
-	{
 		DeleteObject(m_hFontLabel);
-		m_hFontLabel = NULL;
-	}
 }
 
 void MRadDialog::DeleteBackBrush()
@@ -1509,9 +1511,7 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 
 	HGDIOBJ hFontOld = ::SelectObject(hdc, pDialog->m_hFontLabel);
 	::SetTextColor(hdc, RGB(255, 255, 255));
-	::SetBkMode(hdc, OPAQUE);
-	::SetBkColor(hdc, RGB(0, 0, 255));
-	HBRUSH hbr = CreateSolidBrush(RGB(0, 0, 255));
+	::SetBkMode(hdc, TRANSPARENT);
 
 	for (auto& pair : MRadCtrl::IndexToCtrlMap())
 	{
@@ -1522,15 +1522,13 @@ BOOL MRadDialog::OnEraseBkgnd(HWND hwnd, HDC hdc)
 		TCHAR szText[32];
 		StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
 
-		RECT rcItem = { rc.left, rc.top };
-		DrawText(hdc, szText, -1, &rcItem, DT_SINGLELINE | DT_LEFT | DT_TOP | DT_CALCRECT);
-		rcItem.right += 2;
-		rcItem.bottom += 2;
-		FillRect(hdc, &rcItem, hbr);
+		SIZE size;
+		GetTextExtentPoint32W(hdc, szText, lstrlen(szText), &size);
+		RECT rcItem = { rc.left, rc.top, rc.left + size.cx + 2, rc.top + size.cy + 2 };
+		FillRect(hdc, &rcItem, pDialog->m_hLabelBrush);
 		DrawText(hdc, szText, -1, &rcItem, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 	}
 
-	::DeleteObject(hbr);
 	::SelectObject(hdc, hFontOld);
 	::ReleaseDC(hwndDialog, hdc);
 }
