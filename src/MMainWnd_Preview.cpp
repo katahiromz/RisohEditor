@@ -354,6 +354,8 @@ BOOL MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 	res2text.m_hwnd = m_hwnd;
 	res2text.m_bHumanReadable = TRUE;
 	MString str = res2text.DumpEntry(entry);
+	if (str.empty())
+		return FALSE;
 	SetWindowTextW(m_hCodeEditor, str.c_str());
 	SetShowMode(SHOW_CODEONLY);
 	return TRUE;

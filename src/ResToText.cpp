@@ -1170,7 +1170,7 @@ MString ResToText::DoRCData(const EntryBase& entry)
 		{
 			return str;
 		}
-		return LoadStringDx(IDS_INVALIDDATA);
+		return L"";
 	}
 	else
 	{
