@@ -8260,16 +8260,6 @@ INT_PTR MMainWnd::RunDx()
 
 ////////////////////////////////////////////////////////////////////////////
 
-#ifdef _MSC_VER
-	// the manifest information
-	#pragma comment(linker, "/manifestdependency:\"type='win32' \
-	  name='Microsoft.Windows.Common-Controls' \
-	  version='6.0.0.0' \
-	  processorArchitecture='*' \
-	  publicKeyToken='6595b64144ccf1df' \
-	  language='*'\"")
-#endif
-
 BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
 {
 	LPWSTR file = NULL;

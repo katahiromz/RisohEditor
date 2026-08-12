@@ -52,6 +52,9 @@ target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set_target_properties(RisohEditor PROPERTIES OUTPUT_NAME "RisohEditor64")
 endif()
+if(MSVC)
+    target_link_options(RisohEditor PRIVATE "LINKER:/MANIFEST:NO")
+endif()
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
@@ -66,6 +69,9 @@ target_link_libraries(RisohEditorPortable
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set_target_properties(RisohEditorPortable PROPERTIES OUTPUT_NAME "RisohEditorPortable64")
+endif()
+if(MSVC)
+    target_link_options(RisohEditorPortable PRIVATE "LINKER:/MANIFEST:NO")
 endif()
 
 option(ATL_SUPPORT "Add ATL support" OFF)
@@ -84,10 +90,6 @@ if (MSVC)
 	if (ATL_SUPPORT)
 		add_definitions(-DATL_SUPPORT)
 	endif()
-	# No auto manifest
-	set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
-	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MANIFEST:NO")
-	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
 	set(DOTRES ".o") # resource object extension
 	list(APPEND CMAKE_CXX_LINK_FLAGS -municode) # Unicode support
