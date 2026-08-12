@@ -56,7 +56,13 @@ BOOL MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
 	HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
 	if (!hCursor)
 		return FALSE;
-	m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
+	HBITMAP hbm = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+	if (!hbm)
+	{
+		DestroyCursor(hCursor);
+		return FALSE;
+	}
+	m_hBmpView.SetBitmap(hbm);
 
 	// dump info to m_hCodeEditor
 	MStringW str = DumpIconInfo(bm, FALSE);
