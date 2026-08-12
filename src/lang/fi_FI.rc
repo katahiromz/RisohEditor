@@ -160,7 +160,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Siirry &alas", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Näytä/piilota indeksit\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Näytä/piilota indeksit\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "T&asaus"
         {

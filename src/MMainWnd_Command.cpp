@@ -2064,17 +2064,6 @@ void MMainWnd::OnIDList(HWND hwnd)
 	ShowIDList(hwnd, TRUE);
 }
 
-// ID_IDASSOC: show the ID association dialog
-void MMainWnd::OnIdAssoc(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
-		return;
-
-	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_IDASSOC);
-}
-
 // ID_SHOWLANGS: show the language list
 void MMainWnd::OnShowLangs(HWND hwnd)
 {
@@ -2100,29 +2089,6 @@ void MMainWnd::OnShowToolBar(HWND hwnd)
 
 	// recalculate the splitter
 	PostMessageDx(WM_SIZE);
-}
-
-// ID_SETPATHS: the paths dialog
-void MMainWnd::OnSetPaths(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(FALSE))
-		return;
-
-	// show the dialog
-	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_PATHS);
-}
-
-// ID_DFMSETTINGS
-void MMainWnd::OnDfmSettings(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(TRUE))
-		return;
-
-	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_DFMSETTINGS);
 }
 
 // ID_EDITLABEL: start changing the resource type/name/language
@@ -2158,17 +2124,6 @@ void MMainWnd::OnTreeItemHelp(HWND hwnd)
 	PCSTR pszHelp = GetTreeItemHelp(entry);
 	if (pszHelp)
 		ShellExecuteA(hwnd, NULL, pszHelp, NULL, NULL, SW_SHOWNORMAL);
-}
-
-// ID_PREDEFMACROS: the predefined macro dialog
-void MMainWnd::OnPredefMacros(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(FALSE))
-		return;
-
-	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_MACROS);
 }
 
 // ID_EXPAND_ALL: expand all the tree control items
@@ -2255,17 +2210,6 @@ void MMainWnd::OnGuide(HWND hwnd)
 		ShellExecuteW(hwnd, NULL, szJapaneseURL, NULL, NULL, SW_SHOWNORMAL);
 	else
 		ShellExecuteW(hwnd, NULL, szEnglishURL, NULL, NULL, SW_SHOWNORMAL);
-}
-
-// ID_ENCODING
-void MMainWnd::OnEncoding(HWND hwnd)
-{
-	// compile if necessary
-	if (!CompileIfNecessary(FALSE))
-		return;
-
-	MConfigPropSheet dialog;
-	dialog.DoModalDx(hwnd, PAGE_ENCODING);
 }
 
 // ID_QUERYCONSTANT
@@ -3822,7 +3766,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		m_rad_window.IndexPlus(m_rad_window);
 		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 		break;
-	case ID_SHOWHIDEINDEX:
+	case ID_SHOWINDEXLABELS:
 		m_rad_window.OnShowIndex(m_rad_window);
 		break;
 	case ID_TOPALIGN:
@@ -3924,9 +3868,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 			PostMessageW(hwnd, WM_CLOSE, 0, 0);
 		}
-		break;
-	case ID_IDASSOC:
-		OnIdAssoc(hwnd);
 		break;
 	case ID_LOADRESH:
 		OnLoadResH(hwnd);
@@ -4056,17 +3997,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_EXPORT:
 		OnExport(hwnd);
 		break;
-	case ID_REFRESH:
-		DoRefreshTV(hwnd);
-		break;
-	case ID_PREDEFMACROS:
-		OnPredefMacros(hwnd);
-		break;
 	case ID_EDITLABEL:
 		OnEditLabel(hwnd);
-		break;
-	case ID_SETPATHS:
-		OnSetPaths(hwnd);
 		break;
 	case ID_SETDEFAULTS:
 		SetDefaultSettings(hwnd);
@@ -4096,9 +4028,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_GUIDE:
 		OnGuide(hwnd);
-		break;
-	case ID_ENCODING:
-		OnEncoding(hwnd);
 		break;
 	case ID_QUERYCONSTANT:
 		OnQueryConstant(hwnd);
@@ -4138,9 +4067,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_CHECKUPDATE:
 		OnCheckUpdate(hwnd);
-		break;
-	case ID_DFMSETTINGS:
-		OnDfmSettings(hwnd);
 		break;
 	case ID_OPENREADMEKO:
 		OnOpenLocalFile(hwnd, L"README_ko.txt");

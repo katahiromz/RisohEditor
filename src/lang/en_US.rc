@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Go &Bottom", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Show/Hide Indices\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Show/Hide Indices\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Alignment"
         {

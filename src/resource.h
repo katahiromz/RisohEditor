@@ -412,7 +412,6 @@
 #define ID_IMPORT                           121
 #define ID_COMPILE                          122
 #define ID_CANCELEDIT                       123
-#define ID_SHOWDIALOG                       124
 #define ID_GUIEDIT                          125
 #define ID_ADDCTRL                          126
 #define ID_DELCTRL                          127
@@ -423,7 +422,7 @@
 #define ID_CTRLINDEXBOTTOM                  133
 #define ID_CTRLINDEXMINUS                   134
 #define ID_CTRLINDEXPLUS                    135
-#define ID_SHOWHIDEINDEX                    136
+#define ID_SHOWINDEXLABELS                  136
 #define ID_TOPALIGN                         137
 #define ID_BOTTOMALIGN                      138
 #define ID_LEFTALIGN                        139
@@ -450,7 +449,6 @@
 #define ID_MRUFILE14                        160
 #define ID_MRUFILE15                        161
 #define ID_PLAY                             162
-#define ID_IDASSOC                          163
 #define ID_LOADRESH                         164
 #define ID_IDLIST                           165
 #define ID_UNLOADRESH                       166
@@ -486,8 +484,6 @@
 #define ID_IDJUMP                           197
 #define ID_REFRESHALL                       198
 #define ID_EXPORT                           199
-#define ID_REFRESH                          201
-#define ID_PREDEFMACROS                     202
 #define ID_ADD                              203
 #define ID_MODIFY                           204
 #define ID_DELETE                           205
@@ -498,7 +494,6 @@
 #define ID_ADDACCEL                         210
 #define ID_ADDMANIFEST                      211
 #define ID_EDITLABEL                        212
-#define ID_SETPATHS                         213
 #define ID_SETDEFAULTS                      215
 #define ID_BASE10                           216
 #define ID_BASE16                           217
@@ -528,7 +523,6 @@
 #define ID_ADDBANG                          243
 #define ID_EXTRACTBANG                      245
 #define ID_GUIDE                            246
-#define ID_ENCODING                         247
 #define ID_QUERYCONSTANT                    248
 #define ID_USEBEGINEND                      249
 #define ID_SAVE                             250
@@ -542,7 +536,6 @@
 #define ID_EXTRACTRC                        259
 #define ID_EXPORTRES                        260
 #define ID_CHECKUPDATE                      261
-#define ID_DFMSETTINGS                      262
 #define ID_OPENREADMEKO                     265
 #define ID_CHOOSEUILANG                     267
 #define ID_COPYTOMULTILANG                  268

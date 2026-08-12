@@ -164,7 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "表示の切り替え(&S)\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "表示の切り替え(&S)\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "位置そろえ(&A)"
         {

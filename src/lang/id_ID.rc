@@ -164,7 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Ke &Bawah", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Tunjukkan/Sembuyikan Indeks\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Tunjukkan/Sembuyikan Indeks\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "Pe&nataan"
         {

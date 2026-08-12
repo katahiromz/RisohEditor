@@ -163,7 +163,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "I&r Abajo", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Mostrar/Ocultar Índices\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Mostrar/Ocultar Índices\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Alineación"
         {

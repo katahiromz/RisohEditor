@@ -231,10 +231,7 @@ public:
 
 	// ID list
 	void OnIDList(HWND hwnd);
-	void OnIdAssoc(HWND hwnd);
-	void OnPredefMacros(HWND hwnd);
 	void OnEditLabel(HWND hwnd);
-	void OnSetPaths(HWND hwnd);
 	void OnShowLangs(HWND hwnd);
 	void OnShowToolBar(HWND hwnd);
 
@@ -463,7 +460,6 @@ protected:
 	void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
 	void OnExtractBang(HWND hwnd);
 	void OnGuide(HWND hwnd);
-	void OnEncoding(HWND hwnd);
 	void OnQueryConstant(HWND hwnd);
 	void OnUseBeginEnd(HWND hwnd);
 	void OnRefreshAll(HWND hwnd);
@@ -507,7 +503,6 @@ protected:
 	void OnExtractBin(HWND hwnd);
 	void OnExportRes(HWND hwnd);
 	void OnCheckUpdate(HWND hwnd);
-	void OnDfmSettings(HWND hwnd);
 
 	void OnExtractRC(HWND hwnd);
 	void OnExtractDFM(HWND hwnd);

@@ -160,7 +160,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "All&er en bas", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Afficher / &masquer les index\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Afficher / &masquer les index\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Alignement"
         {

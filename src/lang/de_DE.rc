@@ -160,7 +160,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Nach un&ten", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Indizes ein-/ausblenden\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Indizes ein-/ausblenden\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Ausrichtung"
         {

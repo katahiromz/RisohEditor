@@ -163,7 +163,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "&Донизу", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "&Показати/приховати індекси\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "&Показати/приховати індекси\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Вирівнювання"
         {

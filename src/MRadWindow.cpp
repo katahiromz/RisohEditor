@@ -3094,7 +3094,7 @@ void MRadWindow::OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 		if (GetAsyncKeyState(VK_CONTROL) < 0)
 		{
 			// Ctrl+D
-			SendMessageDx(WM_COMMAND, ID_SHOWHIDEINDEX);
+			SendMessageDx(WM_COMMAND, ID_SHOWINDEXLABELS);
 		}
 		break;
 

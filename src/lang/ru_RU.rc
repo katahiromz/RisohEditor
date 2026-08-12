@@ -162,7 +162,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "&Вниз", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "&Показать/скрыть индексы\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "&Показать/скрыть индексы\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Выравнивание"
         {

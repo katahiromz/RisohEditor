@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Vai alla &fine", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Visualizza/nascondi indici\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Visualizza/nascondi indici\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Allineamento"
         {

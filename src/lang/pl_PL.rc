@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Do &dołu", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Pokaż/Ukryj Indeksy\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "Pokaż/Ukryj Indeksy\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Wyrównanie"
         {

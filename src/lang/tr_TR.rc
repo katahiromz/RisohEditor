@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "&En Alt'a Git", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "İndeksleri Göster/Gizle\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "İndeksleri Göster/Gizle\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "&Hizalama"
         {

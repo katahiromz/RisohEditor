@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "置底(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "切换显示模式(&S)\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "切换显示模式(&S)\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "排列方式(&A)"
         {

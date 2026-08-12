@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "아래로 이동(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "색인 표시/숨기기\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "색인 표시/숨기기\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "정렬(&A)"
         {
