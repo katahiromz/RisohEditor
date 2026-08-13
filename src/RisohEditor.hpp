@@ -47,7 +47,7 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 #include "WonSetThreadUILanguage.h"
 
 #include "MWindowBase.hpp"
-#include "MEditCtrl.hpp"
+#include "MHexEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
 #include "MBitmapDx.hpp"
 #include "Res.hpp"

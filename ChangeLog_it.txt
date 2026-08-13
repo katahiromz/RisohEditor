@@ -9,6 +9,7 @@
     - Migliorata la gestione di UPX.
     - Supporto migliorato per Help ID.
     - Migliorato "MEditMenuDlg".
+    - Aggiunto il supporto per lo zoom nell'editor di codice.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.

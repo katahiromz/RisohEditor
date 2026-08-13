@@ -3638,15 +3638,54 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		}
 	}
 
-	if (codeNotify == EN_CHANGE && m_hCodeEditor == hwndCtl)
+	if (hwndCtl == m_hCodeEditor)
 	{
-		// the source EDIT control was modified.
-		// change the toolbar
-		UpdateOurToolBarButtons(2);
+		if (codeNotify == EN_CHANGE)
+		{
+			// the source EDIT control was modified.
+			// change the toolbar
+			UpdateOurToolBarButtons(2);
 
-		// show "ready" status
-		ChangeStatusText(IDS_READY);
-		return;
+			// show "ready" status
+			ChangeStatusText(IDS_READY);
+			return;
+		}
+		if (codeNotify == LNEN_ZOOMIN)
+		{
+			g_settings.nSrcFontSize += 2;
+			if (g_settings.nSrcFontSize >= 48)
+				g_settings.nSrcFontSize = 48;
+			ReCreateFonts(hwnd);
+			return;
+		}
+		if (codeNotify == LNEN_ZOOMOUT)
+		{
+			g_settings.nSrcFontSize -= 2;
+			if (g_settings.nSrcFontSize < 8)
+				g_settings.nSrcFontSize = 8;
+			ReCreateFonts(hwnd);
+			return;
+		}
+	}
+
+	if (hwndCtl == m_hHexViewer)
+	{
+		if (codeNotify == LNEN_ZOOMIN)
+		{
+			g_settings.nBinFontSize += 2;
+			if (g_settings.nBinFontSize >= 48)
+				g_settings.nBinFontSize = 48;
+			ReCreateFonts(hwnd);
+			return;
+		}
+		if (codeNotify == LNEN_ZOOMOUT)
+		{
+			g_settings.nBinFontSize -= 2;
+			if (g_settings.nBinFontSize < 8)
+				g_settings.nBinFontSize = 8;
+			ReCreateFonts(hwnd);
+			return;
+		}
 	}
 
 	MWaitCursor wait;

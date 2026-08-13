@@ -98,7 +98,7 @@ protected:
 
 	// classes
 	MRadWindow      m_rad_window;               // the RADical window
-	MEditCtrl       m_hHexViewer;               // the EDIT control for binary
+	MHexEditCtrl    m_hHexViewer;               // the EDIT control for binary
 	HWND            m_hCodeEditor;              // the EDIT control for source
 	MBmpView        m_hBmpView;                 // the bitmap view
 	MSplitterWnd    m_splitter1;                // 1st splitter window

@@ -9,6 +9,7 @@
     - Penanganan UPX ditingkatkan.
     - Dukungan yang ditingkatkan untuk Help ID.
     - "MEditMenuDlg" telah disempurnakan.
+    - Mendukung fitur zoom pada editor kode.
 - v.6.1.3 (2026-08-08)
     - Menyederhanakan menu [Edit].
     - Menerapkan enkripsi sumber daya menggunakan WonRes.

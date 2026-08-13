@@ -5395,9 +5395,11 @@ void MMainWnd::OnDestroy(HWND hwnd)
 	g_res.delete_all();
 	g_res.delete_invalid();
 
-	// destroy the window's
+	HWND hHexViewer = m_hHexViewer;
+	m_hHexViewer.UnsubclassDx();
+	DestroyWindow(hHexViewer);
+
 	DestroyRadWindow();
-	DestroyWindow(m_hHexViewer);
 	DestroyWindow(m_hCodeEditor);
 	m_hBmpView.DestroyView();
 	DestroyWindow(m_hBmpView);
@@ -6278,7 +6280,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			g_res.on_delete_item(entry);
 			DoSetFileModified(TRUE);
 		}
-	} else if (pnmhdr->code == NM_DBLCLK)
+	} 
+	else if (pnmhdr->code == NM_DBLCLK) 
 	{
 		MWaitCursor wait;
 		if (pnmhdr->hwndFrom == m_hwndTV && entry)
@@ -6377,6 +6380,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 		auto pTVKD = (TV_KEYDOWN *)pnmhdr;
 		switch (pTVKD->wVKey)
 		{
+		case VK_CONTROL:
+		case VK_SHIFT:
+			break;
 		case VK_DELETE:
 			PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
 			DoSetFileModified(TRUE);
@@ -7412,7 +7418,9 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
 		ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
 	exstyle = WS_EX_CLIENTEDGE;
-	m_hHexViewer.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
+	HWND hHexViewer = CreateWindowEx(exstyle, L"EDIT", NULL, style, 0, 0, 0, 0, m_splitter2, (HMENU)3,
+		GetModuleHandle(NULL), 0);
+	m_hHexViewer.SubclassDx(hHexViewer);
 	m_hHexViewer.SendMessageDx(EM_SETLIMITTEXT, 0x100000);
 
 	// create source EDIT control
