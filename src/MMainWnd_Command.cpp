@@ -3191,6 +3191,7 @@ PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 	{
 		if (entry && entry->m_type == RT_TOOLBAR)
 			return "https://github.com/katahiromz/RisohEditor/blob/master/src/Toolbar.h";
+		return "https://learn.microsoft.com/en-us/windows/win32/controls/buttons";
 	}
 	if (str == L"CAPTION")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/caption-statement";
