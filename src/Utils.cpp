@@ -3535,3 +3535,35 @@ MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID)
 {
 	return GetWindowTextW(::GetDlgItem(hwnd, nCtrlID));
 }
+
+// Helper function to get ListView item text without buffer size limitations
+MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
+{
+	// First try with a reasonable initial buffer size
+	MStringW str;
+	INT cchBuffer = 256;
+
+	for (;;)
+	{
+		str.resize(cchBuffer);
+		LVITEMW lvi;
+		ZeroMemory(&lvi, sizeof(lvi));
+		lvi.iSubItem = iSubItem;
+		lvi.pszText = &str[0];
+		lvi.cchTextMax = cchBuffer;
+		INT cch = (INT)SendMessageW(hwndListView, LVM_GETITEMTEXTW, iItem, (LPARAM)&lvi);
+		if (cch < cchBuffer - 1)
+		{
+			str.resize(cch);
+			break;
+		}
+		// Buffer was too small, double it and try again
+		cchBuffer *= 2;
+		if (cchBuffer > 65536)  // Safety limit
+		{
+			str.resize(cch);
+			break;
+		}
+	}
+	return str;
+}

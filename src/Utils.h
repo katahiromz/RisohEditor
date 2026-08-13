@@ -121,3 +121,4 @@ MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex);
 MStringW GetListBoxText(HWND hwndListBox, INT nIndex);
 MStringW GetWindowTextW(HWND hwnd);
 MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID);
+MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem);
