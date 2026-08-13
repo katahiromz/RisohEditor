@@ -22,6 +22,7 @@ extern std::vector<MString> g_types;
 extern std::vector<MString> g_keys;
 extern std::vector<MString> g_ctrl_ids;
 extern std::vector<MString> g_string_ids;
+extern std::vector<MString> g_help_ids;
 wclib_t s_wclib;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
@@ -3565,4 +3566,260 @@ MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem)
 		}
 	}
 	return str;
+}
+
+BOOL InitTypes(void)
+{
+	g_types.clear();
+	if (auto table1 = g_db.GetTable(L"RESOURCE"))
+	{
+		for (auto& entry : *table1)
+			g_types.push_back(entry.name);
+	}
+
+	if (auto table2 = g_db.GetTable(L"RESOURCE.STRING.TYPE"))
+	{
+		for (auto& entry : *table2)
+			g_types.push_back(entry.name);
+	}
+
+	std::sort(g_types.begin(), g_types.end());
+	return TRUE;
+}
+
+BOOL InitNames(const MIdOrString& res_type)
+{
+	g_names.clear();
+
+	IDTYPE_ nIDTYPE_;
+	if (res_type.is_null())
+	{
+		auto entry = g_res.get_entry();
+		if (!entry)
+			return FALSE;   // no selection
+		nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+	}
+	else
+	{
+		nIDTYPE_ = g_db.IDTypeFromResType(res_type);
+	}
+	auto prefix = MapIDTypeToPrefix(nIDTYPE_);
+	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+	auto end = table.end();
+	for (auto it = table.begin(); it != end; ++it)
+	{
+		g_names.push_back(it->name);
+	}
+
+	std::sort(g_names.begin(), g_names.end());
+	return TRUE;
+}
+
+BOOL InitKeys(void)
+{
+	g_keys.clear();
+
+	if (auto* table = g_db.GetTable(L"VIRTUALKEYS"))
+	{
+		for (auto& table_entry : *table)
+		{
+			g_keys.push_back(table_entry.name);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL InitCtrlIDs(void)
+{
+	g_ctrl_ids.clear();
+
+	// add the control IDs
+	if (auto* table = g_db.GetTable(TEXT("CTRLID")))
+	{
+		for (auto& table_entry : *table)
+		{
+			g_ctrl_ids.push_back(table_entry.name);
+		}
+	}
+
+	// get the prefix of Control.ID
+	auto prefix = MapIDTypeToPrefix(IDTYPE_CONTROL);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_ctrl_ids.push_back(table_entry.name);
+		}
+	}
+
+	// get the prefix of Command.ID
+	prefix = MapIDTypeToPrefix(IDTYPE_COMMAND);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_ctrl_ids.push_back(table_entry.name);
+		}
+	}
+
+	// get the prefix of New.Command.ID
+	prefix = MapIDTypeToPrefix(IDTYPE_NEWCOMMAND);
+	if (prefix.size())
+	{
+		// get the resource IDs by the prefix
+		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+		for (auto& table_entry : table)
+		{
+			g_ctrl_ids.push_back(table_entry.name);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL InitStringIDs(void)
+{
+	g_string_ids.clear();
+
+	// get the prefix from IDTYPE_STRING
+	MStringW prefix = MapIDTypeToPrefix(IDTYPE_STRING);
+	if (prefix.empty())
+		return FALSE;
+
+	// get the resource IDs from the prefix
+	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+	for (auto& table_entry : table)
+	{
+		g_string_ids.push_back(table_entry.name);
+	}
+
+	return TRUE;
+}
+
+BOOL InitHelpIDs(void)
+{
+	g_help_ids.clear();
+
+	// get the prefix from IDTYPE_STRING
+	MStringW prefix = MapIDTypeToPrefix(IDTYPE_HELP);
+	if (prefix.empty())
+		return FALSE;
+
+	// get the resource IDs from the prefix
+	auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+	for (auto& table_entry : table)
+	{
+		g_help_ids.push_back(table_entry.name);
+	}
+
+	return TRUE;
+}
+
+BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type)
+{
+	InitTypes();
+
+	ListBox_ResetContent(hwnd);
+
+	for (auto& item : g_types)
+	{
+		INT index = ListBox_AddString(hwnd, item.c_str());
+		if (index != LB_ERR && item == type.str())
+		{
+			ListBox_SetCurSel(hwnd, index);
+			ListBox_SetTopIndex(hwnd, index);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString& name)
+{
+	InitNames();
+
+	ListBox_ResetContent(hwnd);
+
+	if (g_settings.bHideID)
+		return TRUE;
+
+	for (auto& item : g_names)
+	{
+		INT index = ListBox_AddString(hwnd, item.c_str());
+		if (index != LB_ERR && item == name.str())
+		{
+			ListBox_SetCurSel(hwnd, index);
+			ListBox_SetTopIndex(hwnd, index);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId)
+{
+	INT index = 0;
+	for (auto& lang : g_langs)
+	{
+		if (lang.LangID == wLangId)
+			break;
+		++index;
+	}
+
+	if (index >= (INT)g_langs.size())
+		return FALSE;
+
+	index = ListBox_FindString(hwnd, -1, g_langs[index].str.c_str());
+	if (index < 0)
+		return FALSE;
+
+	ListBox_SetCurSel(hwnd, index);
+	ListBox_SetTopIndex(hwnd, index);
+	return TRUE;
+}
+
+BOOL InitTypeListBox(HWND hwnd)
+{
+	ListBox_ResetContent(hwnd);
+
+	InitTypes();
+
+	for (auto& type : g_types)
+	{
+		ListBox_AddString(hwnd, type.c_str());
+	}
+
+	return TRUE;
+}
+
+BOOL InitNameListBox(HWND hwnd)
+{
+	ListBox_ResetContent(hwnd);
+
+	InitNames();
+
+	for (auto& name : g_names)
+	{
+		ListBox_AddString(hwnd, name.c_str());
+	}
+
+	return TRUE;
+}
+
+BOOL InitLangListBox(HWND hwnd)
+{
+	ListBox_ResetContent(hwnd);
+
+	for (auto& lang : g_langs)
+	{
+		INT index = ListBox_AddString(hwnd, lang.str.c_str());
+		ListBox_SetItemData(hwnd, index, lang.LangID);
+	}
+
+	return TRUE;
 }
