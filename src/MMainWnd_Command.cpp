@@ -3816,6 +3816,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnExtractBitmap(hwnd);
 		break;
 	case ID_EXTRACTBIN:
+	case ID_EXPORTRES:
 		OnExtractBin(hwnd);
 		break;
 	case ID_ABOUT:
@@ -4153,9 +4154,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	case ID_EXTRACTRC:
 		OnExtractRC(hwnd);
-		break;
-	case ID_EXPORTRES:
-		OnExportRes(hwnd);
 		break;
 	case ID_CHECKUPDATE:
 		OnCheckUpdate(hwnd);
