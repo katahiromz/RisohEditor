@@ -397,7 +397,7 @@ protected:
 	void DeleteApStudioBlock(std::vector<MStringA>& lines);
 	void AddHeadComment(std::vector<MStringA>& lines);
 	void DeleteHeadComment(std::vector<MStringA>& lines);
-	void DoAddRes(HWND hwnd, MAddResDlg& dialog);
+	BOOL DoAddRes(HWND hwnd, MAddResDlg& dialog);
 
 	// preview
 	BOOL PreviewIcon(HWND hwnd, const EntryBase& entry);

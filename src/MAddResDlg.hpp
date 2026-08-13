@@ -15,6 +15,8 @@
 #include "MRisohAutoComplete.hpp"
 #include "Utils.h"
 
+extern BOOL s_bModified;
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddResDlg : public MDialogBase
@@ -33,6 +35,7 @@ public:
 	MRisohAutoComplete *m_pAutoComplete1;
 	MRisohAutoComplete *m_pAutoComplete2;
 	EntryBase *m_added_entry = nullptr;
+	BOOL m_bOldModified = FALSE;
 
 	MAddResDlg()
 		: MDialogBase(IDD_ADDRES)
@@ -41,6 +44,7 @@ public:
 		, m_pAutoComplete0(new MRisohAutoComplete(0))
 		, m_pAutoComplete1(new MRisohAutoComplete(1))
 		, m_pAutoComplete2(new MRisohAutoComplete(2))
+		, m_bOldModified(s_bModified)
 	{
 		m_cmb3.m_bAcceptSpace = TRUE;
 		m_cmb3.m_bIgnoreCase = TRUE;

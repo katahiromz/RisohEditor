@@ -64,6 +64,10 @@ extern INT s_ret;
 // ID_NEW: clear all the resource data
 BOOL MMainWnd::OnNew(HWND hwnd)
 {
+	// compile if necessary
+	if (!CompileIfNecessary(FALSE))
+		return FALSE;
+
 	if (!DoQuerySaveChange(hwnd))
 		return FALSE;
 
@@ -397,12 +401,12 @@ void MMainWnd::OnImport(HWND hwnd)
 
 		// find the dot extension
 		pch = wcsrchr(pch, L'.');
-
 		if (IMPORT_FAILED == DoImport(hwnd, file, pch))
 		{
 			ErrorBoxDx(IDS_CANNOTIMPORT);
 		}
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -424,6 +428,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -447,6 +452,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -470,6 +476,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -491,6 +498,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -514,6 +522,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -535,6 +544,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 		SelectTV(ET_LANG, dialog, FALSE);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -551,8 +561,6 @@ void MMainWnd::OnAddRes(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -570,8 +578,6 @@ void MMainWnd::OnAddMenu(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -589,8 +595,6 @@ void MMainWnd::OnAddToolbar(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -608,8 +612,6 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -627,8 +629,6 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -646,8 +646,6 @@ void MMainWnd::OnAddHtml(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -665,8 +663,6 @@ void MMainWnd::OnAddAccel(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -684,8 +680,6 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -703,8 +697,6 @@ void MMainWnd::OnAddManifest(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -722,8 +714,6 @@ void MMainWnd::OnAddDialog(HWND hwnd)
 	{
 		// add a resource item
 		DoAddRes(hwnd, dialog);
-
-		DoSetFileModified(TRUE);
 	}
 }
 
@@ -843,6 +833,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 				MyChangeNotify(ofn.lpstrFile);
 			}
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -912,6 +903,7 @@ void MMainWnd::OnExtractRC(HWND hwnd)
 		{
 			ErrorBoxDx(IDS_CANTEXPORT);
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -977,6 +969,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 			// Notify change of file icon
 			MyChangeNotify(ofn.lpstrFile);
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1042,6 +1035,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
 			// Notify change of file icon
 			MyChangeNotify(ofn.lpstrFile);
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1089,6 +1083,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 			// Notify change of file icon
 			MyChangeNotify(ofn.lpstrFile);
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1110,9 +1105,10 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 	{
 		// select the entry
 		SelectTV(ET_LANG, dialog, FALSE);
-	}
 
-	DoSetFileModified(TRUE);
+		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
+	}
 }
 
 // ID_ABOUT: version info
@@ -1173,6 +1169,7 @@ void MMainWnd::OnExport(HWND hwnd)
 				ErrorBoxDx(IDS_CANTEXPORT);
 			}
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1207,6 +1204,7 @@ void MMainWnd::OnCopyAsNewType(HWND hwnd)
 			Expand(entry->m_hItem);
 
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1255,6 +1253,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 		// select the entry
 		SelectTV(ET_NAME, dialog.m_type, dialog.m_name, BAD_LANG, FALSE);
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1344,6 +1343,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 			SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
 		}
 		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1426,10 +1426,11 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 			}
 		}
 
-		DoSetFileModified(TRUE);
-
 		// select the entry
 		SelectTV(ET_LANG, entry->m_type, entry->m_name, wLang, FALSE);
+
+		DoSetFileModified(TRUE);
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1479,6 +1480,7 @@ void MMainWnd::OnExportRes(HWND hwnd)
 				ErrorBoxDx(IDS_CANNOTSAVE);
 			}
 		}
+		PostUpdateArrow(hwnd);
 	}
 }
 
@@ -1498,7 +1500,6 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 	DoRefreshIDList(hwnd);
 
 	DoSetFileModified(TRUE);
-
 	PostUpdateArrow(hwnd);
 }
 
@@ -1903,9 +1904,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
 {
 	// compile if necessary
 	if (!CompileIfNecessary(FALSE))
-	{
 		return;
-	}
 
 	// (resource.h file path) --> szFile
 	WCHAR szFile[MAX_PATH];
@@ -2590,6 +2589,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 	if (!pchDotExt)
 		return NOT_IMPORTABLE;
 
+	BOOL bOldModified = s_bModified;
 	if (lstrcmpiW(pchDotExt, L".rc") == 0 || lstrcmpiW(pchDotExt, L".rc2") == 0)
 	{
 		return DoImportRC(hwnd, pszFile);
@@ -2612,6 +2612,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 			SelectTV(ET_LANG, dialog, FALSE);
 
 			DoSetFileModified(TRUE);
+			PostUpdateArrow(hwnd);
 
 			return IMPORTED;
 		}
@@ -2631,6 +2632,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 			SelectTV(ET_LANG, dialog, FALSE);
 
 			DoSetFileModified(TRUE);
+			PostUpdateArrow(hwnd);
 
 			return IMPORTED;
 		}
@@ -2645,11 +2647,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2662,11 +2661,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2679,11 +2675,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2696,11 +2689,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2718,7 +2708,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 			SelectTV(ET_LANG, dialog, FALSE);
 
 			DoSetFileModified(TRUE);
-
+			PostUpdateArrow(hwnd);
 			return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
@@ -2732,11 +2722,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2749,11 +2736,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2767,11 +2751,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2784,11 +2765,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2801,11 +2779,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2818,11 +2793,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2835,11 +2807,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2852,11 +2821,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2869,11 +2835,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
 			// add a resource item
-			DoAddRes(hwnd, dialog);
-
-			DoSetFileModified(TRUE);
-
-			return IMPORTED;
+			if (DoAddRes(hwnd, dialog))
+				return IMPORTED;
 		}
 		return IMPORT_CANCELLED;
 	}
@@ -2995,6 +2958,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 	ShowIDList(hwnd, bListOpen);
 
 	DoSetFileModified(TRUE);
+	PostUpdateArrow(hwnd);
 }
 
 // ID_LOADRESHBANG: load the resource.h file

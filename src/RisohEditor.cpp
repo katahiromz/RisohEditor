@@ -7088,7 +7088,7 @@ void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 }
 
 // add a resource item
-void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
+BOOL MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 {
 	if (dialog.m_strTemplate.empty())   // already added
 	{
@@ -7100,55 +7100,58 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 
 		// clear the modification flag
 		Edit_SetModify(m_hCodeEditor, FALSE);
+		return TRUE;
 	}
-	else        // use dialog.m_strTemplate
+
+	// dialog.m_strTemplate --> m_hCodeEditor
+	SetWindowTextW(m_hCodeEditor, dialog.m_strTemplate.c_str());
+	::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+
+	// workaround to edit the Microsoft message table
+	if (dialog.m_type == RT_MESSAGETABLE && g_settings.bUseMSMSGTABLE)
+		g_settings.bUseMSMSGTABLE = FALSE;
+
+	// compile dialog.m_strTemplate
+	MStringA strOutput;
+	if (!CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
 	{
-		// dialog.m_strTemplate --> m_hCodeEditor
-		SetWindowTextW(m_hCodeEditor, dialog.m_strTemplate.c_str());
-		::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+		// failure
+		m_nStatusStringID = IDS_RECOMPILEFAILED;
+		UpdateOurToolBarButtons(2);
 
-		// workaround to edit the Microsoft message table
-		if (dialog.m_type == RT_MESSAGETABLE && g_settings.bUseMSMSGTABLE)
+		// set the error message
+		SetErrorMessage(strOutput);
+
+		if (dialog.m_added_entry)
 		{
-			g_settings.bUseMSMSGTABLE = FALSE;
+			dialog.m_added_entry->mark_invalid();
+			g_res.delete_invalid();
+
+			HidePreview(STV_RESETTEXT);
+			SelectTV(g_res.get_entry(), FALSE, STV_RESETTEXT);
 		}
 
-		// compile dialog.m_strTemplate
-		MStringA strOutput;
-		if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
-		{
-			// refresh the ID list window
-			DoRefreshIDList(hwnd);
-			// clear the modification flag
-			Edit_SetModify(m_hCodeEditor, FALSE);
-			m_nStatusStringID = IDS_RECOMPILEOK;
+		g_res.delete_invalid();
+		DoSetFileModified(dialog.m_bOldModified);
+		PostUpdateArrow(hwnd);
+		return FALSE;
+	}
 
-			// select the added entry
-			if (dialog.m_type == RT_STRING)
-				SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
-			else
-				SelectTV(ET_LANG, dialog, FALSE);
-		}
-		else
-		{
-			// failure
-			m_nStatusStringID = IDS_RECOMPILEFAILED;
-			UpdateOurToolBarButtons(2);
+	// refresh the ID list window
+	DoRefreshIDList(hwnd);
+	// clear the modification flag
+	Edit_SetModify(m_hCodeEditor, FALSE);
+	m_nStatusStringID = IDS_RECOMPILEOK;
 
-			// set the error message
-			SetErrorMessage(strOutput);
+	// select the added entry
+	if (dialog.m_type == RT_STRING)
+		SelectTV(ET_STRING, dialog.m_type, BAD_NAME, BAD_LANG, FALSE);
+	else
+		SelectTV(ET_LANG, dialog, FALSE);
 
-			if (dialog.m_added_entry)
-			{
-				dialog.m_added_entry->mark_invalid();
-				g_res.delete_invalid();
-
-				HidePreview(STV_RESETTEXT);
-				SelectTV(g_res.get_entry(), FALSE, STV_RESETTEXT);
-				PostUpdateArrow(hwnd);
-			}
-		}
-    }
+	DoSetFileModified(TRUE);
+	PostUpdateArrow(hwnd);
+	return TRUE;
 }
 
 void MMainWnd::UpdateTitleBar()
@@ -7197,6 +7200,7 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 	// update the menu
 	UpdateMenu();
 
+	PostUpdateArrow(m_hwnd);
 	return TRUE;
 }
 
