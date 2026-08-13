@@ -54,6 +54,7 @@
 #include "MTestParentWnd.hpp"
 #include "MVersionInfoDlg.hpp"
 
+#include "MenuRes.hpp"
 #include "Utils.h"
 #include "resource.h"
 
@@ -3240,11 +3241,29 @@ PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 	if (str == L"MENUEX")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuex-resource";
 	if (str == L"MENUITEM")
+	{
+		if (entry && entry->m_type == RT_MENU)
+		{
+			MByteStreamEx stream(entry->m_data);
+			MenuRes menu_res;
+			if (menu_res.LoadFromStream(stream) && menu_res.IsExtended())
+				return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuex-resource";
+		}
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuitem-statement";
+	}
 	if (str == L"MESSAGETABLE")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/messagetable-resource";
 	if (str == L"POPUP")
+	{
+		if (entry && entry->m_type == RT_MENU)
+		{
+			MByteStreamEx stream(entry->m_data);
+			MenuRes menu_res;
+			if (menu_res.LoadFromStream(stream) && menu_res.IsExtended())
+				return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuex-resource";
+		}
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/popup-resource";
+	}
 	if (str == L"PUSHBOX")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/pushbox-control";
 	if (str == L"PUSHBUTTON")
