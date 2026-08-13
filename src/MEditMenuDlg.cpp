@@ -171,6 +171,16 @@ BOOL MModifyMItemDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	if ((dwType & MFT_RIGHTJUSTIFY) == MFT_RIGHTJUSTIFY)
 		CheckDlgButton(hwnd, chx13, BST_CHECKED);
 
+	if (!m_bExtended)
+	{
+		EnableWindow(GetDlgItem(hwnd, chx9), FALSE);
+		EnableWindow(GetDlgItem(hwnd, chx10), FALSE);
+		EnableWindow(GetDlgItem(hwnd, chx11), FALSE);
+		EnableWindow(GetDlgItem(hwnd, chx12), FALSE);
+		EnableWindow(GetDlgItem(hwnd, chx13), FALSE);
+		EnableWindow(GetDlgItem(hwnd, cmb3), FALSE);
+	}
+
 	CenterWindowDx();
 	return TRUE;
 }
@@ -454,7 +464,7 @@ void MEditMenuDlg::OnAdd(HWND hwnd)
 {
 	MENU_ENTRY m_entry;
 	m_entry.wDepth = 0;
-	MAddMItemDlg dialog(m_entry);
+	MAddMItemDlg dialog(m_entry, (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED));
 	INT nID = (INT)dialog.DialogBoxDx(hwnd);
 	if (IDOK != nID)
 	{
@@ -560,7 +570,7 @@ void MEditMenuDlg::OnModify(HWND hwnd)
 	MENU_ENTRY m_entry;
 	GetEntry(hwnd, m_entry, iItem);
 
-	MModifyMItemDlg dialog(m_entry);
+	MModifyMItemDlg dialog(m_entry, (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED));
 	INT nID = (INT)dialog.DialogBoxDx(hwnd);
 	if (IDOK == nID)
 	{

@@ -28,12 +28,14 @@ public:
 	MComboBoxAutoComplete m_cmb3;
 	MRisohAutoComplete *m_pAutoComplete4;
 	MRisohAutoComplete *m_pAutoComplete6;
+	BOOL m_bExtended;
 
-	MAddMItemDlg(MENU_ENTRY& entry)
+	MAddMItemDlg(MENU_ENTRY& entry, BOOL bExtended)
 		: MDialogBase(IDD_ADDMITEM)
 		, m_entry(entry)
 		, m_pAutoComplete4(new MRisohAutoComplete(4))
 		, m_pAutoComplete6(new MRisohAutoComplete(6))
+		, m_bExtended(bExtended)
 	{
 	}
 
@@ -63,6 +65,16 @@ public:
 		GetComboBoxInfo(m_cmb3, &info);
 		hwndEdit = info.hwndItem;
 		m_pAutoComplete6->bind(hwndEdit);
+
+		if (!m_bExtended)
+		{
+			EnableWindow(GetDlgItem(hwnd, chx9), FALSE);
+			EnableWindow(GetDlgItem(hwnd, chx10), FALSE);
+			EnableWindow(GetDlgItem(hwnd, chx11), FALSE);
+			EnableWindow(GetDlgItem(hwnd, chx12), FALSE);
+			EnableWindow(GetDlgItem(hwnd, chx13), FALSE);
+			EnableWindow(GetDlgItem(hwnd, cmb3), FALSE);
+		}
 
 		CenterWindowDx();
 		return TRUE;
@@ -98,12 +110,14 @@ public:
 	MComboBoxAutoComplete m_cmb3;
 	MRisohAutoComplete *m_pAutoComplete4;
 	MRisohAutoComplete *m_pAutoComplete6;
+	BOOL m_bExtended;
 
-	MModifyMItemDlg(MENU_ENTRY& entry)
+	MModifyMItemDlg(MENU_ENTRY& entry, BOOL bExtended)
 		: MDialogBase(IDD_MODIFYMITEM)
 		, m_entry(entry)
 		, m_pAutoComplete4(new MRisohAutoComplete(4))
 		, m_pAutoComplete6(new MRisohAutoComplete(6))
+		, m_bExtended(bExtended)
 	{
 	}
 

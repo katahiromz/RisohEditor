@@ -19,7 +19,7 @@ MStringW GetMenuFlags(WORD fItemFlags)
 		str += L"G ";
 
 	if ((fItemFlags & (MF_GRAYED | MF_DISABLED)) == MF_DISABLED)
-		str += L"D ";
+		str += L"I "; // INACTIVE
 
 	if ((fItemFlags & MF_BITMAP) == MF_BITMAP)
 		str += L"B ";
@@ -29,6 +29,9 @@ MStringW GetMenuFlags(WORD fItemFlags)
 
 	if ((fItemFlags & MF_CHECKED) == MF_CHECKED)
 		str += L"C ";
+
+	if ((fItemFlags & MF_DEFAULT) == MF_DEFAULT)
+		str += L"D ";
 
 	if ((fItemFlags & MF_MENUBARBREAK) == MF_MENUBARBREAK)
 		str += L"MBB ";
@@ -50,7 +53,7 @@ void SetMenuFlags(WORD& fItemFlags, const MStringW& str)
 	if (str2.find(L" G ") != MStringW::npos)
 		fItemFlags |= MF_GRAYED;
 
-	if (str2.find(L" D ") != MStringW::npos)
+	if (str2.find(L" I ") != MStringW::npos) // INACTIVE
 		fItemFlags |= MF_DISABLED;
 
 	if (str2.find(L" B ") != MStringW::npos)
@@ -61,6 +64,9 @@ void SetMenuFlags(WORD& fItemFlags, const MStringW& str)
 
 	if (str2.find(L" C ") != MStringW::npos)
 		fItemFlags |= MF_CHECKED;
+
+	if (str2.find(L" D ") != MStringW::npos)
+		fItemFlags |= MF_DEFAULT;
 
 	if (str2.find(L" MBB ") != MStringW::npos)
 		fItemFlags |= MF_MENUBARBREAK;
@@ -78,6 +84,8 @@ MStringW GetMenuTypeAndState(DWORD dwType, DWORD dwState)
 
 	if ((dwState & MFS_GRAYED) == MFS_GRAYED)
 		str += L"G ";
+	else if ((dwState & MFS_DISABLED) == MFS_DISABLED)
+		str += L"I "; // INACTIVE
 
 	if ((dwType & MFT_BITMAP) == MFT_BITMAP)
 		str += L"B ";
@@ -122,6 +130,8 @@ void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const MStringW& str)
 
 	if (str2.find(L" G ") != MStringW::npos)
 		dwState |= MFS_GRAYED;
+	else if (str2.find(L" I ") != MStringW::npos) // INACTIVE
+		dwState |= MFS_DISABLED;
 
 	if (str2.find(L" B ") != MStringW::npos)
 		dwType |= MFT_BITMAP;

@@ -8,6 +8,7 @@
     - Supported resource compression by WonRes.
     - Improved UPX handling.
     - Enhanced support for Help IDs.
+    - Improved MEditMenuDlg.
 - v.6.1.3 (2026-08-08)
     - Simplified [Edit] menu.
     - Implemented resource encryption using WonRes.
