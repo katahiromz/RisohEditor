@@ -110,8 +110,8 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	PathAddExtension(szTempFile, TEXT(".avi"));
 	lstrcpyn(g_szAviTempFile, szTempFile, _countof(g_szAviTempFile));
 
-	if (!WriteBinaryFileDx(g_szAviTempFile, ptr, size))
-	{
+	if (!WriteBinaryFileDx(g_szAviTempFile, ptr, size)) {
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}
@@ -140,7 +140,7 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	}
 
 	if (!opened) {
-		LogMCIError(err, L"PlayAvi - Open (All device types failed)");
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}
@@ -148,7 +148,7 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	wnsprintf(command, _countof(command), L"window myavi handle %u", (UINT)(UINT_PTR)hwnd);
 	err = mciSendStringW(command, NULL, 0, NULL);
 	if (err) {
-		LogMCIError(err, L"PlayAvi - Window Handle");
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}
@@ -160,21 +160,21 @@ BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size) {
 	wnsprintf(command, _countof(command), L"put myavi window at 0 0 %d %d", rc.right, rc.bottom);
 	err = mciSendStringW(command, NULL, 0, NULL);
 	if (err) {
-		LogMCIError(err, L"PlayAvi - Set Display Area");
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}
 
 	err = mciSendStringW(L"window myavi state show", NULL, 0, NULL);
 	if (err) {
-		LogMCIError(err, L"PlayAvi - Show");
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}
 
 	err = mciSendStringW(L"play myavi repeat", NULL, 0, NULL);
 	if (err) {
-		LogMCIError(err, L"PlayAvi - Play");
+		assert(0);
 		StopAvi();
 		return FALSE;
 	}

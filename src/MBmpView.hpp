@@ -23,24 +23,6 @@ void StopMP3(void);
 BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size);
 void StopAvi(void);
 
-// Helper to log MCI errors for debugging purposes
-inline void LogMCIError(DWORD dwError, LPCTSTR pszContext)
-{
-	TCHAR szError[256];
-	if (mciGetErrorString(dwError, szError, _countof(szError)))
-	{
-		TCHAR szMsg[512];
-		wnsprintf(szMsg, _countof(szMsg), TEXT("MCI Error in %s: %s (code %lu)\n"), pszContext, szError, dwError);
-		OutputDebugString(szMsg);
-	}
-	else
-	{
-		TCHAR szMsg[MAX_PATH];
-		wnsprintf(szMsg, _countof(szMsg), TEXT("MCI Error in %s: code %lu\n"), pszContext, dwError);
-		OutputDebugString(szMsg);
-	}
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 class MBmpView : public MWindowBase
