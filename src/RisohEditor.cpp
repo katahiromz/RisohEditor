@@ -7200,7 +7200,7 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 	return TRUE;
 }
 
-BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
+BOOL MMainWnd::ReCreateSrcEdit()
 {
 	BOOL bModify = Edit_GetModify(m_hCodeEditor);
 
@@ -7427,7 +7427,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	m_hHexViewer.SendMessageDx(EM_SETLIMITTEXT, 0x100000);
 
 	// create source EDIT control
-	if (!ReCreateSrcEdit(m_splitter2))
+	if (!ReCreateSrcEdit())
 		return FALSE;
 
 	// create MBmpView

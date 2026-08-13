@@ -154,7 +154,7 @@ public:
 	void SetDefaultSettings(HWND hwnd);
 	BOOL LoadSettings(HWND hwnd);
 	BOOL SaveSettings(HWND hwnd);
-	BOOL ReCreateSrcEdit(HWND hwnd);
+	BOOL ReCreateSrcEdit();
 
 	void ModifyWndClassDx(WNDCLASSEX& wcx) override
 	{

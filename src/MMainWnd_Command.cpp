@@ -2295,7 +2295,7 @@ void MMainWnd::OnWordWrap(HWND hwnd)
 	MString strText = GetWindowTextW(m_hCodeEditor);
 
 	// create the source EDIT control
-	ReCreateSrcEdit(m_splitter2);
+	ReCreateSrcEdit();
 
 	// reset fonts
 	ReCreateFonts(hwnd);

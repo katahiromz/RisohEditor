@@ -136,6 +136,7 @@ public:
 		g_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
 		g_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
 		g_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+		BOOL bOldWordWrap = g_settings.bWordWrap;
 		g_settings.bWordWrap = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
 		MStringW strAtlAxWin = GetDlgItemText(cmb1);
@@ -151,6 +152,9 @@ public:
 
 		if (strBackupSuffix.empty())
 			g_settings.bBackup = FALSE;
+
+		if (g_settings.bWordWrap != bOldWordWrap)
+			s_pMainWnd->ReCreateSrcEdit();
 
 		s_pMainWnd->RefreshRadBackBrush();
 		s_pMainWnd->RefreshFonts();
