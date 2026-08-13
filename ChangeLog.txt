@@ -10,6 +10,7 @@
     - Enhanced support for Help IDs.
     - Improved MEditMenuDlg.
     - Supported zooming of code editor.
+    - Fixed word wrap.
 - v.6.1.3 (2026-08-08)
     - Simplified [Edit] menu.
     - Implemented resource encryption using WonRes.

@@ -10,6 +10,7 @@
     - Supporto migliorato per Help ID.
     - Migliorato "MEditMenuDlg".
     - Aggiunto il supporto per lo zoom nell'editor di codice.
+    - Corretto l'a capo automatico.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.

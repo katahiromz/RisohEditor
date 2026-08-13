@@ -7230,6 +7230,8 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
 		SendMessage(m_hCodeEditor, LNEM_SETNUMOFDIGITS, 3, 0);
 		SendMessage(m_hCodeEditor, EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 		Edit_SetModify(m_hCodeEditor, bModify);
+		m_splitter2.SetPane(0, m_hCodeEditor);
+		PostMessage(m_splitter2, WM_SIZE, 0, 0);
 		return TRUE;
 	}
 	return FALSE;

@@ -2276,6 +2276,10 @@ void MMainWnd::OnExtractBang(HWND hwnd)
 // ID_WORD_WRAP: toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
+	// compile if necessary
+	if (!CompileIfNecessary(FALSE))
+		return;
+
 	// save the modified flag
 	BOOL bModified = Edit_GetModify(m_hCodeEditor);
 
@@ -2286,7 +2290,7 @@ void MMainWnd::OnWordWrap(HWND hwnd)
 	MString strText = GetWindowTextW(m_hCodeEditor);
 
 	// create the source EDIT control
-	ReCreateSrcEdit(hwnd);
+	ReCreateSrcEdit(m_splitter2);
 
 	// reset fonts
 	ReCreateFonts(hwnd);
@@ -2305,13 +2309,11 @@ void MMainWnd::OnWordWrap(HWND hwnd)
 // ID_USEBEGINEND
 void MMainWnd::OnUseBeginEnd(HWND hwnd)
 {
+	// compile if necessary
+	if (!CompileIfNecessary(FALSE))
+		return;
+
 	g_settings.bUseBeginEnd = !g_settings.bUseBeginEnd;
-
-	// create the source EDIT control
-	ReCreateSrcEdit(hwnd);
-
-	// reset fonts
-	ReCreateFonts(hwnd);
 
 	// select the entry to refresh
 	auto entry = g_res.get_entry();
