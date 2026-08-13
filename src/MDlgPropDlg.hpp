@@ -206,6 +206,7 @@ public:
 		SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().c_str_or_empty());
 		SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
+		SendDlgItemMessageW(hwnd, scr5, UDM_SETRANGE32, SHRT_MIN, SHRT_MAX);
 		SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
 
 		InitResNameComboBox(GetDlgItem(hwnd, cmb6), m_dialog_res.m_menu, IDTYPE_MENU);
