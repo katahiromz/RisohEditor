@@ -1,6 +1,6 @@
 ﻿## HISTORIA
 
-- v.6.1.4 (2026-XX-YY)
+- v.6.1.4 (2026-08-13)
     - Se convirtió la configuración en una hoja de propiedades.
     - Acelerar OnDeleteRes.
     - Se solucionó el problema por el cual las flechas desplegables en la vista de árbol no se duplicaban.
