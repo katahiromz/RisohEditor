@@ -3187,6 +3187,11 @@ PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/autoradiobutton-control";
 	if (str == L"BITMAP")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/bitmap-resource";
+	if (str == L"BUTTON")
+	{
+		if (entry && entry->m_type == RT_TOOLBAR)
+			return "https://github.com/katahiromz/RisohEditor/blob/master/src/Toolbar.h";
+	}
 	if (str == L"CAPTION")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/caption-statement";
 	if (str == L"CHARACTERISTICS")
@@ -3293,7 +3298,16 @@ PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 	if (str == L"VIRTKEY" || str == L"ASCII" || str == L"NOINVERT" || str == L"ALT" || str == L"SHIFT")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/accelerators-resource";
 
-	if (str == L"SEPARATOR" || str == L"GRAYED" || str == L"CHECKED" || str == L"INACTIVE" ||
+	if (str == L"SEPARATOR")
+	{
+		if (entry && entry->m_type == RT_TOOLBAR)
+			return "https://github.com/katahiromz/RisohEditor/blob/master/src/Toolbar.h";
+		return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuitem-statement";
+	}
+	if (str == L"TOOLBAR")
+		return "https://github.com/katahiromz/RisohEditor/blob/master/src/Toolbar.h";
+
+	if (str == L"GRAYED" || str == L"CHECKED" || str == L"INACTIVE" ||
 		str == L"MENUBARBREAK" || str == L"MENUBREAK")
 	{
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/menuitem-statement";
