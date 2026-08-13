@@ -1,4 +1,6 @@
-
+// MHexEditCtrl.hpp --- RisohEditor Hex Viewer
+// Author: katahiromz
+// License: GPL v3
 #pragma once
 
 #include "MEditCtrl.hpp"
