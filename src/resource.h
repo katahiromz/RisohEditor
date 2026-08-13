@@ -90,7 +90,6 @@
 #define IDI_FOLDER                          105
 #define IDI_PLAY                            106
 #define IDI_DIAMOND                         107
-#define IDI_MARK                            108
 #define IDI_ARROW                           109
 #define IDI_DFMICON                         110
 
