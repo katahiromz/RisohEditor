@@ -11,6 +11,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MRisohAutoComplete.hpp"
 #include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -23,16 +24,20 @@ public:
 	MIdOrString m_new_type;
 	MComboBoxAutoComplete m_cmb1;
 	MComboBoxAutoComplete m_cmb2;
+	MRisohAutoComplete *m_pAutoComplete0;
 
 	MCloneInNewTypeDlg(EntryBase *entry)
 		: MDialogBase(IDD_CLONEINNEWTYPE), m_entry(g_res.get_shared(entry))
 		, m_old_type(entry->m_type)
+		, m_pAutoComplete0(new MRisohAutoComplete(0))
 	{
 		m_new_type = BAD_TYPE;
 	}
 
 	~MCloneInNewTypeDlg()
 	{
+		m_pAutoComplete0->unbind();
+		m_pAutoComplete0->Release();
 	}
 
 	INT_PTR CALLBACK
@@ -57,6 +62,11 @@ public:
 		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 		InitResTypeComboBox(hCmb2, m_old_type);
 		SubclassChildDx(m_cmb2, cmb2);
+
+		COMBOBOXINFO info = { sizeof(info) };
+		GetComboBoxInfo(m_cmb2, &info);
+		HWND hwndEdit = info.hwndItem;
+		m_pAutoComplete0->bind(hwndEdit);
 
 		CenterWindowDx();
 		return TRUE;
