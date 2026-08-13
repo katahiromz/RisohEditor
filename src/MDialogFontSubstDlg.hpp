@@ -9,7 +9,7 @@
 #include "MPropSheet.hpp"
 #include "settings.h"
 #include "MComboBoxAutoComplete.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

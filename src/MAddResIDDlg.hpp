@@ -12,7 +12,6 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "settings.h"
-#include "Common.hpp"
 #include "Utils.h"
 
 extern std::unordered_map<INT, MStringW> *g_pmapIDTypeToLocalized;
@@ -112,7 +111,7 @@ public:
 			INT value = mstr_parse_int(str2.c_str());
 			if (str2.empty() || value < SHRT_MIN || value > USHRT_MAX)
 			{
-				value = std::min(std::max(value, SHRT_MIN), USHRT_MAX);
+				value = __min(__max(value, SHRT_MIN), USHRT_MAX);
 				SetDlgItemInt(hwnd, edt2, value, TRUE);
 				HWND hEdt2 = GetDlgItem(hwnd, edt2);
 				Edit_SetSel(hEdt2, 0, -1);

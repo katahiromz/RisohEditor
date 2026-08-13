@@ -13,7 +13,7 @@
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "AccelRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MAddKeyDlg;
 class MModifyKeyDlg;

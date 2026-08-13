@@ -9,7 +9,7 @@
 #include "MWindowBase.hpp"
 #include "MResizable.hpp"
 #include "settings.h"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

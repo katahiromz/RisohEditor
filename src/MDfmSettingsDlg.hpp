@@ -8,7 +8,7 @@
 #include "resource.h"
 #include "MPropSheet.hpp"
 #include "settings.h"
-#include "Common.hpp"
+#include "Utils.h"
 
 BOOL IsCodePageReallyUsable(UINT cp);
 

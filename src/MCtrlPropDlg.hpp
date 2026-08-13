@@ -16,7 +16,7 @@
 #include "MStringListDlg.hpp"
 #include "DialogRes.hpp"
 #include "MString.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 #include <unordered_set>     // for std::unordered_set
 #include <oledlg.h>

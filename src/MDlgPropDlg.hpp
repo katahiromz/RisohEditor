@@ -13,7 +13,7 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "MRisohAutoComplete.hpp"
 #include "DialogRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MDlgPropDlg;
 

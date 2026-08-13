@@ -12,7 +12,7 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MenuRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MAddMItemDlg;
 class MModifyMItemDlg;

@@ -8,7 +8,7 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 #define MYWM_SETITEMRECT (WM_USER + 100)
 #define MYWM_COMPLEMENT (WM_USER + 112)

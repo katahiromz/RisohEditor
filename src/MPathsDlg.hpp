@@ -10,7 +10,7 @@
 #include "MWindowBase.hpp"
 #include "settings.h"
 #include "MResizable.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MPathsDlg;
 

@@ -11,7 +11,7 @@
 #include "settings.h"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 struct MACRO_ENTRY;
 class MAddMacroDlg;

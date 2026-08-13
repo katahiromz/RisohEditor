@@ -12,7 +12,7 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "ToolbarRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MModifyTBBtnDlg;
 class MEditToolbarDlg;

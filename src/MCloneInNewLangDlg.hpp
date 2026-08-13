@@ -11,7 +11,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -14,7 +14,7 @@
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "StringRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MAddStrDlg;
 class MModifyStrDlg;

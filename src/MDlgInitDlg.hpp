@@ -15,7 +15,7 @@
 #include "MString.hpp"
 #include "DlgInitRes.hpp"
 #include "DlgInit.h"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MAddDlgInitDlg;
 class MModifyDlgInitDlg;

@@ -8,7 +8,7 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

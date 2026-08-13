@@ -14,7 +14,7 @@
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MessageRes.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MAddMsgDlg;
 class MModifyMsgDlg;

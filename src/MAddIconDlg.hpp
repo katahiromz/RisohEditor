@@ -12,7 +12,7 @@
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MRisohAutoComplete.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

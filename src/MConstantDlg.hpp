@@ -12,7 +12,7 @@
 #include "settings.h"
 #include "MComboBoxAutoComplete.hpp"
 #include "ConstantsDB.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 class MConstantDlg;
 
