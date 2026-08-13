@@ -23,10 +23,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Save resour&ce.h...", ID_UPDATERESHBANG
-        MENUITEM "Ad&vise resource.h Modification...", ID_ADVICERESH
+        MENUITEM "Ad&vise resource.h modification...", ID_ADVICERESH
         MENUITEM "&Unload resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Load &Window Class Library...", ID_LOADWCLIB
+        MENUITEM "Load a &window class library...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
@@ -71,7 +71,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extract Binar&y Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "C&hange Type/Name/Language\tF2", ID_EDITLABEL
+        MENUITEM "C&hange type/name/language\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "C&lone...", ID_CLONE
         MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
@@ -94,33 +94,33 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Query constant...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
-        MENUITEM "&Go to specified line...\tCtrl+G", ID_GOTOLINE
+        MENUITEM "&Go to line...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&View"
     {
         MENUITEM "&Status Bar", ID_STATUSBAR
-        MENUITEM "&Tool Bar", ID_SHOWHIDETOOLBAR
+        MENUITEM "&Toolbar", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binary", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "E&xpand All\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "C&ollapse All\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "&Resource IDs", ID_IDLIST
-        MENUITEM "List of &Languages...", ID_SHOWLANGS
+        MENUITEM "&Languages...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Always &CONTROL statement", ID_ALWAYSCONTROL
-        MENUITEM "Don't Use &ID Macros", ID_HIDEIDMACROS
+        MENUITEM "Don't use &ID Macros", ID_HIDEIDMACROS
         MENUITEM "Use IDC_ST&ATIC", ID_USEIDC_STATIC
-        MENUITEM "&Word Wrapping", ID_WORD_WRAP
+        MENUITEM "&Word wrap", ID_WORD_WRAP
         MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "Re&fresh", ID_REFRESHALL
     }
     POPUP "&Automation"
     {
-        MENUITEM "Programming Language &EGA...", ID_EGA
+        MENUITEM "The Programming Language &EGA...", ID_EGA
         MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
-        MENUITEM "Open EGA &Manual", ID_OPEN_EGA_MANUAL
+        MENUITEM "Open EGA &manual", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Help"
     {
@@ -718,7 +718,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "Height of Combo&Box:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Word wrapping", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "&Word wrap", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Ask ""&resource.h""'s update", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Compress EXE by &UPX on saving it", chx8, 5, 165, 200, 14
     RTEXT "Name of &OLE controls:", -1, 5, 187, 80, 12
@@ -1143,7 +1143,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 }
 
 IDD_EGA DIALOGEX 0, 0, 300, 175
-CAPTION "Programming Language EGA"
+CAPTION "The Programming Language EGA"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
