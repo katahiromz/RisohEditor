@@ -6380,9 +6380,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 		auto pTVKD = (TV_KEYDOWN *)pnmhdr;
 		switch (pTVKD->wVKey)
 		{
-		case VK_CONTROL:
-		case VK_SHIFT:
-			break;
 		case VK_DELETE:
 			PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
 			DoSetFileModified(TRUE);
@@ -7253,8 +7250,12 @@ MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	LRESULT ret;
 	switch (uMsg)
 	{
+	case WM_KEYDOWN:
+		if (wParam == VK_SHIFT || wParam == VK_CONTROL)
+			return 0;
+		// ...FALL THROUGH...
 	case WM_SIZE: case WM_HSCROLL: case WM_VSCROLL:
-	case WM_MOUSEWHEEL: case WM_KEYDOWN: case WM_CHAR:
+	case WM_MOUSEWHEEL: case WM_CHAR:
 		if (IsWindow(m_arrow))
 		{
 			// hide drop-down arrow
