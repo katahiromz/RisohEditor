@@ -3224,7 +3224,11 @@ PCSTR MMainWnd::GetWordHelp(const MStringW& str)
 	if (str == L"HTML")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/html-resource";
 	if (str == L"ICON")
-		return "https://learn.microsoft.com/en-us/windows/win32/menurc/icon-control";
+	{
+		if (entry && entry->m_type == RT_DIALOG)
+			return "https://learn.microsoft.com/en-us/windows/win32/menurc/icon-control";
+		return "https://learn.microsoft.com/en-us/windows/win32/menurc/icon-resource";
+	}
 	if (str == L"LANGUAGE")
 		return "https://learn.microsoft.com/en-us/windows/win32/menurc/language-statement";
 	if (str == L"LISTBOX")
