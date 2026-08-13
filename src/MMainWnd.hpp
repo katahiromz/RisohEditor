@@ -443,6 +443,7 @@ protected:
 
 	void OnSelChange(HWND hwnd, INT iSelected);
 	void OnCancelEdit(HWND hwnd);
+	void OnAlwaysControl(HWND hwnd);
 	void OnCompile(HWND hwnd);
 	void OnGuiEdit(HWND hwnd);
 	void OnEdit(HWND hwnd);

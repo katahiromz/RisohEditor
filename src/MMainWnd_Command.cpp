@@ -2034,6 +2034,10 @@ void MMainWnd::OnConfig(HWND hwnd)
 // ID_USEIDC_STATIC: use IDC_STATIC macro or not
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
+	// compile if necessary
+	if (!CompileIfNecessary(TRUE))
+		return;
+
 	// toggle the flag
 	g_settings.bUseIDC_STATIC = !g_settings.bUseIDC_STATIC;
 
@@ -2045,14 +2049,15 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 // ID_HIDEIDMACROS: show/hide the ID macros
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
-	BOOL bListOpen = IsWindow(m_id_list_dlg);
+	// compile if necessary
+	if (!CompileIfNecessary(TRUE))
+		return;
 
 	// toggle the flag
 	g_settings.bHideID = !g_settings.bHideID;
 
 	UpdateNames(FALSE);
-
-	ShowIDList(hwnd, bListOpen);
+	DoRefreshIDList(hwnd);
 
 	// select the entry to update the text
 	auto entry = g_res.get_entry();
@@ -3072,6 +3077,21 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 	}
 }
 
+// ID_ALWAYSCONTROL
+void MMainWnd::OnAlwaysControl(HWND hwnd)
+{
+	// compile if necessary
+	if (!CompileIfNecessary(TRUE))
+		return;
+
+	// toggle the flag
+	g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
+
+	// select the entry to update the text
+	auto entry = g_res.get_entry();
+	SelectTV(entry, FALSE);
+}
+
 // ID_CANCELEDIT: cancel edit
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
@@ -3882,14 +3902,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		OnSelChange(hwnd, !!m_bShowBinEdit);
 		break;
 	case ID_ALWAYSCONTROL:
-		{
-			// toggle the flag
-			g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
-
-			// select the entry to update the text
-			auto entry = g_res.get_entry();
-			SelectTV(entry, FALSE);
-		}
+		OnAlwaysControl(hwnd);
 		break;
 	case ID_MRUFILE0:
 	case ID_MRUFILE1:
