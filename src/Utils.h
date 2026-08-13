@@ -20,6 +20,13 @@
 #include "StringRes.hpp"
 #include "MessageRes.hpp"
 
+struct AutoDeleteFileW
+{
+	MStringW m_file;
+	AutoDeleteFileW(const std::wstring& file) : m_file(file) { }
+	~AutoDeleteFileW() { ::DeleteFileW(m_file.c_str()); }
+};
+
 enum LANG_TYPE
 {
 	LANG_TYPE_0,
@@ -27,19 +34,25 @@ enum LANG_TYPE
 	LANG_TYPE_2
 };
 
+// window class libraries
+typedef std::unordered_set<HMODULE> wclib_t;
+extern wclib_t s_wclib;
+
 // structure for language information
 struct LANG_ENTRY
 {
 	LANGID LangID;    // language ID
 	MStringW str;   // string
 
-					// for sorting
+	// for sorting
 	bool operator<(const LANG_ENTRY& ent) const
 	{
 		return str < ent.str;
 	}
 };
 extern std::vector<LANG_ENTRY> g_langs;
+
+extern TCHAR g_szMP3TempFile[MAX_PATH];
 
 BOOL CheckCommand(MString strCommand);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang);
@@ -59,17 +72,11 @@ BOOL InitStringIDs(void);
 BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type);
 BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString& name);
 BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId);
-BOOL IsThereWndClass(const WCHAR *pszName);
-BYTE GetCharSetFromComboBox(HWND hCmb);
 DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 MString GetAssoc(const MString& name);
 MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, LANGID wLang);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);
-std::wstring GetKeyID(UINT wId);
-void Cmb1_InitVirtualKeys(HWND hCmb1);
-void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
-void GetStyleSelect(std::vector<BYTE>& sel, const ConstantsDB::TableType& table, DWORD dwValue);
 void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
@@ -85,105 +92,49 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
 void InitResNameComboBoxDword(HWND hCmb, const DWORD& id, IDTYPE_ nIDTYPE_);
 void InitResNameComboBox(HWND hCmb, const MIdOrString& id, INT nIDTYPE_1, INT nIDTYPE_2);
 void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
-void InitStringComboBox(HWND hCmb, const MString& strString);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
 void ReplaceFullWithHalf(LPWSTR pszText);
 void ReplaceFullWithHalf(MStringW& strText);
 LANGID GetDefaultResLanguage(VOID);
 HRESULT FileSystemAutoComplete(HWND hwnd);
-
-// window class libraries
-typedef std::unordered_set<HMODULE> wclib_t;
-extern wclib_t s_wclib;
 BOOL IsThereWndClass(PCWSTR pszName);
 void FreeWCLib(void);
-
-void ReplaceFullWithHalf(wchar_t* pszText);
-void ReplaceFullWithHalf(std::wstring& strText);
-
 BOOL IsFileWritable(LPCWSTR pszFileName);
 BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout = 15000);
-
 bool create_directories_recursive_win32(const std::wstring& path);
-
-std::wstring DumpBinaryAsText(const std::vector<BYTE>& data);
+MStringW DumpBinaryAsText(const std::vector<BYTE>& data);
 BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, size_t size);
-
-struct AutoDeleteFileW
-{
-	std::wstring m_file;
-	AutoDeleteFileW(const std::wstring& file) : m_file(file) { }
-	~AutoDeleteFileW() { ::DeleteFileW(m_file.c_str()); }
-};
-
 WORD GetMachineOfBinary(LPCWSTR pszExeFile);
 BOOL IsFileLockedDx(LPCTSTR pszFileName);
 BOOL DeleteDirectoryDx(LPCTSTR pszDir);
 BOOL IsEmptyDirectoryDx(LPCTSTR pszPath);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
-HRESULT FileSystemAutoComplete(HWND hwnd);
 void MyChangeNotify(LPCWSTR pszFileName);
-LANGID GetDefaultResLanguage(VOID);
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
 void GetStyleSelect(std::vector<BYTE>& sel, const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseStyleDiff(
-	DWORD dwValue, ConstantsDB::TableType& table,
-	std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
-void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitFontComboBox(HWND hCmb);
-void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
-void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
-void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
-void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
-void InitCtrlIDComboBox(HWND hCmb);
 void Res_ReplaceResTypeString(MString& str, bool bRevert = false);
 MIdOrString ResourceTypeFromIDType(INT nIDTYPE_);
-MString GetAssoc(const MString& name);
-void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
-void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);	
-void InitResNameComboBoxDword(HWND hCmb, const DWORD& id, IDTYPE_ nIDTYPE_);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2);
-BOOL CheckCommand(MString strCommand);
-void InitConstantComboBox(HWND hCmb);
 void InitStringComboBox(HWND hCmb, const MString& strString);
-void InitMessageComboBox(HWND hCmb, const MString& strString);
 BOOL IsValidUILang(LANGID langid);
-void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage);
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-void InitLangListView(HWND hLst1, LPCTSTR pszText);
 INT ParseType(const MStringW& input, MIdOrString& type);
 INT ParseName(const MStringW& input, const MIdOrString& type, MIdOrString& name);
 BOOL ParseLang(const MStringW& input, LANGID& lang);
-BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type);
-BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name);
-BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file);
 MStringW GetKeyID(UINT wId);
 void Cmb1_InitVirtualKeys(HWND hCmb1);
-BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str);
-MString GetLanguageStatement(LANGID langid, BOOL bOldStyle);
 void DoSetFileModified(BOOL bModified);
 VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons);
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
-MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, LANGID wLang);
 BOOL PlayMP3(LPCVOID ptr, size_t size);
 void StopMP3(void);
 BOOL PlayAvi(HWND hwnd, LPCVOID ptr, size_t size);
 void StopAvi(void);
-
-extern std::vector<LANG_ENTRY> g_langs;
-extern TCHAR g_szMP3TempFile[MAX_PATH];
-
-BOOL CALLBACK
-EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LPARAM lParam);
+BOOL CALLBACK EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage, LPARAM lParam);
 BOOL CALLBACK EnumLocalesProc(LPWSTR lpLocaleString);
 BOOL CALLBACK EnumEngLocalesProc(LPWSTR lpLocaleString);
 BOOL IsCodePageReallyUsable(UINT cp);
