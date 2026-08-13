@@ -400,6 +400,9 @@ public:
 		INT iItem = lpDrawItem->itemID;
 		INT cItems = ListBox_GetCount(m_hLst1);
 
+		if (iItem < 0)
+			return;
+
 		MStringW sz1 = GetListBoxText(m_hLst1, iItem);
 
 		if (lpDrawItem->itemState & ODS_SELECTED)
