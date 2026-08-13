@@ -398,6 +398,7 @@ public:
 		HDC hDC = lpDrawItem->hDC;
 		RECT rcItem = lpDrawItem->rcItem;
 		INT iItem = lpDrawItem->itemID;
+		INT cItems = ListBox_GetCount(m_hLst1);
 
 		MStringW sz1 = GetListBoxText(m_hLst1, iItem);
 

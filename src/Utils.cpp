@@ -3460,3 +3460,78 @@ bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue)
 	if (pValue) *pValue = (DWORD)val;
 	return true;
 }
+
+// Helper function to get ComboBox edit text without buffer size limitations
+MStringW GetComboBoxText(HWND hwndCombo)
+{
+	assert(IsWindow(hwndCombo));
+	INT cch = ComboBox_GetTextLength(hwndCombo);
+	if (cch <= 0)
+		return L"";
+	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
+	if (!psz)
+		return L"";
+	INT ret = ComboBox_GetText(hwndCombo, psz, cch + 1);
+	if (ret <= 0)
+		psz[0] = 0;
+	MStringW str = psz;
+	delete[] psz;
+	return str;
+}
+
+// Helper function to get ComboBox listbox text without buffer size limitations
+MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex)
+{
+	assert(IsWindow(hwndCombo));
+	INT cch = ComboBox_GetLBTextLen(hwndCombo, nIndex);
+	if (cch <= 0)
+		return L"";
+	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
+	if (!psz)
+		return L"";
+	cch = ComboBox_GetLBText(hwndCombo, nIndex, psz);
+	if (cch <= 0)
+		psz[0] = 0;
+	MStringW str = psz;
+	delete[] psz;
+	return str;
+}
+
+// Helper function to get ListBox text without buffer size limitations
+MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
+{
+	assert(IsWindow(hwndListBox));
+	INT cch = (INT)SendMessage(hwndListBox, LB_GETTEXTLEN, nIndex, 0);
+	if (cch <= 0)
+		return L"";
+	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
+	if (!psz)
+		return L"";
+	INT ret = ListBox_GetText(hwndListBox, nIndex, psz);
+	if (ret <= 0)
+		psz[0] = 0;
+	MStringW str = psz;
+	delete[] psz;
+	return str;
+}
+
+// Helper function to get window text without buffer size limitations.
+MStringW GetWindowTextW(HWND hwnd)
+{
+	assert(IsWindow(hwnd));
+	INT cch = ::GetWindowTextLengthW(hwnd);
+	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
+	if (!psz)
+		return L"";
+	if (!::GetWindowTextW(hwnd, psz, cch + 1))
+		psz[0] = 0;
+	MStringW str = psz;
+	delete[] psz;
+	return str;
+}
+
+// Helper function to get dialog item text without buffer size limitations
+MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID)
+{
+	return GetWindowTextW(::GetDlgItem(hwnd, nCtrlID));
+}

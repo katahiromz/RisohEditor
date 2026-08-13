@@ -13,7 +13,7 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "DlgInit.h"
 #include "MRisohAutoComplete.hpp"
-#include "Common.hpp"
+#include "Utils.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

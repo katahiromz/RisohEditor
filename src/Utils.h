@@ -116,3 +116,8 @@ BOOL CreateEmptyFile(PCWSTR filename);
 MStringA GetCannotCreateTempFile(VOID);
 MStringW GetResTypeEncoding(const MIdOrString& type);
 bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue = NULL);
+MStringW GetComboBoxText(HWND hwndCombo);
+MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex);
+MStringW GetListBoxText(HWND hwndListBox, INT nIndex);
+MStringW GetWindowTextW(HWND hwnd);
+MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID);
