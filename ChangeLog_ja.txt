@@ -1,6 +1,7 @@
 ﻿## 更新履歴
 
 - v.6.1.5 (2026-XX-YY)
+    - MDialogFontSubstDlg を高速化。
 - v.6.1.4 (2026-08-13)
     - 設定をプロパティシートに変更。
     - OnDeleteResを高速化。

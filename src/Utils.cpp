@@ -23,6 +23,7 @@ extern std::vector<MString> g_keys;
 extern std::vector<MString> g_ctrl_ids;
 extern std::vector<MString> g_string_ids;
 extern std::vector<MString> g_help_ids;
+extern std::vector<MString> g_font_names;
 wclib_t s_wclib;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
@@ -1659,31 +1660,15 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 //////////////////////////////////////////////////////////////////////////////
 // font names
 
-// the callback for InitFontComboBox
-static int CALLBACK
-EnumFontFamProc(ENUMLOGFONT *lpelf,
-				NEWTEXTMETRIC *lpntm,
-				INT FontType,
-				LPARAM lParam)
-{
-	HWND hCmb = HWND(lParam);
-
-	// ignore vertical fonts
-	if (lpelf->elfLogFont.lfFaceName[0] != TEXT('@'))
-		ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
-
-	return TRUE;	// continue
-}
-
 // initialize the font combobox
 void InitFontComboBox(HWND hCmb)
 {
-	ComboBox_AddString(hCmb, L"MS Shell Dlg");
-	ComboBox_AddString(hCmb, L"MS Shell Dlg 2");
+	InitFontNames();
 
-	HDC hDC = CreateCompatibleDC(NULL);
-	EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, (LPARAM)hCmb);
-	DeleteDC(hDC);
+	for (auto& name : g_font_names)
+	{
+		ComboBox_AddString(hCmb, name.c_str());
+	}
 }
 
 // character set information
@@ -3717,6 +3702,35 @@ BOOL InitHelpIDs(void)
 		g_help_ids.push_back(table_entry.name);
 	}
 
+	return TRUE;
+}
+
+// the callback for InitFontComboBox
+static int CALLBACK
+EnumFontFamProc(ENUMLOGFONT *lpelf,
+				NEWTEXTMETRIC *lpntm,
+				INT FontType,
+				LPARAM lParam)
+{
+	// ignore vertical fonts
+	if (lpelf->elfLogFont.lfFaceName[0] != TEXT('@'))
+		g_font_names.push_back(lpelf->elfLogFont.lfFaceName);
+	return TRUE;	// continue
+}
+
+BOOL InitFontNames(void)
+{
+	if (g_font_names.size())
+		return TRUE;
+
+	g_font_names.push_back(L"MS Shell Dlg");
+	g_font_names.push_back(L"MS Shell Dlg 2");
+
+	HDC hDC = CreateCompatibleDC(NULL);
+	EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, 0);
+	DeleteDC(hDC);
+
+	std::sort(g_font_names.begin(), g_font_names.end());
 	return TRUE;
 }
 

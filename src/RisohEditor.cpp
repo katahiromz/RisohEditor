@@ -25,6 +25,7 @@ std::vector<MString> g_ctrl_ids;
 std::vector<MString> g_string_ids;
 std::vector<MString> g_help_ids;
 std::vector<MString> g_encrypted_types;
+std::vector<MString> g_font_names;
 HWND s_hwndEga = NULL;
 
 #ifndef _MSC_VER
@@ -8305,6 +8306,7 @@ wWinMain(HINSTANCE   hInstance,
 	g_string_ids.clear();
 	g_help_ids.clear();
 	g_encrypted_types.clear();
+	g_font_names.clear();
 
 	// Revert WoW64 filesystem redirection
 	if (bWowFsDisabled)

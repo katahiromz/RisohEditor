@@ -11,6 +11,9 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "Utils.h"
 
+extern std::vector<MString> g_font_names;
+BOOL InitFontNames(void);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MDialogFontSubstDlg : public MPropSheetPage
@@ -30,12 +33,12 @@ public:
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	{
-		InitFontComboBox(GetDlgItem(hwnd, cmb1));
-		InitFontComboBox(GetDlgItem(hwnd, cmb2));
-		InitFontComboBox(GetDlgItem(hwnd, cmb3));
-		InitFontComboBox(GetDlgItem(hwnd, cmb4));
-		InitFontComboBox(GetDlgItem(hwnd, cmb5));
-		InitFontComboBox(GetDlgItem(hwnd, cmb6));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb1));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb2));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb3));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb4));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb5));
+		//InitFontComboBox(GetDlgItem(hwnd, cmb6));
 
 		SetDlgItemTextW(hwnd, cmb1, g_settings.strFontReplaceFrom1.c_str());
 		SetDlgItemTextW(hwnd, cmb2, g_settings.strFontReplaceTo1.c_str());
@@ -50,6 +53,36 @@ public:
 		SubclassChildDx(m_cmb4, cmb4);
 		SubclassChildDx(m_cmb5, cmb5);
 		SubclassChildDx(m_cmb6, cmb6);
+
+		InitFontNames();
+
+		SendMessageW(m_cmb1, WM_SETREDRAW, FALSE, 0);
+		SendMessageW(m_cmb2, WM_SETREDRAW, FALSE, 0);
+		SendMessageW(m_cmb3, WM_SETREDRAW, FALSE, 0);
+		SendMessageW(m_cmb4, WM_SETREDRAW, FALSE, 0);
+		SendMessageW(m_cmb5, WM_SETREDRAW, FALSE, 0);
+		SendMessageW(m_cmb6, WM_SETREDRAW, FALSE, 0);
+		for (auto& name : g_font_names)
+		{
+			ComboBox_AddString(m_cmb1, name.c_str());
+			ComboBox_AddString(m_cmb2, name.c_str());
+			ComboBox_AddString(m_cmb3, name.c_str());
+			ComboBox_AddString(m_cmb4, name.c_str());
+			ComboBox_AddString(m_cmb5, name.c_str());
+			ComboBox_AddString(m_cmb6, name.c_str());
+		}
+		SendMessageW(m_cmb1, WM_SETREDRAW, TRUE, 0);
+		SendMessageW(m_cmb2, WM_SETREDRAW, TRUE, 0);
+		SendMessageW(m_cmb3, WM_SETREDRAW, TRUE, 0);
+		SendMessageW(m_cmb4, WM_SETREDRAW, TRUE, 0);
+		SendMessageW(m_cmb5, WM_SETREDRAW, TRUE, 0);
+		SendMessageW(m_cmb6, WM_SETREDRAW, TRUE, 0);
+		InvalidateRect(m_cmb1, NULL, TRUE);
+		InvalidateRect(m_cmb2, NULL, TRUE);
+		InvalidateRect(m_cmb3, NULL, TRUE);
+		InvalidateRect(m_cmb4, NULL, TRUE);
+		InvalidateRect(m_cmb5, NULL, TRUE);
+		InvalidateRect(m_cmb6, NULL, TRUE);
 
 		CenterWindowDx();
 		return TRUE;

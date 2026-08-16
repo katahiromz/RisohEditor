@@ -70,6 +70,7 @@ BOOL InitKeys(void);
 BOOL InitCtrlIDs(void);
 BOOL InitStringIDs(void);
 BOOL InitHelpIDs(void);
+BOOL InitFontNames(void);
 BOOL ChooseTypeListBoxType(HWND hwnd, const MIdOrString& type);
 BOOL ChooseNameListBoxName(HWND hwnd, const MIdOrString& type, const MIdOrString& name);
 BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId);

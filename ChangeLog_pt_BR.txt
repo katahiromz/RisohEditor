@@ -1,6 +1,7 @@
 ﻿## HISTÓRICO
 
 - v.6.1.5 (2026-XX-YY)
+    - Acelere o MDialogFontSubstDlg.
 - v.6.1.4 (2026-08-13)
     - Transformou a configuração em uma folha de propriedades.
     - Acelere o OnDeleteRes.
