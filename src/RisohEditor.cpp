@@ -28,6 +28,9 @@ std::vector<MString> g_encrypted_types;
 std::vector<MString> g_font_names;
 HWND s_hwndEga = NULL;
 
+/*static*/ HHOOK MSplashWindow::s_hKeyboardHook = NULL;
+/*static*/ HWND MSplashWindow::s_hwndSplash = NULL;
+
 #ifndef _MSC_VER
 	typedef int (WINAPI *FN_GetMenuPosFromID)(HMENU hmenu, UINT id);
 	static FN_GetMenuPosFromID g_fnGetMenuPosFromID = nullptr;

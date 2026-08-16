@@ -13,6 +13,9 @@ class MSplashWindow : public MWindowBase
 public:
 	enum { TIMER_ID = 999 };
 	HBITMAP m_hbm = nullptr;
+	static HHOOK s_hKeyboardHook;
+	static HWND s_hwndSplash;
+
 	MSplashWindow()
 	{
 		m_hbm = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SPLASH));
@@ -62,10 +65,33 @@ public:
 		return TEXT("katahiromz's splash window");
 	}
 
+	static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+	{
+		if (nCode == HC_ACTION && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
+		{
+			if (s_hwndSplash && IsWindow(s_hwndSplash))
+				DestroyWindow(s_hwndSplash);
+		}
+		return CallNextHookEx(s_hKeyboardHook, nCode, wParam, lParam);
+	}
+
 	BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	{
+		s_hwndSplash = hwnd;
+		s_hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc,
+		                                   GetModuleHandle(NULL), 0);
 		SetTimer(hwnd, TIMER_ID, 3000, NULL);
 		return TRUE;
+	}
+
+	void OnDestroy(HWND hwnd)
+	{
+		if (s_hKeyboardHook)
+		{
+			UnhookWindowsHookEx(s_hKeyboardHook);
+			s_hKeyboardHook = NULL;
+		}
+		s_hwndSplash = NULL;
 	}
 
 	BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
@@ -120,6 +146,7 @@ public:
 		switch (uMsg)
 		{
 			HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
+			HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
 			HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
 			HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
 			HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
