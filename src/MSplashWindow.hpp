@@ -35,9 +35,19 @@ public:
 		RECT rc = { 0, 0, bm.bmWidth, bm.bmHeight };
 		AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
+		// High DPI support
+		UINT dpi = 96;
+		if (HMODULE hUser32 = GetModuleHandle(TEXT("user32.dll")))
+		{
+			typedef UINT (WINAPI *GETDPIFORSYSTEM)(void);
+			if (auto pGetDpiForSystem = (GETDPIFORSYSTEM)GetProcAddress(hUser32, "GetDpiForSystem"))
+				dpi = pGetDpiForSystem();
+		}
+		INT cx = MulDiv(bm.bmWidth, dpi, 96);
+		INT cy = MulDiv(bm.bmHeight, dpi, 96);
+
 		BOOL ret = CreateWindowDx(hwndParent, NULL, style, exstyle,
-		                          CW_USEDEFAULT, CW_USEDEFAULT,
-		                          rc.right - rc.left, rc.bottom - rc.top);
+		                          CW_USEDEFAULT, CW_USEDEFAULT, cx, cy);
 		if (ret)
 		{
 			CenterWindowDx(m_hwnd);
