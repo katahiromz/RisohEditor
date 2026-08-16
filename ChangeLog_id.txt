@@ -2,6 +2,7 @@
 
 - v.6.1.5 (2026-XX-YY)
     - Percepat MDialogFontSubstDlg.
+    - Menambahkan jendela splash.
 - v.6.1.4 (2026-08-13)
     - Mengubah konfigurasi menjadi lembar properti.
     - Percepat OnDeleteRes.

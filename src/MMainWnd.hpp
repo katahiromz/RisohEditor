@@ -8,6 +8,7 @@
 
 #include "RisohEditor.hpp"
 #include "MRisohAutoComplete.hpp"
+#include "MSplashWindow.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd --- the main window
@@ -225,6 +226,7 @@ public:
 	void UpdateOurToolBarButtons(INT iType);
 	void UpdateToolBarStatus();
 	bool IsEntryTextEditable(const EntryBase *entry);
+	MSplashWindow m_splash;
 
 	BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed);
 	void UpdateTitleBar();

@@ -7336,6 +7336,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
+	m_splash.CreateDx(hwnd);
+
 	// create the image list for treeview
 	m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
 	if (m_hImageList == NULL)

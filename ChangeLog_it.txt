@@ -2,6 +2,7 @@
 
 - v.6.1.5 (2026-XX-YY)
     - Accelerare MDialogFontSubstDlg.
+    - Aggiunta la schermata iniziale.
 - v.6.1.4 (13.08.2026)
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerare OnDeleteRes.
