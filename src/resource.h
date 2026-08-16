@@ -9,6 +9,7 @@
 #define IDB_BMP                             100
 #define IDB_CONTROLS                        101
 #define IDB_TOOLBAR                         102
+#define IDB_SPLASH                          103
 
 #define IDC_CURSORNS                        101
 #define IDC_CURSORWE                        102
