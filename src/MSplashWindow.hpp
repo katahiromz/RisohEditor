@@ -94,6 +94,7 @@ public:
 	// WM_DESTROY
 	void OnDestroy(HWND hwnd)
 	{
+		KillTimer(hwnd, TIMER_ID);
 		if (s_hKeyboardHook)
 		{
 			UnhookWindowsHookEx(s_hKeyboardHook);
