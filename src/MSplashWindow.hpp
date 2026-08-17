@@ -19,6 +19,7 @@ public:
 	MSplashWindow()
 	{
 		m_hbm = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SPLASH));
+		assert(m_hbm);
 	}
 
 	~MSplashWindow()
@@ -28,13 +29,18 @@ public:
 
 	BOOL CreateDx(HWND hwndParent)
 	{
+		if (!m_hbm)
+			return FALSE;
+
 		RegisterClassDx();
 
 		DWORD style = WS_POPUPWINDOW;
-		DWORD exstyle = WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE;
+		DWORD exstyle = WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
 
 		BITMAP bm;
-		GetObject(m_hbm, sizeof(bm), &bm);
+		if (!GetObject(m_hbm, sizeof(bm), &bm))
+			return FALSE;
+
 		RECT rc = { 0, 0, bm.bmWidth, bm.bmHeight };
 		AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
@@ -54,7 +60,7 @@ public:
 		if (ret)
 		{
 			CenterWindowDx(m_hwnd);
-			ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
+			ShowWindow(m_hwnd, SW_SHOWNORMAL);
 			UpdateWindow(m_hwnd);
 		}
 		return ret;
@@ -75,6 +81,7 @@ public:
 		return CallNextHookEx(s_hKeyboardHook, nCode, wParam, lParam);
 	}
 
+	// WM_CREATE
 	BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	{
 		s_hwndSplash = hwnd;
@@ -84,6 +91,7 @@ public:
 		return TRUE;
 	}
 
+	// WM_DESTROY
 	void OnDestroy(HWND hwnd)
 	{
 		if (s_hKeyboardHook)
@@ -94,6 +102,7 @@ public:
 		s_hwndSplash = NULL;
 	}
 
+	// WM_ERASEBKGND
 	BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
 	{
 		RECT rc;
@@ -102,6 +111,7 @@ public:
 		return TRUE;
 	}
 
+	// WM_PAINT
 	void OnPaint(HWND hwnd)
 	{
 		RECT rc;
@@ -116,7 +126,7 @@ public:
 		{
 			HGDIOBJ hbmOld = SelectObject(hdcMem, m_hbm);
 
-			SetStretchBltMode(hdc, COLORONCOLOR);
+			SetStretchBltMode(hdc, STRETCH_HALFTONE);
 			StretchBlt(hdc, 0, 0, rc.right, rc.bottom, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 
 			SelectObject(hdcMem, hbmOld);
@@ -125,6 +135,7 @@ public:
 		DeleteDC(hdcMem);
 	}
 
+	// WM_TIMER
 	void OnTimer(HWND hwnd, UINT id)
 	{
 		if (id == TIMER_ID)
@@ -134,6 +145,7 @@ public:
 		}
 	}
 
+	// WM_LBUTTONDOWN
 	void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 	{
 		KillTimer(hwnd, TIMER_ID);
