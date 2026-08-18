@@ -6,37 +6,37 @@
 - v.6.1.4 (13.08.2026)
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerare OnDeleteRes.
-    - Risolto il problema per cui le frecce a discesa nella visualizzazione ad albero non venivano duplicate.
+    - Risolto il problema per cui le frecce a discesa nella visualizzazione struttura non venivano duplicate.
     - Corrette le etichette degli indici di MRadWindow.
     - Supporto per la compressione delle risorse tramite WonRes.
     - Migliorata la gestione di UPX.
-    - Supporto migliorato per Help ID.
+    - Migliorato supporto per Help ID.
     - Migliorato "MEditMenuDlg".
     - Aggiunto il supporto per lo zoom nell'editor di codice.
-    - Corretto l'a capo automatico.
+    - Corretta la funzione 'a capo automatico'.
 - v.6.1.3 (08.08.2026)
     - Menu [Modifica] semplificato.
     - Implementata la crittografia delle risorse tramite WonRes.
     - Accelerare OnNew.
     - Aggiunto il supporto per i file BMP compressi con RLE.
-    - Riduce lo sfarfallio in MRadWindow.
-    - Riduce lo sfarfallio in m_hCodeEditor.
+    - Ridotto lo sfarfallio in MRadWindow.
+    - Ridotto lo sfarfallio in m_hCodeEditor.
 - v.6.1.2 (05.08.2026)
     - Possibilità di effettuare nuovamente la compilazione con MinGW o RosBE.
     - Possibilità di modificare il tipo di risorsa.
     - Possibilità di clonare il tipo di risorsa.
-    - Piccoli miglioramenti all'interfaccia utente e all'esperienza utente.
+    - Piccoli miglioramenti nell'interfaccia utente e nell'esperienza utente.
     - Corretta la gestione di DLGITEMTEMPLATE.
     - Aggiornato mcpp.exe per elaborare le informazioni sulle righe del codice sorgente.
     - Migliorati il ​​processo di compilazione e le informazioni sugli errori.
 - v.6.1.1 (03.08.2026)
     - Refactoring.
 - v.6.1.0 (03.08.2026)
-    - Corretto handle non inizializzato sulla freccia della treeview.
-    - Traduzione polacca migliorata.
+    - Corretto handle non inizializzato della freccia nella vista struttura.
+    - Migliorata traduzione polacca.
 - v.6.0.9 (02.08.2026)
     - Manuale EGA aggiornato.
-    - Risolto il ritardo nella visualizzazione della treeview.
+    - Risolto il ritardo nella visualizzazione della vista struttura.
 - v.6.0.8 (01.08.2026)
     - Migliorata MConstantDlg.
     - Migliorati MAddCtrlDlg, MCtrlPropDlg e MDlgPropDlg.
@@ -47,7 +47,7 @@
     - Corrette funzioni EGA "load" e "save".
     - Aggiunta funzione EGA "RES_extract".
     - Risolte funzioni EGA "RES_load" e "RES_save".
-    - Traduzione e tasti di accesso migliorati.
+    - Migliorati traduzione e tasti di accesso.
 - v.6.0.7 (24.07.2026)
     - Risolto problema lentezza scorrimento rotellina visualizzazione sorgente.
     - Corretto dumping in stile DIALOG.
