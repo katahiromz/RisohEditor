@@ -73,7 +73,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Ca&mbia tipo/nome/lingua\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "C&lone...", ID_CLONE
+        MENUITEM "C&lona...", ID_CLONE
         MENUITEM "Clona in più lingue...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Test", ID_TEST
@@ -729,7 +729,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "Lingu&a risorsa:", -1, 5, 225, 110, 10
     COMBOBOX cmb3, 120, 225, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Usa &WonRes", chx11, 5, 245, 90, 14
-    PUSHBUTTON "WonRes Crittografia &delle risorse...", psh5, 100, 245, 125, 15
+    PUSHBUTTON "Critto&grafia WonRes risorse...", psh5, 100, 245, 125, 15
 }
 
 IDD_ADDRESID DIALOGEX 0, 0, 165, 90
@@ -964,7 +964,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Sfoglia...", psh8, 230, 175, 60, 14
     PUSHBUTTON "Ripri&stina tutto", psh9, 5, 200, 95, 14
-    LTEXT "* Si consiglia TDM-GCC. Nessun supporto per UTF-16 in cpp.exe.", -1, 115, 130, 170, 20
+    LTEXT "* Ti consigliamo TDM-GCC. In cpp.exe nessun supporto per UTF-16.", -1, 115, 130, 170, 20
 }
 
 IDD_EXP_OPTIONS DIALOGEX 0, 0, 250, 225
@@ -1270,16 +1270,16 @@ CAPTION "Clona in nuovo tipo"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    RTEXT "&Tipi di risorse più vecchie:", -1, 6, 9, 88, 14
+    RTEXT "Vecchio &tipo risorsa", -1, 6, 9, 88, 14
     COMBOBOX cmb1, 100, 10, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Nuovo tipo di risorsa:", -1, 6, 31, 88, 14
+    RTEXT "&Nuovo tipo risorsa:", -1, 6, 31, 88, 14
     COMBOBOX cmb2, 100, 30, 110, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 42, 55, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 121, 55, 60, 14
 }
 
 IDD_CRYPTO DIALOGEX 0, 0, 257, 147
-CAPTION "Crittografia/decrittografia dei dati delle risorse"
+CAPTION "Crittografia/decrittografia dati risorse"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
@@ -1303,7 +1303,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "Tipi di risorse da &crittografare:", -1, 5, 5, 160, 10
     LISTBOX lst1, 5, 20, 160, 60, LBS_EXTENDEDSEL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb1, 5, 85, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Aggiungere", psh1, 105, 85, 60, 15
+    PUSHBUTTON "&Aggiungi", psh1, 105, 85, 60, 15
     LTEXT "Le risorse crittografate devono essere protette da password e caricate in WonRes.", -1, 5, 103, 158, 21
     DEFPUSHBUTTON "OK", IDOK, 5, 130, 60, 15
     PUSHBUTTON "Annulla", IDCANCEL, 70, 130, 60, 15
