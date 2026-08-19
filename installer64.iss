@@ -34,6 +34,7 @@ VersionInfoProductTextVersion={#MyAppVersion}
 VersionInfoProductVersion={#MyAppVersion}
 VersionInfoVersion={#MyAppVersion}
 
+UninstallDisplayName={#MyAppName} 64-bit
 UninstallDisplayIcon={app}\{#MyAppName}64.exe
 AppPublisher={#MyAppCompanyName}
 
