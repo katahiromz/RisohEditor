@@ -1072,9 +1072,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 	// let the user choose the path
 	if (GetSaveFileNameW(&ofn))
 	{
-		// extract a bitmap as an *.bmp or *.png file
-		BOOL bPNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-		if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), bPNG))
+		if (!g_res.extract_bin(ofn.lpstrFile, entry))
 		{
 			ErrorBoxDx(IDS_CANTEXTRACTBMP);
 		}

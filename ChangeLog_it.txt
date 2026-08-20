@@ -4,6 +4,7 @@
     - Accelerare MDialogFontSubstDlg.
     - Aggiunta la schermata iniziale.
     - Impostata la codepage predefinita di windres su UTF-8.
+    - Corretta l'estrazione di RT_BITMAP.
 - v.6.1.4 (13.08.2026)
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerare OnDeleteRes.

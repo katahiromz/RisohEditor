@@ -1035,10 +1035,6 @@ MStringA MMainWnd::ExtractEntry(EntryBase *entry, PCSTR u8_filename)
 		{
 			ret = g_res.extract_cursor(wide_fname.c_str(), entry);
 		}
-		else if (entry->m_type == RT_BITMAP)
-		{
-			ret = PackedDIB_Extract(wide_fname.c_str(), &(*entry)[0], (*entry).size(), FALSE);
-		}
 		else
 		{
 			ret = g_res.extract_bin(wide_fname.c_str(), entry);

@@ -4497,7 +4497,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 		}
 		if (wType == (WORD)(UINT_PTR)RT_BITMAP)
 		{
-			return PackedDIB_Extract(filename.c_str(), &(*entry)[0], entry->size(), FALSE);
+			return g_res.extract_bin(filename.c_str(), entry);
 		}
 		if (wType == (WORD)(UINT_PTR)RT_ICON)
 		{

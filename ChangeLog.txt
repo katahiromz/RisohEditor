@@ -4,6 +4,7 @@
     - Accelerated MDialogFontSubstDlg.
     - Added the splash window.
     - Made windres default codepage UTF-8.
+    - Fixed RT_BITMAP extraction.
 - v.6.1.4 (2026-08-13)
     - Made configuration a property sheet.
     - Accelerated OnDeleteRes.

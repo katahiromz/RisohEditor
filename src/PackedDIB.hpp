@@ -19,5 +19,4 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 HBITMAP PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize);
 HICON PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIcon);
 BOOL PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm);
-BOOL PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG);
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz);

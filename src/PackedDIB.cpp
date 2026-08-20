@@ -357,56 +357,6 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
 	return FALSE;
 }
 
-BOOL
-PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
-{
-	if (WritePNG)
-	{
-		BOOL ret = FALSE;
-		HBITMAP hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
-		if (hbm == nullptr)
-			return FALSE;
-
-		Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, nullptr);
-		if (pBitmap && pBitmap->GetLastStatus() == Gdiplus::Ok)
-		{
-			CLSID cls;
-			if (GetEncoderClsid(L"image/png", &cls) != -1)
-			{
-				try
-				{
-					ret = pBitmap->Save(FileName, &cls, nullptr) == Gdiplus::Ok;
-				}
-				catch (...)
-				{
-					ret = FALSE;
-				}
-			}
-		}
-		delete pBitmap;
-		DeleteObject(hbm);
-		return ret;
-	}
-
-	BITMAPFILEHEADER FileHeader;
-	FileHeader.bfType = 0x4d42;
-	FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + siz);
-	FileHeader.bfReserved1 = 0;
-	FileHeader.bfReserved2 = 0;
-
-	DWORD dwOffset = PackedDIB_GetBitsOffset(ptr, DWORD(siz));
-	if (dwOffset == 0)
-		return FALSE;
-
-	FileHeader.bfOffBits = sizeof(FileHeader) + dwOffset;
-
-	MByteStreamEx bs;
-	if (!bs.WriteRaw(FileHeader) || !bs.WriteData(ptr, siz))
-		return FALSE;
-
-	return bs.SaveToFile(FileName);
-}
-
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 {
 	// PackedDIB_* works on a "packed DIB" -- BITMAPINFOHEADER + color
@@ -436,10 +386,15 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 	if (GetTempPathW(_countof(szPath), szPath) &&
 		GetTempFileNameW(szPath, L"reb", 0, szTempFile))
 	{
-		if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
+		if (FILE *fout = _wfopen(szTempFile, L"wb"))
 		{
-			hbm = (HBITMAP)LoadImageW(nullptr, szTempFile, IMAGE_BITMAP, 0, 0,
-									  LR_LOADFROMFILE | LR_COLOR);
+			BOOL bOK = !!fwrite(ptr, siz, 1, fout);
+			fclose(fout);
+			if (bOK)
+			{
+				hbm = (HBITMAP)LoadImageW(nullptr, szTempFile, IMAGE_BITMAP, 0, 0,
+										  LR_LOADFROMFILE | LR_COLOR);
+			}
 		}
 		DeleteFileW(szTempFile);
 	}

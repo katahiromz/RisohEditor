@@ -4,6 +4,7 @@
     - MDialogFontSubstDlg を高速化。
     - スプラッシュウィンドウを追加。
     - windresのデフォルトのコードページをUTF-8にした。
+    - RT_BITMAPの抽出を修正。
 - v.6.1.4 (2026-08-13)
     - 設定をプロパティシートに変更。
     - OnDeleteResを高速化。
