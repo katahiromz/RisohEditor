@@ -1982,7 +1982,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 	strCmdLine += strIncludesDump;
 	strCmdLine += L" -o \"";
 	strCmdLine += szPath3;
-	strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
+	strCmdLine += L"\" --codepage=65001 -J rc -O res -F pe-i386 \"--preprocessor=";
 	strCmdLine += strCppExe;
 	strCmdLine += L"\" --preprocessor-arg=\"\" \"";
 	strCmdLine += pszRCFile;

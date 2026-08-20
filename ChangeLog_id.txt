@@ -3,6 +3,7 @@
 - v.6.1.5 (2026-XX-YY)
     - Percepat MDialogFontSubstDlg.
     - Menambahkan jendela splash.
+    - Menjadikan UTF-8 sebagai *codepage* default untuk windres.
 - v.6.1.4 (2026-08-13)
     - Mengubah konfigurasi menjadi lembar properti.
     - Percepat OnDeleteRes.

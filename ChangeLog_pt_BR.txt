@@ -3,6 +3,7 @@
 - v.6.1.5 (2026-XX-YY)
     - Acelere o MDialogFontSubstDlg.
     - Adicionada a tela de abertura.
+    - A página de código padrão do windres passou a ser UTF-8.
 - v.6.1.4 (2026-08-13)
     - Transformou a configuração em uma folha de propriedades.
     - Acelere o OnDeleteRes.
