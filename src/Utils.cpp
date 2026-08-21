@@ -2288,20 +2288,103 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
 	}
 }
 
-// check the command ID text
-BOOL CheckCommand(MString strCommand)
+INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, UINT uType)
 {
-	// trim the string
-	mstr_trim(strCommand);
-
-	if (('0' <= strCommand[0] && strCommand[0] <= '9') ||
-		strCommand[0] == '-' || strCommand[0] == '+')
+	MString Title;
+	if (pszTitle == NULL)
 	{
-		// a numeric command ID
-		return TRUE;	// OK
+		Title = LoadStringDx(IDS_APPNAME);
+	}
+	else
+	{
+		Title = GetStringDx(pszTitle);
 	}
 
-	return g_db.HasResID(strCommand);   // is it resource ID name?
+	extern BOOL g_bNoGuiMode;
+	extern LPWSTR g_pszLogFile;
+	UINT nID;
+	if (g_bNoGuiMode)
+	{
+		if (g_pszLogFile)
+		{
+			if (FILE *fp = _wfopen(g_pszLogFile, L"a"))
+			{
+				fprintf(fp, "%ls\n", GetStringDx(pszString));
+				fclose(fp);
+			}
+		}
+		nID = IDYES;
+	}
+	else
+	{
+		MWindowBase::HookCenterMsgBoxDx(TRUE);
+		nID = ::MessageBox(g_hMainWnd, GetStringDx(pszString), Title.c_str(), uType);
+		MWindowBase::HookCenterMsgBoxDx(FALSE);
+	}
+
+	return nID;
+}
+
+INT ErrorBoxDx(UINT nStringID, UINT uType)
+{
+	return MsgBoxDx(MAKEINTRESOURCE(nStringID), TEXT("ERROR"), uType);
+}
+
+BOOL CheckCommandComboBox(HWND hCmb, MStringW& str)
+{
+	str = GetWindowTextW(hCmb);
+	ReplaceFullWithHalf(str);
+	mstr_trim(str);
+
+	if (str.empty())
+	{
+		SendMessageW(hCmb, CB_SETEDITSEL, 0, MAKELPARAM(0, -1));
+		ErrorBoxDx(IDS_ENTERCOMMAND);
+		SetFocus(hCmb);
+		return FALSE;
+	}
+
+	// Make it uppercase
+	mstr_upper(str);
+
+	if (mchr_is_digit(str[0]) || str[0] == '-' || str[0] == '+')
+	{
+		wchar_t *endptr;
+		long long value = std::wcstoll(str.c_str(), &endptr, 0);
+		if (endptr && *endptr)
+		{
+			SendMessageW(hCmb, CB_SETEDITSEL, 0, MAKELPARAM(0, -1));
+			ErrorBoxDx(IDS_INVALIDCOMMAND);
+			SetFocus(hCmb);
+			return FALSE;
+		}
+		if (value < SHRT_MIN || USHRT_MAX < value)
+		{
+			ComboBox_SetText(hCmb, std::to_wstring(USHRT_MAX).c_str());
+			SendMessageW(hCmb, CB_SETEDITSEL, 0, MAKELPARAM(0, -1));
+			ErrorBoxDx(IDS_COMMANDOUTOFRANGE);
+			SetFocus(hCmb);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	if (g_db.HasResID(str))
+	{
+		LONGLONG value = g_db.GetResIDValue(str);
+		if (value < (LONGLONG)SHRT_MIN || USHRT_MAX < (LONGLONG)value)
+		{
+			ComboBox_SetText(hCmb, std::to_wstring(USHRT_MAX).c_str());
+			SendMessageW(hCmb, CB_SETEDITSEL, 0, MAKELPARAM(0, -1));
+			ErrorBoxDx(IDS_COMMANDOUTOFRANGE);
+			SetFocus(hCmb);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	ErrorBoxDx(IDS_NOSUCHID);
+	return FALSE;
 }
 
 void InitConstantComboBox(HWND hCmb)

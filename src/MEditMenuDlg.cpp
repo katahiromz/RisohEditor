@@ -19,14 +19,9 @@ void MAddMItemDlg::OnOK(HWND hwnd)
 		mstr_unquote(m_entry.szCaption);
 	}
 
-	m_entry.szCommandID = ::GetDlgItemTextW(hwnd, cmb2);
-	ReplaceFullWithHalf(m_entry.szCommandID);
-	mstr_trim(m_entry.szCommandID);
-	if (!CheckCommand(m_entry.szCommandID))
-	{
-		ErrorBoxDx(IDS_NOSUCHID);
+	HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+	if (!CheckCommandComboBox(hCmb2, m_entry.szCommandID))
 		return;
-	}
 
 	DWORD dwType = 0, dwState = 0;
 	if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -199,14 +194,9 @@ void MModifyMItemDlg::OnOK(HWND hwnd)
 		mstr_unquote(m_entry.szCaption);
 	}
 
-	m_entry.szCommandID = ::GetDlgItemTextW(hwnd, cmb2);
-	ReplaceFullWithHalf(m_entry.szCommandID);
-	mstr_trim(m_entry.szCommandID);
-	if (!CheckCommand(m_entry.szCommandID))
-	{
-		ErrorBoxDx(IDS_NOSUCHID);
+	HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+	if (!CheckCommandComboBox(hCmb2, m_entry.szCommandID))
 		return;
-	}
 
 	DWORD dwType = 0, dwState = 0;
 	if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)

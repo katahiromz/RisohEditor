@@ -1638,6 +1638,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "拡張版ではないメニューではヘルプIDはサポートされません。"
     IDS_CONFIRMDELETE "このリソース項目を削除しますか？"
     IDS_DONTUSEZEROFORMENUITEM "セパレータでもポップアップでもないメニュー項目にゼロのコマンドIDを指定することはできません。"
+    IDS_ENTERCOMMAND "コマンドIDを入力して下さい。"
+    IDS_INVALIDCOMMAND "コマンドIDが不正です。16ビット整数（-32768～65535）または識別子を入力してください。"
+    IDS_COMMANDOUTOFRANGE "コマンドIDが範囲外です。16ビット整数（-32768～65535）または識別子を入力してください。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

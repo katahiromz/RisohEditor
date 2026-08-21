@@ -102,14 +102,9 @@ public:
 
 		m_entry.sz1 = GetKeyFlags(wFlags);
 
-		m_entry.sz2 = ::GetDlgItemTextW(hwnd, cmb2);
-		ReplaceFullWithHalf(m_entry.sz2);
-		mstr_trim(m_entry.sz2);
-		if (!CheckCommand(m_entry.sz2))
-		{
-			ErrorBoxDx(IDS_NOSUCHID);
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		if (!CheckCommandComboBox(hCmb2, m_entry.sz2))
 			return;
-		}
 
 		EndDialog(IDOK);
 	}
@@ -267,14 +262,9 @@ public:
 
 		m_entry.sz1 = GetKeyFlags(wFlags);
 
-		m_entry.sz2 = ::GetDlgItemTextW(hwnd, cmb2);
-		ReplaceFullWithHalf(m_entry.sz2);
-		mstr_trim(m_entry.sz2);
-		if (!CheckCommand(m_entry.sz2))
-		{
-			ErrorBoxDx(IDS_NOSUCHID);
+		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+		if (!CheckCommandComboBox(hCmb2, m_entry.sz2))
 			return;
-		}
 
 		EndDialog(IDOK);
 	}

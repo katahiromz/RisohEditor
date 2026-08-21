@@ -1634,6 +1634,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Hilfe-IDs werden im Standardmenü nicht unterstützt."
     IDS_CONFIRMDELETE "Möchten Sie dieses Ressourcenelement löschen?"
     IDS_DONTUSEZEROFORMENUITEM "Sie können einem Menüpunkt, der weder ein Trennzeichen noch ein Popup ist, nicht die Befehls-ID Null zuweisen."
+    IDS_ENTERCOMMAND "Bitte geben Sie die Befehls-ID ein."
+    IDS_INVALIDCOMMAND "Die Befehls-ID ist ungültig. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder eine Kennung ein."
+    IDS_COMMANDOUTOFRANGE "Die Befehls-ID liegt außerhalb des gültigen Bereichs. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder eine Kennung ein."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1635,6 +1635,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "확장 버전이 아닌 메뉴에서는 도움말 ID가 지원되지 않습니다."
     IDS_CONFIRMDELETE "이 리소스 항목을 삭제하시겠습니까?"
     IDS_DONTUSEZEROFORMENUITEM "구분 기호나 팝업이 아닌 메뉴 항목에는 0의 명령 ID를 지정할 수 없습니다."
+    IDS_ENTERCOMMAND "명령 ID를 입력하십시오."
+    IDS_INVALIDCOMMAND "명령 ID가 올바르지 않습니다. 16비트 정수(-32768~65535) 또는 식별자를 입력합니다."
+    IDS_COMMANDOUTOFRANGE "명령 ID가 범위를 벗어났습니다. 16비트 정수(-32768~65535) 또는 식별자를 입력합니다."
 }
 
 //////////////////////////////////////////////////////////////////////////////

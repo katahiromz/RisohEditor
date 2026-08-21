@@ -390,6 +390,9 @@
 #define IDS_WARNMENUHELPIDNOTSUPPORTED      407
 #define IDS_CONFIRMDELETE                   408
 #define IDS_DONTUSEZEROFORMENUITEM          409
+#define IDS_ENTERCOMMAND                    410
+#define IDS_INVALIDCOMMAND                  411
+#define IDS_COMMANDOUTOFRANGE               412
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

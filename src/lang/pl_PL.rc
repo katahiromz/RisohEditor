@@ -1635,6 +1635,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Identyfikatory pomocy nie są obsługiwane w menu standardowym."
     IDS_CONFIRMDELETE "Czy chcesz usunąć ten element zasobu?"
     IDS_DONTUSEZEROFORMENUITEM "Nie można określić identyfikatora polecenia równego zero dla elementu menu, który nie jest separatorem ani okienkiem wyskakującym."
+    IDS_ENTERCOMMAND "Proszę wprowadzić identyfikator polecenia."
+    IDS_INVALIDCOMMAND "Identyfikator polecenia jest nieprawidłowy. Wprowadź 16-bitową liczbę całkowitą (od -32768 do 65535) lub identyfikator."
+    IDS_COMMANDOUTOFRANGE "Identyfikator polecenia jest poza zakresem. Wprowadź 16-bitową liczbę całkowitą (od -32768 do 65535) lub identyfikator."
 }
 
 //////////////////////////////////////////////////////////////////////////////

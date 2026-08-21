@@ -1635,6 +1635,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Standart menüde yardım kimlikleri desteklenmemektedir."
     IDS_CONFIRMDELETE "Bu kaynak öğesini silmek istiyor musunuz?"
     IDS_DONTUSEZEROFORMENUITEM "Ayırıcı veya açılır pencere olmayan bir menü öğesi için sıfır komut kimliği belirtemezsiniz."
+    IDS_ENTERCOMMAND "Lütfen komut kimliğini girin."
+    IDS_INVALIDCOMMAND "Komut kimliği geçersiz. Lütfen 16 bitlik bir tamsayı (-32768 ile 65535 arasında) veya bir tanımlayıcı girin."
+    IDS_COMMANDOUTOFRANGE "Komut kimliği aralık dışında. Lütfen 16 bitlik bir tamsayı (-32768 ile 65535 arası) veya bir tanımlayıcı girin."
 }
 
 //////////////////////////////////////////////////////////////////////////////

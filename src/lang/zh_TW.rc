@@ -1633,6 +1633,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "標準菜單不支援幫助 ID。"
     IDS_CONFIRMDELETE "您要刪除此資源項目嗎？"
     IDS_DONTUSEZEROFORMENUITEM "對於既不是分隔符也不是彈出視窗的選單項，不能指定指令 ID 為零。"
+    IDS_ENTERCOMMAND "請輸入命令ID。"
+    IDS_INVALIDCOMMAND "命令 ID 無效。請輸入一個 16 位元整數（-32768 到 65535）或一個識別碼。"
+    IDS_COMMANDOUTOFRANGE "命令 ID 超出範圍。請輸入一個 16 位元整數（-32768 到 65535）或一個識別碼。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1634,6 +1634,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Les identifiants d'aide ne sont pas pris en charge dans le menu standard."
     IDS_CONFIRMDELETE "Souhaitez-vous supprimer cet élément de ressource ?"
     IDS_DONTUSEZEROFORMENUITEM "Vous ne pouvez pas spécifier un ID de commande égal à zéro pour un élément de menu qui n'est ni un séparateur ni une fenêtre contextuelle."
+    IDS_ENTERCOMMAND "Veuillez saisir l'identifiant de la commande."
+    IDS_INVALIDCOMMAND "L'identifiant de commande est invalide. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
+    IDS_COMMANDOUTOFRANGE "L'identifiant de commande est hors limites. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
 }
 
 //////////////////////////////////////////////////////////////////////////////

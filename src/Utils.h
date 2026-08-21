@@ -54,7 +54,7 @@ extern std::vector<LANG_ENTRY> g_langs;
 
 extern TCHAR g_szMP3TempFile[MAX_PATH];
 
-BOOL CheckCommand(MString strCommand);
+BOOL CheckCommandComboBox(HWND hCmb, MStringW& str);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang);
 BOOL CheckLangComboBox(HWND hCmb3, LANGID& lang, LANG_TYPE type);
 BOOL CheckNameComboBox(HWND hCmb2, const MIdOrString& type, MIdOrString& name);
@@ -151,3 +151,5 @@ MStringW GetListBoxText(HWND hwndListBox, INT nIndex);
 MStringW GetWindowTextW(HWND hwnd);
 MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID);
 MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem);
+INT ErrorBoxDx(UINT nStringID, UINT uType = MB_ICONERROR);
+INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, UINT uType = MB_ICONINFORMATION);

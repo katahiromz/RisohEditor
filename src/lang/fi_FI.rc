@@ -1634,6 +1634,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Ohjetunnuksia ei tueta vakiovalikossa."
     IDS_CONFIRMDELETE "Haluatko poistaa tämän resurssikohteen?"
     IDS_DONTUSEZEROFORMENUITEM "Et voi määrittää komento-ID:ksi nollaa valikkokohteelle, joka ei ole erotinmerkki eikä ponnahdusikkuna."
+    IDS_ENTERCOMMAND "Anna komennon tunnus."
+    IDS_INVALIDCOMMAND "Komennon tunnus on virheellinen. Anna 16-bittinen kokonaisluku (-32768 - 65535) tai tunniste."
+    IDS_COMMANDOUTOFRANGE "Komennon tunnus on sallitun alueen ulkopuolella. Anna 16-bittinen kokonaisluku (-32768 - 65535) tai tunniste."
 }
 
 //////////////////////////////////////////////////////////////////////////////

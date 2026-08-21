@@ -1635,6 +1635,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Help IDs are not supported in menus that are not extended."
     IDS_CONFIRMDELETE "Do you want to delete this resource item?"
     IDS_DONTUSEZEROFORMENUITEM "You cannot specify a command ID of zero for a menu item that is neither a separator nor a pop-up."
+    IDS_ENTERCOMMAND "Please enter the command ID."
+    IDS_INVALIDCOMMAND "Invalid command ID. Please enter a 16-bit integer (-32768 to 65535) or an identifier."
+    IDS_COMMANDOUTOFRANGE "The command ID is out of range. Please enter a 16-bit integer (-32768 to 65535) or an identifier."
 }
 
 //////////////////////////////////////////////////////////////////////////////

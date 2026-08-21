@@ -1634,6 +1634,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "标准菜单不支持帮助 ID。"
     IDS_CONFIRMDELETE "您要删除此资源项吗？"
     IDS_DONTUSEZEROFORMENUITEM "对于既不是分隔符也不是弹出窗口的菜单项，不能指定命令 ID 为零。"
+    IDS_ENTERCOMMAND "请输入命令ID。"
+    IDS_INVALIDCOMMAND "命令 ID 无效。请输入一个 16 位整数（-32768 到 65535）或一个标识符。"
+    IDS_COMMANDOUTOFRANGE "命令 ID 超出范围。请输入一个 16 位整数（-32768 到 65535）或一个标识符。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

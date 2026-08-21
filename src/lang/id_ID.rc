@@ -1638,6 +1638,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "ID bantuan tidak didukung di menu standar."
     IDS_CONFIRMDELETE "Apakah Anda ingin menghapus item sumber daya ini?"
     IDS_DONTUSEZEROFORMENUITEM "Anda tidak dapat menentukan ID perintah nol untuk item menu yang bukan merupakan pemisah maupun jendela pop-up."
+    IDS_ENTERCOMMAND "Silakan masukkan ID perintah."
+    IDS_INVALIDCOMMAND "ID perintah tidak valid. Silakan masukkan bilangan bulat 16-bit (-32768 hingga 65535) atau pengidentifikasi."
+    IDS_COMMANDOUTOFRANGE "ID perintah berada di luar rentang. Silakan masukkan bilangan bulat 16-bit (-32768 hingga 65535) atau pengidentifikasi."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -66,21 +66,15 @@ public:
 
 	void OnOK(HWND hwnd)
 	{
-		MStringW str = ::GetDlgItemTextW(hwnd, cmb1);
-		ReplaceFullWithHalf(str);
-		mstr_trim(str);
+		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+		MStringW str = ::GetWindowTextW(hCmb1);
 
-		if (!str.empty() && str[0] == L'-')
+		BOOL bSep = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
+		if (bSep)
 			str.clear();
 
-		if (!str.empty() && !CheckCommand(str))
-		{
-			ErrorBoxDx(IDS_NOSUCHID);
+		if (!bSep && !CheckCommandComboBox(hCmb1, str))
 			return;
-		}
-
-		if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-			str.clear();
 
 		m_str = str;
 		EndDialog(IDOK);

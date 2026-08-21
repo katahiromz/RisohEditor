@@ -1635,6 +1635,9 @@ STRINGTABLE
     IDS_WARNMENUHELPIDNOTSUPPORTED "Os IDs de ajuda não são suportados no menu padrão."
     IDS_CONFIRMDELETE "Deseja eliminar este recurso?"
     IDS_DONTUSEZEROFORMENUITEM "Não é possível especificar um ID de comando igual a zero para um item de menu que não seja um separador nem uma janela de pop-up."
+    IDS_ENTERCOMMAND "Por favor, introduza o ID do comando."
+    IDS_INVALIDCOMMAND "O ID do comando é inválido. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
+    IDS_COMMANDOUTOFRANGE "O ID do comando está fora do intervalo. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
 }
 
 //////////////////////////////////////////////////////////////////////////////
