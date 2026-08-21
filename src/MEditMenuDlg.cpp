@@ -72,6 +72,12 @@ void MAddMItemDlg::OnOK(HWND hwnd)
 	ReplaceFullWithHalf(strHelp);
 	m_entry.szHelpID = strHelp;
 
+	if (dwType & MFT_SEPARATOR)
+	{
+		m_entry.szCaption = LoadStringDx(IDS_SEPARATOR);
+		m_entry.szCommandID = L"0";
+	}
+
 	EndDialog(IDOK);
 }
 
@@ -240,6 +246,12 @@ void MModifyMItemDlg::OnOK(HWND hwnd)
 	m_entry.szHelpID = ::GetDlgItemTextW(hwnd, cmb3);
 	DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
 	m_entry.szHelpID = g_db.GetNameOfResID(IDTYPE_HELP, help);
+
+	if (dwType & MFT_SEPARATOR)
+	{
+		m_entry.szCaption = LoadStringDx(IDS_SEPARATOR);
+		m_entry.szCommandID = L"0";
+	}
 
 	EndDialog(IDOK);
 }
@@ -718,6 +730,19 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 		// must be recomputed from wDepth here.
 		m_menu_res.Update();
 
+		// You cannot specify a command ID of zero for a menu item that is
+		// neither a separator nor a pop-up.
+		for (iItem = 0; iItem < nCount; ++iItem)
+		{
+			auto& exitem = m_menu_res.exitems()[iItem];
+			if (!exitem.menuId && !(exitem.bResInfo & 0x01) &&
+				!exitem.text.empty() && exitem.text != LoadStringDx(IDS_SEPARATOR))
+			{
+				ErrorBoxDx(IDS_DONTUSEZEROFORMENUITEM);
+				return;
+			}
+		}
+
 		// Help ID only has meaning for a POPUP (submenu) item in the
 		// MENUEX format. Update() above clears the POPUP bit on any item
 		// that isn't actually a submenu, so a Help ID entered on a leaf
@@ -772,6 +797,19 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 		// MF_POPUP / MF_END from wDepth so the saved menu structure is
 		// actually valid.
 		m_menu_res.Update();
+
+		// You cannot specify a command ID of zero for a menu item that is
+		// neither a separator nor a pop-up.
+		for (iItem = 0; iItem < nCount; ++iItem)
+		{
+			auto& item = m_menu_res.items()[iItem];
+			if (!item.wMenuID && !(item.fItemFlags & MF_POPUP) &&
+				!item.text.empty() && item.text != LoadStringDx(IDS_SEPARATOR))
+			{
+				ErrorBoxDx(IDS_DONTUSEZEROFORMENUITEM);
+				return;
+			}
+		}
 
 		if (bHasHelpID)
 		{

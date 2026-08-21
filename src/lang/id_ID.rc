@@ -1637,6 +1637,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Satu atau beberapa item menu memiliki Help ID, namun Help ID hanya berlaku untuk item submenu (POPUP) dalam format MENUEX. Help ID pada item yang bukan submenu akan dibuang saat disimpan."
     IDS_WARNMENUHELPIDNOTSUPPORTED "ID bantuan tidak didukung di menu standar."
     IDS_CONFIRMDELETE "Apakah Anda ingin menghapus item sumber daya ini?"
+    IDS_DONTUSEZEROFORMENUITEM "Anda tidak dapat menentukan ID perintah nol untuk item menu yang bukan merupakan pemisah maupun jendela pop-up."
 }
 
 //////////////////////////////////////////////////////////////////////////////

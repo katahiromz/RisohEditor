@@ -1634,6 +1634,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Co najmniej jeden element menu posiada identyfikator pomocy (Help ID), jednak identyfikatory te dotyczą wyłącznie elementów podmenu (typu POPUP) w formacie MENUEX. Identyfikatory pomocy przypisane do elementów niebędących podmenu zostaną odrzucone podczas zapisu."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Identyfikatory pomocy nie są obsługiwane w menu standardowym."
     IDS_CONFIRMDELETE "Czy chcesz usunąć ten element zasobu?"
+    IDS_DONTUSEZEROFORMENUITEM "Nie można określić identyfikatora polecenia równego zero dla elementu menu, który nie jest separatorem ani okienkiem wyskakującym."
 }
 
 //////////////////////////////////////////////////////////////////////////////

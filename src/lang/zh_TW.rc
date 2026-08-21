@@ -1632,6 +1632,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "一個或多個選單項目具有幫助 ID，但幫助 ID 僅適用於 MENUEX 格式的子選單（彈出式）項目。非子選單項目的幫助 ID 將在儲存時被丟棄。"
     IDS_WARNMENUHELPIDNOTSUPPORTED "標準菜單不支援幫助 ID。"
     IDS_CONFIRMDELETE "您要刪除此資源項目嗎？"
+    IDS_DONTUSEZEROFORMENUITEM "對於既不是分隔符也不是彈出視窗的選單項，不能指定指令 ID 為零。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

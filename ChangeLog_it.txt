@@ -6,6 +6,7 @@
     - Impostata codepage predefinita di windres su UTF-8.
     - Corretta estrazione di RT_BITMAP.
     - Aggiunta conferma prima dell'eliminazione.
+    - Aggiunto un controllo di validità per le voci di menu.
 - v.6.1.4 (13.08.2026)
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerata OnDeleteRes.

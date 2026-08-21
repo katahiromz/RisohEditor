@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Un ou plusieurs éléments de menu possèdent un identifiant d'aide (Help ID), mais ces identifiants ne s'appliquent qu'aux éléments de sous-menu (POPUP) dans le format MENUEX. L'identifiant d'aide associé aux éléments autres que des sous-menus sera ignoré lors de l'enregistrement."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Les identifiants d'aide ne sont pas pris en charge dans le menu standard."
     IDS_CONFIRMDELETE "Souhaitez-vous supprimer cet élément de ressource ?"
+    IDS_DONTUSEZEROFORMENUITEM "Vous ne pouvez pas spécifier un ID de commande égal à zéro pour un élément de menu qui n'est ni un séparateur ni une fenêtre contextuelle."
 }
 
 //////////////////////////////////////////////////////////////////////////////

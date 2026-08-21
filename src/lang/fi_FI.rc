@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Yhdellä tai useammalla valikkokohteella on ohje-ID, mutta ohje-ID:t koskevat vain MENUEX-muodossa olevia alivalikon (pikakuvakkeen) kohteita. Muiden kuin alivalikon kohteiden ohje-ID:t hylätään tallennuksen yhteydessä."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Ohjetunnuksia ei tueta vakiovalikossa."
     IDS_CONFIRMDELETE "Haluatko poistaa tämän resurssikohteen?"
+    IDS_DONTUSEZEROFORMENUITEM "Et voi määrittää komento-ID:ksi nollaa valikkokohteelle, joka ei ole erotinmerkki eikä ponnahdusikkuna."
 }
 
 //////////////////////////////////////////////////////////////////////////////

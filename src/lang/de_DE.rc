@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Ein oder mehrere Menüelemente verfügen über eine Hilfe-ID; Hilfe-IDs gelten jedoch nur für Untermenüelemente (POPUP) im MENUEX-Format. Die Hilfe-ID bei Elementen, die keine Untermenüs sind, wird beim Speichern verworfen."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Hilfe-IDs werden im Standardmenü nicht unterstützt."
     IDS_CONFIRMDELETE "Möchten Sie dieses Ressourcenelement löschen?"
+    IDS_DONTUSEZEROFORMENUITEM "Sie können einem Menüpunkt, der weder ein Trennzeichen noch ein Popup ist, nicht die Befehls-ID Null zuweisen."
 }
 
 //////////////////////////////////////////////////////////////////////////////

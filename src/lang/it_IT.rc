@@ -1634,6 +1634,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Una o più voci di menu dispongono di un ID Guida, ma gli ID Guida si applicano solo alle voci di sottomenu (POPUP) nel formato MENUEX. L'ID Guida associato a voci che non sono sottomenu verrà scartato al momento del salvataggio."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Gli ID di aiuto non sono supportati nel menu standard."
     IDS_CONFIRMDELETE "Desideri eliminare questa risorsa?"
+    IDS_DONTUSEZEROFORMENUITEM "Non è possibile specificare un ID comando pari a zero per una voce di menu che non sia né un separatore né un menu a comparsa."
 }
 
 //////////////////////////////////////////////////////////////////////////////

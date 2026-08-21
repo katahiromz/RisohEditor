@@ -1634,6 +1634,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Bir veya daha fazla menü öğesi bir Yardım Kimliğine (Help ID) sahip; ancak Yardım Kimlikleri, MENUEX formatında yalnızca alt menü (POPUP) öğeleri için geçerlidir. Alt menü öğesi olmayanlardaki Yardım Kimlikleri, kaydetme sırasında atılacaktır."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Standart menüde yardım kimlikleri desteklenmemektedir."
     IDS_CONFIRMDELETE "Bu kaynak öğesini silmek istiyor musunuz?"
+    IDS_DONTUSEZEROFORMENUITEM "Ayırıcı veya açılır pencere olmayan bir menü öğesi için sıfır komut kimliği belirtemezsiniz."
 }
 
 //////////////////////////////////////////////////////////////////////////////
