@@ -388,6 +388,7 @@
 #define IDS_WARNRESETSETTINGS               405
 #define IDS_WARNMENUITEMEXHELPID            406
 #define IDS_WARNMENUHELPIDNOTSUPPORTED      407
+#define IDS_CONFIRMDELETE                   408
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Ustawienia Twojej aplikacji zostaną usunięte. Czy to w porządku?"
     IDS_WARNMENUITEMEXHELPID "Co najmniej jeden element menu posiada identyfikator pomocy (Help ID), jednak identyfikatory te dotyczą wyłącznie elementów podmenu (typu POPUP) w formacie MENUEX. Identyfikatory pomocy przypisane do elementów niebędących podmenu zostaną odrzucone podczas zapisu."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Identyfikatory pomocy nie są obsługiwane w menu standardowym."
+    IDS_CONFIRMDELETE "Czy chcesz to usunąć?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

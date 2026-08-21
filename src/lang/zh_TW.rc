@@ -1631,6 +1631,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "您的應用程式設定將被清除。可以嗎？"
     IDS_WARNMENUITEMEXHELPID "一個或多個選單項目具有幫助 ID，但幫助 ID 僅適用於 MENUEX 格式的子選單（彈出式）項目。非子選單項目的幫助 ID 將在儲存時被丟棄。"
     IDS_WARNMENUHELPIDNOTSUPPORTED "標準菜單不支援幫助 ID。"
+    IDS_CONFIRMDELETE "你想刪除它嗎？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@
     - Menambahkan jendela splash.
     - Menjadikan UTF-8 sebagai *codepage* default untuk windres.
     - Memperbaiki ekstraksi RT_BITMAP.
+    - Menambahkan konfirmasi sebelum penghapusan.
 - v.6.1.4 (2026-08-13)
     - Mengubah konfigurasi menjadi lembar properti.
     - Percepat OnDeleteRes.

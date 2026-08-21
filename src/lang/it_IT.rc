@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Le impostazioni dell'app verranno cancellate. Va bene?"
     IDS_WARNMENUITEMEXHELPID "Una o più voci di menu dispongono di un ID Guida, ma gli ID Guida si applicano solo alle voci di sottomenu (POPUP) nel formato MENUEX. L'ID Guida associato a voci che non sono sottomenu verrà scartato al momento del salvataggio."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Gli ID di aiuto non sono supportati nel menu standard."
+    IDS_CONFIRMDELETE "Vuoi eliminarlo?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

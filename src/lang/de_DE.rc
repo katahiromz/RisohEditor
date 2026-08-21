@@ -1632,6 +1632,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Ihre App-Einstellungen werden gelöscht. Ist das in Ordnung?"
     IDS_WARNMENUITEMEXHELPID "Ein oder mehrere Menüelemente verfügen über eine Hilfe-ID; Hilfe-IDs gelten jedoch nur für Untermenüelemente (POPUP) im MENUEX-Format. Die Hilfe-ID bei Elementen, die keine Untermenüs sind, wird beim Speichern verworfen."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Hilfe-IDs werden im Standardmenü nicht unterstützt."
+    IDS_CONFIRMDELETE "Möchtest du es löschen?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

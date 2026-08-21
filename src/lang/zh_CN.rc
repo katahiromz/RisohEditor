@@ -1632,6 +1632,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "您的应用设置将被清除。可以吗？"
     IDS_WARNMENUITEMEXHELPID "一个或多个菜单项包含帮助 ID，但帮助 ID 仅适用于 MENUEX 格式中的子菜单（POPUP）项。非子菜单项上的帮助 ID 在保存时会被丢弃。"
     IDS_WARNMENUHELPIDNOTSUPPORTED "标准菜单不支持帮助 ID。"
+    IDS_CONFIRMDELETE "你想删除它吗？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

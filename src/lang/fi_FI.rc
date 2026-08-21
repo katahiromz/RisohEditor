@@ -1632,6 +1632,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Sovelluksesi asetukset poistetaan. Onko se ok?"
     IDS_WARNMENUITEMEXHELPID "Yhdellä tai useammalla valikkokohteella on ohje-ID, mutta ohje-ID:t koskevat vain MENUEX-muodossa olevia alivalikon (pikakuvakkeen) kohteita. Muiden kuin alivalikon kohteiden ohje-ID:t hylätään tallennuksen yhteydessä."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Ohjetunnuksia ei tueta vakiovalikossa."
+    IDS_CONFIRMDELETE "Haluatko poistaa sen?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

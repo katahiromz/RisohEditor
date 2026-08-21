@@ -1633,6 +1633,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Uygulama ayarlarınız silinecek. Bu sorun olur mu?"
     IDS_WARNMENUITEMEXHELPID "Bir veya daha fazla menü öğesi bir Yardım Kimliğine (Help ID) sahip; ancak Yardım Kimlikleri, MENUEX formatında yalnızca alt menü (POPUP) öğeleri için geçerlidir. Alt menü öğesi olmayanlardaki Yardım Kimlikleri, kaydetme sırasında atılacaktır."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Standart menüde yardım kimlikleri desteklenmemektedir."
+    IDS_CONFIRMDELETE "Silmek istiyor musunuz?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

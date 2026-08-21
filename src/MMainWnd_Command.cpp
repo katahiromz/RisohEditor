@@ -1489,6 +1489,9 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 	if (!CompileIfNecessary(FALSE))
 		return;
 
+	if (MsgBoxDx(LoadStringDx(IDS_CONFIRMDELETE), MB_YESNO) != IDYES)
+		return;
+
 	// get the selected entry
 	if (auto entry = g_res.get_entry())
 	{

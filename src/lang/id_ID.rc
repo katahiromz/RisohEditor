@@ -1636,6 +1636,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Pengaturan aplikasi Anda akan dihapus. Apakah itu tidak masalah?"
     IDS_WARNMENUITEMEXHELPID "Satu atau beberapa item menu memiliki Help ID, namun Help ID hanya berlaku untuk item submenu (POPUP) dalam format MENUEX. Help ID pada item yang bukan submenu akan dibuang saat disimpan."
     IDS_WARNMENUHELPIDNOTSUPPORTED "ID bantuan tidak didukung di menu standar."
+    IDS_CONFIRMDELETE "Apakah Anda ingin menghapusnya?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
