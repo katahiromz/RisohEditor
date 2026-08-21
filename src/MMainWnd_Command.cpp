@@ -1425,7 +1425,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 		}
 
 		// select the entry
-		SelectTV(ET_LANG, entry->m_type, entry->m_name, wLang, FALSE);
+		SelectTV(entry, FALSE);
 
 		DoSetFileModified(TRUE);
 		PostUpdateArrow(hwnd);
@@ -3625,8 +3625,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
-		EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
-		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_ENABLED);
+		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_ENABLED);
 		break;
 
 	default:
