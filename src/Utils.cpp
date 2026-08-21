@@ -285,80 +285,83 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
 	}
 }
 
-// dump data as a text
 MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 {
+	static const WCHAR HEX[] = L"0123456789ABCDEF";
+
 	MStringW ret;
-	WCHAR sz[MAX_PATH];
-	DWORD addr, size = DWORD(data.size());
-
-	// is it empty?
-	if (data.empty())
-	{
+	const DWORD size = DWORD(data.size());
+	if (size == 0)
 		return ret;
-	}
 
-	ret.reserve(data.size() * 3);   // for speed
+	const DWORD lineCount = (size + 15) / 16;
+	ret.reserve(160 + size_t(lineCount) * 78);
 
-	// add the head
 	ret +=
 		L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
 		L"--------  -----------------------  -----------------------  ----------------\r\n";
 
-	// for all the addresses
-	for (addr = 0; addr < size; addr += 16)
+	const BYTE* pData = data.data();
+	WCHAR line[80];
+
+	for (DWORD addr = 0; addr < size; addr += 16)
 	{
-		// add the address
-		StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
-		ret += sz;
+		PWCHAR pch = line;
+		for (int shift = 28; shift >= 0; shift -= 4)
+			*pch++ = HEX[(addr >> shift) & 0xF];
+		*pch++ = L' ';
+		*pch++ = L' ';
 
-		// add the data
+		const DWORD remain = size - addr;
+		const DWORD count  = (remain < 16) ? remain : 16;
+
 		for (DWORD i = 0; i < 16; ++i)
 		{
-			// add a space if the lowest digit was 8
 			if (i == 8)
-				ret += L' ';
+				*pch++ = L' ';
 
-			// add 3 characters
-			DWORD offset = addr + i;	// the address to output
-			if (offset < size)
+			if (i < count)
 			{
-				StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
-				ret += sz;
+				const BYTE b = pData[addr + i];
+				*pch++ = HEX[b >> 4];
+				*pch++ = HEX[b & 0xF];
+				*pch++ = L' ';
 			}
 			else
 			{
-				ret += L"   ";
+				*pch++ = L' ';
+				*pch++ = L' ';
+				*pch++ = L' ';
 			}
 		}
 
-		// add the separation space
-		ret += L' ';
+		*pch++ = L' ';
 
-		// add the characters
 		for (DWORD i = 0; i < 16; ++i)
 		{
-			DWORD offset = addr + i;	// the address to output
-			if (offset < size)
+			if (i < count)
 			{
-				if (data[offset] == 0)
-					ret += L' ';		// the NUL character
-				else if (data[offset] < 0x20 || data[offset] > 0x7F)
-					ret += L'.';		// invisible character
+				const BYTE b = pData[addr + i];
+				if (b == 0)
+					*pch++ = L' ';
+				else if (b < 0x20 || b > 0x7F)
+					*pch++ = L'.';
 				else
-					ret += WCHAR(data[offset]);	 // otherwise
+					*pch++ = WCHAR(b);
 			}
 			else
 			{
-				ret += L' ';			// out of range
+				*pch++ = L' '; // out of range
 			}
 		}
 
-		// add a newline
-		ret += L"\r\n";
+		*pch++ = L'\r';
+		*pch++ = L'\n';
+
+		ret.append(line, pch - line);
 	}
 
-	return ret;	 // the result
+	return ret;
 }
 
 // dump a file
