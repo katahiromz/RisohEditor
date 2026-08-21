@@ -29,7 +29,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Muat Perpustakaan Kelas &Jendela...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        POPUP "Berkas yang Digunakan Baru-Baru ini"
+        POPUP "File yang Digunakan Baru-Baru ini"
         {
             MENUITEM "(Tidak ada)", -1, GRAYED
         }
@@ -68,7 +68,7 @@ IDR_MAINMENU MENU
             MENUITEM "Ekstrak &Ikon...", ID_EXTRACTICON
             MENUITEM "Ekstrak &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Ekstrak &Bitmap...", ID_EXTRACTBITMAP
-            MENUITEM "Ekstrak Sebag&ai Berkas RC...", ID_EXTRACTRC
+            MENUITEM "Ekstrak Sebag&ai File RC...", ID_EXTRACTRC
             MENUITEM "Ekstrak Item Sumber Daya Bina&ry...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
@@ -271,7 +271,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "B&ahasa Sumber Daya:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Berkas Binary:", -1, 5, 85, 100, 12
+    LTEXT "&File Biner:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
@@ -286,7 +286,7 @@ CAPTION "Tambah Ikon"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas &Ikon:", -1, 5, 7, 100, 12
+    LTEXT "File &Ikon:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
@@ -304,7 +304,7 @@ CAPTION "Ganti Ikon"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas &Ikon:", -1, 5, 7, 100, 12
+    LTEXT "File &Ikon:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
@@ -321,7 +321,7 @@ CAPTION "Tambah Bitmap"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas Bit&map:", -1, 5, 7, 100, 12
+    LTEXT "File Bit&map:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     LTEXT "&Nama Sumber Daya:", -1, 5, 67, 70, 12
@@ -338,7 +338,7 @@ CAPTION "Ganti Bitmap"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas Bit&map:", -1, 5, 7, 100, 12
+    LTEXT "File Bit&map:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     LTEXT "&Nama Sumber Daya:", -1, 5, 67, 70, 12
@@ -362,7 +362,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "", stc1, 75, 43, 115, 10
     LTEXT "&Bahasa Sumber Daya:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Be&rkas Binary:", -1, 5, 85, 100, 12
+    LTEXT "&File Biner:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
@@ -375,7 +375,7 @@ CAPTION "Tambah Cursor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas &Kursor:", -1, 5, 7, 100, 12
+    LTEXT "File &Kursor:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
@@ -393,7 +393,7 @@ CAPTION "Ganti Kursor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Berkas &Kursor:", -1, 5, 7, 100, 12
+    LTEXT "File &Kursor:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "J&elajahi...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
@@ -691,7 +691,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     RTEXT "&Jenis ID:", -1, 5, 7, 65, 12
     EDITTEXT edt1, 80, 5, 80, 14, WS_DISABLED
-    RTEXT "&Prefix ID:", -1, 5, 32, 65, 12
+    RTEXT "&Prefiks ID:", -1, 5, 32, 65, 12
     EDITTEXT edt2, 80, 28, 80, 14, ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 35, 50, 60, 14
     PUSHBUTTON "Batal", IDCANCEL, 100, 50, 60, 14
@@ -712,7 +712,7 @@ CAPTION "Konfigurasi"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    AUTOCHECKBOX "Tampilkan jalur berkas secara penuh pada bilah judu&l", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "Tampilkan jalur file secara penuh pada bilah judu&l", chx1, 5, 5, 200, 14
     AUTOCHECKBOX "Jangan gunakan &makro ID", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "Lanjutkan &posisi jendela yang lalu", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "&Otomatis muat sekitar ""&resource.h""", chx4, 5, 65, 200, 14
@@ -769,11 +769,11 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 }
 
 IDD_ADVICERESH DIALOGEX 0, 0, 209, 184
-CAPTION "Saran pengubahan pada berkas ""resource.h"""
+CAPTION "Saran pengubahan pada file ""resource.h"""
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Mohon ubah berkas ""resource.h"" Sebagai berikut:", -1, 10, 10, 195, 20
+    LTEXT "Mohon ubah file ""resource.h"" Sebagai berikut:", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_READONLY | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
     PUSHBUTTON "&Bersihkan Pengubahan", psh1, 10, 165, 90, 14
@@ -886,12 +886,12 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "&Sumber:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh1, 170, 5, 19, 14
-    RTEXT "&Binary:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Biner:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
     GROUPBOX "Pratinjau", -1, 5, 45, 185, 39
     CTEXT "Sumber", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
-    CTEXT "Binary", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
+    CTEXT "Biner", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     PUSHBUTTON "&Mengatur ulang", psh3, 5, 90, 50, 14
 }
 
@@ -940,7 +940,7 @@ CAPTION "Edit Data Kontrol"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
-    LTEXT "Data &Binary:", -1, 5, 2, 87, 12
+    LTEXT "Data &Biner:", -1, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
     LTEXT "Anda bisa mengatur data kontrol dengan space-separated integer 16-bit.", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
@@ -976,9 +976,9 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
+    LTEXT "Mengekspor file RC akan membuat beberapa file terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
-    AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "&Pisahkan file sumber daya dengan bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "&Buat dadangan", chx4, 5, 120, 110, 14
@@ -1077,9 +1077,9 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
+    LTEXT "Menyimpan file RC akan membuat beberapa file terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Gunakan MESSAGE&TABLE Microsoft", chx8, 5, 40, 240, 14
-    AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Pisah file sumber daya dengan &bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Buat &cadangan", chx4, 5, 120, 110, 14
@@ -1328,7 +1328,7 @@ FILETYPE        VFT_APP
             VALUE "CompanyName", "Katayama Hirofumi MZ"
             VALUE "FileDescription", "RisohEditor"
             VALUE "FileVersion", "6.1.5"
-            VALUE "LegalCopyright", "© 2017-2026 Katayama Hirofumi MZ and Mas Ahmad Muhammad. Hak cipta dilindungi."
+            VALUE "LegalCopyright", "© 2017-2026 Katayama Hirofumi MZ dan Mas Ahmad Muhammad. Hak cipta dilindungi."
             VALUE "ProductName", "RisohEditor"
             VALUE "ProductVersion", "6.1.5"
         }
@@ -1354,29 +1354,29 @@ FILETYPE        VFT_APP
 STRINGTABLE
 {
     IDS_TITLE "RisohEditor 6.1.5 oleh Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE "RisohEditor 6.1.5 - Berkas: %s"
+    IDS_TITLEWITHFILE "RisohEditor 6.1.5 - File: %s"
     IDS_EXTRACTRES "Ekstrak Sumber Daya"
-    IDS_RESBINFILTER "Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
+    IDS_RESBINFILTER "Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
     IDS_CANNOTSAVE "Tidak bisa disimpan."
     IDS_REPLACERES "Ganti Sumber Daya"
-    IDS_ALLFILES "Semua Berkas (*.*)|*.*|"
+    IDS_ALLFILES "Semua File (*.*)|*.*|"
     IDS_APPNAME "RisohEditor"
     IDS_COMPRESSBYUPX "Apakah Anda ingin mengompresnya menggunakan UPX?"
     IDS_ENTERLANG "Mohon masukkan bahasa sumber daya."
-    IDS_FILENOTFOUND "Berkas tidak bisa ditemukan."
+    IDS_FILENOTFOUND "File tidak bisa ditemukan."
     IDS_CANNOTREPLACE "Tidak bisa mengganti."
-    IDS_EXERESFILTER "Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Semua Berkas (*.*)|*.*|"
+    IDS_EXERESFILTER "Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|File RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Biner (*.res)|*.res|Semua File (*.*)|*.*|"
     IDS_SAVEAS "Simpan Sebagai"
     IDS_CANNOTADDICON "Tidak bisa menambahkan ikon."
     IDS_ADDICON "Tambah ikon"
-    IDS_ICOFILTER "Berkas Ikon (*.ico)|*.ico|Semua Berkas (*.*)|*.*|"
+    IDS_ICOFILTER "File Ikon (*.ico)|*.ico|Semua File (*.*)|*.*|"
     IDS_REPLACEICO "Ganti Ikon"
     IDS_CANTREPLACEICO "Tidak bisa mengganti ikon."
     IDS_EXISTSOVERWRITE "Item telah tersedia. Timpa?"
     IDS_OPEN "Buka"
-    IDS_CANNOTOPEN "Tidak bisa membuka berkas."
+    IDS_CANNOTOPEN "Tidak bisa membuka file."
     IDS_ADDBMP "Tambah Bitmap"
-    IDS_BMPFILTER "Berkas Bitmap (*.bmp)|*.bmp|Citra PNG (*.png)|*.png|Semua Berkas (*.*)|*.*|"
+    IDS_BMPFILTER "File Bitmap (*.bmp)|*.bmp|Citra PNG (*.png)|*.png|Semua File (*.*)|*.*|"
     IDS_CANTREPLACEBMP "Tidak bisa mengganti bitmap."
     IDS_REPLACEBMP "Ganti Bitmap"
     IDS_VERSIONINFO "RisohEditor Versi 6.1.5\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (free software)"
@@ -1387,14 +1387,14 @@ STRINGTABLE
     IDS_CANTEXTRACTBMP "tidak bisa mengekstrak bitmap."
     IDS_CANTREPLACECUR "Tidak bisa mengganti kursor."
     IDS_CANNOTADDCUR "Tidak bisa menambahkan kursor."
-    IDS_CURFILTER "Berkas Kursor (*.cur)|*.cur|Kursor Animasi (*.ani)|*.ani|Semua Berkas (*.*)|*.*|"
+    IDS_CURFILTER "File Kursor (*.cur)|*.cur|Kursor Animasi (*.ani)|*.ani|Semua File (*.*)|*.*|"
     IDS_ADDCUR "Tambah Kursor"
     IDS_REPLACECUR "Ganti Kursor"
     IDS_EXTRACTICO "Ekstrak Ikon"
     IDS_CANTEXTRACTICO "Tidak bisa mengekstrak ikon."
     IDS_EXTRACTCUR "Ekstrak Kursor"
     IDS_CANTEXTRACTCUR "Tidak bisa mengekstrak kursor."
-    IDS_RESFILTER "Sumber Daya Binary (*.res)|*.res|Semua Berkas (*.*)|*.*|"
+    IDS_RESFILTER "Sumber Daya Biner (*.res)|*.res|Semua File (*.*)|*.*|"
     IDS_NEUTRAL "Netral"
     IDS_IMPORTRES "Impor"
     IDS_CANNOTIMPORT "Tidak bisa mengimpor sumber daya."
@@ -1434,8 +1434,8 @@ STRINGTABLE
     IDS_EMPTYSTR "Mohon masukkan string."
     IDS_ANICURSOR "(Kursor Animasi)\r\n"
     IDS_ANIICON "(Ikon Animasi)\r\n"
-    IDS_HEADFILTER "Berkas Header (*.h)|*.h|Semua Berkas (*.*)|*.*|"
-    IDS_LOADRESH "Muat Berkas ""resource.h"""
+    IDS_HEADFILTER "File Header (*.h)|*.h|Semua File (*.*)|*.*|"
+    IDS_LOADRESH "Muat File ""resource.h"""
     IDS_NAME "Nama"
     IDS_VALUE "Nilai"
     IDS_NOSUCHID "Tidak ada ID yang ditemukan."
@@ -1452,15 +1452,15 @@ STRINGTABLE
     IDS_INVALIDDATA "(data tidak sah)\r\n"
     IDS_UPDATERESH "Perbarui ""resource.h""?"
     IDS_CANTWRITERESH "Tidak bisa menulis ""resource.h""."
-    IDS_SAVERESH "Simpan Berkas ""resource.h"""
-    IDS_DLLFILTER "Berkas DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Semua Berkas (*.*)|*.*|"
-    IDS_EXERESRCFILTER "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc;*.rc2)|*.rc;*.rc2|Semua Berkas (*.*)|*.*|"
+    IDS_SAVERESH "Simpan File ""resource.h"""
+    IDS_DLLFILTER "File DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Semua File (*.*)|*.*|"
+    IDS_EXERESRCFILTER "File yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Sumber Daya Biner (*.res)|*.res|File Sumber Daya (*.rc;*.rc2)|*.rc;*.rc2|Semua File (*.*)|*.*|"
     IDS_CANTTESTCLASSDLG "Tidak dapat menguji dialog karena telah digolongkan."
-    IDS_FILEISUPXED "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak memperluasnya, berkas mungkin akan gagal terbaca."
+    IDS_FILEISUPXED "File\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui file sementara?\r\n\r\nJika anda tidak memperluasnya, file mungkin akan gagal terbaca."
     IDS_CANTUPXEXTRACT "Tidak bisa mengekstrak dengan UPX."
     IDS_MESSAGEID "ID Pesan"
     IDS_MESSAGEVALUE "Nilai Pesan"
-    IDS_RCFILTER "Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|"
+    IDS_RCFILTER "File RC (*.rc;*.rc2)|*.rc;*.rc2|"
     IDS_EXPORT "Ekspor"
     IDS_CANTEXPORT "Ekspor gagal."
     IDS_MUSTBEEMPTYDIR "Jika terdapat beberapa file eksternal, maka tujuan ekspor harus berupa folder kosong."
@@ -1484,7 +1484,7 @@ STRINGTABLE
     IDS_STRING "String"
     IDS_DATAISINVALID "Data tidak sah."
     IDS_DLGINIT1 "Anda bisa menentukan inisialisasi kotak kombo dan kotak daftar dengan mengatur data inisialisasi dalam data sumber daya RT_DLGINIT dengan nama yang sama pada sumber daya dialog. "
-    IDS_DLGINIT2 "Ketika pesan WM_INITDIALOG muncul, aplikasi bisa memulai dialog dengan memanggil fungsi ExecuteDlgInitDx dari berkas yang terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
+    IDS_DLGINIT2 "Ketika pesan WM_INITDIALOG muncul, aplikasi bisa memulai dialog dengan memanggil fungsi ExecuteDlgInitDx dari file yang terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3 "Mohon tentukan daftar strings karakter yang dipisah oleh line break untuk RT_DLGINIT."
     IDS_SAMELANG "Ini adalah bahasa yang sama."
     IDS_SAMENAME "Ini adalah sumber daya yang sama."
@@ -1495,7 +1495,7 @@ STRINGTABLE
     IDS_RUSSIA "Rusia"
     IDS_RUSSIAN "Rusia"
     IDS_WANNAGENRESH "Anda ingin membuat 'resource.h'?"
-    IDS_EXEFILTER "Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Semua Berkas (*.*)|*.*|"
+    IDS_EXEFILTER "Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Semua File (*.*)|*.*|"
     IDS_SAVEASCOMPRESS "Simpan Dengan Kompresi"
     IDS_TOOL_NEW "Baru"
     IDS_TOOL_OPEN "Buka..."
@@ -1521,17 +1521,17 @@ STRINGTABLE
     IDS_SPAIN "Spanyol"
     IDS_SPANISH "Spanyol"
     IDS_INVALIDLANG "Bahasa tidak dikenal."
-    IDS_PNGRESBINFILTER "Citra PNG (*.png)|*.png|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER "Citra JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_GIFRESBINFILTER "Citra GIF (*.gif)|*.gif|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER "Citra TIFF (*.tif;*.tiff)|*.tif;*.tiff|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_AVIRESBINFILTER "Film AVI (*.avi)|*.avi|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_WAVERESBINFILTER "Suara WAVE (*.wav)|*.wav|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
+    IDS_PNGRESBINFILTER "Citra PNG (*.png)|*.png|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER "Citra JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
+    IDS_GIFRESBINFILTER "Citra GIF (*.gif)|*.gif|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER "Citra TIFF (*.tif;*.tiff)|*.tif;*.tiff|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
+    IDS_AVIRESBINFILTER "Film AVI (*.avi)|*.avi|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
+    IDS_WAVERESBINFILTER "Suara WAVE (*.wav)|*.wav|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
     IDS_COMMENT_SEP "//////////////////////////////////////////////////////////////////////////////\r\n"
-    IDS_NOTICE "// Berkas ini secara otomatis dibuat oleh RisohEditor 6.1.5.\r\n"
+    IDS_NOTICE "// File ini secara otomatis dibuat oleh RisohEditor 6.1.5.\r\n"
     IDS_DAGGER "// † <-- Salib ini membantu mendeteksi UTF-8.\r\n"
-    IDS_IMPORTFILTER "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Berkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Suara MP3 (*.mp3)|*.mp3|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Manifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
-    IDS_CANTWRITEBYLOCK "Tidak bisa menulis berkas karena berkas tersebut terkunci.\r\n\r\n%s"
+    IDS_IMPORTFILTER "File yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Biner (*.res)|*.res|File Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File Kursor (*.cur;*.ani)|*.cur;*.ani|File Ikon (*.ico)|*.ico|File Suara WAVE (*.wav)|*.wav|Suara MP3 (*.mp3)|*.mp3|File HTML (*.html;*.htm)|*.html;*.htm|File Manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua File (*.*)|*.*|"
+    IDS_CANTWRITEBYLOCK "Tidak bisa menulis file karena file tersebut terkunci.\r\n\r\n%s"
     IDS_ANSI "ANSI"
     IDS_WIDE "Unikode"
     IDS_UTF8 "UTF-8 (Dengan BOM)"
@@ -1540,14 +1540,14 @@ STRINGTABLE
     IDS_RESTYPE "Jenis Sumber Daya"
     IDS_ENCODING "Enkoding"
     IDS_LOADEGAPROGRAM "Muat Program EGA..."
-    IDS_EGAFILTER "Program EGA (*.ega)|*.ega|Semua Berkas (*.*)|*.*|"
-    IDS_QUERYSAVECHANGE "Berkas telah diubah. Anda ingin menyimpan perubahannya sekarang?"
-    IDS_DFMFILTER "Berkas DFM (*.dfm)|*.dfm|Berkas Teks (*.txt)|*.txt|Semua Berkas (*.*)|*.*|"
+    IDS_EGAFILTER "Program EGA (*.ega)|*.ega|Semua File (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE "File telah diubah. Anda ingin menyimpan perubahannya sekarang?"
+    IDS_DFMFILTER "File DFM (*.dfm)|*.dfm|File Teks (*.txt)|*.txt|Semua File (*.*)|*.*|"
     IDS_CANTEXTRACTDFM "Tidak bisa mengekstrak data DFM."
     IDS_EXTRACTDFM "Ekstrak data DFM"
     IDS_ENTERNONZEROTYPE "Mohon masukkan jenis sumber daya non-zero."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
-    IDS_FILESAVED "Berkas tersimpan."
+    IDS_FILESAVED "File tersimpan."
     IDS_RECOMPILEOK "Penyusunan kembali selesai."
     IDS_RECOMPILEFAILED "Penyusunan kembali gagal (kesalahan syntax)."
     IDS_TOOL_EXPORT "Ekspor..."
@@ -1574,15 +1574,15 @@ STRINGTABLE
     IDS_CODEPAGE65001 "65001 (UTF-8)"
     IDS_EXTRACTTLB "Ekstrak data TYPELIB"
     IDS_CANTEXTRACTTLB "Tidak bisa mengekstrak data TYPELIB."
-    IDS_TLBRESBINFILTER "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|Berkas Teks (*.txt)|*.txt|Berkas MIDL (*.idl)|*.idl|Semua File (*.*)|*.*|"
+    IDS_TLBRESBINFILTER "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|File Teks (*.txt)|*.txt|File MIDL (*.idl)|*.idl|Semua File (*.*)|*.*|"
     IDS_USAGE "Penggunaan: RisohEditor [pilihan | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(bom)(backup)(ms-msgtbl)"
     IDS_NOSELECTION "Tidak ada pilihan."
     IDS_TRANSLATORS "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese (Brazil): JNylson\r\nPortuguese (Portugal): Luis Neves\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL\r\nUkrainian (Ukraine): Volodymyr Paliy"
-    IDS_EXPORTFILTER "Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|"
+    IDS_EXPORTFILTER "File RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Biner (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE "// Dihasilkan dari TEXTINCLUDE %u\r\n"
-    IDS_TEXTINCLUDEREADONLY "Berkas ini dilindungi dari penulisan oleh TEXTINCLUDE 1.\r\n\r\nApakah Anda masih ingin menulis ke berkas ini?"
+    IDS_TEXTINCLUDEREADONLY "File ini dilindungi dari penulisan oleh TEXTINCLUDE 1.\r\n\r\nApakah Anda masih ingin menulis ke file ini?"
     IDS_INCLUDETEXTINCLUDE3 "TEXTINCLUDE 3 berisi item sumber daya yang tidak dapat diedit.\r\n\r\nApakah Anda ingin menyertakan item dalam TEXTINCLUDE 3 sebagai item yang dapat diedit dan mengatur ulang TEXTINCLUDE 3?"
-    IDS_MP3RESBINFILTER "Suara MP3 (*.mp3)|*.mp3|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
+    IDS_MP3RESBINFILTER "Suara MP3 (*.mp3)|*.mp3|Sumber Daya Biner (*.res)|*.res|File Biner (*.bin)|*.bin|Semua File (*.*)|*.*|"
     IDS_MP3SOUND "(Suara MP3)\r\n"
     IDS_CODEPAGE1200 "1200 (UTF-16)"
     IDS_INVALIDCODEPAGE "Halaman kode tidak valid."
