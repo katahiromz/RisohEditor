@@ -738,7 +738,10 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 			if (!exitem.menuId && !(exitem.bResInfo & 0x01) &&
 				!exitem.text.empty() && exitem.text != LoadStringDx(IDS_SEPARATOR))
 			{
+				ListView_SetItemState(m_hLst1, iItem,
+				         LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 				ErrorBoxDx(IDS_DONTUSEZEROFORMENUITEM);
+				SetFocus(m_hLst1);
 				return;
 			}
 		}
@@ -806,7 +809,10 @@ void MEditMenuDlg::OnOK(HWND hwnd)
 			if (!item.wMenuID && !(item.fItemFlags & MF_POPUP) &&
 				!item.text.empty() && item.text != LoadStringDx(IDS_SEPARATOR))
 			{
+				ListView_SetItemState(m_hLst1, iItem,
+				         LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 				ErrorBoxDx(IDS_DONTUSEZEROFORMENUITEM);
+				SetFocus(m_hLst1);
 				return;
 			}
 		}
