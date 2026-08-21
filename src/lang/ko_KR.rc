@@ -1633,7 +1633,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "앱의 설정 내용이 사라집니다. 괜찮습니까?"
     IDS_WARNMENUITEMEXHELPID "하나 이상의 메뉴 항목에 도움말 ID(Help ID)가 설정되어 있으나, 도움말 ID는 MENUEX 형식의 하위 메뉴(POPUP) 항목에만 적용됩니다. 하위 메뉴가 아닌 항목의 도움말 ID는 저장 시 삭제됩니다."
     IDS_WARNMENUHELPIDNOTSUPPORTED "확장 버전이 아닌 메뉴에서는 도움말 ID가 지원되지 않습니다."
-    IDS_CONFIRMDELETE "삭제하시겠습니까?"
+    IDS_CONFIRMDELETE "이 리소스 항목을 삭제하시겠습니까?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

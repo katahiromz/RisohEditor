@@ -1633,7 +1633,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "As definições do seu aplicativo serão apagadas. Tudo bem para si?"
     IDS_WARNMENUITEMEXHELPID "Um ou mais itens de menu possuem um ID de Ajuda, mas os IDs de Ajuda só se aplicam a itens de submenu (POPUP) no formato MENUEX. O ID de Ajuda em itens que não sejam de submenu será eliminado ao guardar."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Os IDs de ajuda não são suportados no menu padrão."
-    IDS_CONFIRMDELETE "Deseja apagá-lo?"
+    IDS_CONFIRMDELETE "Deseja eliminar este recurso?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

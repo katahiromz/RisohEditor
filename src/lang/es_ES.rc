@@ -1635,7 +1635,7 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Se borrarán los ajustes de tu aplicación. ¿Te parece bien?"
     IDS_WARNMENUITEMEXHELPID "Uno o varios elementos de menú tienen un ID de ayuda, pero los ID de ayuda solo se aplican a elementos de submenú (POPUP) en el formato MENUEX. El ID de ayuda de los elementos que no son submenús se descartará al guardar."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Los identificadores de ayuda no son compatibles con el menú estándar."
-    IDS_CONFIRMDELETE "¿Quieres eliminarlo?"
+    IDS_CONFIRMDELETE "¿Desea eliminar este recurso?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
