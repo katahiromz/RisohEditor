@@ -140,6 +140,16 @@ public:
 		if (!CheckLangComboBox(hCmb3, lang))
 			return;
 
+		std::wstring file;
+		HWND hEdt1 = GetDlgItem(hwnd, edt1);
+		if (!Edt1_CheckFile(hEdt1, file))
+		{
+			Edit_SetSel(hEdt1, 0, -1);  // select all
+			SetFocus(hEdt1);    // set focus
+			ErrorBoxDx(IDS_FILENOTFOUND);
+			return;
+		}
+
 		if (auto entry = g_res.find(ET_LANG, RT_BITMAP, name, lang))
 		{
 			INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -152,16 +162,6 @@ public:
 			case IDCANCEL:
 				return;
 			}
-		}
-
-		std::wstring file;
-		HWND hEdt1 = GetDlgItem(hwnd, edt1);
-		if (!Edt1_CheckFile(hEdt1, file))
-		{
-			Edit_SetSel(hEdt1, 0, -1);  // select all
-			SetFocus(hEdt1);    // set focus
-			ErrorBoxDx(IDS_FILENOTFOUND);
-			return;
 		}
 
 		if (!g_res.add_bitmap(name, lang, file))

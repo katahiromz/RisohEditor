@@ -1136,6 +1136,20 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 	if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
 		return NULL;
 
+	HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&stream[0], stream.size());
+	DeleteObject(hbm);
+	if (!hbm)
+	{
+		MBitmapDx bmp;
+		if (!bmp.CreateFromMemory(&stream[0], stream.size()))
+			return NULL;
+		LONG cx, cy;
+		hbm = bmp.GetHBITMAP(cx, cy);
+		if (!hbm || !PackedDIB_CreateFromHandle(stream.data(), hbm))
+			return NULL;
+		DeleteObject(hbm);
+	}
+
 	// add the entry
 	return add_lang_entry(RT_BITMAP, name, lang, stream.data());
 }
