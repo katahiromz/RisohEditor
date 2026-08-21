@@ -25,7 +25,11 @@ std::vector<MString> g_ctrl_ids;
 std::vector<MString> g_string_ids;
 std::vector<MString> g_help_ids;
 std::vector<MString> g_encrypted_types;
+std::vector<MString> g_font_names;
 HWND s_hwndEga = NULL;
+
+/*static*/ HHOOK MSplashWindow::s_hKeyboardHook = NULL;
+/*static*/ HWND MSplashWindow::s_hwndSplash = NULL;
 
 #ifndef _MSC_VER
 	typedef int (WINAPI *FN_GetMenuPosFromID)(HMENU hmenu, UINT id);
@@ -4493,7 +4497,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 		}
 		if (wType == (WORD)(UINT_PTR)RT_BITMAP)
 		{
-			return PackedDIB_Extract(filename.c_str(), &(*entry)[0], entry->size(), FALSE);
+			return g_res.extract_bin(filename.c_str(), entry);
 		}
 		if (wType == (WORD)(UINT_PTR)RT_ICON)
 		{
@@ -7335,6 +7339,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
+	m_splash.CreateDx(hwnd);
+
 	// create the image list for treeview
 	m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
 	if (m_hImageList == NULL)
@@ -8305,6 +8311,7 @@ wWinMain(HINSTANCE   hInstance,
 	g_string_ids.clear();
 	g_help_ids.clear();
 	g_encrypted_types.clear();
+	g_font_names.clear();
 
 	// Revert WoW64 filesystem redirection
 	if (bWowFsDisabled)

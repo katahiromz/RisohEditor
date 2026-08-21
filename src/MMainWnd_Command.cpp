@@ -1072,9 +1072,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 	// let the user choose the path
 	if (GetSaveFileNameW(&ofn))
 	{
-		// extract a bitmap as an *.bmp or *.png file
-		BOOL bPNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-		if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), bPNG))
+		if (!g_res.extract_bin(ofn.lpstrFile, entry))
 		{
 			ErrorBoxDx(IDS_CANTEXTRACTBMP);
 		}
@@ -1427,7 +1425,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 		}
 
 		// select the entry
-		SelectTV(ET_LANG, entry->m_type, entry->m_name, wLang, FALSE);
+		SelectTV(entry, FALSE);
 
 		DoSetFileModified(TRUE);
 		PostUpdateArrow(hwnd);
@@ -1489,6 +1487,9 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 {
 	// compile if necessary
 	if (!CompileIfNecessary(FALSE))
+		return;
+
+	if (MsgBoxDx(LoadStringDx(IDS_CONFIRMDELETE), MB_YESNO) != IDYES)
 		return;
 
 	// get the selected entry
@@ -3624,8 +3625,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 		EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
-		EnableMenuItem(hMenu, ID_CLONE, MF_GRAYED);
-		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_CLONE, MF_ENABLED);
+		EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_ENABLED);
 		break;
 
 	default:

@@ -1,5 +1,11 @@
 ﻿## HISTORIA
 
+- v.6.1.5 (2026-XX-YY)
+    - Acelerar MDialogFontSubstDlg.
+    - Se añadió la ventana de presentación.
+    - Se estableció UTF-8 como la página de códigos predeterminada para windres.
+    - Se ha corregido la extracción de RT_BITMAP.
+    - Se añadió una confirmación antes de la eliminación.
 - v.6.1.4 (2026-08-13)
     - Se convirtió la configuración en una hoja de propiedades.
     - Acelerar OnDeleteRes.

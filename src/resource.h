@@ -9,6 +9,7 @@
 #define IDB_BMP                             100
 #define IDB_CONTROLS                        101
 #define IDB_TOOLBAR                         102
+#define IDB_SPLASH                          103
 
 #define IDC_CURSORNS                        101
 #define IDC_CURSORWE                        102
@@ -387,6 +388,7 @@
 #define IDS_WARNRESETSETTINGS               405
 #define IDS_WARNMENUITEMEXHELPID            406
 #define IDS_WARNMENUHELPIDNOTSUPPORTED      407
+#define IDS_CONFIRMDELETE                   408
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

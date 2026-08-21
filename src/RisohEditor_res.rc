@@ -30,6 +30,8 @@ IDB_CONTROLS BITMAP "res/Bitmap_101.bmp"
 
 IDB_TOOLBAR BITMAP "res/Bitmap_102.bmp"
 
+IDB_SPLASH BITMAP "res/Bitmap_103.bmp"
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_DIALOG
 

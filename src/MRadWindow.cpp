@@ -4,6 +4,9 @@
 // Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // License: GPL-3 or later
 
+#ifdef __GNUC__ // Workaround
+	#define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
+#endif
 #include "MRadWindow.hpp"
 #include "MAddCtrlDlg.hpp"
 #include "MDlgPropDlg.hpp"
