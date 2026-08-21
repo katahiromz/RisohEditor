@@ -2344,9 +2344,6 @@ BOOL CheckCommandComboBox(HWND hCmb, MStringW& str)
 		return FALSE;
 	}
 
-	// Make it uppercase
-	mstr_upper(str);
-
 	if (mchr_is_digit(str[0]) || str[0] == '-' || str[0] == '+')
 	{
 		wchar_t *endptr;
@@ -2367,6 +2364,12 @@ BOOL CheckCommandComboBox(HWND hCmb, MStringW& str)
 			return FALSE;
 		}
 		return TRUE;
+	}
+
+	if (!g_db.HasResID(str))
+	{
+		// Make it uppercase
+		mstr_upper(str);
 	}
 
 	if (g_db.HasResID(str))
