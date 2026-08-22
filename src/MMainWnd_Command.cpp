@@ -3362,6 +3362,9 @@ void MMainWnd::DoHelp()
 // WM_INITMENU: update the menus
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+	if (IsWindow(m_splash))
+		SendMessageW(m_splash, WM_CLOSE, 0, 0);
+
 	if (g_settings.bWordWrap)
 		CheckMenuItem(hMenu, ID_WORD_WRAP, MF_BYCOMMAND | MF_CHECKED);
 	else
