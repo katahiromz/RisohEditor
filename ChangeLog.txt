@@ -1,12 +1,13 @@
 ﻿## HISTORY (ChangeLog)
 
-- v.6.1.5 (2026-XX-YY)
+- v.6.1.5 (2026-08-22)
     - Accelerated MDialogFontSubstDlg.
     - Added the splash window.
     - Made windres default codepage UTF-8.
     - Fixed RT_BITMAP extraction.
     - Added confirmation before deletion.
     - Added sanity check for menu items.
+    - Minor UI/UX improvements.
 - v.6.1.4 (2026-08-13)
     - Made configuration a property sheet.
     - Accelerated OnDeleteRes.

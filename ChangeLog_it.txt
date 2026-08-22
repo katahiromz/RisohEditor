@@ -1,12 +1,13 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.1.5 (2026-XX-YY)
+- v.6.1.5 (22.08.2026)
     - Accelerata MDialogFontSubstDlg.
     - Aggiunta schermata iniziale.
     - Impostata codepage predefinita di windres su UTF-8.
     - Corretta estrazione di RT_BITMAP.
     - Aggiunta conferma prima dell'eliminazione.
     - Aggiunto un controllo di validità per le voci di menu.
+    - Miglioramenti minori a UI/UX.
 - v.6.1.4 (13.08.2026)
     - La configurazione è stata trasformata in una scheda delle proprietà.
     - Accelerata OnDeleteRes.
