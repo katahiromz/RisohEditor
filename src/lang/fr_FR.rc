@@ -1637,6 +1637,7 @@ STRINGTABLE
     IDS_ENTERCOMMAND "Veuillez saisir l'identifiant de la commande."
     IDS_INVALIDCOMMAND "L'identifiant de commande est invalide. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
     IDS_COMMANDOUTOFRANGE "L'identifiant de commande est hors limites. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
+    IDS_NOFILEACCESS "Impossible d'écrire dans le fichier suivant car il n'y a pas d'autorisation d'écriture :\r\n\r\n%s"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -393,6 +393,7 @@
 #define IDS_ENTERCOMMAND                    410
 #define IDS_INVALIDCOMMAND                  411
 #define IDS_COMMANDOUTOFRANGE               412
+#define IDS_NOFILEACCESS                    413
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

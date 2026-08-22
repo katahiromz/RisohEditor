@@ -408,10 +408,10 @@ WORD GetMachineOfBinary(LPCWSTR pszExeFile)
 	return wMachine;
 }
 
-BOOL IsFileLockedDx(LPCTSTR pszFileName)
+DWORD IsFileLockedDx(LPCTSTR pszFileName)
 {
 	if (!PathFileExistsW(pszFileName))
-		return FALSE;
+		return 0;
 
 	HANDLE hFile;
 	hFile = CreateFileW(pszFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL,
@@ -419,10 +419,18 @@ BOOL IsFileLockedDx(LPCTSTR pszFileName)
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		CloseHandle(hFile);
-		return FALSE;
+		return 0;
 	}
 
-	return TRUE;
+	DWORD error = GetLastError();
+	switch (error)
+	{
+	case ERROR_SHARING_VIOLATION:
+	case ERROR_ACCESS_DENIED:
+		return error;
+	default:
+		return ERROR_SHARING_VIOLATION;
+	}
 }
 
 // "." or ".."

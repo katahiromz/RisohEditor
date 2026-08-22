@@ -3557,10 +3557,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 	res2text.m_bNoLanguage = TRUE;      // no LANGUAGE statements generated
 
 	// check not locking
-	if (IsFileLockedDx(pszFileName))
+	DWORD error = IsFileLockedDx(pszFileName);
+	if (error == ERROR_SHARING_VIOLATION)
 	{
 		WCHAR szMsg[MAX_PATH + 256];
 		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszFileName);
+		ErrorBoxDx(szMsg);
+		return FALSE;
+	}
+	if (error == ERROR_ACCESS_DENIED)
+	{
+		WCHAR szMsg[MAX_PATH + 256];
+		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_NOFILEACCESS), pszFileName);
 		ErrorBoxDx(szMsg);
 		return FALSE;
 	}
@@ -4245,10 +4253,18 @@ void WriteMacroLine(MFile& file, const MStringA& name, const MStringA& definitio
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
 	// check not locking
-	if (IsFileLockedDx(pszResH))
+	DWORD error = IsFileLockedDx(pszResH);
+	if (error == ERROR_SHARING_VIOLATION)
 	{
 		WCHAR szMsg[MAX_PATH + 256];
 		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszResH);
+		ErrorBoxDx(szMsg);
+		return FALSE;
+	}
+	if (error == ERROR_ACCESS_DENIED)
+	{
+		WCHAR szMsg[MAX_PATH + 256];
+		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_NOFILEACCESS), pszResH);
 		ErrorBoxDx(szMsg);
 		return FALSE;
 	}
@@ -5025,11 +5041,18 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 	WCHAR szTempFile[MAX_PATH] = L"";
 	AutoDeleteFileW ad(szTempFile);
 
-	// check not locking
-	if (IsFileLockedDx(dest))
+	DWORD error = IsFileLockedDx(dest);
+	if (error == ERROR_SHARING_VIOLATION)
 	{
 		WCHAR szMsg[MAX_PATH + 256];
 		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), dest);
+		ErrorBoxDx(szMsg);
+		return FALSE;
+	}
+	if (error == ERROR_ACCESS_DENIED)
+	{
+		WCHAR szMsg[MAX_PATH + 256];
+		StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_NOFILEACCESS), dest);
 		ErrorBoxDx(szMsg);
 		return FALSE;
 	}

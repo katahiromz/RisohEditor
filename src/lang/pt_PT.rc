@@ -1638,6 +1638,7 @@ STRINGTABLE
     IDS_ENTERCOMMAND "Por favor, introduza o ID do comando."
     IDS_INVALIDCOMMAND "O ID do comando é inválido. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
     IDS_COMMANDOUTOFRANGE "O ID do comando está fora do intervalo. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
+    IDS_NOFILEACCESS "Não é possível escrever no seguinte ficheiro porque não existe permissão de escrita:\r\n\r\n%s"
 }
 
 //////////////////////////////////////////////////////////////////////////////

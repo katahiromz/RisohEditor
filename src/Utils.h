@@ -108,7 +108,7 @@ bool create_directories_recursive_win32(const std::wstring& path);
 MStringW DumpBinaryAsText(const std::vector<BYTE>& data);
 BOOL WriteBinaryFileDx(const WCHAR *filename, LPCVOID pv, size_t size);
 WORD GetMachineOfBinary(LPCWSTR pszExeFile);
-BOOL IsFileLockedDx(LPCTSTR pszFileName);
+DWORD IsFileLockedDx(LPCTSTR pszFileName);
 BOOL DeleteDirectoryDx(LPCTSTR pszDir);
 BOOL IsEmptyDirectoryDx(LPCTSTR pszPath);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);

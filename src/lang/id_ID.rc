@@ -1641,6 +1641,7 @@ STRINGTABLE
     IDS_ENTERCOMMAND "Silakan masukkan ID perintah."
     IDS_INVALIDCOMMAND "ID perintah tidak valid. Silakan masukkan bilangan bulat 16-bit (-32768 hingga 65535) atau pengidentifikasi."
     IDS_COMMANDOUTOFRANGE "ID perintah berada di luar rentang. Silakan masukkan bilangan bulat 16-bit (-32768 hingga 65535) atau pengidentifikasi."
+    IDS_NOFILEACCESS "Tidak dapat menulis ke file berikut karena tidak ada izin tulis:\r\n\r\n%s"
 }
 
 //////////////////////////////////////////////////////////////////////////////
