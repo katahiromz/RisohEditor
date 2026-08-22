@@ -139,6 +139,7 @@ public:
 		if (!m_search.bIgnoreCases)
 			CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
+		EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
 		CenterWindowDx();
 		return TRUE;
 	}
@@ -184,6 +185,13 @@ public:
 			break;
 		case 999:
 			DestroyWindow(hwnd);
+			break;
+		case edt1:
+			if (codeNotify == EN_CHANGE)
+			{
+				INT cch = GetWindowTextLengthW(GetDlgItem(hwnd, edt1));
+				EnableWindow(GetDlgItem(hwnd, IDOK), !!cch);
+			}
 			break;
 		}
 	}
