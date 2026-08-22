@@ -591,7 +591,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "T&itolo:", -1, 5, 7, 85, 11
     COMBOBOX cmb1, 5, 20, 225, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Finestra esesa", chx1, 100, 5, 86, 14
+    AUTOCHECKBOX "&Finestra estesa", chx1, 100, 5, 86, 14
     LTEXT "Sinist&ra:", -1, 5, 40, 33, 10
     EDITTEXT edt1, 5, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 23, 53, 12, 20
@@ -1634,14 +1634,14 @@ STRINGTABLE
     IDS_WARNRESETSETTINGS "Le impostazioni dell'app verranno cancellate. Va bene?"
     IDS_WARNMENUITEMEXHELPID "Una o più voci di menu dispongono di un ID Guida, ma gli ID Guida si applicano solo alle voci di sottomenu (POPUP) nel formato MENUEX. L'ID Guida associato a voci che non sono sottomenu verrà scartato al momento del salvataggio."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Gli ID di aiuto non sono supportati nel menu standard."
-    IDS_CONFIRMDELETE "Desideri eliminare questa risorsa?"
+    IDS_CONFIRMDELETE "Vuoi eliminare questa risorsa?"
     IDS_DONTUSEZEROFORMENUITEM "Non è possibile specificare un ID comando pari a zero per una voce di menu che non sia né un separatore né un menu a comparsa."
-    IDS_ENTERCOMMAND "Inserisci l'ID del comando."
-    IDS_INVALIDCOMMAND "L'ID del comando non è valido. Inserire un numero intero a 16 bit (-32768 a 65535) o un identificatore."
-    IDS_COMMANDOUTOFRANGE "L'ID del comando non rientra nell'intervallo consentito. Immettere un numero intero a 16 bit (-32768 a 65535) o un identificatore."
+    IDS_ENTERCOMMAND "Inserisci ID comando."
+    IDS_INVALIDCOMMAND "L'ID comando non è valido. Inserisci un numero intero a 16 bit (-32768 a 65535) o un identificatore."
+    IDS_COMMANDOUTOFRANGE "L'ID comando non rientra nell'intervallo consentito. Inserisci un numero intero a 16 bit (-32768 a 65535) o un identificatore."
     IDS_NOFILEACCESS "Impossibile scrivere nel seguente file perché manca l'autorizzazione di scrittura:\r\n\r\n%s"
-    IDS_ENTERFILE "Si prega di specificare il file."
-    IDS_CANTADDEMPTYDATA "Il file è vuoto. Non è possibile aggiungere dati vuoti a una risorsa."
+    IDS_ENTERFILE "Specifica il file."
+    IDS_CANTADDEMPTYDATA "Il file è vuoto. Non è possibile aggiungere dati vuoti ad una risorsa."
     IDS_FILEWASTOOLARGE "Il file è troppo grande."
 }
 
