@@ -1,6 +1,7 @@
 ﻿## HISTORIA
 
 - v.6.1.6 (2026-XX-YY)
+    - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
 - v.6.1.5 (2026-08-22)
     - Acelerar MDialogFontSubstDlg.
     - Se añadió la ventana de presentación.
