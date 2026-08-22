@@ -2,6 +2,7 @@
 
 - v.6.1.6 (2026-XX-YY)
     - Miglioramenti minori a UI/UX.
+    - Aggiunto il pulsante [Aiuto] a MConstantDlg.
 - v.6.1.5 (22.08.2026)
     - Accelerata MDialogFontSubstDlg.
     - Aggiunta schermata iniziale.

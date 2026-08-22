@@ -84,6 +84,10 @@ public:
 			ComboBox_SetText(m_cmb1, m_str.c_str());
 			m_cmb1.OnEditChange();
 		}
+		else
+		{
+			EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
+		}
 
 		// Subclassing
 		HWND hEdt2 = GetDlgItem(hwnd, edt2);
@@ -106,6 +110,18 @@ public:
 		SetWindowLongPtrW(hEdt3, GWLP_WNDPROC, (LONG_PTR)m_fnOldEdt3WndProc);
 	}
 
+	void OnPsh1(HWND hwnd)
+	{
+		MStringW str1 = ::GetWindowTextW(m_cmb1);
+		MStringW str2 = ::GetDlgItemTextW(hwnd, edt2);
+		if (str1.size() && str2.size())
+		{
+			WCHAR url[MAX_PATH];
+			StringCchPrintfW(url, _countof(url), LoadStringDx(IDS_SEARCHURL), str1.c_str());
+			ShellExecuteW(m_hwnd, nullptr, url, nullptr, nullptr, SW_SHOWNORMAL);
+		}
+	}
+
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
@@ -113,6 +129,9 @@ public:
 		case IDOK:
 		case IDCANCEL:
 			EndDialog(id);
+			break;
+		case psh1:
+			OnPsh1(hwnd);
 			break;
 		case cmb1:
 			if (codeNotify == CBN_EDITCHANGE)
@@ -160,11 +179,13 @@ public:
 					WCHAR szText[MAX_PATH];
 					StringCbPrintfW(szText, sizeof(szText), L"0x%lX", value);
 					SetDlgItemText(hwnd, edt3, szText);
+					EnableWindow(GetDlgItem(hwnd, psh1), TRUE);
 				}
 				else
 				{
 					SetDlgItemTextW(hwnd, edt2, L"");
 					SetDlgItemText(hwnd, edt3, L"");
+					EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
 				}
 			}
 			break;

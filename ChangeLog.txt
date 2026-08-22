@@ -2,6 +2,7 @@
 
 - v.6.1.6 (2026-XX-YY)
     - Minor UI/UX improvements.
+    - Added [Help] button to MConstantDlg.
 - v.6.1.5 (2026-08-22)
     - Accelerated MDialogFontSubstDlg.
     - Added the splash window.
