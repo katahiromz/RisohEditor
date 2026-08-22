@@ -2,17 +2,17 @@
 // 업데이트 내역
 
 - v.6.1.6 (2026-XX-YY)
-    - 소소한 UI/UX 개선.
-    - MConstantDlg에 [도움말] 버튼을 추가했습니다.
-    - MRadWindow::AlignSelection에서 발생하던 충돌 문제를 수정했습니다.
+    - UI/UX를 약간 개선했습니다.
+    - MConstantDlg 함수에 [도움말] 버튼을 추가했습니다.
+    - MRadWindow::AlignSelection 함수에서 발생하던 충돌을 수정했습니다.
 - v.6.1.5 (2026-08-22)
-    - MDialogFontSubstDlg 가속화.
+    - MDialogFontSubstDlg를 가속화 했습니다.
     - 스플래시 창을 추가했습니다.
     - windres의 기본 코드 페이지를 UTF-8로 설정했습니다.
     - RT_BITMAP 추출 문제를 수정했습니다.
-    - 삭제 전 확인 절차를 추가했습니다.
+    - 삭제 전 확인 메시지를 추가했습니다.
     - 메뉴 항목에 대한 유효성 검사를 추가했습니다.
-    - 소소한 UI/UX 개선.
+    - UI/UX를 약간 개선했습니다.
 - v.6.1.4 (2026-08-13)
     - 구성을 속성 시트로 만들었습니다.
     - OnDeleteRes의 속도를 향상시켰습니다.
