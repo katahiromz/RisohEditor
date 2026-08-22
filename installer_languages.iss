@@ -32,7 +32,7 @@ english.ReadmeEnglish=ReadMe (English)
 english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License
 english.AssociateRcFiles=Associate file with *.rc extension to RisohEditor"
-english.AssociateResFiles=Associate *.res files
+english.AssociateResFiles=Associate file with *.res extension to RisohEditor"
 english.CreateDesktopIcon=Create program shortuct on &desktop
 
 brazilianportuguese.ReadmeEnglish=ReadMe (inglês)
