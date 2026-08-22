@@ -258,6 +258,9 @@ void MMainWnd::UpdateToolBarStatus()
 
 void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 {
+	if (IsWindow(m_splash))
+		SendMessageW(m_splash, WM_CLOSE, 0, 0);
+
 	// TODO: If you edited "Edit" menu, then you may have to update the below codes
 	HMENU hMenu = GetMenu(hwnd);
 	HMENU hEditMenu = GetSubMenu(hMenu, 1);
