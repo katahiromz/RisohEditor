@@ -109,8 +109,8 @@ hungarian.AssociateResFiles=*.res fájlok társítása
 italian.ReadmeEnglish=File Leggimi (Inglese)
 italian.ReadmeJapanese=File Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
-italian.AssociateRcFiles=Associa file *.rc a RisohEditor
-italian.AssociateResFiles=Associa file *.res a RisohEditor
+italian.AssociateRcFiles=Associa file con estensione *.rc a RisohEditor
+italian.AssociateResFiles=Associa file con estensione *.res a RisohEditor
 italian.LaunchProgram=Esegui %1
 
 korean.ReadmeEnglish=ReadMe (영어)
