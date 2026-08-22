@@ -3,6 +3,7 @@
 - v.6.1.6 (2026-XX-YY)
     - Peningkatan kecil pada UI/UX.
     - Menambahkan tombol [Bantuan] ke MConstantDlg.
+    - Memperbaiki masalah *crash* pada MRadWindow::AlignSelection.
 - v.6.1.5 (2026-08-22)
     - Percepat MDialogFontSubstDlg.
     - Menambahkan jendela splash.

@@ -2771,6 +2771,8 @@ void MRadWindow::AlignSelection(AlignEdge edge)
 	for (HWND hwndCtrl : targets)
 	{
 		auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+		if (!pCtrl)
+			continue;
 		GetWindowRect(hwndCtrl, &rc);
 		MapWindowRect(NULL, m_rad_dialog, &rc);
 
