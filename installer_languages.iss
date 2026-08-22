@@ -31,7 +31,7 @@ Name: "ukrainian";           MessagesFile: "compiler:Languages\Ukrainian.isl"
 english.ReadmeEnglish=ReadMe (English)
 english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License
-english.AssociateRcFiles=Associate *.rc files
+english.AssociateRcFiles=Associate file with *.rc extension to RisohEditor"
 english.AssociateResFiles=Associate *.res files
 english.CreateDesktopIcon=Create program shortuct on &desktop
 
