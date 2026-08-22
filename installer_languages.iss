@@ -31,8 +31,9 @@ Name: "ukrainian";           MessagesFile: "compiler:Languages\Ukrainian.isl"
 english.ReadmeEnglish=ReadMe (English)
 english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License
-english.AssociateRcFiles=Associate *.rc files
-english.AssociateResFiles=Associate *.res files
+english.AssociateRcFiles=Associate file with *.rc extension to RisohEditor"
+english.AssociateResFiles=Associate file with *.res extension to RisohEditor"
+english.CreateDesktopIcon=Create program shortuct on &desktop
 
 brazilianportuguese.ReadmeEnglish=ReadMe (inglês)
 brazilianportuguese.ReadmeJapanese=ReadMe (japonês)
@@ -109,9 +110,10 @@ hungarian.AssociateResFiles=*.res fájlok társítása
 italian.ReadmeEnglish=File Leggimi (Inglese)
 italian.ReadmeJapanese=File Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
-italian.AssociateRcFiles=Associa file *.rc a RisohEditor
-italian.AssociateResFiles=Associa file *.res a RisohEditor
+italian.AssociateRcFiles=Associa file con estensione *.rc a RisohEditor
+italian.AssociateResFiles=Associa file con estensione *.res a RisohEditor
 italian.LaunchProgram=Esegui %1
+italian.CreateDesktopIcon=Crea collegamento programma sul &desktop
 
 korean.ReadmeEnglish=ReadMe (영어)
 korean.ReadmeJapanese=ReadMe (일본어)
