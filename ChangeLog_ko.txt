@@ -5,6 +5,7 @@
     - UI/UX를 약간 개선했습니다.
     - MConstantDlg 함수에 [도움말] 버튼을 추가했습니다.
     - MRadWindow::AlignSelection 함수에서 발생하던 충돌을 수정했습니다.
+    - 설치 프로그램 번역 개선.
 - v.6.1.5 (2026-08-22)
     - MDialogFontSubstDlg를 가속화 했습니다.
     - 스플래시 창을 추가했습니다.

@@ -4,6 +4,7 @@
     - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
     - Se añadió el botón [Ayuda] a MConstantDlg.
     - Se ha corregido un bloqueo en MRadWindow::AlignSelection.
+    - Traducción del instalador mejorada.
 - v.6.1.5 (2026-08-22)
     - Acelerar MDialogFontSubstDlg.
     - Se añadió la ventana de presentación.
