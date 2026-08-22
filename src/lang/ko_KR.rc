@@ -1639,6 +1639,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "명령 ID가 올바르지 않습니다. 16비트 정수(-32768~65535) 또는 식별자를 입력합니다."
     IDS_COMMANDOUTOFRANGE "명령 ID가 범위를 벗어났습니다. 16비트 정수(-32768~65535) 또는 식별자를 입력합니다."
     IDS_NOFILEACCESS "쓰기 권한이 없어서 다음 파일에 쓸 수 없습니다:\r\n\r\n%s"
+    IDS_ENTERFILE "파일을 지정합니다."
+    IDS_CANTADDEMPTYDATA "파일이 비어 있습니다. 리소스에 빈 데이터를 추가할 수 없습니다."
+    IDS_FILEWASTOOLARGE "파일이 너무 큽니다."
 }
 
 //////////////////////////////////////////////////////////////////////////////

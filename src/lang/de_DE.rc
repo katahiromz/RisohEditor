@@ -1638,6 +1638,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "Die Befehls-ID ist ungültig. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder eine Kennung ein."
     IDS_COMMANDOUTOFRANGE "Die Befehls-ID liegt außerhalb des gültigen Bereichs. Bitte geben Sie eine 16-Bit-Ganzzahl (-32768 bis 65535) oder eine Kennung ein."
     IDS_NOFILEACCESS "In die folgende Datei kann nicht geschrieben werden, da keine Schreibberechtigung vorliegt:\r\n\r\n%s"
+    IDS_ENTERFILE "Bitte geben Sie die Datei an."
+    IDS_CANTADDEMPTYDATA "Die Datei ist leer. Sie können einer Ressource keine leeren Daten hinzufügen."
+    IDS_FILEWASTOOLARGE "Die Datei ist zu groß."
 }
 
 //////////////////////////////////////////////////////////////////////////////

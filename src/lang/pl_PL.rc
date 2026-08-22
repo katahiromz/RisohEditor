@@ -1639,6 +1639,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "Identyfikator polecenia jest nieprawidłowy. Wprowadź 16-bitową liczbę całkowitą (od -32768 do 65535) lub identyfikator."
     IDS_COMMANDOUTOFRANGE "Identyfikator polecenia jest poza zakresem. Wprowadź 16-bitową liczbę całkowitą (od -32768 do 65535) lub identyfikator."
     IDS_NOFILEACCESS "Nie można zapisać do poniższego pliku z powodu braku uprawnień do zapisu:\r\n\r\n%s"
+    IDS_ENTERFILE "Proszę podać plik."
+    IDS_CANTADDEMPTYDATA "Plik jest pusty. Nie można dodać pustych danych do zasobu."
+    IDS_FILEWASTOOLARGE "Plik jest za duży."
 }
 
 //////////////////////////////////////////////////////////////////////////////

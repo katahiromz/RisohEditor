@@ -1639,6 +1639,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "Invalid command ID. Please enter a 16-bit integer (-32768 to 65535) or an identifier."
     IDS_COMMANDOUTOFRANGE "The command ID is out of range. Please enter a 16-bit integer (-32768 to 65535) or an identifier."
     IDS_NOFILEACCESS "Cannot write to the following file because there is no write permission:\r\n\r\n%s"
+    IDS_ENTERFILE "Please specify the file."
+    IDS_CANTADDEMPTYDATA "The file is empty. Empty data cannot be added to the resource."
+    IDS_FILEWASTOOLARGE "The file is too large."
 }
 
 //////////////////////////////////////////////////////////////////////////////

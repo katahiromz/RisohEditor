@@ -1638,6 +1638,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "Komennon tunnus on virheellinen. Anna 16-bittinen kokonaisluku (-32768 - 65535) tai tunniste."
     IDS_COMMANDOUTOFRANGE "Komennon tunnus on sallitun alueen ulkopuolella. Anna 16-bittinen kokonaisluku (-32768 - 65535) tai tunniste."
     IDS_NOFILEACCESS "Seuraavaan tiedostoon ei voida kirjoittaa, koska kirjoitusoikeutta ei ole:\r\n\r\n%s"
+    IDS_ENTERFILE "Määritä tiedosto."
+    IDS_CANTADDEMPTYDATA "Tiedosto on tyhjä. Et voi lisätä tyhjiä tietoja resurssiin."
+    IDS_FILEWASTOOLARGE "Tiedosto on liian suuri."
 }
 
 //////////////////////////////////////////////////////////////////////////////

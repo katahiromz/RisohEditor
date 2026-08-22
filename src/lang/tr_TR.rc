@@ -1639,6 +1639,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "Komut kimliği geçersiz. Lütfen 16 bitlik bir tamsayı (-32768 ile 65535 arasında) veya bir tanımlayıcı girin."
     IDS_COMMANDOUTOFRANGE "Komut kimliği aralık dışında. Lütfen 16 bitlik bir tamsayı (-32768 ile 65535 arası) veya bir tanımlayıcı girin."
     IDS_NOFILEACCESS "Yazma izni bulunmadığı için aşağıdaki dosyaya yazılamıyor:\r\n\r\n%s"
+    IDS_ENTERFILE "Lütfen dosyayı belirtin."
+    IDS_CANTADDEMPTYDATA "Dosya boş. Kaynağa boş veri ekleyemezsiniz."
+    IDS_FILEWASTOOLARGE "Dosya çok büyük."
 }
 
 //////////////////////////////////////////////////////////////////////////////

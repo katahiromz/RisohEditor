@@ -1637,6 +1637,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "命令 ID 無效。請輸入一個 16 位元整數（-32768 到 65535）或一個識別碼。"
     IDS_COMMANDOUTOFRANGE "命令 ID 超出範圍。請輸入一個 16 位元整數（-32768 到 65535）或一個識別碼。"
     IDS_NOFILEACCESS "您沒有以下文件的寫入權限，因此您無法寫入該文件。\r\n\r\n%s"
+    IDS_ENTERFILE "請指定檔案名稱。"
+    IDS_CANTADDEMPTYDATA "文件為空。您無法在資源中新增空資料。"
+    IDS_FILEWASTOOLARGE "文件過大。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

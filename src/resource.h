@@ -394,6 +394,9 @@
 #define IDS_INVALIDCOMMAND                  411
 #define IDS_COMMANDOUTOFRANGE               412
 #define IDS_NOFILEACCESS                    413
+#define IDS_ENTERFILE                       414
+#define IDS_CANTADDEMPTYDATA                415
+#define IDS_FILEWASTOOLARGE                 416
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

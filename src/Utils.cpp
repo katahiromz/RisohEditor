@@ -3134,12 +3134,45 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 	// trim
 	mstr_trim(str);
 
+	if (str.empty())
+	{
+		Edit_SetSel(hEdt1, 0, -1);  // select all
+		SetFocus(hEdt1);    // set focus
+		ErrorBoxDx(IDS_ENTERFILE);
+		return FALSE;
+	}
+
 	if (!PathFileExistsW(str.c_str()))	// not exists
-		return FALSE;   // failure
+	{
+		Edit_SetSel(hEdt1, 0, -1);  // select all
+		SetFocus(hEdt1);    // set focus
+		ErrorBoxDx(IDS_FILENOTFOUND);
+		return FALSE;
+	}
+
+	WIN32_FIND_DATAW find;
+	HANDLE hFind = FindFirstFileW(str.c_str(), &find);
+	FindClose(hFind);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		if (find.nFileSizeLow == 0 && find.nFileSizeHigh == 0)
+		{
+			Edit_SetSel(hEdt1, 0, -1);  // select all
+			SetFocus(hEdt1);    // set focus
+			ErrorBoxDx(IDS_CANTADDEMPTYDATA);
+			return FALSE;
+		}
+		if (find.nFileSizeHigh || find.nFileSizeLow > (DWORD)LONG_MAX)
+		{
+			Edit_SetSel(hEdt1, 0, -1);  // select all
+			SetFocus(hEdt1);    // set focus
+			ErrorBoxDx(IDS_FILEWASTOOLARGE);
+			return FALSE;
+		}
+	}
 
 	// store
 	file = str;
-
 	return TRUE;	// success
 }
 

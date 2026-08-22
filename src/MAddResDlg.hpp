@@ -172,17 +172,20 @@ public:
 			return;     // failure
 
 		// get the file path from edt1
-		std::wstring file;
 		HWND hEdt1 = GetDlgItem(hwnd, edt1);
+		std::wstring file = GetWindowTextW(hEdt1);
+		mstr_trim(file);
 
-		// if there is no sample for the type, check if the file path exists
-		if (!Edt1_CheckFile(hEdt1, file) && !HasSample(type, name, lang))
+		if (file.empty() && !HasSample(type, name, lang))
 		{
 			Edit_SetSel(hEdt1, 0, -1);  // select all
 			SetFocus(hEdt1);    // set focus
-			ErrorBoxDx(IDS_FILENOTFOUND);
-			return;     // failure
+			ErrorBoxDx(IDS_ENTERFILE);
+			return;
 		}
+
+		if (file.size() && !Edt1_CheckFile(hEdt1, file))
+			return; // failure
 
 		// find the language entry by type, name, lang
 		if (g_res.find(ET_LANG, type, name, lang))

@@ -1639,6 +1639,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "O ID do comando é inválido. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
     IDS_COMMANDOUTOFRANGE "O ID do comando está fora do intervalo. Introduza um número inteiro de 16 bits (de -32768 a 65535) ou um identificador."
     IDS_NOFILEACCESS "Não é possível escrever no seguinte ficheiro porque não existe permissão de escrita:\r\n\r\n%s"
+    IDS_ENTERFILE "Por favor especifique o ficheiro."
+    IDS_CANTADDEMPTYDATA "O ficheiro está vazio. Não é possível adicionar dados vazios a um recurso."
+    IDS_FILEWASTOOLARGE "O ficheiro é muito grande."
 }
 
 //////////////////////////////////////////////////////////////////////////////

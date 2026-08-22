@@ -1638,6 +1638,9 @@ STRINGTABLE
     IDS_INVALIDCOMMAND "L'identifiant de commande est invalide. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
     IDS_COMMANDOUTOFRANGE "L'identifiant de commande est hors limites. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
     IDS_NOFILEACCESS "Impossible d'écrire dans le fichier suivant car il n'y a pas d'autorisation d'écriture :\r\n\r\n%s"
+    IDS_ENTERFILE "Veuillez préciser le fichier."
+    IDS_CANTADDEMPTYDATA "Le fichier est vide. Vous ne pouvez pas ajouter de données vides à une ressource."
+    IDS_FILEWASTOOLARGE "Le fichier est trop volumineux."
 }
 
 //////////////////////////////////////////////////////////////////////////////
