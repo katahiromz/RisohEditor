@@ -33,6 +33,7 @@ english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License
 english.AssociateRcFiles=Associate *.rc files
 english.AssociateResFiles=Associate *.res files
+english.CreateDesktopIcon=Create program shortuct on &desktop
 
 brazilianportuguese.ReadmeEnglish=ReadMe (inglês)
 brazilianportuguese.ReadmeJapanese=ReadMe (japonês)
@@ -112,6 +113,7 @@ italian.LicenseEnglish=Licenza (Inglese)
 italian.AssociateRcFiles=Associa file con estensione *.rc a RisohEditor
 italian.AssociateResFiles=Associa file con estensione *.res a RisohEditor
 italian.LaunchProgram=Esegui %1
+italian.CreateDesktopIcon=Crea collegamento programma sul &desktop
 
 korean.ReadmeEnglish=ReadMe (영어)
 korean.ReadmeJapanese=ReadMe (일본어)
