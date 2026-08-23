@@ -294,21 +294,23 @@ struct EntryBase : EntryBaseBase
 	// the pointer to data
 	void *ptr(DWORD index = 0)
 	{
+		if (index >= m_data.size())
+			return nullptr;
 		return &m_data[index];
 	}
 	const void *ptr(DWORD index = 0) const
 	{
+		if (index >= m_data.size())
+			return nullptr;
 		return &m_data[index];
 	}
 	std::string to_string() const
 	{
-		std::string str((const char *)ptr(), size());
-		return str;
+		return std::string((const char *)ptr(), size());
 	}
 	std::wstring to_wstring() const
 	{
-		std::wstring str((const wchar_t *)ptr(), size() / sizeof(WCHAR));
-		return str;
+		return std::wstring((const wchar_t *)ptr(), size() / sizeof(WCHAR));
 	}
 
 	// assign the data
