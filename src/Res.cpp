@@ -92,11 +92,11 @@ MStringW get_type_label(const MIdOrString& type)
 // get the resource name label
 MStringW get_name_label(const MIdOrString& type, const MIdOrString& name)
 {
-	if (name.is_str())
+	if (type != L"RISOHTEMPLATE" && name.is_str())
 		return name.quoted_wstr(); // string name resource name
 
 	WORD id = name.m_id;
-	if (id == 0)
+	if (!name.is_str() && id == 0)
 		return L"0";
 
 	// get an IDTYPE_ value
@@ -112,15 +112,16 @@ MStringW get_name_label(const MIdOrString& type, const MIdOrString& name)
 
 	if (type == L"RISOHTEMPLATE")
 	{
-		return ::get_type_label(name);
+		auto type_label = ::get_type_label(name);
+		while (type_label.size() && type_label[0] == L'"')
+			mstr_unquote(type_label);
+		return type_label;
 	}
 
 	// get the label from an IDTYPE_ value
 	MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
 	if (label.empty() || type == RT_STRING)
-	{
 		return mstr_dec_word(id);   // returns numeric text
-	}
 
 	// got the label
 	if (!mchr_is_digit(label[0]))   // first character is not digit

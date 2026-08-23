@@ -7581,16 +7581,33 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 		}
 	}
 
-	// find the entry
-	if (auto entry = g_res.find(ET_LANG, type, name_or_id))
+	if (type == L"RISOHTEMPLATE")
 	{
-		// select the entry
-		SelectTV(entry, FALSE);
+		MIdOrString new_name;
+		ParseType(name, new_name);
+		if (auto entry = g_res.find(ET_LANG, type, new_name))
+		{
+			// select the entry
+			SelectTV(entry, FALSE);
 
-		// set focus to the main window
-		SetForegroundWindow(m_hwnd);
-		BringWindowToTop(m_hwnd);
-		SetFocus(m_hwnd);
+			// set focus to the main window
+			SetForegroundWindow(m_hwnd);
+			BringWindowToTop(m_hwnd);
+			SetFocus(m_hwnd);
+		}
+	}
+	else
+	{
+		if (auto entry = g_res.find(ET_LANG, type, name_or_id))
+		{
+			// select the entry
+			SelectTV(entry, FALSE);
+
+			// set focus to the main window
+			SetForegroundWindow(m_hwnd);
+			BringWindowToTop(m_hwnd);
+			SetFocus(m_hwnd);
+		}
 	}
 }
 

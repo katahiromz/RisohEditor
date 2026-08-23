@@ -8,6 +8,7 @@
     - Memperbaiki masalah *crash* pada EGA RES_delete.
     - Memperbaiki bug MEditAccelDlg ("^A" dll.). Bug ACCELERATORS pada windres terkait "^A" masih ada.
     - Penanganan item sumber daya yang dipercepat.
+    - Memperbaiki kesalahan pada tampilan nama sumber daya RISOHTEMPLATE.
 - v.6.1.5 (2026-08-22)
     - Percepat MDialogFontSubstDlg.
     - Menambahkan jendela splash.

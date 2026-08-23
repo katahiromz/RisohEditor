@@ -8,6 +8,7 @@
     - EGA RES_deleteでのクラッシュを修正。
     - MEditAccelDlgのバグ（「^A」など）を修正。windresの「^A」に関するACCELERATORSのバグは残ったまま。
     - リソースアイテムの処理を高速化。
+    - RISOHTEMPLATEのリソース名の表示が間違っていたのを修正。
 - v.6.1.5 (2026-08-22)
     - MDialogFontSubstDlg を高速化。
     - スプラッシュウィンドウを追加。

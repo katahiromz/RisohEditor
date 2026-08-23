@@ -266,29 +266,53 @@ void MIDListDlg::AddResourceRow(const EntryBase *entry)
 	}
 
 	MString text1, text3;
-	auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
-	if (!entry->m_name.is_str())
+	if (entry->m_type == L"RISOHTEMPLATE")
 	{
-		if (g_settings.bHideID)
+		if (!entry->m_name.is_str())
 		{
-			text1 = FormatByBase(entry->m_name.m_id);
+			MStringW label = g_db.GetName(L"RESOURCE", entry->m_name.m_id);
+			if (label.size())
+			{
+				text1 = label;
+			}
+			else
+			{
+				text1 = FormatByBase(entry->m_name.m_id);
+			}
+			text3 = FormatByBase(entry->m_name.m_id);
 		}
 		else
 		{
-			text1 = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
-			if (text1.empty() && entry->m_type == RT_DLGINIT)
-				text1 = g_db.GetNameOfIDTypeValue(IDTYPE_DIALOG, entry->m_name.m_id);
-			if (text1.empty() && entry->m_type == RT_TOOLBAR)
-				text1 = g_db.GetNameOfIDTypeValue(IDTYPE_BITMAP, entry->m_name.m_id);
-			if (text1.empty())
-				text1 = FormatByBase(entry->m_name.m_id);
+			text1 = entry->m_name.c_str();
+			text3 = text1;
 		}
-		text3 = FormatByBase(entry->m_name.m_id);
 	}
 	else
 	{
-		text1 = entry->m_name.quoted_wstr();
-		text3 = text1;
+		auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+		if (!entry->m_name.is_str())
+		{
+			if (g_settings.bHideID)
+			{
+				text1 = FormatByBase(entry->m_name.m_id);
+			}
+			else
+			{
+				text1 = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
+				if (text1.empty() && entry->m_type == RT_DLGINIT)
+					text1 = g_db.GetNameOfIDTypeValue(IDTYPE_DIALOG, entry->m_name.m_id);
+				if (text1.empty() && entry->m_type == RT_TOOLBAR)
+					text1 = g_db.GetNameOfIDTypeValue(IDTYPE_BITMAP, entry->m_name.m_id);
+				if (text1.empty())
+					text1 = FormatByBase(entry->m_name.m_id);
+			}
+			text3 = FormatByBase(entry->m_name.m_id);
+		}
+		else
+		{
+			text1 = entry->m_name.quoted_wstr();
+			text3 = text1;
+		}
 	}
 
 	MString typeText = GetTypeTextFromEntry(entry);
