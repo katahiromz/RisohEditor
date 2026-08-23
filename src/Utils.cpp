@@ -3758,40 +3758,14 @@ BOOL InitCtrlIDs(void)
 		}
 	}
 
-	// get the prefix of Control.ID
-	auto prefix = MapIDTypeToPrefix(IDTYPE_CONTROL);
-	if (prefix.size())
+	static const IDTYPE_ types[] = { IDTYPE_CONTROL, IDTYPE_COMMAND, IDTYPE_NEWCOMMAND };
+	for (auto t : types)
 	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
-		{
-			g_ctrl_ids.push_back(table_entry.name);
-		}
-	}
-
-	// get the prefix of Command.ID
-	prefix = MapIDTypeToPrefix(IDTYPE_COMMAND);
-	if (prefix.size())
-	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
-		{
-			g_ctrl_ids.push_back(table_entry.name);
-		}
-	}
-
-	// get the prefix of New.Command.ID
-	prefix = MapIDTypeToPrefix(IDTYPE_NEWCOMMAND);
-	if (prefix.size())
-	{
-		// get the resource IDs by the prefix
-		auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-		for (auto& table_entry : table)
-		{
-			g_ctrl_ids.push_back(table_entry.name);
-		}
+		auto prefix = MapIDTypeToPrefix(t);
+		if (prefix.empty())
+			continue;
+		for (auto& e : g_db.GetTableByPrefix(L"RESOURCE.ID", prefix))
+			g_ctrl_ids.push_back(e.name);
 	}
 
 	return TRUE;
