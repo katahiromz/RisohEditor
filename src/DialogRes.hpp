@@ -52,6 +52,17 @@ typedef struct DLGITEMTEMPLATEEXHEAD
 
 //////////////////////////////////////////////////////////////////////////////
 
+// Predefined dialog control class atoms (from Win32 DLGITEMTEMPLATE)
+enum : WORD
+{
+	PREDEF_CLASS_BUTTON    = 0x0080,
+	PREDEF_CLASS_EDIT      = 0x0081,
+	PREDEF_CLASS_STATIC    = 0x0082,
+	PREDEF_CLASS_LISTBOX   = 0x0083,
+	PREDEF_CLASS_SCROLLBAR = 0x0084,
+	PREDEF_CLASS_COMBOBOX  = 0x0085,
+};
+
 bool PredefClassToID(MStringW name, WORD& w);
 bool IDToPredefClass(WORD w, MStringW& name);
 void FixClassName(MStringW& cls);

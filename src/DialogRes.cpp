@@ -17,17 +17,17 @@ bool PredefClassToID(MStringW name, WORD& w)
 	w = 0;
 	mstr_upper(name);
 	if (name == L"BUTTON")
-		w = 0x0080;
+		w = PREDEF_CLASS_BUTTON;
 	else if (name == L"EDIT")
-		w = 0x0081;
+		w = PREDEF_CLASS_EDIT;
 	else if (name == L"STATIC")
-		w = 0x0082;
+		w = PREDEF_CLASS_STATIC;
 	else if (name == L"LISTBOX")
-		w = 0x0083;
+		w = PREDEF_CLASS_LISTBOX;
 	else if (name == L"SCROLLBAR")
-		w = 0x0084;
+		w = PREDEF_CLASS_SCROLLBAR;
 	else if (name == L"COMBOBOX")
-		w = 0x0085;
+		w = PREDEF_CLASS_COMBOBOX;
 	return w != 0;
 }
 
@@ -35,22 +35,22 @@ bool IDToPredefClass(WORD w, MStringW& name)
 {
 	switch (w)
 	{
-	case 0x0080:
+	case PREDEF_CLASS_BUTTON:
 		name = L"BUTTON";
 		return true;
-	case 0x0081:
+	case PREDEF_CLASS_EDIT:
 		name = L"EDIT";
 		return true;
-	case 0x0082:
+	case PREDEF_CLASS_STATIC:
 		name = L"STATIC";
 		return true;
-	case 0x0083:
+	case PREDEF_CLASS_LISTBOX:
 		name = L"LISTBOX";
 		return true;
-	case 0x0084:
+	case PREDEF_CLASS_SCROLLBAR:
 		name = L"SCROLLBAR";
 		return true;
-	case 0x0085:
+	case PREDEF_CLASS_COMBOBOX:
 		name = L"COMBOBOX";
 		return true;
 	}
@@ -630,7 +630,7 @@ void DialogItem::FixupForRad(bool bRevert)
 			m_style &= ~SS_TYPEMASK;
 			m_style |= SS_GRAYRECT;
 		}
-		if (m_class.m_id == 0x0080 ||
+		if (m_class.m_id == PREDEF_CLASS_BUTTON ||
 			lstrcmpiW(m_class.str().c_str(), L"BUTTON") == 0)
 		{
 			if ((m_style & BS_TYPEMASK) == BS_OWNERDRAW)
@@ -639,7 +639,7 @@ void DialogItem::FixupForRad(bool bRevert)
 				m_style |= BS_PUSHBUTTON;
 			}
 		}
-		if (m_class.m_id == 0x0082 ||
+		if (m_class.m_id == PREDEF_CLASS_STATIC ||
 			lstrcmpiW(m_class.str().c_str(), L"STATIC") == 0)
 		{
 			if ((m_style & SS_TYPEMASK) == SS_OWNERDRAW)
@@ -648,7 +648,7 @@ void DialogItem::FixupForRad(bool bRevert)
 				m_style |= SS_LEFT;
 			}
 		}
-		if (m_class.m_id == 0x0083 ||
+		if (m_class.m_id == PREDEF_CLASS_LISTBOX ||
 			lstrcmpiW(m_class.str().c_str(), L"LISTBOX") == 0)
 		{
 			if (m_style & (LBS_OWNERDRAWFIXED | LBS_OWNERDRAWVARIABLE))
@@ -656,7 +656,7 @@ void DialogItem::FixupForRad(bool bRevert)
 				m_style &= ~(LBS_OWNERDRAWFIXED | LBS_OWNERDRAWVARIABLE);
 			}
 		}
-		if (m_class.m_id == 0x0085 ||
+		if (m_class.m_id == PREDEF_CLASS_COMBOBOX ||
 			lstrcmpiW(m_class.str().c_str(), L"COMBOBOX") == 0 ||
 			lstrcmpiW(m_class.str().c_str(), WC_COMBOBOXEX) == 0)
 		{
