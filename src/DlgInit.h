@@ -24,68 +24,59 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline const UNALIGNED WORD *
-ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
+inline const WORD *
+ExecuteDlgInitEntryDx(HWND hwnd, const WORD *pw, SIZE_T& cbData)
 {
-	DWORD cb = 4 * sizeof(WORD);
-	if (cbData <= cb)
-		return NULL;
-	cbData -= cb;
+    const SIZE_T cbHeader = 4 * sizeof(WORD);
+    if (cbData < cbHeader)
+        return nullptr;
 
-	// get data
-	WORD ctrl = *pw++;
-	WORD msg = *pw++;
-	WORD w0 = *pw++;
-	WORD w1 = *pw++;
+    WORD ctrl = *pw++;
+    WORD msg  = *pw++;
+    WORD w0   = *pw++;
+    WORD w1   = *pw++;
 	DWORD dwLen = MAKELONG(w0, w1);
+    cbData -= cbHeader;
 
-	cb = dwLen;
-	if (cbData <= cb)
-		return NULL;
-	cbData -= cb;
+    if (cbData < dwLen)
+        return nullptr;
 
-	// convert Win16 messages
-	switch (msg)
-	{
-	case AFX_CB_ADDSTRING: msg = CBEM_INSERTITEM; break;
-	case WIN16_LB_ADDSTRING: msg = LB_ADDSTRING; break;
-	case WIN16_CB_ADDSTRING: msg = CB_ADDSTRING; break;
-	}
+    switch (msg)
+    {
+    case AFX_CB_ADDSTRING:   msg = CBEM_INSERTITEM; break;
+    case WIN16_LB_ADDSTRING: msg = LB_ADDSTRING; break;
+    case WIN16_CB_ADDSTRING: msg = CB_ADDSTRING; break;
+    }
 
-	// NOTE: We don't support OCC.
-	assert(msg == LB_ADDSTRING || msg == CB_ADDSTRING ||
-		   msg == CBEM_INSERTITEM);
+    assert(msg == LB_ADDSTRING || msg == CB_ADDSTRING || msg == CBEM_INSERTITEM);
 
 #ifndef NDEBUG
-	if (dwLen != 0)
-	{
-		const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
-		assert(pb[dwLen - 1] == 0);
-	}
+    if (dwLen != 0)
+    {
+        const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
+        assert(pb[dwLen - 1] == 0);
+    }
 #endif
 
-	// send the message
-	if (msg == CBEM_INSERTITEM)
-	{
-		MString text = MAnsiToText(CP_ACP, LPSTR(pw)).c_str();
+    if (msg == CBEM_INSERTITEM)
+    {
+        LPCSTR pszText = reinterpret_cast<LPCSTR>(pw);
+        COMBOBOXEXITEMA item = {};
+        item.mask = CBEIF_TEXT;
+        item.iItem = -1;
+        item.pszText = const_cast<LPSTR>(pszText);
 
-		COMBOBOXEXITEM item;
-		item.mask = CBEIF_TEXT;
-		item.iItem = -1;
-		item.pszText = &text[0];
+        if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, reinterpret_cast<LPARAM>(&item)) == -1)
+            return nullptr;
+    }
+    else if (msg == LB_ADDSTRING || msg == CB_ADDSTRING)
+    {
+        if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, reinterpret_cast<LPARAM>(pw)) == -1)
+            return nullptr;
+    }
 
-		if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(&item)) == -1)
-			return NULL;
-	}
-	else if (msg == LB_ADDSTRING || msg == CB_ADDSTRING)
-	{
-		if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(pw)) == -1)
-			return NULL;
-	}
-
-	// go to next entry
-	return reinterpret_cast<const UNALIGNED WORD *>(
-		reinterpret_cast<const BYTE *>(pw) + dwLen);
+    cbData -= dwLen;
+    return reinterpret_cast<const WORD *>(reinterpret_cast<const BYTE *>(pw) + dwLen);
 }
 
 inline BOOL
@@ -107,30 +98,23 @@ ExecuteDlgInitDataDx(HWND hwnd, const void *pData, SIZE_T& cbData)
 inline BOOL
 ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name)
 {
-	BOOL bSuccess = FALSE;
-	HGLOBAL hGlobal = NULL;
-	void *pData = NULL;
-	SIZE_T cbData = 0;
+	HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT);
+	if (!hRsrc)
+        return FALSE;
 
-	// load from resource
-	if (HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT))
-	{
-		hGlobal = LoadResource(module, hRsrc);
-		cbData = SizeofResource(module, hRsrc);
-		pData = LockResource(hGlobal);
-	}
+	HGLOBAL hGlobal = LoadResource(module, hRsrc);
+	if (!hGlobal)
+		return FALSE;
 
-	// execute
+	BOOL bOK = FALSE;
+	SIZE_T cbData = SizeofResource(module, hRsrc);
+	PVOID pData = LockResource(hGlobal);
 	if (pData && cbData)
-	{
-		bSuccess = ExecuteDlgInitDataDx(hwnd, pData, cbData);
-	}
+		bOK = ExecuteDlgInitDataDx(hwnd, pData, cbData);
 
-	// clean up
 	UnlockResource(hGlobal);
 	FreeResource(hGlobal);
-
-	return bSuccess;
+	return bOK;
 }
 
 //////////////////////////////////////////////////////////////////////////////
