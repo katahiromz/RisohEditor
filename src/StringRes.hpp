@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+// A STRINGTABLE resource block always packs this many consecutive
+// string IDs together (IDs [ (name-1)*16, (name-1)*16 + 15 ]).
+#define STRINGRES_BLOCK_SIZE 16
+
 struct STRING_ENTRY
 {
 	WCHAR StringID[128];
@@ -23,16 +27,17 @@ class StringRes
 public:
 	typedef MStringW string_type;
 	typedef std::map<WORD, string_type> map_type;
-	WORD        m_wName;
 	map_type    m_map;
 
-	StringRes() = default;
+	StringRes()
+	{
+	}
 
 	bool LoadFromStream(const MByteStreamEx& stream, WORD wName);
-	bool SaveToStream(MByteStreamEx& stream, WORD wName);
+	bool SaveToStream(MByteStreamEx& stream, WORD wName) const;
 
-	string_type Dump(WORD wName);
-	string_type Dump();
+	string_type Dump(WORD wName) const;
+	string_type Dump() const;
 
 	map_type& map()
 	{
@@ -43,15 +48,25 @@ public:
 		return m_map;
 	}
 
+	void Clear()
+	{
+		m_map.clear();
+	}
+
+	bool IsEmpty() const
+	{
+		return m_map.empty();
+	}
+
 	void IdRangeFromName(WORD name, WORD& first, WORD& last) const
 	{
-		first = (name - 1) * 16;
-		last = first + 16 - 1;
+		first = (name - 1) * STRINGRES_BLOCK_SIZE;
+		last = first + STRINGRES_BLOCK_SIZE - 1;
 	}
 
 	WORD NameFromId(WORD id) const
 	{
-		return (id / 16) + 1;
+		return (id / STRINGRES_BLOCK_SIZE) + 1;
 	}
 
 	bool HasAnyValues() const
@@ -64,13 +79,22 @@ public:
 		return false;
 	}
 
+	// Only scans the entries that actually belong to this block instead of
+	// the whole map, using the fact that m_map is ordered by ID.
 	bool HasAnyValues(WORD name) const
 	{
-		for (auto& pair : m_map)
+		WORD first, last;
+		IdRangeFromName(name, first, last);
+
+		auto itEnd = m_map.upper_bound(last);
+		for (auto it = m_map.lower_bound(first); it != itEnd; ++it)
 		{
-			if (NameFromId(pair.first) == name && pair.second.size())
+			if (it->second.size())
 				return true;
 		}
 		return false;
 	}
+
+private:
+	string_type DumpRange(map_type::const_iterator itBegin, map_type::const_iterator itEnd) const;
 };
