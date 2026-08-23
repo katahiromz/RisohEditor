@@ -655,19 +655,24 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, type, name, lang);
-
 	std::string ret;
-	if (found.size())
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
 	{
-		for (auto e : found)
+		EntrySet found;
+		g_res.search(found, ET_LANG, type, name, lang);
+
+		if (found.size())
 		{
-			ret.resize(e->size());
-			memcpy(&ret[0], &e->m_data[0], e->size());
-			break;
+			for (auto e : found)
+			{
+				ret.resize(e->size());
+				memcpy(&ret[0], &e->m_data[0], e->size());
+				break;
+			}
 		}
-	}
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
 	return make_arg<AstStr>(ret);
 }
