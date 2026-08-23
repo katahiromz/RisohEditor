@@ -726,12 +726,20 @@ EGA::arg_t MMainWnd::RES_set_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 	auto ansi = EGA_get_str(arg3);
 	MAnsiToWide wide(CP_UTF8, ansi);
 
-	MStringA strOutput;
-	++g_bNoGuiMode;
-	BOOL ret = CompileParts(strOutput, type, name, lang, wide.str(), FALSE);
-	--g_bNoGuiMode;
+	std::wstring wtext = wide.str();
 
-	DoSetFileModified(TRUE);
+	BOOL ret = FALSE;
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, wtext, &ret](void*)
+	{
+		MStringA strOutput;
+		++g_bNoGuiMode;
+		ret = CompileParts(strOutput, type, name, lang, wtext, FALSE);
+		--g_bNoGuiMode;
+
+		DoSetFileModified(TRUE);
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
 	return make_arg<AstInt>(ret);
 }
