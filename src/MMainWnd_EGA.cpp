@@ -576,23 +576,34 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 	arg_t arg0 = EGA_eval_arg(args[0], true);
 	std::string name = EGA_get_str(arg0);
 	MAnsiToWide a2w(CP_ACP, name);
+	std::wstring wname = a2w.c_str();
 
-	ConstantsDB::ValueType value;
-	BOOL bOK = g_db.GetValueOfName(a2w.c_str(), value);
-	if (!bOK)
+	INT value = 0;
+	bool completed = EgaBridge::RunOnUIThread([this, wname, &value](void*)
 	{
-		for (auto& pair : g_settings.id_map)
+		ConstantsDB::ValueType dbValue;
+		BOOL bOK = g_db.GetValueOfName(wname.c_str(), dbValue);
+		if (!bOK)
 		{
-			if (name == pair.first)
+			for (auto& pair : g_settings.id_map)
 			{
-				value = strtol(pair.second.c_str(), NULL, 0);
-				bOK = TRUE;
-				break;
+				if (wname == pair.first)
+				{
+					value = strtol(pair.second.c_str(), NULL, 0);
+					bOK = TRUE;
+					break;
+				}
 			}
 		}
-	}
+		else
+		{
+			value = dbValue;
+		}
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(bOK ? value : 0);
+	return make_arg<AstInt>(value);
 }
 
 EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
