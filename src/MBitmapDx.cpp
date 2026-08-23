@@ -228,46 +228,54 @@ HBITMAP MBitmapDx::GetHBITMAP(LONG& cx, LONG& cy)
 HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
 {
 	using namespace Gdiplus;
-	if (!(m_pBitmap->GetPixelFormat() & PixelFormatAlpha))
-	{
-		return GetHBITMAP(cx, cy);
-	}
 
-	cx = m_pBitmap->GetWidth();
-	cy = m_pBitmap->GetHeight();
-
-	BITMAPINFO bmi;
-	ZeroMemory(&bmi, sizeof(bmi));
-	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bmi.bmiHeader.biWidth = cx;
-	bmi.bmiHeader.biHeight = -cy;
-	bmi.bmiHeader.biPlanes = 1;
-	bmi.bmiHeader.biBitCount = 32;
-	LPVOID pvBits;
-	HBITMAP hbm;
-	HDC hdc = CreateCompatibleDC(nullptr);
-	hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pvBits, nullptr, 0);
-	DeleteDC(hdc);
-	if (!hbm)
+	if (!m_pBitmap)
 		return nullptr;
 
-	for (LONG y = 0; y < cy; ++y)
+	if (!(m_pBitmap->GetPixelFormat() & PixelFormatAlpha))
+		return GetHBITMAP(cx, cy);
+
+	cx = static_cast<LONG>(m_pBitmap->GetWidth());
+	cy = static_cast<LONG>(m_pBitmap->GetHeight());
+	if (cx <= 0 || cy <= 0)
+		return nullptr;
+
+	BITMAPINFO bmi = {};
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biWidth = cx;
+	bmi.bmiHeader.biHeight = -cy; // top-down DIB
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+
+	LPVOID pvBits = nullptr;
+	HDC hdc = CreateCompatibleDC(nullptr);
+	HBITMAP hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pvBits, nullptr, 0);
+	DeleteDC(hdc);
+	if (!hbm || !pvBits)
+		return nullptr;
+
+	BitmapData bitmapData = {};
+	Rect rect(0, 0, cx, cy);
+	Status status = m_pBitmap->LockBits(&rect, ImageLockModeRead, PixelFormat32bppARGB, &bitmapData);
+	if (status != Ok)
 	{
-		for (LONG x = 0; x < cx; ++x)
-		{
-			Color color;
-			m_pBitmap->GetPixel(x, y, &color);
-			BYTE a = color.GetA();
-			BYTE r = color.GetR();
-			BYTE g = color.GetG();
-			BYTE b = color.GetB();
-			((LPBYTE)pvBits)[(x + y * cx) * 4 + 0] = b;
-			((LPBYTE)pvBits)[(x + y * cx) * 4 + 1] = g;
-			((LPBYTE)pvBits)[(x + y * cx) * 4 + 2] = r;
-			((LPBYTE)pvBits)[(x + y * cx) * 4 + 3] = a;
-		}
+		DeleteObject(hbm);
+		return nullptr;
 	}
 
+	const BYTE* pSrc = static_cast<const BYTE*>(bitmapData.Scan0);
+	BYTE* pDst = static_cast<BYTE*>(pvBits);
+	const INT srcStride = bitmapData.Stride;
+	const INT dstStride = cx * 4;
+
+	for (INT y = 0; y < cy; ++y)
+	{
+		memcpy(pDst, pSrc, dstStride);
+		pSrc += srcStride;
+		pDst += dstStride;
+	}
+
+	m_pBitmap->UnlockBits(&bitmapData);
 	return hbm;
 }
 
