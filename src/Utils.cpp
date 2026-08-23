@@ -206,7 +206,7 @@ void ReplaceFullWithHalf(MStringW& strText)
 		ReplaceFullWithHalf(&strText[0]);
 }
 
-BOOL IsFileWritable(LPCWSTR pszFileName, DWORD *pdwError = NULL)
+static BOOL IsFileWritable(LPCWSTR pszFileName, DWORD *pdwError = NULL)
 {
 	HANDLE hFile = CreateFileW(pszFileName, GENERIC_WRITE,
 	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
