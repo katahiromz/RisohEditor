@@ -89,12 +89,12 @@ IconFile::GetIconGroup(int nBaseID) const
 	WORD nWritten = 0;
 	for (int i = 0; i < GetImageCount(); i++)
 	{
-		if (GetImageSize(i) > 25 &&
+		if (GetImageSize(i) >= 26 &&
 			memcmp(GetImagePtr(i), s_pngSignature, sizeof(s_pngSignature)) == 0)
 		{
 			ResourceEntryType grpEntry;
-			grpEntry.bWidth = (BYTE)_byteswap_ulong(*(uint32_t*)&GetImagePtr(i)[16]);
-			grpEntry.bHeight = (BYTE)_byteswap_ulong(*(uint32_t*)&GetImagePtr(i)[20]);
+			grpEntry.bWidth = (BYTE)_byteswap_ulong(*(UNALIGNED uint32_t*)&GetImagePtr(i)[16]);
+			grpEntry.bHeight = (BYTE)_byteswap_ulong(*(UNALIGNED uint32_t*)&GetImagePtr(i)[20]);
 			grpEntry.bColorCount = 0;
 			grpEntry.bReserved = 0;
 			grpEntry.wPlanes = 1;
@@ -192,7 +192,7 @@ bool CursorFile::LoadFromStream(const MByteStreamEx& stream)
 		return false;
 
 	m_entries.resize(m_dir.idCount);
-	memcpy(&m_entries[0], stream.ptr(stream.pos()), size);
+	memcpy(m_entries.data(), stream.ptr(stream.pos()), size);
 	m_images.resize(m_dir.idCount);
 
 	for (int i = 0; i < m_dir.idCount; i++)
@@ -241,7 +241,7 @@ bool CursorFile::SaveToStream(MByteStreamEx& stream)
 	}
 
 	if (!stream.WriteRaw(m_dir) ||
-		!stream.WriteData(&m_entries[0], SizeOfEntries))
+		!stream.WriteData(m_entries.data(), SizeOfEntries))
 	{
 		return false;
 	}
