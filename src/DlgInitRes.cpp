@@ -19,27 +19,27 @@ bool DlgInitRes::LoadFromStream(const MByteStreamEx& stream)
 		DlgInitEntry entry;
 		entry.wCtrl = wCtrl;
 
-		int32_t dwLen;
-		if (!stream.ReadWord(entry.wMsg) || !stream.ReadDword(dwLen))
+		int32_t cchLen;
+		if (!stream.ReadWord(entry.wMsg) || !stream.ReadDword(cchLen))
 			return false;
 
-		if (dwLen > int32_t(LONG_MAX / sizeof(WCHAR)))
+		if (cchLen < 0 || cchLen > uint32_t(LONG_MAX / sizeof(WCHAR)))
 			return false;
 
-		if (dwLen)
+		if (cchLen)
 		{
-			// NOTE: dwLen bytes are read from the stream, and per the
+			// NOTE: cchLen bytes are read from the stream, and per the
 			// RT_DLGINIT format the last of those bytes is expected to be
-			// a NUL terminator. Size the buffer to the full dwLen so the
+			// a NUL terminator. Size the buffer to the full cchLen so the
 			// read never writes past the string's logical end (writing
 			// into std::string's implicit terminator slot with anything
 			// other than '\0' is undefined behavior, and untrusted/corrupt
 			// resource data cannot be trusted to end with a real 0 byte).
 			// Then drop the trailing byte to get the logical string.
-			entry.strText.resize(dwLen);
-			if (!stream.ReadData(&entry.strText[0], dwLen))
+			entry.strText.resize(cchLen);
+			if (!stream.ReadData(&entry.strText[0], cchLen))
 				return false;
-			entry.strText.resize(dwLen - 1);
+			entry.strText.resize(cchLen - 1);
 		}
 
 		m_entries.push_back(entry);
