@@ -579,7 +579,7 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 	std::wstring wname = a2w.c_str();
 
 	INT value = 0;
-	bool completed = EgaBridge::RunOnUIThread([this, wname, &value](void*)
+	bool completed = EgaBridge::RunOnUIThread([this, name, wname, &value](void*)
 	{
 		ConstantsDB::ValueType dbValue;
 		BOOL bOK = g_db.GetValueOfName(wname.c_str(), dbValue);
@@ -587,7 +587,7 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 		{
 			for (auto& pair : g_settings.id_map)
 			{
-				if (wname == pair.first)
+				if (name == pair.first)
 				{
 					value = strtol(pair.second.c_str(), NULL, 0);
 					bOK = TRUE;
