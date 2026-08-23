@@ -221,14 +221,15 @@ BOOL IsFileWritable(LPCWSTR pszFileName)
 // Wait before file operation for virus checker
 BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout)
 {
-	::Sleep(300);
+	const DWORD INITIAL_DELAY_MS = 300;
+	::Sleep(INITIAL_DELAY_MS);
 
 	const INT cRetry = 10;
 	for (INT i = 0; i < cRetry; ++i)
 	{
 		if (IsFileWritable(pszFileName))
 		{
-			::Sleep(300);
+			::Sleep(INITIAL_DELAY_MS);
 			return TRUE;
 		}
 
