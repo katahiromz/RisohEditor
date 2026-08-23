@@ -1178,27 +1178,27 @@ EGA::arg_t MMainWnd::RES_extract(const EGA::args_t& args)
 	name = EGA_get_id_or_str(arg1);
 	lang = (WORD)EGA_get_int(arg2);
 
-	auto* entry = g_res.find(ET_LANG, type, name, lang);
-	if (entry)
+	std::string filename;
+	if (args.size() == 4)
+		filename = EGA_get_str(arg3);
+
+	MStringA fname; // result
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, filename, &fname](void*)
 	{
-		if (args.size() == 3)
-		{
-			auto ret = ExtractEntry(entry, nullptr);
-			if (ret.size())
-			{
-				return make_arg<AstStr>(ret.c_str());
-			}
-		}
+		auto* entry = g_res.find(ET_LANG, type, name, lang);
+		if (!entry)
+			return;
+
+		if (filename.empty())
+			fname = ExtractEntry(entry, nullptr);
 		else
-		{
-			std::string filename = EGA_get_str(arg3);
-			auto ret = ExtractEntry(entry, filename.c_str());
-			if (ret.size())
-			{
-				return make_arg<AstStr>(ret.c_str());
-			}
-		}
-	}
+			fname = ExtractEntry(entry, filename.c_str());
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	if (fname.size())
+		return make_arg<AstStr>(fname.c_str());
 
 	return make_arg<AstInt>(0);
 }
