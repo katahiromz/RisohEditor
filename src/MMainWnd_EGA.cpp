@@ -331,16 +331,35 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, type, name, lang);
+	struct FoundItem
+	{
+		MIdOrString type;
+		MIdOrString name;
+		LANGID      lang;
+	};
+	std::vector<FoundItem> items;
+
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &items](void*)
+	{
+		EntrySet found;
+		g_res.search(found, ET_LANG, type, name, lang);
+
+		items.reserve(found.size());
+		for (auto& item : found)
+		{
+			items.push_back({ item->m_type, item->m_name, item->m_lang });
+		}
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
 	auto array = make_arg<AstContainer>(AST_ARRAY, 0, "RES_LIST");
-	for (auto& item : found)
+	for (auto& item : items)
 	{
 		auto child = make_arg<AstContainer>(AST_ARRAY, 0, "RES");
-		child->add(EGA_set_id_or_str(item->m_type));
-		child->add(EGA_set_id_or_str(item->m_name));
-		child->add(EGA::make_arg<AstInt>(item->m_lang));
+		child->add(EGA_set_id_or_str(item.type));
+		child->add(EGA_set_id_or_str(item.name));
+		child->add(EGA::make_arg<AstInt>(item.lang));
 		array->add(child);
 	}
 	return array;
