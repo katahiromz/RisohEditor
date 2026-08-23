@@ -1933,7 +1933,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	// Payload loader
 	WCHAR szPayloadLoader[MAX_PATH];
 	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
-	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
 	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
 	{
 		strOutput = GetCannotCreateTempFile();
