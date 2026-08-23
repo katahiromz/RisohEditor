@@ -597,12 +597,19 @@ EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
 	if (type.empty() || name.empty() || lang == BAD_LANG || contents.empty())
 		return make_arg<AstInt>(0);
 
-	int ret = 0;
 	EntryBase::data_type data(contents.begin(), contents.end());
-	if (g_res.add_lang_entry(type, name, lang, data))
-		ret = 1;
 
-	DoSetFileModified(TRUE);
+	int ret = 0;
+
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, data, &ret](void*)
+	{
+		if (g_res.add_lang_entry(type, name, lang, data))
+			ret = 1;
+
+		DoSetFileModified(TRUE);
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
 	return make_arg<AstInt>(ret);
 }
