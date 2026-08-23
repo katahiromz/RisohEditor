@@ -743,22 +743,35 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 	arg0 = EGA_eval_arg(arg0, true);
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
-	if (found.empty())
+	bool ok = false;
+	std::map<WORD, std::wstring> strMap;
+	bool completed = EgaBridge::RunOnUIThread([this, lang, &ok, &strMap](void*)
+	{
+		EntrySet found;
+		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
+		if (found.empty())
+			return;
+
+		// found --> str_res
+		StringRes str_res;
+		for (auto e : found)
+		{
+			MByteStreamEx stream(e->m_data);
+			if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+				return;
+		}
+
+		strMap = str_res.map();
+		ok = true;
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	if (!ok)
 		return make_arg<AstContainer>(); // error
 
-	// found --> str_res
-	StringRes str_res;
-	for (auto e : found)
-	{
-		MByteStreamEx stream(e->m_data);
-		if (!str_res.LoadFromStream(stream, e->m_name.m_id))
-			return make_arg<AstContainer>(); // error
-	}
-
 	auto array1 = make_arg<AstContainer>();
-	for (auto& pair : str_res.map())
+	for (auto& pair : strMap)
 	{
 		MWideToAnsi ansi(CP_UTF8, pair.second);
 
@@ -781,32 +794,44 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 	int index = EGA_get_int(arg1);
 	if (index < 0)
-		return make_arg<AstStr>(); // error
+		return make_arg<AstStr>();
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
-	if (found.empty())
-		return make_arg<AstStr>(); // error
-
-	// found --> str_res
-	StringRes str_res;
-	for (auto e : found)
+	bool ok = false;
+	std::wstring value;
+	bool completed = EgaBridge::RunOnUIThread([this, lang, index, &ok, &value](void*)
 	{
-		MByteStreamEx stream(e->m_data);
-		if (!str_res.LoadFromStream(stream, e->m_name.m_id))
-			return make_arg<AstStr>(); // error
-	}
+		EntrySet found;
+		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
+		if (found.empty())
+			return;
 
-	for (auto& pair : str_res.map())
-	{
-		if (pair.first == static_cast<WORD>(index))
+		// found --> str_res
+		StringRes str_res;
+		for (auto e : found)
 		{
-			MWideToAnsi ansi(CP_UTF8, pair.second);
-			return make_arg<AstStr>(ansi.str());
+			MByteStreamEx stream(e->m_data);
+			if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+				return;
 		}
-	}
 
-	return make_arg<AstStr>(); // error
+		for (auto& pair : str_res.map())
+		{
+			if (pair.first == static_cast<WORD>(index))
+			{
+				value = pair.second;
+				ok = true;
+				return;
+			}
+		}
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	if (!ok)
+		return make_arg<AstStr>(); // error
+
+	MWideToAnsi ansi(CP_UTF8, value);
+	return make_arg<AstStr>(ansi.str());
 }
 
 EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
