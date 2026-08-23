@@ -168,7 +168,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 			return FALSE;
 
 		ToolbarDetail::AddToolbarButtons(hwndTB, pData1->aItems, wItemCount,
-										  fnCommandIdToImageIndex, fnCommandIdToText);
+		                                 fnCommandIdToImageIndex, fnCommandIdToText);
 	}
 #ifndef _MSC_VER // Not Visual C++
 	else if (pData1->wVersion >= 3)
@@ -193,7 +193,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 			return FALSE;
 
 		ToolbarDetail::AddToolbarButtons(hwndTB, pData2->aItems, wItemCount,
-										  fnCommandIdToImageIndex, fnCommandIdToText);
+		                                 fnCommandIdToImageIndex, fnCommandIdToText);
 	}
 #endif // ndef _MSC_VER
 	else
