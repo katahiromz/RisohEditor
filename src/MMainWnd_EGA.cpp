@@ -780,39 +780,48 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 		str_res.map()[str_id] = wide.c_str();
 	}
 
-	EntrySet found;
-	g_res.search(found, ET_ANY, RT_STRING, BAD_NAME, lang);
-	for (auto entry : found)
+	bool ok = true;
+	bool completed = EgaBridge::RunOnUIThread([this, &str_res, lang, &ok](void*)
 	{
-		entry->mark_invalid();
-	}
-
-	std::set<WORD> names;
-	for (auto& pair : str_res.map())
-	{
-		auto str_id = pair.first;
-		WORD name = str_res.NameFromId(str_id);
-		if (names.count(name) > 0)
-			continue;
-		names.insert(name);
-
-		if (str_res.HasAnyValues(name))
+		EntrySet found;
+		g_res.search(found, ET_ANY, RT_STRING, BAD_NAME, lang);
+		for (auto entry : found)
 		{
-			MByteStreamEx stream;
-			str_res.SaveToStream(stream, name);
-
-			if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
-				return make_arg<AstInt>(0); // failed
+			entry->mark_invalid();
 		}
-	}
 
-	DoSetFileModified(TRUE);
+		std::set<WORD> names;
+		for (auto& pair : str_res.map())
+		{
+			auto str_id = pair.first;
+			WORD name = str_res.NameFromId(str_id);
+			if (names.count(name) > 0)
+				continue;
+			names.insert(name);
 
-	g_res.delete_invalid();
-	if (g_res.empty())
-		HidePreview(STV_RESETTEXTANDMODIFIED);
+			if (str_res.HasAnyValues(name))
+			{
+				MByteStreamEx stream;
+				str_res.SaveToStream(stream, name);
 
-	return make_arg<AstInt>(1); // success
+				if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
+				{
+					ok = false;
+					return;
+				}
+			}
+		}
+
+		DoSetFileModified(TRUE);
+
+		g_res.delete_invalid();
+		if (g_res.empty())
+			HidePreview(STV_RESETTEXTANDMODIFIED);
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	return make_arg<AstInt>(ok ? 1 : 0);
 }
 
 EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
@@ -822,53 +831,59 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 	arg2 = EGA_eval_arg(arg2, true);
 
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
-
-	EntrySet found;
-	g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
-
-	// found --> str_res
-	StringRes str_res;
-	for (auto e : found)
-	{
-		MByteStreamEx stream(e->m_data);
-		if (!str_res.LoadFromStream(stream, e->m_name.m_id))
-			return make_arg<AstInt>(0); // error
-	}
+	WORD str_id = static_cast<WORD>(EGA_get_int(arg1));
 
 	std::string str = EGA_get_str(arg2);
 	MAnsiToWide wide(CP_UTF8, str);
 
-	WORD str_id = static_cast<WORD>(EGA_get_int(arg1));
-	str_res.map()[str_id] = wide;
+	int result = 0;
 
-	WORD name = str_res.NameFromId(str_id);
-
-	if (str_res.HasAnyValues(name))
+	bool completed = EgaBridge::RunOnUIThread([this, lang, str_id, &wide, &result](void*)
 	{
-		MByteStreamEx stream;
-		str_res.SaveToStream(stream, name);
+		EntrySet found;
+		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
 
-		if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
-			return make_arg<AstInt>(0); // error
-	}
-	else
-	{
-		EntrySet found2;
-		g_res.search(found2, ET_ANY, RT_STRING, name, lang);
-		for (auto entry : found2)
+		// found --> str_res
+		StringRes str_res;
+		for (auto e : found)
 		{
-			entry->mark_invalid();
+			MByteStreamEx stream(e->m_data);
+			if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+				return;
 		}
-	}
 
+		str_res.map()[str_id] = wide;
 
-	DoSetFileModified(TRUE);
+		WORD name = str_res.NameFromId(str_id);
 
-	g_res.delete_invalid();
-	if (g_res.empty())
-		HidePreview(STV_RESETTEXTANDMODIFIED);
+		if (str_res.HasAnyValues(name))
+		{
+			MByteStreamEx stream;
+			str_res.SaveToStream(stream, name);
 
-	return make_arg<AstInt>(1); // success
+			if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
+				return;
+		}
+		else
+		{
+			EntrySet found2;
+			g_res.search(found2, ET_ANY, RT_STRING, name, lang);
+			for (auto entry : found2)
+				entry->mark_invalid();
+		}
+
+		DoSetFileModified(TRUE);
+
+		g_res.delete_invalid();
+		if (g_res.empty())
+			HidePreview(STV_RESETTEXTANDMODIFIED);
+
+		result = 1; // success
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	return make_arg<AstInt>(result);
 }
 
 EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
