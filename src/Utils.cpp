@@ -238,7 +238,7 @@ BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout)
 			return TRUE;
 		}
 
-		if (dwError == ERROR_FILE_NOT_FOUND || dwError == ERROR_PATH_NOT_FOUND)
+		if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND)
 			return FALSE;
 
 		::Sleep(dwTimeout / cRetry);
