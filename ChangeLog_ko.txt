@@ -7,7 +7,7 @@
     - MRadWindow::AlignSelection 함수에서 발생하던 충돌을 수정했습니다.
     - 설치 프로그램 번역 개선.
     - EGA RES_delete 관련 충돌 문제를 수정했습니다.
-    - MEditAccelDlg 버그 수정 ("^A" 등).
+    - MEditAccelDlg 버그 수정 ("^A" 등). windres의 "^A" 관련 ACCELERATORS 버그가 여전히 남아 있습니다.
 - v.6.1.5 (2026-08-22)
     - MDialogFontSubstDlg를 가속화 했습니다.
     - 스플래시 창을 추가했습니다.

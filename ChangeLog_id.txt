@@ -6,7 +6,7 @@
     - Memperbaiki masalah *crash* pada MRadWindow::AlignSelection.
     - Peningkatan terjemahan penginstal.
     - Memperbaiki masalah *crash* pada EGA RES_delete.
-    - Memperbaiki bug MEditAccelDlg ("^A" dll.).
+    - Memperbaiki bug MEditAccelDlg ("^A" dll.). Bug ACCELERATORS pada windres terkait "^A" masih ada.
 - v.6.1.5 (2026-08-22)
     - Percepat MDialogFontSubstDlg.
     - Menambahkan jendela splash.

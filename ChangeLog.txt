@@ -6,7 +6,7 @@
     - Fixed crash in MRadWindow::AlignSelection.
     - Improved installer translation.
     - Fixed EGA RES_delete crash.
-    - Fixed MEditAccelDlg bug ("^A" etc.).
+    - Fixed MEditAccelDlg bug ("^A" etc.). windres's ACCELERATORS bug on "^A" remains.
 - v.6.1.5 (2026-08-22)
     - Accelerated MDialogFontSubstDlg.
     - Added the splash window.
