@@ -985,17 +985,24 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, type, name, lang);
-
-	if (found.size())
+	bool found_any = false;
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &found_any](void*)
 	{
-		g_RES_select_type = type;
-		g_RES_select_name = name;
-		g_RES_select_lang = lang;
-	}
+		EntrySet found;
+		g_res.search(found, ET_LANG, type, name, lang);
 
-	return make_arg<AstInt>(!found.empty());
+		found_any = !found.empty();
+		if (found_any)
+		{
+			g_RES_select_type = type;
+			g_RES_select_name = name;
+			g_RES_select_lang = lang;
+		}
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	return make_arg<AstInt>(found_any);
 }
 
 void MMainWnd::OnStartEgaConsole(HWND hwnd, PCWSTR file)
