@@ -500,13 +500,24 @@ struct EntrySet : protected EntrySetBase
 	}
 
 	// find by pattern matching
+	//
+	// NOTE: *this is already ordered by EntryLess, so the first matching
+	// entry encountered while iterating in order is exactly the same
+	// entry that "build a found-set, then take *found.begin()" would have
+	// returned (found is ordered by the same EntryLess). We therefore
+	// short-circuit on the first match instead of collecting every match
+	// into a temporary self_type just to throw all but one of them away.
+	// This avoids O(log n) set-insert overhead per candidate and lets the
+	// common case (an early match) return without scanning the whole set.
 	EntryBase *find(EntryType et, const MIdOrString& type = BAD_TYPE, const MIdOrString& name = BAD_NAME,
 					LANGID lang = BAD_LANG, bool invalid_ok = false) const
 	{
-		self_type found;
-		if (search(found, et, type, name, lang, invalid_ok))
+		for (auto entry : *this)
 		{
-			return *found.begin();
+			if (!entry->valid() && !invalid_ok)
+				continue;
+			if (entry->match(et, type, name, lang))
+				return entry;
 		}
 		return nullptr;
 	}

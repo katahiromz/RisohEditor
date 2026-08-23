@@ -1627,6 +1627,12 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, LA
 	auto old_entries = (GRPICONDIRENTRY*)&(*entry)[sizeof(dir)];
 	auto new_entries = (GRPICONDIRENTRY*)&data[sizeof(dir)];
 
+	// get the first free ID once; each new RT_ICON entry we add below takes
+	// the next one in sequence. Previously get_last_id() (an O(n) scan) was
+	// re-run on every iteration to reproduce this same "+1 each time"
+	// sequence -- an O(n * idCount) scan overall for what is really just a
+	// simple counter now that we compute the starting point up front.
+	UINT nNextID = get_last_id(RT_ICON, new_lang) + 1;
 	for (UINT i = 0; i < dir.idCount; ++i)
 	{
 		// find the RT_ICON entry
@@ -1638,15 +1644,13 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, LA
 				return FALSE;
 		}
 
-		// get the next ID
-		UINT nLastID = get_last_id(RT_ICON, new_lang);
-		UINT nNextID = nLastID + 1;
-
 		// add a RT_ICON entry
 		add_lang_entry(RT_ICON, WORD(nNextID), new_lang, e->m_data);
 
 		// update the ID in new_entries
 		new_entries[i].nID = (WORD)nNextID;
+
+		++nNextID;
 	}
 
 	// add a RT_GROUP_ICON entry
@@ -1689,6 +1693,8 @@ BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, 
 	auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
 	auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
+	// see copy_group_icon() for why this is hoisted out of the loop
+	UINT nNextID = get_last_id(RT_CURSOR, new_lang) + 1;
 	for (UINT i = 0; i < dir.idCount; ++i)
 	{
 		// find the RT_CURSOR entry
@@ -1700,14 +1706,12 @@ BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, 
 				return FALSE;
 		}
 
-		// get the next ID
-		UINT nLastID = get_last_id(RT_CURSOR, new_lang);
-		UINT nNextID = nLastID + 1;
-
 		add_lang_entry(RT_CURSOR, WORD(nNextID), new_lang, e->m_data);
 
 		// update the ID in new_entries
 		new_entries[i].nID = (WORD)nNextID;
+
+		++nNextID;
 	}
 
 	// add a RT_GROUP_CURSOR entry
