@@ -24,8 +24,8 @@
 class ToolbarRes
 {
 protected:
-	DWORD m_width;
-	DWORD m_height;
+	DWORD m_width = 0;
+	DWORD m_height = 0;
 	std::vector<DWORD> m_items;
 
 public:
@@ -35,19 +35,19 @@ public:
 	bool SaveToStream(MByteStreamEx& stream) const;
 	MStringW Dump(const MIdOrString& id_or_str) const;
 
-	INT width() const
+	DWORD width() const
 	{
 		return m_width;
 	}
-	void width(INT cx)
+	void width(DWORD cx)
 	{
 		m_width = cx;
 	}
-	INT height() const
+	DWORD height() const
 	{
 		return m_height;
 	}
-	void height(INT cy)
+	void height(DWORD cy)
 	{
 		m_height = cy;
 	}

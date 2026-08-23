@@ -51,6 +51,7 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 	}
 	else if (wVer >= 3)
 	{
+		// wVer and wWidth are overlapping
 		uint32_t wWidth, wHeight, dwCount;
 		if (!stream.ReadDword(wWidth) ||
 			!stream.ReadDword(wHeight) ||
@@ -88,10 +89,13 @@ bool ToolbarRes::LoadFromStream(const MByteStreamEx& stream)
 
 bool ToolbarRes::SaveToStream(MByteStreamEx& stream) const
 {
+	if (m_items.size() > 0xFFFF)
+		return false;
+
 	if (!stream.WriteWord(WORD(1)) ||
 		!stream.WriteWord(WORD(m_width)) ||
 		!stream.WriteWord(WORD(m_height)) ||
-		!stream.WriteWord(WORD(m_items.size() > 0xFFFF ? 0xFFFF : m_items.size())))
+		!stream.WriteWord(WORD(m_items.size())))
 	{
 		return false;
 	}
