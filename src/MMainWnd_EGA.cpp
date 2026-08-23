@@ -689,18 +689,23 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 	MIdOrString name = EGA_get_id_or_str(arg1);
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg2));
 
-	auto bHideID = g_settings.bHideID; // Save old value
-	g_settings.bHideID = TRUE;
-
 	std::wstring ret;
-	auto entry = g_res.find(ET_LANG, type, name, lang);
-	if (entry)
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
 	{
-		ResToText res2text;
-		ret = res2text.DumpEntry(*entry);
-	}
+		auto bHideID = g_settings.bHideID; // Save old value
+		g_settings.bHideID = TRUE;
 
-	g_settings.bHideID = bHideID;
+		auto entry = g_res.find(ET_LANG, type, name, lang);
+		if (entry)
+		{
+			ResToText res2text;
+			ret = res2text.DumpEntry(*entry);
+		}
+
+		g_settings.bHideID = bHideID;
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
 	MWideToAnsi ansi(CP_UTF8, ret);
 	return make_arg<AstStr>(ansi.str());
