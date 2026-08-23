@@ -3576,22 +3576,24 @@ bool IsValidHelpIDText(const WCHAR *str, DWORD *pValue)
 	return true;
 }
 
+static MStringW GetTextHelper(INT cch, std::function<INT(PWSTR,INT)> getter)
+{
+    if (cch <= 0)
+        return L"";
+    std::wstring buf(cch, 0);
+    INT ret = getter(&buf[0], cch + 1);
+    buf.resize((ret > 0) ? ret : 0);
+    return buf;
+}
+
 // Helper function to get ComboBox edit text without buffer size limitations
 MStringW GetComboBoxText(HWND hwndCombo)
 {
 	assert(IsWindow(hwndCombo));
 	INT cch = ComboBox_GetTextLength(hwndCombo);
-	if (cch <= 0)
-		return L"";
-	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
-	if (!psz)
-		return L"";
-	INT ret = ComboBox_GetText(hwndCombo, psz, cch + 1);
-	if (ret <= 0)
-		psz[0] = 0;
-	MStringW str = psz;
-	delete[] psz;
-	return str;
+	return GetTextHelper(cch, [hwndCombo](PWSTR buf, INT cch) {
+		return ComboBox_GetText(hwndCombo, buf, cch + 1);
+	});
 }
 
 // Helper function to get ComboBox listbox text without buffer size limitations
@@ -3599,17 +3601,9 @@ MStringW GetComboBoxLBText(HWND hwndCombo, INT nIndex)
 {
 	assert(IsWindow(hwndCombo));
 	INT cch = ComboBox_GetLBTextLen(hwndCombo, nIndex);
-	if (cch <= 0)
-		return L"";
-	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
-	if (!psz)
-		return L"";
-	cch = ComboBox_GetLBText(hwndCombo, nIndex, psz);
-	if (cch <= 0)
-		psz[0] = 0;
-	MStringW str = psz;
-	delete[] psz;
-	return str;
+	return GetTextHelper(cch, [hwndCombo, nIndex](PWSTR buf, INT cch) {
+		return ComboBox_GetLBText(hwndCombo, nIndex, buf);
+	});
 }
 
 // Helper function to get ListBox text without buffer size limitations
@@ -3617,17 +3611,9 @@ MStringW GetListBoxText(HWND hwndListBox, INT nIndex)
 {
 	assert(IsWindow(hwndListBox));
 	INT cch = (INT)SendMessage(hwndListBox, LB_GETTEXTLEN, nIndex, 0);
-	if (cch <= 0)
-		return L"";
-	PWSTR psz = new(std::nothrow) WCHAR[cch + 1];
-	if (!psz)
-		return L"";
-	INT ret = ListBox_GetText(hwndListBox, nIndex, psz);
-	if (ret <= 0)
-		psz[0] = 0;
-	MStringW str = psz;
-	delete[] psz;
-	return str;
+	return GetTextHelper(cch, [hwndListBox, nIndex](PWSTR buf, INT cch) {
+		return ListBox_GetText(hwndListBox, nIndex, buf);
+	});
 }
 
 // Helper function to get window text without buffer size limitations.
