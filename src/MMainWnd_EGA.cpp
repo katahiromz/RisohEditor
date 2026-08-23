@@ -480,67 +480,75 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 	if (arg3)
 		dest_lang = (WORD)EGA_get_int(arg3);
 
-	EntrySet found2;
-	g_res.search(found2, ET_LANG, type, name, src_lang);
-
-	for (auto& entry : found2)
+	bool ret = false;
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, src_lang, dest_lang, &ret](void*)
 	{
-		if (entry->m_type == RT_GROUP_ICON)     // group icon
-		{
-			// search the group icons
-			EntrySet found;
-			g_res.search(found, ET_LANG, RT_GROUP_ICON, name, src_lang);
+		EntrySet found2;
+		g_res.search(found2, ET_LANG, type, name, src_lang);
 
-			// copy them
-			for (auto e : found)
+		for (auto& entry : found2)
+		{
+			if (entry->m_type == RT_GROUP_ICON)     // group icon
 			{
-				g_res.copy_group_icon(e, e->m_name, dest_lang);
+				// search the group icons
+				EntrySet found;
+				g_res.search(found, ET_LANG, RT_GROUP_ICON, name, src_lang);
+
+				// copy them
+				for (auto e : found)
+				{
+					g_res.copy_group_icon(e, e->m_name, dest_lang);
+				}
+			}
+			else if (entry->m_type == RT_GROUP_CURSOR)
+			{
+				// search the group cursors
+				EntrySet found;
+				g_res.search(found, ET_LANG, RT_GROUP_CURSOR, name, src_lang);
+
+				// copy them
+				for (auto e : found)
+				{
+					g_res.copy_group_cursor(e, e->m_name, dest_lang);
+				}
+			}
+			else if (entry->m_et == ET_STRING)
+			{
+				// search the strings
+				EntrySet found;
+				g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, src_lang);
+
+				// copy them
+				for (auto e : found)
+				{
+					g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
+				}
+			}
+			else
+			{
+				// search the entries
+				EntrySet found;
+				g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+
+				// copy them
+				for (auto e : found)
+				{
+					g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
+				}
 			}
 		}
-		else if (entry->m_type == RT_GROUP_CURSOR)
-		{
-			// search the group cursors
-			EntrySet found;
-			g_res.search(found, ET_LANG, RT_GROUP_CURSOR, name, src_lang);
 
-			// copy them
-			for (auto e : found)
-			{
-				g_res.copy_group_cursor(e, e->m_name, dest_lang);
-			}
-		}
-		else if (entry->m_et == ET_STRING)
-		{
-			// search the strings
-			EntrySet found;
-			g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, src_lang);
+		g_res.delete_invalid();
 
-			// copy them
-			for (auto e : found)
-			{
-				g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
-			}
-		}
-		else
-		{
-			// search the entries
-			EntrySet found;
-			g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+		if (!found2.empty())
+			DoSetFileModified(TRUE);
 
-			// copy them
-			for (auto e : found)
-			{
-				g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
-			}
-		}
-	}
+		ret = !found2.empty();
+	});
+	if (!completed)
+		throw EGA_control_break(0);
 
-	g_res.delete_invalid();
-
-	if (!found2.empty())
-		DoSetFileModified(TRUE);
-
-	return make_arg<AstInt>(!found2.empty());
+	return make_arg<AstInt>(ret);
 }
 
 EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
