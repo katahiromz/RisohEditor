@@ -5,6 +5,7 @@
     - Додано кнопку [Довідка] до MConstantDlg.
     - Виправлено збій у MRadWindow::AlignSelection.
     - Покращено переклад інсталятора.
+    - Виправлено збій EGA RES_delete.
 - v.6.1.5 (2026-08-22)
     - Пришвидшення MDialogFontSubstDlg.
     - Додано вікно-сплеск.

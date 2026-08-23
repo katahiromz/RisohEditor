@@ -348,41 +348,47 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 
 EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 {
-	using namespace EGA;
-	arg_t arg0, arg1, arg2;
+    using namespace EGA;
+    arg_t arg0, arg1, arg2;
 
-	if (args.size() >= 1)
-		arg0 = EGA_eval_arg(args[0], false);
-	if (args.size() >= 2)
-		arg1 = EGA_eval_arg(args[1], false);
-	if (args.size() >= 3)
-		arg2 = EGA_eval_arg(args[2], false);
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
 
-	MIdOrString type = BAD_TYPE, name = BAD_NAME;
-	LANGID lang = BAD_LANG;
+    MIdOrString type = BAD_TYPE, name = BAD_NAME;
+    LANGID lang = BAD_LANG;
 
-	if (arg0)
-		type = EGA_get_id_or_str(arg0);
-	if (arg1)
-		name = EGA_get_id_or_str(arg1);
-	if (arg2)
-		lang = (WORD)EGA_get_int(arg2);
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        lang = (WORD)EGA_get_int(arg2);
 
-	EntrySet found;
-	bool ret = g_res.search(found, ET_ANY, type, name, lang);
-	for (auto entry : found)
-		entry->mark_invalid();
-	g_res.delete_invalid();
+    bool ret = false;
 
-	if (ret)
-	{
-		DoSetFileModified(TRUE);
+    bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
+    {
+        EntrySet found;
+        ret = g_res.search(found, ET_ANY, type, name, lang);
+        for (auto entry : found)
+            entry->mark_invalid();
+        g_res.delete_invalid();
 
-		if (g_res.empty())
-			HidePreview(STV_RESETTEXTANDMODIFIED);
-	}
+        if (ret)
+        {
+            DoSetFileModified(TRUE);
+            if (g_res.empty())
+                HidePreview(STV_RESETTEXTANDMODIFIED);
+        }
+    });
+    if (!completed)
+        throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+    return make_arg<AstInt>(ret);
 }
 
 EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)

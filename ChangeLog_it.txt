@@ -5,6 +5,7 @@
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
     - Risolto un crash in MRadWindow::AlignSelection.
     - Traduzione del programma di installazione migliorata.
+    - Risolto un crash relativo a EGA RES_delete.
 - v.6.1.5 (22.08.2026)
     - Accelerata MDialogFontSubstDlg.
     - Aggiunta schermata iniziale.

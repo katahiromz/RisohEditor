@@ -5,6 +5,7 @@
     - MConstantDlgに[ヘルプ]ボタンを追加。
     - MRadWindow::AlignSelection で発生していたクラッシュを修正。
     - インストーラーの翻訳を改善。
+    - EGA RES_deleteでのクラッシュを修正。
 - v.6.1.5 (2026-08-22)
     - MDialogFontSubstDlg を高速化。
     - スプラッシュウィンドウを追加。
