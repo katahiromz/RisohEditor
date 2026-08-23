@@ -413,37 +413,45 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 	if (arg2)
 		dest_name = EGA_get_id_or_str(arg2);
 
-	EntrySet found;
-	g_res.search(found, ET_LANG, type, src_name, lang);
-
-	if (type == RT_GROUP_ICON)     // group icon
+	bool ret = false;
+	bool completed = EgaBridge::RunOnUIThread([this, type, src_name, dest_name, lang, &ret](void*)
 	{
-		for (auto e : found)
-		{
-			g_res.copy_group_icon(e, dest_name, e->m_lang);
-		}
-	}
-	else if (type == RT_GROUP_CURSOR)  // group cursor
-	{
-		for (auto e : found)
-		{
-			g_res.copy_group_cursor(e, dest_name, e->m_lang);
-		}
-	}
-	else    // otherwise
-	{
-		for (auto e : found)
-		{
-			g_res.add_lang_entry(e->m_type, dest_name, e->m_lang, e->m_data);
-		}
-	}
+		EntrySet found;
+		g_res.search(found, ET_LANG, type, src_name, lang);
 
-	g_res.delete_invalid();
+		if (type == RT_GROUP_ICON)     // group icon
+		{
+			for (auto e : found)
+			{
+				g_res.copy_group_icon(e, dest_name, e->m_lang);
+			}
+		}
+		else if (type == RT_GROUP_CURSOR)  // group cursor
+		{
+			for (auto e : found)
+			{
+				g_res.copy_group_cursor(e, dest_name, e->m_lang);
+			}
+		}
+		else    // otherwise
+		{
+			for (auto e : found)
+			{
+				g_res.add_lang_entry(e->m_type, dest_name, e->m_lang, e->m_data);
+			}
+		}
 
-	if (!found.empty())
-		DoSetFileModified(TRUE);
+		g_res.delete_invalid();
 
-	return make_arg<AstInt>(!found.empty());
+		if (!found.empty())
+			DoSetFileModified(TRUE);
+
+		ret = !found.empty();
+	});
+	if (!completed)
+		throw EGA_control_break(0);
+
+	return make_arg<AstInt>(ret);
 }
 
 EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
