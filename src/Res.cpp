@@ -253,7 +253,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 	strCmdLine += L" \"";
 	strCmdLine += szPath4;
 	strCmdLine += L"\"";
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -262,7 +262,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 	pmaker.SetShowWindow(SW_HIDE);
 	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-	if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
 		pmaker.WaitForSingleObject();
@@ -320,7 +320,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
 	strCmdLine += L" \"";
 	strCmdLine += szPath6;
 	strCmdLine += L"\"";
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -330,9 +330,9 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
 	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
 	MFile error;
-	pmaker.PrepareForRedirect(NULL, &error, &error);
+	pmaker.PrepareForRedirect(nullptr, &error, &error);
 
-	if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
 		pmaker.WaitForSingleObject();
@@ -351,7 +351,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
 			if (ich != strOutput.npos)
 			{
 				ich += 17; // "expected on line "
-				iLine = INT(strtoul(&strOutput[ich], NULL, 10));
+				iLine = INT(strtoul(&strOutput[ich], nullptr, 10));
 			}
 		}
 	}
@@ -395,7 +395,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 	strCmdLine += L"\" \"";
 	strCmdLine += szPath5;
 	strCmdLine += L"\"";
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -404,7 +404,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 	pmaker.SetShowWindow(SW_HIDE);
 	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-	if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
 		pmaker.WaitForSingleObject(16 * 1000);
@@ -460,7 +460,7 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput,
 	strCmdLine += L"\" \"";
 	strCmdLine += szPath5;
 	strCmdLine += L"\"";
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -470,9 +470,9 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput,
 	//pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
 	MFile error;
-	pmaker.PrepareForRedirect(NULL, &error, &error);
+	pmaker.PrepareForRedirect(nullptr, &error, &error);
 
-	if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
 		pmaker.WaitForSingleObject(16 * 1000);
@@ -675,7 +675,7 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile, BOOL bEnableCrypt) const
 
 	// begin the update
 	HANDLE hUpdate = ::Wrap_BeginUpdateResourceW(ExeFile, TRUE);
-	if (hUpdate == NULL)
+	if (hUpdate == nullptr)
 	{
 		return FALSE;   // failure
 	}
@@ -690,7 +690,7 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile, BOOL bEnableCrypt) const
 			continue;
 
 		// get the pointer and size
-		void *pv = NULL;
+		void *pv = nullptr;
 		DWORD size = 0;
 		if (!(*entry).empty())
 		{
@@ -706,7 +706,7 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile, BOOL bEnableCrypt) const
 
 		// do update
 		if (!::Wrap_UpdateResourceW(hUpdate, (*entry).m_type.ptr(),
-		                            is_zero ? NULL : (*entry).m_name.ptr(),
+		                            is_zero ? nullptr : (*entry).m_name.ptr(),
 		                            (*entry).m_lang, pv, size))
 		{
 			assert(0);
@@ -1142,7 +1142,7 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 	// load the data from an *.bmp file
 	MByteStreamEx stream;
 	if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
-		return NULL;
+		return nullptr;
 
 	HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&stream[0], stream.size());
 	DeleteObject(hbm);
@@ -1150,11 +1150,11 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 	{
 		MBitmapDx bmp;
 		if (!bmp.CreateFromMemory(&stream[0], stream.size()))
-			return NULL;
+			return nullptr;
 		LONG cx, cy;
 		hbm = bmp.GetHBITMAP(cx, cy);
 		if (!hbm || !PackedDIB_CreateFromHandle(stream.data(), hbm))
-			return NULL;
+			return nullptr;
 		DeleteObject(hbm);
 	}
 
@@ -1169,7 +1169,7 @@ EntrySet::add_group_icon(const MIdOrString& name, LANGID lang,
 	// load the data from an *.ico file
 	IconFile icon;
 	if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
-		return NULL;
+		return nullptr;
 
 	// get the next icon ID
 	UINT LastIconID = get_last_id(RT_ICON, lang);
@@ -1194,7 +1194,7 @@ EntrySet::add_group_cursor(const MIdOrString& name, LANGID lang,
 	// load the data from an *.cur file
 	CursorFile cur;
 	if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
-		return NULL;
+		return nullptr;
 
 	// get the next cursor ID
 	UINT LastCursorID = get_last_id(RT_CURSOR, lang);
@@ -1214,15 +1214,15 @@ EntrySet::add_group_cursor(const MIdOrString& name, LANGID lang,
 
 HTREEITEM EntrySet::get_insert_parent(EntryBase *entry)
 {
-	if (m_hwndTV == NULL)
-		return NULL;    // no treeview handle
+	if (m_hwndTV == nullptr)
+		return nullptr;    // no treeview handle
 
 	if (entry->m_et == ET_TYPE)
 		return TVI_ROOT;    // the root handle
 
 	auto new_entry = add_type_entry(entry->m_type);
 	if (!new_entry)
-		return NULL;    // unable to add
+		return nullptr;    // unable to add
 
 	switch (entry->m_et)
 	{
@@ -1233,21 +1233,21 @@ HTREEITEM EntrySet::get_insert_parent(EntryBase *entry)
 		break;
 
 	default:
-		return NULL;
+		return nullptr;
 	}
 
 	// add the name entry
 	new_entry = add_name_entry(entry->m_type, entry->m_name);
 	if (!new_entry)
-		return NULL;    // unable to add
+		return nullptr;    // unable to add
 
 	return new_entry->m_hItem;  // success
 }
 
 HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
 {
-	if (m_hwndTV == NULL)
-		return NULL;    // no treeview handle
+	if (m_hwndTV == nullptr)
+		return nullptr;    // no treeview handle
 
 	// get the entries to determine the position
 	self_type found;
@@ -1273,11 +1273,11 @@ HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
 		break;
 
 	default:
-		return NULL;
+		return nullptr;
 	}
 
 	// determine the target
-	EntryBase *target = NULL;
+	EntryBase *target = nullptr;
 	for (auto e : found)
 	{
 		if (*e < *entry)
@@ -1302,7 +1302,7 @@ HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
 EntryBase *EntrySet::get_parent(EntryBase *entry)
 {
 	if (!entry)
-		return NULL;    // no parent
+		return nullptr;    // no parent
 
 	EntryBase *parent;
 	switch (entry->m_et)
@@ -1328,7 +1328,7 @@ EntryBase *EntrySet::get_parent(EntryBase *entry)
 		break;
 
 	default:
-		parent = NULL;  // no parent
+		parent = nullptr;  // no parent
 		break;
 	}
 
@@ -1391,7 +1391,7 @@ EntryBase *EntrySet::on_insert_entry(EntryBase *entry)
 	//	entry, entry->m_type.c_str(), entry->m_name.c_str(),
 	//	entry->m_lang, entry->m_strLabel.c_str());
 
-	if (m_hwndTV == NULL)   // no treeview handle
+	if (m_hwndTV == nullptr)   // no treeview handle
 	{
 		entry->m_valid = true;
 		insert(entry);
@@ -1416,7 +1416,7 @@ EntrySet::on_insert_after(HTREEITEM hParent, EntryBase *entry, HTREEITEM hInsert
 	// make it valid
 	entry->m_valid = true;
 
-	if (m_hwndTV == NULL)
+	if (m_hwndTV == nullptr)
 		return entry;   // no treeview handle
 
 	if (entry->m_hItem && entry == get_entry(entry->m_hItem))
@@ -1462,7 +1462,7 @@ EntrySet::on_insert_after(HTREEITEM hParent, EntryBase *entry, HTREEITEM hInsert
 		return entry;
 	}
 
-	return NULL;    // failure
+	return nullptr;    // failure
 }
 
 bool EntrySet::on_delete_group_icon(EntryBase *entry)
@@ -1535,7 +1535,7 @@ EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 	// find the resource in hMod
 	HRSRC hResInfo = ::Wrap_FindResourceExW(hMod, type, name, lang);
 	if (!hResInfo)
-		return NULL;
+		return nullptr;
 
 	// get the size and the pointer
 	DWORD dwSize = ::Wrap_SizeofResource(hMod, hResInfo);
@@ -1556,13 +1556,13 @@ EntrySet::add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, LANGID lang)
 		Wrap_FreeResource(hGlobal);
 	}
 
-	return NULL;    // unable to get
+	return nullptr;    // unable to get
 }
 
 EntryBase *EntrySet::get_child(EntryBase *parent) const
 {
 	if (!parent)
-		return NULL;    // no parent, no child
+		return nullptr;    // no parent, no child
 
 	// get child
 	EntryBase *child;
@@ -1585,7 +1585,7 @@ EntryBase *EntrySet::get_child(EntryBase *parent) const
 		break;
 
 	default:
-		child = NULL;   // no child
+		child = nullptr;   // no child
 		break;
 	}
 
@@ -1927,7 +1927,7 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
 	strCmdLine += L"\" -J rc -O res \"";
 	strCmdLine += pszRCFile;
 	strCmdLine += L'\"';
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -1938,7 +1938,7 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
 
 	MFile hInputWrite, hOutputRead;
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+		pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		// read all with timeout
 		pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
@@ -2009,7 +2009,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 	strCmdLine += L"\" --preprocessor-arg=\"\" \"";
 	strCmdLine += pszRCFile;
 	strCmdLine += L'\"';
-	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
 	BOOL bSuccess = FALSE;
 
@@ -2021,7 +2021,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 	MFile hInputWrite, hOutputRead;
 
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+		pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
 		// read all with timeout
 		pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
@@ -2129,7 +2129,7 @@ struct EnumResStruct2
 	BOOL is_protected;
 };
 
-// callback to insert the resource in the executable
+// callback to detect the protected resource in the executable
 static BOOL CALLBACK
 EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                  WORD wIDLanguage, LPARAM lParam)
@@ -2161,14 +2161,14 @@ EnumResLangProc2(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 	return TRUE;
 }
 
-// callback to insert the resource in the executable
+// callback to detect the protected resource in the executable
 static BOOL CALLBACK
 EnumResNameProc2(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
 {
 	return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc2, lParam);
 }
 
-// callback to insert the resource in the executable
+// callback to detect the protected resource in the executable
 static BOOL CALLBACK
 EnumResTypeProc2(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 {

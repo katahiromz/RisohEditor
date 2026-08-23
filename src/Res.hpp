@@ -137,13 +137,22 @@ struct EntryBase : EntryBaseBase
 	MStringW        m_strLabel;             // the label string
 
 	// constructor
-	EntryBase() : m_lang(BAD_LANG), m_hItem(NULL), m_valid(true)
+	EntryBase()
+		: m_et(ET_ANY)
+		, m_lang(BAD_LANG)
+		, m_hItem(nullptr)
+		, m_valid(true)
 	{
 	}
 
 	// constructor
 	EntryBase(EntryType et, const MIdOrString& type, const MIdOrString& name = BAD_NAME, LANGID lang = BAD_LANG)
-		: m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
+		: m_et(et)
+		, m_type(type)
+		, m_name(name)
+		, m_lang(lang)
+		, m_hItem(nullptr)
+		, m_valid(true)
 	{
 		if (m_name == BAD_NAME)
 			m_name.clear();
@@ -454,12 +463,12 @@ struct EntrySet : protected EntrySetBase
 	}
 
 	// constructor
-	EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV)
+	EntrySet(HWND hwndTV = nullptr) : m_hwndTV(hwndTV)
 	{
 	}
 
 	// constructor
-	EntrySet(const super_type& super, HWND hwndTV = NULL)
+	EntrySet(const super_type& super, HWND hwndTV = nullptr)
 		: super_type(super), m_hwndTV(hwndTV)
 	{
 	}
@@ -467,11 +476,11 @@ struct EntrySet : protected EntrySetBase
 	// the super class pointer
 	super_type *super()
 	{
-		return dynamic_cast<super_type *>(this);
+		return static_cast<super_type*>(this);
 	}
 	const super_type *super() const
 	{
-		return dynamic_cast<const super_type *>(this);
+		return static_cast<const super_type*>(this);
 	}
 
 	// search by pattern matching
@@ -497,7 +506,7 @@ struct EntrySet : protected EntrySetBase
 		{
 			return *found.begin();
 		}
-		return NULL;
+		return nullptr;
 	}
 	EntryBase *find(EntryBase *entry, bool invalid_ok = false) const
 	{
@@ -700,7 +709,7 @@ public:
 		// by delete_all() after TreeView_DeleteAllItems returns.
 		if (m_bDeletingAll)
 		{
-			entry->m_hItem = NULL;
+			entry->m_hItem = nullptr;
 			return;
 		}
 
@@ -708,12 +717,12 @@ public:
 			return;
 
 		//MTRACEW(L"on_delete_item: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
-		entry->m_hItem = NULL;
+		entry->m_hItem = nullptr;
 		delete_entry(entry);
 	}
 
 	// get the LPARAM parameter of the currently selected or the specified handle
-	LPARAM get_param(HTREEITEM hItem = NULL) const
+	LPARAM get_param(HTREEITEM hItem = nullptr) const
 	{
 		if (!hItem)
 			hItem = TreeView_GetSelection(m_hwndTV);
@@ -728,19 +737,19 @@ public:
 	}
 
 	// get the entry pointer of the currently selected or the specified info
-	EntryBase *get_entry(HTREEITEM hItem = NULL, EntryType et = ET_ANY) const
+	EntryBase *get_entry(HTREEITEM hItem = nullptr, EntryType et = ET_ANY) const
 	{
 		LPARAM lParam = get_param(hItem);
 		if (!lParam)
-			return NULL;
+			return nullptr;
 		auto e = (EntryBase *)lParam;
 		if (et != ET_ANY && et != e->m_et)
-			return NULL;
+			return nullptr;
 		return e;
 	}
 
 	// get a language entry of the currently selected or the specified handle
-	EntryBase *get_lang_entry(HTREEITEM hItem = NULL) const
+	EntryBase *get_lang_entry(HTREEITEM hItem = nullptr) const
 	{
 		return get_entry(hItem, ET_LANG);
 	}
