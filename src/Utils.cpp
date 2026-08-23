@@ -206,13 +206,17 @@ void ReplaceFullWithHalf(MStringW& strText)
 		ReplaceFullWithHalf(&strText[0]);
 }
 
-BOOL IsFileWritable(LPCWSTR pszFileName)
+BOOL IsFileWritable(LPCWSTR pszFileName, DWORD *pdwError = NULL)
 {
 	HANDLE hFile = CreateFileW(pszFileName, GENERIC_WRITE,
 	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 	                           NULL, OPEN_EXISTING, 0, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		if (pdwError)
+			*pdwError = ::GetLastError();
 		return FALSE;
+	}
 
 	CloseHandle(hFile);
 	return TRUE;
@@ -227,11 +231,15 @@ BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout)
 	const INT cRetry = 10;
 	for (INT i = 0; i < cRetry; ++i)
 	{
-		if (IsFileWritable(pszFileName))
+		DWORD error = 0;
+		if (IsFileWritable(pszFileName, &error))
 		{
 			::Sleep(INITIAL_DELAY_MS);
 			return TRUE;
 		}
+
+		if (dwError == ERROR_FILE_NOT_FOUND || dwError == ERROR_PATH_NOT_FOUND)
+			return FALSE;
 
 		::Sleep(dwTimeout / cRetry);
 	}

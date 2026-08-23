@@ -102,7 +102,6 @@ LANGID GetDefaultResLanguage(VOID);
 HRESULT FileSystemAutoComplete(HWND hwnd);
 BOOL IsThereWndClass(PCWSTR pszName);
 void FreeWCLib(void);
-BOOL IsFileWritable(LPCWSTR pszFileName);
 BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout = 15000);
 bool create_directories_recursive_win32(const std::wstring& path);
 MStringW DumpBinaryAsText(const std::vector<BYTE>& data);
