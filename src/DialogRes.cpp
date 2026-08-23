@@ -131,7 +131,7 @@ bool DialogItem::LoadFromStream(const MByteStreamEx& stream, bool extended)
 			return false;
 		size_t cb = cbExtra - sizeof(WORD);
 		m_extra.resize(cb);
-		if (cb && !stream.ReadData(&m_extra[0], cb))
+		if (cb && !stream.ReadData(m_extra.data(), cb))
 			return false;
 	}
 
@@ -174,7 +174,7 @@ bool DialogItem::LoadFromStreamEx(const MByteStreamEx& stream)
 	if (extraCount)
 	{
 		m_extra.resize(extraCount);
-		if (!stream.ReadData(&m_extra[0], extraCount))
+		if (!stream.ReadData(m_extra.data(), extraCount))
 			return false;
 	}
 
@@ -224,7 +224,7 @@ bool DialogItem::SaveToStream(MByteStreamEx& stream, bool extended) const
 
 	if (m_extra.size())
 	{
-		if (!stream.WriteData(&m_extra[0], m_extra.size()))
+		if (!stream.WriteData(m_extra.data(), m_extra.size()))
 			return false;
 	}
 
@@ -271,7 +271,7 @@ bool DialogItem::SaveToStreamEx(MByteStreamEx& stream) const
 	if (m_extra.size() > 0)
 	{
 		WORD ExtraSize = WORD(m_extra.size());
-		if (!stream.WriteData(&m_extra[0], ExtraSize))
+		if (!stream.WriteData(m_extra.data(), ExtraSize))
 			return false;
 	}
 
@@ -430,7 +430,7 @@ MStringW DialogItem::DumpControl(MStringW& cls) const
 	if (m_extra.size() && m_extra.size() % 2 == 0)
 	{
 		size_t count = m_extra.size() / sizeof(WORD);
-		const WORD *pw = (const WORD *)&m_extra[0];
+		const WORD *pw = (const WORD *)m_extra.data();
 		if (g_settings.bUseBeginEnd)
 			ret += L"\r\n    BEGIN\r\n";
 		else
@@ -548,7 +548,7 @@ DialogItem::_do_CONTROL(bool bNeedsText,
 	if (m_extra.size() && m_extra.size() % 2 == 0)
 	{
 		size_t count = m_extra.size() / sizeof(WORD);
-		const WORD *pw = (const WORD *)&m_extra[0];
+		const WORD *pw = (const WORD *)m_extra.data();
 		if (g_settings.bUseBeginEnd)
 			ret += L"\r\n    BEGIN\r\n";
 		else
@@ -566,10 +566,10 @@ DialogItem::_do_CONTROL(bool bNeedsText,
 
 BOOL DialogItem::IsClassRegd(const WCHAR *name) const
 {
-	HMODULE hMod = ::GetModuleHandle(NULL);
+	HMODULE hMod = ::GetModuleHandle(nullptr);
 
 	WNDCLASSEXW wcx;
-	if (::GetClassInfoExW(NULL, name, &wcx) ||
+	if (::GetClassInfoExW(nullptr, name, &wcx) ||
 		::GetClassInfoExW(hMod, name, &wcx))
 	{
 		return TRUE;
@@ -1134,8 +1134,8 @@ INT DialogRes::GetBaseUnits(INT& y) const
 	xBaseUnit = LOWORD(Units);
 	yBaseUnit = HIWORD(Units);
 
-	HDC hDC = CreateCompatibleDC(NULL);
-	HFONT hFont = NULL;
+	HDC hDC = CreateCompatibleDC(nullptr);
+	HFONT hFont = nullptr;
 	switch (m_style & DS_SHELLFONT)
 	{
 	case DS_SETFONT:
@@ -1446,7 +1446,8 @@ bool DialogItemClipboard::Copy(HWND hwndRad, const DialogItems& items)
 	{
 		if (LPVOID pv = GlobalLock(hGlobal))
 		{
-			CopyMemory(pv, &stream[0], stream.size());
+			if (stream.size())
+				CopyMemory(pv, stream.ptr(), stream.size());
 			GlobalUnlock(hGlobal);
 
 			if (OpenClipboard(hwndRad))
@@ -1478,7 +1479,8 @@ bool DialogItemClipboard::Paste(HWND hwndRad, DialogItems& items) const
 		if (LPVOID pv = GlobalLock(hGlobal))
 		{
 			MByteStreamEx stream(siz);
-			CopyMemory(&stream[0], pv, siz);
+			if (siz)
+				CopyMemory(stream.ptr(), pv, siz);
 
 			DialogItem item;
 			while (item.LoadFromStream(stream, m_dialog_res.IsExtended()))
