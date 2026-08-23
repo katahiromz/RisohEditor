@@ -1,9 +1,9 @@
-// MByteStream.hpp -- MZC4 byte stream                          -*- C++ -*-
+// MByteStreamEx.hpp -- MZC4 byte stream                        -*- C++ -*-
 // This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAMEX_HPP_
-#define MZC4_MBYTESTREAMEX_HPP_     3       /* Version 3 */
+#define MZC4_MBYTESTREAMEX_HPP_     4       /* Version 4 */
 
 class MByteStreamEx;
 

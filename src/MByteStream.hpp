@@ -142,7 +142,7 @@ public:
 		m_pos = pos_;
 	}
 
-	bool seek(int16_t delta) const
+	bool seek(ptrdiff_t delta) const
 	{
 		if (delta > 0)
 		{
@@ -195,7 +195,7 @@ public:
 	void WriteWordAlignment()
 	{
 		if (m_data.size() & 1)
-			m_data.resize(m_data.size() + 1);
+			m_data.resize(m_data.size() + 1, 0);
 	}
 
 	bool WriteDword(uint32_t value)
@@ -209,7 +209,7 @@ public:
 		size_t n = (m_data.size() & 3);
 		if (n)
 		{
-			m_data.resize(m_data.size() + (4 - n));
+			m_data.resize(m_data.size() + (4 - n), 0);
 		}
 	}
 
@@ -343,16 +343,10 @@ public:
 		if (!fp)
 			return false;
 
-		// NOTE: &m_data[0] is undefined behavior when m_data is empty
-		// (std::vector, unlike std::string, gives no guarantee about
-		// indexing at size()). Also, fwrite(ptr, 0, 1, fp) legitimately
-		// returns 0 per the C standard even though nothing is wrong, so
-		// treating that as failure would incorrectly delete a validly
-		// saved empty file.
 		bool ok = true;
 		if (!m_data.empty())
 		{
-			size_t n = fwrite(&m_data[0], m_data.size(), 1, fp);
+			size_t n = fwrite(m_data.data(), m_data.size(), 1, fp);
 			ok = (n != 0);
 		}
 		fclose(fp);
@@ -371,10 +365,12 @@ public:
 
 	uint8_t& operator[](size_t index)
 	{
+		assert(index < m_data.size());
 		return m_data[index];
 	}
 	const uint8_t& operator[](size_t index) const
 	{
+		assert(index < m_data.size());
 		return m_data[index];
 	}
 
@@ -392,7 +388,7 @@ public:
 	}
 	bool WriteSz(const MStringA& str)
 	{
-		return WriteData(&str[0], (str.size() + 1) * sizeof(char));
+		return WriteData(str.c_str(), (str.size() + 1) * sizeof(char));
 	}
 
 	bool ReadSz(MStringW& str) const
