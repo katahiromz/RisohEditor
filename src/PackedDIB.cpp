@@ -61,6 +61,9 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 		return 0;   // PNG
 
 	DWORD HeaderSize = *(DWORD *)pPackedDIB;
+	if (HeaderSize > dwSize)
+		return 0;
+
 	DWORD ColorCount = 0;
 	if (HeaderSize == sizeof(bc))
 	{
@@ -241,18 +244,27 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 
 		if (hbm)
 		{
+			DWORD cbNeeded = 0;
+			if (pbi->bmiHeader.biSizeImage != 0)
+				cbNeeded = pbi->bmiHeader.biSizeImage;
+			else
+				cbNeeded = WIDTHBYTES(pbi->bmiHeader.biWidth * pbi->bmiHeader.biBitCount) *
+				           abs(pbi->bmiHeader.biHeight);
+
+			DWORD cbCopy = (cbBits < cbNeeded) ? cbBits : cbNeeded;
+
 #ifdef _MSC_VER
 			// Win2k3 ieframe.dll BITMAP 214 causes exception
 			__try
 			{
-				CopyMemory(pBits, pb, cbBits);
+				CopyMemory(pBits, pb, cbCopy);
 			}
 			__except (EXCEPTION_EXECUTE_HANDLER)
 			{
 				;
 			}
 #else
-			CopyMemory(pBits, pb, cbBits);
+			CopyMemory(pBits, pb, cbCopy);
 #endif
 		}
 	}
@@ -382,6 +394,44 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 		return hbmCopy;
 	}
 
+	// Load bitmap from memory using GDI+
+	using namespace Gdiplus;
+	IStream *pStream = nullptr;
+	HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, siz);
+	if (hMem)
+	{
+		void *pData = GlobalLock(hMem);
+		if (pData)
+		{
+			CopyMemory(pData, ptr, siz);
+			GlobalUnlock(hMem);
+
+			if (CreateStreamOnHGlobal(hMem, TRUE, &pStream) == S_OK)
+			{
+				Bitmap *pBmp = Bitmap::FromStream(pStream);
+				if (pBmp && pBmp->GetLastStatus() == Ok)
+				{
+					Status st = pBmp->GetHBITMAP(Color(0,0,0,0), &hbm);
+					if (st != Ok)
+						hbm = nullptr;
+				}
+				delete pBmp;
+				pStream->Release();
+			}
+			else
+			{
+				GlobalFree(hMem);
+			}
+		}
+		else
+		{
+			GlobalFree(hMem);
+		}
+	}
+	if (hbm)
+		return hbm;
+
+	// Load bitmap using temporary file
 	WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
 	if (GetTempPathW(_countof(szPath), szPath) &&
 		GetTempFileNameW(szPath, L"reb", 0, szTempFile))
