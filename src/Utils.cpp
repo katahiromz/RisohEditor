@@ -3247,7 +3247,8 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 			MStringW str2;
 			if (!guts_quote(str2, pch) || str2.size() != 1)
 			{
-				return FALSE;   // invalid
+				if (str2.size() != 2 && str2[0] != L'^')
+					return FALSE;   // invalid
 			}
 			str = mstr_quote(str2);
 		}

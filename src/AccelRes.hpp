@@ -15,6 +15,8 @@
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
 
+#define ACCEL_LAST 0x80
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct ACCEL_ENTRY

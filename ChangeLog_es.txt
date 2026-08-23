@@ -6,6 +6,7 @@
     - Se ha corregido un bloqueo en MRadWindow::AlignSelection.
     - Traducción del instalador mejorada.
     - Se ha corregido el bloqueo de EGA RES_delete.
+    - Corregido error en MEditAccelDlg ("^A", etc.).
 - v.6.1.5 (2026-08-22)
     - Acelerar MDialogFontSubstDlg.
     - Se añadió la ventana de presentación.

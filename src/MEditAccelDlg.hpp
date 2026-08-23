@@ -278,10 +278,6 @@ public:
 			{
 				Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1));
 			}
-			else
-			{
-				SetDlgItemTextW(hwnd, cmb1, NULL);
-			}
 			break;
 		case IDOK:
 			OnOK(hwnd);
@@ -509,7 +505,10 @@ public:
 				LPCWSTR pch = str2.c_str();
 				if (guts_quote(str, pch))
 				{
-					entry.wAscii = str[0];
+					if (str.size() == 2)
+						entry.wAscii = WORD((str[1] - L'A') + 0x01);
+					else
+						entry.wAscii = str[0];
 				}
 				else
 				{

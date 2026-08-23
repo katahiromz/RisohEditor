@@ -10,6 +10,15 @@
 	#include "ConstantsDB.hpp"
 #endif
 
+static inline void AppendAccelFlags(MStringW& ret, WORD fFlags)
+{
+    if (fFlags & FNOINVERT) ret += L", NOINVERT";
+    if (fFlags & FALT)      ret += L", ALT";
+    if (fFlags & FCONTROL)  ret += L", CONTROL";
+    if (fFlags & FSHIFT)    ret += L", SHIFT";
+    ret += (fFlags & FVIRTKEY) ? L", VIRTKEY" : L", ASCII";
+}
+
 bool AccelRes::LoadFromStream(const MByteStreamEx& stream)
 {
 	m_entries.clear();
@@ -25,7 +34,7 @@ bool AccelRes::LoadFromStream(const MByteStreamEx& stream)
 
 		m_entries.push_back(entry);
 
-		if (entry.fFlags & 0x80)
+		if (entry.fFlags & ACCEL_LAST)
 			break;
 	}
 
@@ -34,25 +43,21 @@ bool AccelRes::LoadFromStream(const MByteStreamEx& stream)
 
 void AccelRes::Update()
 {
-	size_t i, count = m_entries.size();
-	for (i = 0; i < count; ++i)
-	{
-		entry_type& entry = m_entries[i];
+	if (m_entries.empty())
+		return;
 
-		if (i + 1 == count)
-			entry.fFlags |= 0x80;
-		else
-			entry.fFlags &= ~0x80;
-	}
+	for (auto& entry : m_entries)
+		entry.fFlags &= ~ACCEL_LAST;
+
+	m_entries.back().fFlags |= ACCEL_LAST;
 }
 
 std::vector<BYTE> AccelRes::data() const
 {
 	if (m_entries.empty())
-		return std::vector<BYTE>();
-	size_t size = m_entries.size() * sizeof(entry_type);
-	const BYTE *pb = (const BYTE *)&m_entries[0];
-	return std::vector<BYTE>(pb, pb + size);
+		return {};
+	const auto* pb = reinterpret_cast<const BYTE*>(m_entries.data());
+	return {pb, pb + m_entries.size() * sizeof(entry_type)};
 }
 
 MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
@@ -80,15 +85,9 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 
 	for (auto& entry : m_entries)
 	{
-		bool VIRTKEY = !!(entry.fFlags & FVIRTKEY);
-		bool NOINVERT = !!(entry.fFlags & FNOINVERT);
-		bool SHIFT = !!(entry.fFlags & FSHIFT);
-		bool CONTROL = !!(entry.fFlags & FCONTROL);
-		bool ALT = !!(entry.fFlags & FALT);
-
 		ret += L"    ";
 #ifndef NO_CONSTANTS_DB
-		if (VIRTKEY)
+		if (entry.fFlags & FVIRTKEY)
 		{
 			ret += g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
 		}
@@ -96,8 +95,19 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 #endif
 		{
 			std::string str;
-			str += (char)entry.wAscii;
-			ret += MAnsiToWide(CP_ACP, mstr_quote(str));
+			if (!mchr_is_alnum(entry.wAscii))
+			{
+				// NOTE: "^A" will be lost in windres compilation. We should avoid it.
+				ret += L"\"\\x";
+				ret += L"0123456789ABCDEF"[entry.wAscii & 0xF];
+				ret += L"0123456789ABCDEF"[(entry.wAscii >> 4) & 0xF];
+				ret += L"\"";
+			}
+			else
+			{
+				str += (char)entry.wAscii;
+				ret += MAnsiToWide(CP_ACP, mstr_quote(str));
+			}
 		}
 		ret += L", ";
 #ifdef NO_CONSTANTS_DB
@@ -107,20 +117,7 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 		                           entry.wId, true);
 #endif
 
-		if (NOINVERT)
-			ret += L", NOINVERT";
-		if (ALT)
-			ret += L", ALT";
-		if (CONTROL)
-			ret += L", CONTROL";
-		if (SHIFT)
-			ret += L", SHIFT";
-
-		if (VIRTKEY)
-			ret += L", VIRTKEY";
-		else
-			ret += L", ASCII";
-
+		AppendAccelFlags(ret, entry.fFlags);
 		ret += L"\r\n";
 	}
 

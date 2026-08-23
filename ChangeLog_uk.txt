@@ -6,6 +6,7 @@
     - Виправлено збій у MRadWindow::AlignSelection.
     - Покращено переклад інсталятора.
     - Виправлено збій EGA RES_delete.
+    - Виправлено помилку MEditAccelDlg ("^A" тощо).
 - v.6.1.5 (2026-08-22)
     - Пришвидшення MDialogFontSubstDlg.
     - Додано вікно-сплеск.
