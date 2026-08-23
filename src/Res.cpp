@@ -745,6 +745,10 @@ void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, LANG
 			// update title_to_bitmap
 			title_to_bitmap[item.m_title] = hbm;
 		}
+		else
+		{
+			DeleteObject(hbm);
+		}
 	}
 }
 
@@ -806,6 +810,10 @@ void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, LANGID lan
 
 			// update title_to_icon
 			title_to_icon[item.m_title] = hIcon;
+		}
+		else
+		{
+			DestroyIcon(hIcon);
 		}
 	}
 }
