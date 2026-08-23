@@ -571,9 +571,11 @@ protected:
 	PCSTR GetWordHelp(const MStringW& str);
 	BOOL WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR szPayloadLoader, LANGID lang);
 	void MarkErrorLine(INT iLine);
+	void MarkErrorLineFromOutput(const MStringA& strOutput, const char *marker, char boundary);
 	RECT m_rcRadWindow = {};
 
 	friend class MDialogFontSubstDlg;
+	friend class MCompileTempFileSet; // needs WritePayloadLoaderRCEx() in RisohEditor.cpp
 };
 
 extern MMainWnd *s_pMainWnd;

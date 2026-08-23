@@ -1632,60 +1632,146 @@ BOOL MMainWnd::WritePayloadLoaderRCEx(PCWSTR szHeader, PCWSTR szPayload, PCWSTR 
 		return WritePayloadLoaderRC(szHeader, szPayload, szPayloadLoader, lang);
 }
 
+// ---------------------------------------------------------------------------
+// Shared plumbing for CompileStringTable / CompileMessageTable / CompileParts.
+// All three build a small throw-away .rc "payload loader" that #includes the
+// text being compiled, run it through windres (via mcdx/mcpp as the
+// preprocessor), and then import the resulting .res file. Only the exact
+// compiler executable/command-line flags and what to do with the imported
+// resources differ between the three call sites, so that part is left in
+// each function; only the identical setup/teardown is shared here.
+// ---------------------------------------------------------------------------
+
+// Owns the four temp files needed by a single compile attempt (header /
+// imported-object / payload / payload-loader) and deletes whichever of them
+// were actually created by GetTempFileNameDx, no matter how Prepare() exits.
+// (Note: GetTempFileNameDx itself creates the file on disk, so even a
+// failure partway through Prepare() can leave temp files behind if they
+// aren't tracked here -- this fixes a couple of such leaks that existed in
+// the original per-function copies.)
+class MCompileTempFileSet
+{
+public:
+	WCHAR szHeader[MAX_PATH];
+	WCHAR szObject[MAX_PATH];
+	WCHAR szPayload[MAX_PATH];
+	WCHAR szPayloadLoader[MAX_PATH];
+
+	MCompileTempFileSet()
+	{
+		szHeader[0] = szObject[0] = szPayload[0] = szPayloadLoader[0] = 0;
+	}
+
+	~MCompileTempFileSet()
+	{
+		if (szPayloadLoader[0]) DeleteFileW(szPayloadLoader);
+		if (szPayload[0])       DeleteFileW(szPayload);
+		if (szObject[0])        DeleteFileW(szObject);
+		if (szHeader[0])        DeleteFileW(szHeader);
+	}
+
+	MCompileTempFileSet(const MCompileTempFileSet&) = delete;
+	MCompileTempFileSet& operator=(const MCompileTempFileSet&) = delete;
+
+	// Creates the header/object placeholder files, writes strWide (as UTF-8)
+	// to the payload file, and builds the payload-loader .rc file that
+	// #includes it. On failure, strOutput gets a user-facing message and
+	// FALSE is returned; anything already created is still cleaned up by
+	// the destructor.
+	BOOL Prepare(MMainWnd *pMainWnd, LANGID lang, const MStringW& strWide, MStringA& strOutput)
+	{
+		StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
+		if (!CreateEmptyFile(szHeader))
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+
+		StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
+		if (!CreateEmptyFile(szObject))
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+
+		StringCchCopyW(szPayload, _countof(szPayload), GetTempFileNameDx(L"R4"));
+		{
+			MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
+			FILE *fout = _wfopen(szPayload, L"wb");
+			if (!fout)
+			{
+				strOutput = GetCannotCreateTempFile();
+				return FALSE;
+			}
+			BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
+			fclose(fout);
+			if (!ok)
+			{
+				strOutput = GetCannotCreateTempFile();
+				return FALSE;
+			}
+		}
+
+		StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
+		if (!pMainWnd->WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
+		{
+			strOutput = GetCannotCreateTempFile();
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+};
+
+// Starts strCmdLine (a windres/mcdx invocation) with its stdout/stderr
+// captured into strOutput.
+//   - Returns FALSE if the process could not even be started (strOutput is
+//     left untouched; the caller should report IDS_CANNOTSTARTUP).
+//   - Returns TRUE if it started; bSucceeded then tells the caller whether
+//     it also exited with code 0 and its output was read successfully.
+static BOOL RunCompilerProcess(MProcessMaker& pmaker, const MStringW& strCmdLine,
+								MStringA& strOutput, BOOL& bSucceeded)
+{
+	pmaker.SetShowWindow(SW_HIDE);
+	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	bSucceeded = FALSE;
+
+	MFile hInputWrite, hOutputRead;
+	if (!pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) ||
+		!pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	{
+		return FALSE;
+	}
+
+	BOOL bRead = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+	pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
+
+	bSucceeded = bRead && (pmaker.GetExitCode() == 0);
+	return TRUE;
+}
+
+// Finds "marker" in strOutput, scans backward from it to the nearest
+// "boundary" character, and jumps the code editor to the line number found
+// there. Used to locate windres/mcdx syntax errors. No-op if the marker
+// text isn't present.
+void MMainWnd::MarkErrorLineFromOutput(const MStringA& strOutput, const char *marker, char boundary)
+{
+	size_t ich = strOutput.find(marker);
+	if (ich == strOutput.npos)
+		return;
+
+	while (ich > 0 && strOutput[--ich] != boundary) {}
+
+	MStringA str = strOutput.substr(ich + 1);
+	MarkErrorLine(atoi(str.c_str()));
+}
+
 // compile the string table
 BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStringW& strWide)
 {
-	// Header file
-	WCHAR szHeader[MAX_PATH];
-	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
-	if (!CreateEmptyFile(szHeader))
-	{
-		strOutput = GetCannotCreateTempFile();
+	MCompileTempFileSet temp;
+	if (!temp.Prepare(this, lang, strWide, strOutput))
 		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_1(szHeader);
-
-	// Output resource object file (imported)
-	WCHAR szObject[MAX_PATH];
-	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
-	if (!CreateEmptyFile(szObject))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_2(szObject);
-
-	// Payload
-	WCHAR szPayload[MAX_PATH];
-	StringCchCopyW(szPayload, _countof(szPayload), GetTempFileNameDx(L"R4"));
-	{
-		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
-		FILE *fout = _wfopen(szPayload, L"wb");
-		if (!fout)
-		{
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
-		fclose(fout);
-		if (!ok)
-		{
-			DeleteFileW(szPayload);
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-	}
-	AutoDeleteFileW auto_delete_3(szPayload);
-
-	// Payload loader
-	WCHAR szPayloadLoader[MAX_PATH];
-	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
-	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -1695,11 +1781,11 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 	strCmdLine += GetMacroDump();
 	strCmdLine += GetIncludesDumpForWindres();
 	strCmdLine += L" -o \"";
-	strCmdLine += szObject;
+	strCmdLine += temp.szObject;
 	strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" \"";
-	strCmdLine += szPayloadLoader;
+	strCmdLine += temp.szPayloadLoader;
 	strCmdLine += '\"';
 	//MessageBoxW(m_hwnd, strCmdLine.c_str(), NULL, 0);
 
@@ -1707,25 +1793,14 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 
 	// create a windres.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
-	MFile hInputWrite, hOutputRead;
-	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	BOOL bSucceeded;
+	if (RunCompilerProcess(pmaker, strCmdLine, strOutput, bSucceeded))
 	{
-		// read all with timeout
-		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
-		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
-		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
-
-		if (pmaker.GetExitCode() == 0 && bOK)
+		if (bSucceeded)
 		{
-			bOK = FALSE;
-
 			// import res
 			EntrySet res;
-			if (res.import_res(szObject))
+			if (res.import_res(temp.szObject))
 			{
 				// resource type check
 				bOK = TRUE;
@@ -1752,16 +1827,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 		}
 		else
 		{
-			bOK = FALSE;
 			// error message
-			size_t ich = strOutput.find(": syntax error");
-			if (ich != strOutput.npos)
-			{
-				while (ich > 0 && strOutput[--ich] != ':') {}
-				MStringA str = strOutput.substr(ich + 1);
-				INT iLine = atoi(str.c_str());
-				MarkErrorLine(iLine);
-			}
+			MarkErrorLineFromOutput(strOutput, ": syntax error", ':');
 			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
 				MStringA("\r\n\r\n") + strOutput;
 		}
@@ -1888,57 +1955,9 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGI
 // compile the message table
 BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
-	// Header file
-	WCHAR szHeader[MAX_PATH];
-	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
-	if (!CreateEmptyFile(szHeader))
-	{
-		strOutput = GetCannotCreateTempFile();
+	MCompileTempFileSet temp;
+	if (!temp.Prepare(this, lang, strWide, strOutput))
 		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_1(szHeader);
-
-	// Output resource object file (imported)
-	WCHAR szObject[MAX_PATH];
-	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
-	if (!CreateEmptyFile(szObject))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_2(szObject);
-
-	// Payload
-	WCHAR szPayload[MAX_PATH];
-	StringCchCopyW(szPayload, _countof(szPayload), GetTempFileNameDx(L"R4"));
-	{
-		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
-		FILE *fout = _wfopen(szPayload, L"wb");
-		if (!fout)
-		{
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
-		fclose(fout);
-		if (!ok)
-		{
-			DeleteFileW(szPayload);
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-	}
-	AutoDeleteFileW auto_delete_3(szPayload);
-
-	// Payload loader
-	WCHAR szPayloadLoader[MAX_PATH];
-	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
-	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -1950,9 +1969,9 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	strCmdLine += L" \"--preprocessor=";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" -o \"";
-	strCmdLine += szObject;
+	strCmdLine += temp.szObject;
 	strCmdLine += L"\" -J rc -O res \"";
-	strCmdLine += szPayloadLoader;
+	strCmdLine += temp.szPayloadLoader;
 	strCmdLine += L'\"';
 	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
@@ -1960,25 +1979,14 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
 	// create the mcdx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
-	MFile hInputWrite, hOutputRead;
-	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	BOOL bSucceeded;
+	if (RunCompilerProcess(pmaker, strCmdLine, strOutput, bSucceeded))
 	{
-		// read all with timeout
-		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
-		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
-		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
-
-		if (pmaker.GetExitCode() == 0 && bOK)
+		if (bSucceeded)
 		{
-			bOK = FALSE;
-
 			// import res
 			EntrySet res;
-			if (res.import_res(szObject))
+			if (res.import_res(temp.szObject))
 			{
 				// resource type check
 				bOK = TRUE;
@@ -1990,7 +1998,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 						bOK = FALSE;
 						break;
 					}
-                    entry->m_name = name;
+					entry->m_name = name;
 				}
 
 				if (bOK)
@@ -2006,16 +2014,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 		}
 		else
 		{
-			bOK = FALSE;
 			// error message
-			size_t ich = strOutput.find("): ERROR: Syntax error");
-			if (ich != strOutput.npos)
-			{
-				while (ich > 0 && strOutput[--ich] != '(') {}
-				MStringA str = strOutput.substr(ich + 1);
-				INT iLine = atoi(str.c_str());
-				MarkErrorLine(iLine);
-			}
+			MarkErrorLineFromOutput(strOutput, "): ERROR: Syntax error", '(');
 			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
 				MStringA("\r\n\r\n") + strOutput;
 		}
@@ -2143,57 +2143,9 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		return TRUE;    // success
 	}
 
-	// Header file
-	WCHAR szHeader[MAX_PATH];
-	StringCchCopyW(szHeader, _countof(szHeader), GetTempFileNameDx(L"R2"));
-	if (!CreateEmptyFile(szHeader))
-	{
-		strOutput = GetCannotCreateTempFile();
+	MCompileTempFileSet temp;
+	if (!temp.Prepare(this, lang, strWide, strOutput))
 		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_1(szHeader);
-
-	// Output resource object file (imported)
-	WCHAR szObject[MAX_PATH];
-	StringCchCopyW(szObject, _countof(szObject), GetTempFileNameDx(L"R3"));
-	if (!CreateEmptyFile(szObject))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_2(szObject);
-
-	// Payload
-	WCHAR szPayload[MAX_PATH];
-	StringCchCopyW(szPayload, _countof(szPayload), GetTempFileNameDx(L"R4"));
-	{
-		MStringA str = MWideToAnsi(CP_UTF8, strWide.c_str()).c_str();
-		FILE *fout = _wfopen(szPayload, L"wb");
-		if (!fout)
-		{
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-		BOOL ok = !!fwrite(str.c_str(), str.size(), 1, fout);
-		fclose(fout);
-		if (!ok)
-		{
-			DeleteFileW(szPayload);
-			strOutput = GetCannotCreateTempFile();
-			return FALSE;
-		}
-	}
-	AutoDeleteFileW auto_delete_3(szPayload);
-
-	// Payload loader
-	WCHAR szPayloadLoader[MAX_PATH];
-	StringCchCopyW(szPayloadLoader, _countof(szPayloadLoader), GetTempFileNameDx(L"R1"));
-	if (!WritePayloadLoaderRCEx(szHeader, szPayload, szPayloadLoader, lang))
-	{
-		strOutput = GetCannotCreateTempFile();
-		return FALSE;
-	}
-	AutoDeleteFileW auto_delete_4(szPayloadLoader);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -2203,11 +2155,11 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 	strCmdLine += GetMacroDump();
 	strCmdLine += GetIncludesDumpForWindres();
 	strCmdLine += L" -o \"";
-	strCmdLine += szObject;
+	strCmdLine += temp.szObject;
 	strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" \"";
-	strCmdLine += szPayloadLoader;
+	strCmdLine += temp.szPayloadLoader;
 	strCmdLine += '\"';
 	//MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
@@ -2215,26 +2167,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
 	// create a windres.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
-	MFile hInputWrite, hOutputRead;
-	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-		pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+	BOOL bSucceeded;
+	if (RunCompilerProcess(pmaker, strCmdLine, strOutput, bSucceeded))
 	{
-		// read all with timeout
-		bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
-		pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
-		//MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
-
-		// check the exit code
-		if (pmaker.GetExitCode() == 0 && bOK)
+		if (bSucceeded)
 		{
-			bOK = FALSE;
-
 			// import res
 			EntrySet res;
-			if (res.import_res(szObject))
+			if (res.import_res(temp.szObject))
 			{
 				bOK = TRUE;
 				for (auto entry : res)
@@ -2276,16 +2216,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		}
 		else
 		{
-			bOK = FALSE;
 			// error message
-			size_t ich = strOutput.find(": syntax error");
-			if (ich != strOutput.npos)
-			{
-				while (ich > 0 && strOutput[--ich] != ':') {}
-				MStringA str = strOutput.substr(ich + 1);
-				INT iLine = atoi(str.c_str());
-				MarkErrorLine(iLine);
-			}
+			MarkErrorLineFromOutput(strOutput, ": syntax error", ':');
 			strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR)).c_str() +
 				MStringA("\r\n\r\n") + strOutput;
 		}
