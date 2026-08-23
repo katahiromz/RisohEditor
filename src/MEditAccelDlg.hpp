@@ -498,8 +498,13 @@ public:
 			if (wFlags & FVIRTKEY)
 			{
 				entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+				if (!mchr_is_alnum(entry.wAscii))
+				{
+					wFlags &= ~FVIRTKEY;
+					entry.fFlags &= ~FVIRTKEY;
+				}
 			}
-			else
+			if (!(wFlags & FVIRTKEY))
 			{
 				std::wstring str, str2 = a_entry.sz0;
 				LPCWSTR pch = str2.c_str();
