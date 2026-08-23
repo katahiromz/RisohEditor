@@ -62,9 +62,8 @@ protected:
 	BOOL CreateInternal();
 
 private:
-	// NOTE: MBitmapDx should not be copyed.
-	MBitmapDx(const MBitmapDx&);
-	MBitmapDx& operator=(const MBitmapDx&);
+	MBitmapDx(const MBitmapDx&) = delete;
+	MBitmapDx& operator=(const MBitmapDx&) = delete;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ inline DWORD MBitmapDx::GetFrameDelay(UINT nFrameIndex) const
 {
 	if (nFrameIndex < m_nFrameCount && m_pDelayItem)
 	{
-		return ((DWORD *)m_pDelayItem->value)[m_nFrameIndex] * 10;
+		return ((DWORD *)m_pDelayItem->value)[nFrameIndex] * 10;
 	}
 	return 0;
 }
@@ -117,17 +116,13 @@ inline UINT MBitmapDx::GetFrameCount() const
 inline UINT MBitmapDx::GetWidth()
 {
 	if (m_pBitmap)
-	{
 		return m_pBitmap->GetWidth();
-	}
 	return 0;
 }
 
 inline UINT MBitmapDx::GetHeight()
 {
 	if (m_pBitmap)
-	{
 		return m_pBitmap->GetHeight();
-	}
 	return 0;
 }

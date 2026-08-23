@@ -4,18 +4,16 @@
 
 #include "MBitmapDx.hpp"
 
-//////////////////////////////////////////////////////////////////////////////
-
 MBitmapDx::MBitmapDx()
 {
-	m_pBitmap = NULL;
+	m_pBitmap = nullptr;
 	m_rgbBack = RGB(255, 255, 255);
 	m_nFrameIndex = 0;
 	m_nFrameCount = 0;
-	m_pDelayItem = NULL;
+	m_pDelayItem = nullptr;
 	m_nLoopIndex = 0;
 	m_nLoopCount = (UINT)-1;
-	m_hGlobal = NULL;
+	m_hGlobal = nullptr;
 }
 
 MBitmapDx::~MBitmapDx()
@@ -28,7 +26,7 @@ void MBitmapDx::FreeBitmap()
 	if (m_pBitmap)
 	{
 		delete m_pBitmap;
-		m_pBitmap = NULL;
+		m_pBitmap = nullptr;
 	}
 }
 
@@ -37,7 +35,7 @@ void MBitmapDx::FreeDelayPropertyItem()
 	if (m_pDelayItem)
 	{
 		std::free(m_pDelayItem);
-		m_pDelayItem = NULL;
+		m_pDelayItem = nullptr;
 	}
 }
 
@@ -54,7 +52,7 @@ void MBitmapDx::Destroy()
 	if (m_hGlobal)
 	{
 		GlobalFree(m_hGlobal);
-		m_hGlobal = NULL;
+		m_hGlobal = nullptr;
 	}
 }
 
@@ -81,7 +79,7 @@ BOOL MBitmapDx::CreateInternal()
 	}
 	else
 	{
-		m_pDelayItem = NULL;
+		m_pDelayItem = nullptr;
 	}
 
 	m_nLoopIndex = 0;
@@ -114,7 +112,7 @@ BOOL MBitmapDx::SetBitmap(Gdiplus::Bitmap *pBitmap)
 	if (!CreateInternal())
 	{
 		delete m_pBitmap;
-		m_pBitmap = NULL;
+		m_pBitmap = nullptr;
 		return FALSE;
 	}
 	return TRUE;
@@ -124,7 +122,7 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 {
 	Destroy();
 
-	Gdiplus::Bitmap *pBitmap = NULL;
+	Gdiplus::Bitmap *pBitmap = nullptr;
 	HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, dwSize);
 	if (hGlobal)
 	{
@@ -134,7 +132,7 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 			CopyMemory(pv, pvData, dwSize);
 			GlobalUnlock(hGlobal);
 
-			IStream *pStream = NULL;
+			IStream *pStream = nullptr;
 			if (CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
 			{
 				try
@@ -204,12 +202,12 @@ HBITMAP MBitmapDx::GetHBITMAP(LONG& cx, LONG& cy)
 	bmi.bmiHeader.biPlanes = 1;
 	bmi.bmiHeader.biBitCount = 24;
 	LPVOID pvBits;
-	HBITMAP hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits,
-								   NULL, 0);
-	if (hbm == NULL)
-		return NULL;
+	HBITMAP hbm = CreateDIBSection(nullptr, &bmi, DIB_RGB_COLORS, &pvBits,
+								   nullptr, 0);
+	if (hbm == nullptr)
+		return nullptr;
 
-	HDC hDC = CreateCompatibleDC(NULL);
+	HDC hDC = CreateCompatibleDC(nullptr);
 	HGDIOBJ hbmOld = SelectObject(hDC, hbm);
 	{
 		RECT rc = { 0, 0, cx, cy };
@@ -247,11 +245,11 @@ HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
 	bmi.bmiHeader.biBitCount = 32;
 	LPVOID pvBits;
 	HBITMAP hbm;
-	HDC hdc = CreateCompatibleDC(NULL);
-	hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+	HDC hdc = CreateCompatibleDC(nullptr);
+	hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pvBits, nullptr, 0);
 	DeleteDC(hdc);
-	if (hbm == NULL)
-		return NULL;
+	if (!hbm)
+		return nullptr;
 
 	for (LONG y = 0; y < cy; ++y)
 	{
