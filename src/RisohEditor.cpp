@@ -7545,42 +7545,6 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 	if (type.empty())
 		type.m_str = strType;
 
-	// name --> name_or_id
-	MIdOrString name_or_id;
-	if (name[0] == L'\"')
-	{
-		// non-numeric name
-		MString name_clone = name;
-		mstr_unquote(name_clone);   // unquote
-		name_or_id = name_clone.c_str();
-	}
-	else
-	{
-		// numeric name
-		name_or_id = WORD(g_db.GetResIDValue(name));
-	}
-
-	if (name_or_id.empty())  // name_or_id was empty
-	{
-		// name --> strA (ANSI)
-		MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
-
-		// find strA from g_settings.id_map
-		auto it = g_settings.id_map.find(strA);
-		if (it != g_settings.id_map.end())  // found
-		{
-			MStringA strA = it->second;
-			if (strA[0] == 'L')
-				strA = strA.substr(1);
-
-			// unquote
-			mstr_unquote(strA);
-
-			// resource name
-			name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
-		}
-	}
-
 	if (type == L"RISOHTEMPLATE")
 	{
 		MIdOrString new_name;
@@ -7598,7 +7562,9 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 	}
 	else
 	{
-		if (auto entry = g_res.find(ET_LANG, type, name_or_id))
+		MIdOrString new_name;
+		ParseName(name, type, new_name);
+		if (auto entry = g_res.find(ET_LANG, type, new_name))
 		{
 			// select the entry
 			SelectTV(entry, FALSE);
