@@ -45,6 +45,74 @@ typedef struct tagTOOLBARDATAWINDRES
 typedef INT (CALLBACK *FN_INT2INT)(INT id);
 typedef BOOL (CALLBACK *FN_INT2STR)(INT id, LPTSTR pszText, INT cchTextMax);
 
+namespace ToolbarDetail
+{
+	template <typename T_ITEM>
+	inline void AddToolbarButtons(HWND hwndTB, const T_ITEM *pItems, DWORD wItemCount,
+								   FN_INT2INT fnCommandIdToImageIndex,
+								   FN_INT2STR fnCommandIdToText)
+	{
+		std::vector<TBBUTTON> buttons;
+		buttons.reserve(wItemCount);
+
+		for (DWORD i = 0; i < wItemCount; ++i)
+		{
+			TBBUTTON button;
+			ZeroMemory(&button, sizeof(button));
+
+			INT idCommand = button.idCommand = (INT)pItems[i];
+			button.fsState = TBSTATE_ENABLED;
+			button.iBitmap = -1;
+			button.iString = -1;
+			if (idCommand)
+			{
+				button.iBitmap = fnCommandIdToImageIndex(idCommand);
+				button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
+
+				TCHAR szText[MAX_PATH];
+				szText[0] = 0;
+				if (fnCommandIdToText && fnCommandIdToText(idCommand, szText, _countof(szText)))
+					button.iString = (INT)SendMessage(hwndTB, TB_ADDSTRING, 0, (LPARAM)szText);
+			}
+			else
+			{
+				button.fsStyle = BTNS_SEP;
+			}
+
+			buttons.push_back(button);
+		}
+
+		SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
+	}
+
+	inline BOOL SetupToolbarImageList(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
+									   DWORD wWidth, DWORD wHeight)
+	{
+		if (wWidth < 3 || wHeight < 3)
+		{
+			assert(0);
+			return FALSE;
+		}
+
+		SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(wWidth, wHeight));
+
+		HIMAGELIST himl = ImageList_LoadImage(hInst, lpName, (INT)wWidth, 0, RGB(255, 0, 255),
+											  IMAGE_BITMAP, LR_CREATEDIBSECTION);
+		if (himl == NULL)
+		{
+			assert(0);
+			return FALSE;
+		}
+
+		HIMAGELIST himlOld = (HIMAGELIST)SendMessage(hwndTB, TB_GETIMAGELIST, 0, 0);
+		SendMessage(hwndTB, TB_SETIMAGELIST, 0, (LPARAM)himl);
+		if (himlOld)
+			ImageList_Destroy(himlOld);
+
+		return TRUE;
+	}
+}
+
 // See: https://github.com/katahiromz/RisohEditor/blob/master/tests/ToolbarTest/ToolbarTest.cpp
 inline BOOL
 LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
@@ -63,6 +131,11 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 
 	// Load RT_TOOLBAR resource
 	HRSRC hRsrc = FindResource(hInst, lpName, RT_TOOLBAR);
+	if (!hRsrc)
+	{
+		assert(0);
+		return FALSE;
+	}
 	DWORD cbReal = SizeofResource(hInst, hRsrc);
 	if (cbReal < sizeof(TOOLBARDATA) - sizeof(WORD))
 	{
@@ -81,14 +154,9 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 	PTOOLBARDATA pData1 = (PTOOLBARDATA)pvData;
 	if (pData1->wVersion == 1)
 	{
-		WORD wWidth = pData1->wWidth, wHeight = pData1->wHeight;
-		if (wWidth < 3 || wHeight < 3)
-		{
-			assert(0);
-			return FALSE;
-		}
-
+		DWORD wWidth = pData1->wWidth, wHeight = pData1->wHeight;
 		DWORD wItemCount = pData1->wItemCount;
+
 		size_t cbExpect = (sizeof(TOOLBARDATA) - sizeof(WORD)) + wItemCount * sizeof(WORD);
 		if (cbReal < cbExpect)
 		{
@@ -96,60 +164,24 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 			return FALSE;
 		}
 
-		SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(wWidth, wHeight));
-
-		// load image and set image list
-		HIMAGELIST himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
-											  IMAGE_BITMAP, LR_CREATEDIBSECTION);
-		if (himl == NULL)
-		{
-			assert(0);
+		if (!ToolbarDetail::SetupToolbarImageList(hwndTB, hInst, lpName, wWidth, wHeight))
 			return FALSE;
-		}
-		SendMessage(hwndTB, TB_SETIMAGELIST, 0, (LPARAM)himl);
 
-		// add buttons
-		std::vector<TBBUTTON> buttons;
-		for (DWORD i = 0; i < wItemCount; ++i)
-		{
-			TBBUTTON button;
-			ZeroMemory(&button, sizeof(button));
-
-			INT idCommand = button.idCommand = pData1->aItems[i];
-			button.fsState = TBSTATE_ENABLED;
-			button.iBitmap = -1;
-			button.iString = -1;
-			if (idCommand)
-			{
-				button.iBitmap = fnCommandIdToImageIndex(idCommand);
-				button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
-
-				TCHAR szText[MAX_PATH];
-				szText[0] = 0;
-				if (fnCommandIdToText && fnCommandIdToText(idCommand, szText, _countof(szText)))
-					button.iString = (INT)SendMessage(hwndTB, TB_ADDSTRING, 0, (LPARAM)szText);
-			}
-			else
-			{
-				button.fsStyle = BTNS_SEP;
-			}
-
-			buttons.push_back(button);
-		}
-		SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
+		ToolbarDetail::AddToolbarButtons(hwndTB, pData1->aItems, wItemCount,
+										  fnCommandIdToImageIndex, fnCommandIdToText);
 	}
 #ifndef _MSC_VER // Not Visual C++
 	else if (pData1->wVersion >= 3)
 	{
 		PTOOLBARDATAWINDRES pData2 = (PTOOLBARDATAWINDRES)pvData;
 		DWORD wWidth = pData2->wWidth, wHeight = pData2->wHeight;
-		if (wWidth < 3 || wHeight < 3)
+		DWORD wItemCount = pData2->wItemCount;
+
+		if (wItemCount > (SIZE_MAX - (sizeof(TOOLBARDATAWINDRES) - sizeof(DWORD))) / sizeof(DWORD))
 		{
 			assert(0);
 			return FALSE;
 		}
-
-		DWORD wItemCount = pData2->wItemCount;
 		size_t cbExpect = (sizeof(TOOLBARDATAWINDRES) - sizeof(DWORD)) + wItemCount * sizeof(DWORD);
 		if (cbReal < cbExpect)
 		{
@@ -157,50 +189,16 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 			return FALSE;
 		}
 
-		SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(wWidth, wHeight));
-
-		// load image and set image list
-		HIMAGELIST himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
-											  IMAGE_BITMAP, LR_CREATEDIBSECTION);
-		if (himl == NULL)
-		{
-			assert(0);
+		if (!ToolbarDetail::SetupToolbarImageList(hwndTB, hInst, lpName, wWidth, wHeight))
 			return FALSE;
-		}
-		SendMessage(hwndTB, TB_SETIMAGELIST, 0, (LPARAM)himl);
 
-		// add buttons
-		std::vector<TBBUTTON> buttons;
-		for (DWORD i = 0; i < wItemCount; ++i)
-		{
-			TBBUTTON button;
-			ZeroMemory(&button, sizeof(button));
-
-			INT idCommand = button.idCommand = pData2->aItems[i];
-			button.fsState = TBSTATE_ENABLED;
-			button.iBitmap = -1;
-			button.iString = -1;
-			if (idCommand)
-			{
-				button.iBitmap = fnCommandIdToImageIndex(idCommand);
-				button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
-				TCHAR szText[MAX_PATH];
-				szText[0] = 0;
-				if (fnCommandIdToText && fnCommandIdToText(idCommand, szText, _countof(szText)))
-					button.iString = (INT)SendMessage(hwndTB, TB_ADDSTRING, 0, (LPARAM)szText);
-			}
-			else
-			{
-				button.fsStyle = BTNS_SEP;
-			}
-
-			buttons.push_back(button);
-		}
-		SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
+		ToolbarDetail::AddToolbarButtons(hwndTB, pData2->aItems, wItemCount,
+										  fnCommandIdToImageIndex, fnCommandIdToText);
 	}
 #endif // ndef _MSC_VER
 	else
 	{
+		assert(0);
 		return FALSE;
 	}
 
