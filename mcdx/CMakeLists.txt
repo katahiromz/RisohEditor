@@ -4,8 +4,8 @@
 # CMake minimum version
 cmake_minimum_required(VERSION 3.10)
 
-# project name and languages
-project(mcdx C RC)
+# project name, version, and languages
+project(mcdx VERSION 0.9.3 LANGUAGES CXX RC)
 
 # include directories
 include_directories(../src)

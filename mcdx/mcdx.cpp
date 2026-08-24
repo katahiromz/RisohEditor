@@ -124,7 +124,7 @@ void show_help(void)
 void show_version(void)
 {
     fputs(
-        "mcdx ver.0.9.2\n"
+        "mcdx ver.0.9.3\n"
         "Copyright (C) 2018-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n"
         "This program is free software; you may redistribute it under the terms of\n"
         "the GNU General Public License version 3 or (at your option) any later version.\n"
