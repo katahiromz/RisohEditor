@@ -87,12 +87,14 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 	{
 		ret += L"    ";
 #ifndef NO_CONSTANTS_DB
+		std::wstring strVk;
 		if (entry.fFlags & FVIRTKEY)
 		{
-			ret += g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
+			strVk = g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
+			ret += strVk;
 		}
-		else
 #endif
+		if (strVk.empty())
 		{
 			std::string str;
 			if (('A' <= entry.wAscii && entry.wAscii <= 'Z') ||
