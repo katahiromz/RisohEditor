@@ -119,19 +119,16 @@ void show_version(void)
 //////////////////////////////////////////////////////////////////////////////
 // Temporary file management
 
-struct DeleteTempFiles
+struct AutoDeleteFileA
 {
-    std::vector<std::string> m_files;
-
-    void push_back(const std::string& file) { m_files.push_back(file); }
-
-    ~DeleteTempFiles()
+    std::string m_file;
+    AutoDeleteFileA(const char *file = NULL) : m_file(file ? file : "") { }
+    ~AutoDeleteFileA()
     {
-        for (auto& f : m_files)
-            _unlink(f.c_str());
+        if (m_file.size())
+            DeleteFileA(m_file.c_str());
     }
 };
-DeleteTempFiles g_delete_temp_files;
 
 inline bool file_exists(const char *file)
 {
@@ -174,12 +171,11 @@ FILE *tmpfilenam(char *pathname)
         strcat(file, name);
 
         if (!file_exists(file))
-            fp = fopen(file, "w+b");
+            fp = fopen(file, "wb");
     }
 
     if (fp)
     {
-        g_delete_temp_files.push_back(file);
         strcpy(pathname, file);
     }
     else
@@ -751,6 +747,8 @@ int save_coff(const char *output_file)
         return EXITCODE_CANT_MAKE_TEMP;
     }
 
+    AutoDeleteFileA auto_delete_0(temp_file);
+
     if (int ret = save_res(temp_file))
         return ret;
 
@@ -1076,6 +1074,8 @@ int main(int argc, char **argv)
         }
     }
 
+    AutoDeleteFileA auto_delete_1;
+
     // Read stdin into temp file when no input file given
     if (!g_input_file)
     {
@@ -1086,6 +1086,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "ERROR: Unable to create temporary file\n");
             return EXITCODE_CANT_MAKE_TEMP;
         }
+        auto_delete_1.m_file = s_szTempFile;
         char buf[512];
         while (fgets(buf, _countof(buf), stdin))
             fputs(buf, fp);

@@ -2,6 +2,7 @@
 
 - v.6.1.7 (2026-XX-YY)
     - Memperbaiki bug MEditAccelDlg ("^A" dll.).
+    - Membuat mcdx tidak terlalu mencurigakan.
 - v.6.1.6 (2026-08-24)
     - Peningkatan kecil pada UI/UX.
     - Menambahkan tombol [Bantuan] ke MConstantDlg.

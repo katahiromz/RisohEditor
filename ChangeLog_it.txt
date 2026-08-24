@@ -2,6 +2,7 @@
 
 - v.6.1.7 (2026-XX-YY)
     - Corretto bug in MEditAccelDlg ("^A" ecc.).
+    - Reso mcdx meno sospetto.
 - v.6.1.6 (24.08.2026)
     - Miglioramenti minori a UI/UX.
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
