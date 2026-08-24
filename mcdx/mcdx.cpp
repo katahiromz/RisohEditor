@@ -126,7 +126,11 @@ struct AutoDeleteFileA
     ~AutoDeleteFileA()
     {
         if (m_file.size())
+#ifdef _WIN32
             DeleteFileA(m_file.c_str());
+#else
+            _unlink(m_file.c_str());
+#endif
     }
 };
 
