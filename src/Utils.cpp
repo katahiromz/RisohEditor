@@ -3946,3 +3946,43 @@ BOOL InitLangListBox(HWND hwnd)
 
 	return TRUE;
 }
+
+std::wstring SanitizeFileName(const std::wstring& name)
+{
+	std::wstring result = name;
+	for (wchar_t& ch : result)
+	{
+		switch (ch)
+		{
+		case L'\\': case L'/': case L':': case L'*': case L'?': case L'"':
+		case L'<': case L'>': case L'|':
+			ch = L'_';
+			break;
+		default:
+			if (ch <= 0x1F)
+				ch = L'_';
+			break;
+		}
+	}
+
+	return result;
+}
+
+std::wstring SanitizeIdentifier(const std::wstring& name)
+{
+	std::wstring result = name;
+
+	for (wchar_t& ch : result)
+	{
+		if (!mchr_is_alnum(ch) && ch != L'_')
+			ch = L'_';
+	}
+
+	if (!result.empty() && mchr_is_digit(result[0]))
+		result.insert(result.begin(), L'_');
+
+	if (result.empty())
+		result = L"_";
+
+	return result;
+}

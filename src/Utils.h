@@ -152,3 +152,5 @@ MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID);
 MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem);
 INT ErrorBoxDx(UINT nStringID, UINT uType = MB_ICONERROR);
 INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, UINT uType = MB_ICONINFORMATION);
+std::wstring SanitizeFileName(const std::wstring& name);
+std::wstring SanitizeIdentifier(const std::wstring& name);

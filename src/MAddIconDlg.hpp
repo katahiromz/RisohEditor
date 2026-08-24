@@ -188,7 +188,7 @@ public:
 			WCHAR szText[MAX_PATH];
 			StringCchCopyW(szText, _countof(szText), szFile);
 			PathRemoveExtensionW(szText);
-			ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
+			ComboBox_SetText(GetDlgItem(hwnd, cmb2), SanitizeIdentifier(PathFindFileNameW(szText)).c_str());
 		}
 	}
 
