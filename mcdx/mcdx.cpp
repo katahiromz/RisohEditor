@@ -327,8 +327,7 @@ static bool run_process(const MString& command_line, std::string& output)
 {
 #if defined(_WIN32) && !defined(WONVER)
     MProcessMaker maker;
-    maker.SetShowWindow(SW_HIDE);
-    maker.SetCreationFlags(CREATE_NEW_CONSOLE);
+    maker.SetCreationFlags(CREATE_NO_WINDOW);
     MFile hInputWrite, hOutputRead;
     if (!maker.PrepareForRedirect(&hInputWrite, &hOutputRead) ||
         !maker.CreateProcessDx(NULL, command_line.c_str()))

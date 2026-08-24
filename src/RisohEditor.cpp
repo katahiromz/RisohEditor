@@ -1083,8 +1083,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 
 	// create an upx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile hInputWrite, hOutputRead;
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
@@ -1124,8 +1123,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 
 	// create the upx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile hInputWrite, hOutputRead;
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
@@ -1732,8 +1730,7 @@ public:
 static BOOL RunCompilerProcess(MProcessMaker& pmaker, const MStringW& strCmdLine,
 								MStringA& strOutput, BOOL& bSucceeded)
 {
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 	bSucceeded = FALSE;
 
 	MFile hInputWrite, hOutputRead;
@@ -5080,8 +5077,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
 	// create a UPX process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile hInputWrite, hOutputRead;
 	MStringA strOutput;
@@ -5567,8 +5563,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
 	// create a cpp.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MStringA strOutput;
 	MFile hInputWrite, hOutputRead;
@@ -5632,8 +5627,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 
 	// create a cpp.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MStringA strOutput;
 	MFile hInputWrite, hOutputRead;

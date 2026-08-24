@@ -260,8 +260,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 
 	// create an mcdx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
@@ -327,8 +326,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
 
 	// create an mcdx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile error;
 	pmaker.PrepareForRedirect(nullptr, &error, &error);
@@ -402,8 +400,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 
 	// create an OleBow.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
 	{
@@ -467,8 +464,7 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput,
 
 	// create an midlwrap.bat process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	//pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile error;
 	pmaker.PrepareForRedirect(nullptr, &error, &error);
@@ -1940,8 +1936,7 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
 
 	// create an mcdx.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
 
 	MFile hInputWrite, hOutputRead;
 	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
@@ -2022,8 +2017,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 
 	// create a windres.exe process
 	MProcessMaker pmaker;
-	pmaker.SetShowWindow(SW_HIDE);
-	pmaker.SetCreationFlags(CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT);
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT);
 
 	MFile hInputWrite, hOutputRead;
 
