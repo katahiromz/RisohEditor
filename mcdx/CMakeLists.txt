@@ -12,6 +12,9 @@ include_directories(../src)
 
 # mcdx.exe
 add_executable(mcdx mcdx.cpp mcdx_res.rc)
+if(MSVC)
+    target_link_options(mcdx PRIVATE "LINKER:/MANIFEST:NO")
+endif()
 
 if (WIN32)
     target_compile_definitions(mcdx PRIVATE UNICODE _UNICODE)
