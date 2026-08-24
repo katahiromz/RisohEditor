@@ -310,7 +310,7 @@ void MIDListDlg::AddResourceRow(const EntryBase *entry)
 		}
 		else
 		{
-			text1 = entry->m_name.quoted_wstr();
+			text1 = entry->m_name.c_str();
 			text3 = text1;
 		}
 	}

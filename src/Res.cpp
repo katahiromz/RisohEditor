@@ -93,7 +93,7 @@ MStringW get_type_label(const MIdOrString& type)
 MStringW get_name_label(const MIdOrString& type, const MIdOrString& name)
 {
 	if (type != L"RISOHTEMPLATE" && name.is_str())
-		return name.quoted_wstr(); // string name resource name
+		return name.str();
 
 	WORD id = name.m_id;
 	if (!name.is_str() && id == 0)
