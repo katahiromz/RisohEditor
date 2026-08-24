@@ -9,6 +9,7 @@
     - Corregido error en MEditAccelDlg ("^A", etc.). Persiste el error de `windres` con los aceleradores en "^A".
     - Gestión acelerada de elementos de recursos.
     - Se corrigió un error en la visualización del nombre del recurso RISOHTEMPLATE.
+    - Se corrigió la importación, extracción y guardado de RT_BITMAP.
 - v.6.1.5 (2026-08-22)
     - Acelerar MDialogFontSubstDlg.
     - Se añadió la ventana de presentación.

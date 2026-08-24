@@ -13,6 +13,59 @@
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)
 
+#ifndef BI_ALPHABITFIELDS
+#define BI_ALPHABITFIELDS 6
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
+// DIB header kind detection.
+//
+// A "packed DIB" can start with any of several header structs, all of which
+// begin with a DWORD giving the header's own size (bcSize/biSize). GDI (and
+// this code) dispatches on that size to know which layout follows:
+//
+//   12  bytes -- BITMAPCOREHEADER  (used by BITMAPCOREINFO, OS/2 1.x)
+//   16  bytes -- OS22XBITMAPHEADER, short form (OS/2 2.x)
+//   40  bytes -- BITMAPINFOHEADER  (used by BITMAPINFO, the common Win32 case)
+//   52  bytes -- BITMAPV2INFOHEADER (undocumented; adds RGB masks)
+//   56  bytes -- BITMAPV3INFOHEADER (undocumented; adds an alpha mask)
+//   64  bytes -- OS22XBITMAPHEADER, full form (OS/2 2.x)
+//   108 bytes -- BITMAPV4HEADER    (adds RGBA masks, color space, gamma)
+//   124 bytes -- BITMAPV5HEADER    (adds ICC profile info)
+//
+// Anything else is a header size this code doesn't recognize -- rather than
+// guessing at its layout (and risking misreading garbage as width/height/bit
+// count), callers should fail gracefully so the caller can fall back to a
+// more general decoder (see PackedDIB_CreateBitmapFromMemory's GDI+ path).
+enum DIB_HEADER_KIND
+{
+	DIBHDR_UNKNOWN,
+	DIBHDR_CORE,    // BITMAPCOREHEADER / BITMAPCOREINFO
+	DIBHDR_OS22,    // OS22XBITMAPHEADER (16 or 64 bytes)
+	DIBHDR_INFO,    // BITMAPINFOHEADER / BITMAPINFO
+	DIBHDR_V2,      // BITMAPV2INFOHEADER
+	DIBHDR_V3,      // BITMAPV3INFOHEADER
+	DIBHDR_V4,      // BITMAPV4HEADER
+	DIBHDR_V5,      // BITMAPV5HEADER
+};
+
+static DIB_HEADER_KIND
+PackedDIB_GetHeaderKind(DWORD dwHeaderSize)
+{
+	switch (dwHeaderSize)
+	{
+	case sizeof(BITMAPCOREHEADER): return DIBHDR_CORE;   // 12
+	case 16:                       return DIBHDR_OS22;
+	case sizeof(BITMAPINFOHEADER): return DIBHDR_INFO;   // 40
+	case 52:                       return DIBHDR_V2;
+	case 56:                       return DIBHDR_V3;
+	case 64:                       return DIBHDR_OS22;
+	case sizeof(BITMAPV4HEADER):   return DIBHDR_V4;     // 108
+	case sizeof(BITMAPV5HEADER):   return DIBHDR_V5;     // 124
+	default:                       return DIBHDR_UNKNOWN;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
@@ -64,8 +117,17 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 	if (HeaderSize > dwSize)
 		return 0;
 
+	DIB_HEADER_KIND Kind = PackedDIB_GetHeaderKind(HeaderSize);
+	if (Kind == DIBHDR_UNKNOWN)
+	{
+		// A header size we don't recognize. Rather than misreading garbage
+		// as width/height/bit-count fields, fail so the caller can fall
+		// back to a more general decoder.
+		return 0;   // failure
+	}
+
 	DWORD ColorCount = 0;
-	if (HeaderSize == sizeof(bc))
+	if (Kind == DIBHDR_CORE)
 	{
 		CopyMemory(&bc, pPackedDIB, sizeof(bc));
 
@@ -76,7 +138,8 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 		case 8:     ColorCount = 256;   break;
 		case 24:    break;
 		default:
-			assert(0);
+			// Not a bit depth BITMAPCOREHEADER supports -- treat as an
+			// unrecognized/malformed DIB rather than asserting.
 			return 0;   // failure
 		}
 
@@ -84,9 +147,15 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 		return (Ret <= dwSize) ? Ret : 0;
 	}
 
+	// DIBHDR_OS22 / DIBHDR_INFO / DIBHDR_V2 / DIBHDR_V3 / DIBHDR_V4 / DIBHDR_V5
+	// all share the same first 40 bytes as BITMAPINFOHEADER (width, height,
+	// planes, bit count, compression, sizes, color-table sizes, ...), so a
+	// plain BITMAPINFOHEADER-shaped read of those first bytes is valid for
+	// every one of them; the extra fields each adds (masks, gamma, ICC
+	// profile info, ...) live after that and don't affect this calculation.
 	if (HeaderSize < sizeof(bi))
 	{
-		return 0;       // failure
+		return 0;       // failure (e.g. the 16-byte short OS22XBITMAPHEADER)
 	}
 
 	CopyMemory(&bi, pPackedDIB, sizeof(bi));
@@ -103,22 +172,40 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 		ColorCount = (bi.biClrUsed ? bi.biClrUsed : 256);
 		break;
 	case 16: case 32:
-		if (bi.biCompression == BI_BITFIELDS)
+		if (Kind == DIBHDR_INFO &&
+		    (bi.biCompression == BI_BITFIELDS || bi.biCompression == BI_ALPHABITFIELDS))
 		{
-			ColorCount = 3;
+			// Classic (40-byte) BITMAPINFOHEADER stores the R/G/B(/A) masks
+			// as extra DWORDs appended right after the header, taking the
+			// place of a color table. BITMAPV2/V3/V4/V5 headers embed those
+			// same masks as fields *inside* the (already larger) header, so
+			// there is nothing extra to skip for those -- adding this
+			// adjustment for them would push the offset past the real
+			// start of the pixel data.
+			ColorCount = (bi.biCompression == BI_ALPHABITFIELDS) ? 4 : 3;
+		}
+		else if (bi.biClrUsed)
+		{
+			// Uncommon, but 16/32bpp DIBs may still carry an optional color
+			// table (e.g. for a palette hint); honor biClrUsed if present.
+			ColorCount = bi.biClrUsed;
 		}
 		break;
 	case 24:
+		if (bi.biClrUsed)
+			ColorCount = bi.biClrUsed;
 		break;
 	default:
-		return 0;   // failure
+		return 0;   // failure -- not a bit depth we recognize
 	}
 
 	Ret = bi.biSize + ColorCount * sizeof(RGBQUAD);
 	if (Ret > dwSize)
 	{
-		assert(0);
-		Ret = 0;
+		// Header claims a color table that doesn't fit in the buffer we
+		// were given -- treat as malformed/unrecognized input rather than
+		// asserting, so callers can fail over to another decoder.
+		return 0;
 	}
 	return Ret;
 }
@@ -172,6 +259,19 @@ PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm)
 HBITMAP
 PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 {
+	if (pPackedDIB == nullptr || dwSize < sizeof(DWORD))
+		return nullptr;
+
+	// Identify which DIB header this is up front. Header sizes this code
+	// doesn't recognize (not BITMAPCOREHEADER/OS22XBITMAPHEADER/
+	// BITMAPINFOHEADER/BITMAPV2..V5HEADER) are rejected here rather than
+	// guessed at, so the caller (PackedDIB_CreateBitmapFromMemory) can fall
+	// back to its GDI+ / LoadImage decoding paths instead.
+	DWORD dwHeaderSize = *(const DWORD *)pPackedDIB;
+	DIB_HEADER_KIND Kind = PackedDIB_GetHeaderKind(dwHeaderSize);
+	if (Kind == DIBHDR_UNKNOWN)
+		return nullptr;
+
 	DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
 	if (Offset == 0)
 		return nullptr;
@@ -183,17 +283,22 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 	// Copying into a local BITMAPINFO truncates the color table for
 	// 1/4/8-bpp DIBs, which corrupts the resulting bitmap's palette.
 	// Use the original buffer directly instead, since it already
-	// contains the full color table.
+	// contains the full color table. This is also required for
+	// BITMAPV4HEADER/BITMAPV5HEADER: GDI dispatches on the leading
+	// biSize field itself (CreateDIBSection, SetDIBits, StretchDIBits,
+	// ... all understand BITMAPCOREHEADER, BITMAPINFOHEADER, and the V4/V5
+	// headers natively), so passing the original buffer straight through
+	// is correct -- and necessary -- for every header kind here.
 	LPBITMAPINFO pbi = (LPBITMAPINFO)pPackedDIB;
 
 	// CreateDIBSection (the DIB_RGB_COLORS path below) hands back a raw
 	// pixel buffer sized straight from biWidth/biBitCount -- it does not
 	// decode BI_RLE4/BI_RLE8, so copying compressed source bytes into it
-	// would just corrupt the image. BITMAPCOREHEADER (OS/2) packed DIBs
-	// have no biCompression field at all -- never RLE -- and always take
-	// that CreateDIBSection path, same as before.
-	DWORD dwHeaderSize = *(const DWORD *)pPackedDIB;
-	BOOL fCompressed = (dwHeaderSize >= sizeof(BITMAPINFOHEADER)) &&
+	// would just corrupt the image. BI_RLE4/BI_RLE8 are only meaningful
+	// for BITMAPINFOHEADER-and-newer headers (BITMAPCOREHEADER and
+	// OS22XBITMAPHEADER packed DIBs have no such compression here) and
+	// always take the plain CreateDIBSection path below, same as before.
+	BOOL fCompressed = (Kind != DIBHDR_CORE && Kind != DIBHDR_OS22) &&
 	                   (pbi->bmiHeader.biCompression == BI_RLE4 ||
 	                    pbi->bmiHeader.biCompression == BI_RLE8);
 

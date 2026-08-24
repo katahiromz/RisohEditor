@@ -35,6 +35,9 @@ struct AutoDeleteFileW
 LONG EntryBaseBase::s_alive_count = 0;
 #endif
 
+BOOL Bitmap_AddFileHeader(std::vector<BYTE>& data);
+BOOL Bitmap_DropFileHeader(std::vector<BYTE>& data);
+
 BOOL
 Res_IsEntityType(const MIdOrString& type)
 {
@@ -1159,6 +1162,8 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 		DeleteObject(hbm);
 	}
 
+	Bitmap_DropFileHeader(stream.data());
+
 	// add the entry
 	return add_lang_entry(RT_BITMAP, name, lang, stream.data());
 }
@@ -2212,4 +2217,22 @@ void EntrySet::delete_all(void)
 	super()->clear();
 	m_owned.clear();
 	m_bDeletingAll = false;
+}
+
+BOOL EntrySet::extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
+{
+	if (e->m_et != ET_LANG)
+		return FALSE;   // invalid
+
+	if (e->m_type == RT_BITMAP)
+	{
+		auto data = e->m_data;
+		Bitmap_AddFileHeader(data);
+		MByteStreamEx bs(data);
+		return bs.SaveToFile(pszFileName);
+	}
+
+	// write the resource data to a binary file
+	MByteStreamEx bs(e->m_data);
+	return bs.SaveToFile(pszFileName);
 }

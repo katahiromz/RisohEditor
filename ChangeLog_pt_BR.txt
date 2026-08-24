@@ -9,6 +9,7 @@
     - Corrigido o bug do MEditAccelDlg ("^A" etc.). O bug ACCELERATORS do windres em "^A" mantém-se.
     - Manuseio acelerado de itens de recursos.
     - Corrigido um erro na exibição do nome do recurso RISOHTEMPLATE.
+    - Corrigida a importação, extração e salvamento de RT_BITMAP.
 - v.6.1.5 (2026-08-22)
     - Acelere o MDialogFontSubstDlg.
     - Adicionada a tela de abertura.

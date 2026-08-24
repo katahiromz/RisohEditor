@@ -9,6 +9,7 @@
     - Fixed MEditAccelDlg bug ("^A" etc.). windres's ACCELERATORS bug on "^A" remains.
     - Accelerated resource item handling.
     - Fixed the incorrect display of the RISOHTEMPLATE resource name.
+    - Fixed RT_BITMAP importing, extracting, and saving.
 - v.6.1.5 (2026-08-22)
     - Accelerated MDialogFontSubstDlg.
     - Added the splash window.

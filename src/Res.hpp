@@ -792,15 +792,7 @@ public:
 	BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const;
 
 	// extract the resource data as a binary file
-	BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
-	{
-		if (e->m_et != ET_LANG)
-			return FALSE;   // invalid
-
-		// write the resource data to a binary file
-		MByteStreamEx bs(e->m_data);
-		return bs.SaveToFile(pszFileName);
-	}
+	BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const;
 
 	// import the resource data from the specified *.res file
 	BOOL import_res(LPCWSTR pszResFile);
