@@ -4192,7 +4192,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		g_res.delete_invalid();     // clean up invalids
 		if (g_res.empty())
+		{
 			HidePreview(STV_RESETTEXT);
+			m_tab.SetCurSel(0);
+		}
 	}
 
 	UpdateToolBarStatus();
