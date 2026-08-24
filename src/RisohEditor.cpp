@@ -5221,6 +5221,9 @@ IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
 // WM_DROPFILES: file(s) has been dropped
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
+	if (IsWindow(m_splash))
+		SendMessageW(m_splash, WM_CLOSE, 0, 0);
+
 	MWaitCursor wait;
 	ChangeStatusText(IDS_EXECUTINGCMD);     // executing command
 
