@@ -7,31 +7,15 @@ cmake_minimum_required(VERSION 3.10)
 # project name and languages
 project(mcdx C RC)
 
-# support C++11
-macro(use_cxx11)
-  if (CMAKE_VERSION VERSION_LESS "3.1")
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    endif()
-  else()
-    set (CMAKE_CXX_STANDARD 11)
-  endif()
-endmacro(use_cxx11)
-
-if (NOT WIN32)
-    use_cxx11()
-endif()
-
 # include directories
 include_directories(../src)
 
-# executable
-add_executable(mcdx mcdx.cpp getoptwin.c)
+# mcdx.exe
+add_executable(mcdx mcdx.cpp)
 
-# do statically link
 if (WIN32)
-    set_target_properties(mcdx PROPERTIES LINK_SEARCH_START_STATIC 1)
-    set_target_properties(mcdx PROPERTIES LINK_SEARCH_END_STATIC 1)
+    target_compile_definitions(mcdx PRIVATE UNICODE _UNICODE)
+    target_link_libraries(mcdx shell32 shlwapi)
 endif()
 
 option(USE_WONAPI "Use Wonders API" OFF)
@@ -39,7 +23,7 @@ option(USE_ICONV "Use Iconv" OFF)
 
 if(USE_WONAPI)
     set(USE_ICONV ON)
-    target_compile_definitions(mcdx PRIVATE -DWONVER)
+    target_compile_definitions(mcdx PRIVATE WONVER)
 elseif(NOT WIN32)
     set(USE_ICONV ON)
 endif()

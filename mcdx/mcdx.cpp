@@ -4,19 +4,30 @@
 #define NO_CONSTANTS_DB
 #define NO_STRSAFE
 
+#ifdef WONVER
+    #undef UNICODE
+    #undef _UNICODE
+#endif
+
 #if defined(_WIN32) && !defined(WONVER)
     #include "MProcessMaker.hpp"
+    #include <shellapi.h>   // CommandLineToArgvW
+    #include <shlwapi.h>
+    #include <io.h>         // _wunlink
+    #include <wchar.h>      // _wfopen, _wgetenv
 #endif
 #include "MString.hpp"
 #include "MIdOrString.hpp"
 #include "MacroParser.hpp"
 #include "MessageRes.hpp"
 #include "ResHeader.hpp"
-#include "getoptwin.h"
+#include "MTextToText.hpp"
 
 #include <cctype>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <vector>
+#include <string>
 
 #ifndef RT_MESSAGETABLE
     #define RT_MESSAGETABLE MAKEINTRESOURCE(11)
@@ -52,18 +63,23 @@ typedef std::map<msg_table_key_type, MessageRes> msg_tables_type;
 
 bool g_wrap_enabled = false;    // wrap enabled flag
 
-const char *g_cpp      = "mcpp";
-const char *g_windres  = "windres";
-const char *g_progname = "mcdx";
+// NOTE: These are MString (TCHAR-based): on Windows they are Unicode
+//       (UTF-16) strings; on other platforms they are narrow (UTF-8) strings.
+MString g_cpp      = TEXT("mcpp");
+MString g_windres  = TEXT("windres");
+MString g_progname = TEXT("mcdx");
 
-char *g_input_file  = NULL;
-char *g_output_file = NULL;
-const char *g_inp_format = NULL;
-const char *g_out_format = NULL;
+MString g_input_file;    // empty == not specified
+MString g_output_file;   // empty == not specified / write to stdout
 
-std::vector<MStringA> g_include_directories;
-std::vector<MStringA> g_definitions;
-std::vector<MStringA> g_undefinitions;
+// Format names ("rc"/"res"/"bin"/"coff") are always plain ASCII, so these
+// stay as ordinary narrow strings regardless of platform.
+std::string g_inp_format;
+std::string g_out_format;
+
+std::vector<MString> g_include_directories;
+std::vector<MString> g_definitions;
+std::vector<MString> g_undefinitions;
 
 std::string g_strFile = "(anonymous)";
 int g_nLineNo = 0;
@@ -108,7 +124,7 @@ void show_help(void)
 void show_version(void)
 {
     fputs(
-        "mcdx ver.0.9.0\n"
+        "mcdx ver.0.9.2\n"
         "Copyright (C) 2018-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n"
         "This program is free software; you may redistribute it under the terms of\n"
         "the GNU General Public License version 3 or (at your option) any later version.\n"
@@ -117,75 +133,116 @@ void show_version(void)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Unicode-aware file helpers.
+//
+// On Windows these call the wide ("W") CRT/Win32 entry points directly so
+// that file paths containing non-ASCII characters work correctly. On other
+// platforms MString is already a narrow (UTF-8) std::string and the plain
+// POSIX calls are used as-is.
+
+static FILE *T_fopen(const MString& path, const MString& mode)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    return _wfopen(path.c_str(), mode.c_str());
+#else
+    return fopen(path.c_str(), mode.c_str());
+#endif
+}
+
+static bool T_remove(const MString& path)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    return DeleteFileW(path.c_str());
+#else
+    return unlink(path.c_str()) == 0;
+#endif
+}
+
+static bool T_file_exists(const MString& path)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    return PathFileExistsW(path.c_str());
+#else
+    struct stat st;
+    return stat(path.c_str(), &st) == 0;
+#endif
+}
+
+static MString T_getenv(const MString& name)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    WCHAR text[512];
+    if (!GetEnvironmentVariableW(name.c_str(), text, _countof(text)))
+        return L"";
+    return text;
+#else
+    const char *p = getenv(name.c_str());
+    return p ? MString(p) : MString();
+#endif
+}
+
+// Convert an MString to a narrow (UTF-8) std::string, e.g. for use in
+// fprintf(stderr, "%s", ...). On non-Unicode builds this is a no-op copy.
+static std::string to_narrow(const MString& s)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    return MWideToAnsi(CP_UTF8, s.c_str()).c_str();
+#else
+    return s;
+#endif
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // Temporary file management
 
-struct AutoDeleteFileA
+struct AutoDeleteFile
 {
-    std::string m_file;
-    AutoDeleteFileA(const char *file = NULL) : m_file(file ? file : "") { }
-    ~AutoDeleteFileA()
+    MString m_file;
+    AutoDeleteFile(const MString& file = MString()) : m_file(file) { }
+    ~AutoDeleteFile()
     {
-        if (m_file.size())
-#ifdef _WIN32
-            DeleteFileA(m_file.c_str());
-#else
-            _unlink(m_file.c_str());
-#endif
+        if (!m_file.empty())
+            T_remove(m_file);
     }
 };
 
-inline bool file_exists(const char *file)
+static FILE *tmpfilenam(MString& pathname)
 {
-    struct stat st;
-    return stat(file, &st) == 0;
-}
-
-FILE *tmpfilenam(char *pathname)
-{
-    char tmp[MAX_PATH];
-    const char *ptr = getenv("TMP");
-    if (!ptr) ptr = getenv("TEMP");
-    if (ptr)
-    {
-        strcpy(tmp, ptr);
-        mstr_trim_right(tmp, "/\\");
-    }
-    else
-    {
-        strcpy(tmp, ".");
-    }
+    MString tmp = T_getenv(TEXT("TMP"));
+    if (tmp.empty())
+        tmp = T_getenv(TEXT("TEMP"));
+    if (tmp.empty())
+        tmp = TEXT(".");
+    mstr_trim_right(tmp, TEXT("/\\"));
 
     FILE *fp = NULL;
-    char file[MAX_PATH];
+    MString file;
     const int retry_count = 64;
 
     for (int k = 0; k < retry_count && !fp; ++k)
     {
-        char name[13];
-        for (int i = 0; i < 8; ++i)
-            name[i] = (char)('A' + rand() % ('Z' - 'A' + 1));
-        strcpy(name + 8, ".tmp");
+        MString name;
+        for (int j = 0; j < 8; ++j)
+            name += (MString::value_type)(TEXT('A') + rand() % ('Z' - 'A' + 1));
+        name += TEXT(".tmp");
 
-        strcpy(file, tmp);
+        file = tmp;
 #ifdef _WIN32
-        strcat(file, "\\");
+        file += TEXT("\\");
 #else
-        strcat(file, "/");
+        file += TEXT("/");
 #endif
-        strcat(file, name);
+        file += name;
 
-        if (!file_exists(file))
-            fp = fopen(file, "wb");
+        if (!T_file_exists(file))
+            fp = T_fopen(file, TEXT("wb"));
     }
 
     if (fp)
-    {
-        strcpy(pathname, file);
-    }
+        pathname = file;
     else
-    {
-        pathname[0] = 0;
-    }
+        pathname.clear();
+
     return fp;
 }
 
@@ -204,9 +261,9 @@ int syntax_error(void)
 
 // Read entire contents of a binary file into a string.
 // Returns true on success.
-static bool read_file_contents(const char *path, std::string& out)
+static bool read_file_contents(const MString& path, std::string& out)
 {
-    FILE *fp = fopen(path, "rb");
+    FILE *fp = T_fopen(path, TEXT("rb"));
     if (!fp)
         return false;
 
@@ -221,28 +278,28 @@ static bool read_file_contents(const char *path, std::string& out)
     return true;
 }
 
-// Open an output file (or return stdout when path is NULL).
+// Open an output file (or return stdout when path is empty).
 // Writes error message and returns NULL on failure.
-static FILE *open_output_file(const char *path)
+static FILE *open_output_file(const MString& path)
 {
-    if (!path)
+    if (path.empty())
         return stdout;
-    FILE *fp = fopen(path, "wb");
+    FILE *fp = T_fopen(path, TEXT("wb"));
     if (!fp)
         fprintf(stderr, "ERROR: Unable to open output file.\n");
     return fp;
 }
 
 // Finish writing: close file, check ferror, unlink on error.
-static int finish_output_file(FILE *fp, const char *path)
+static int finish_output_file(FILE *fp, const MString& path)
 {
     bool err = ferror(fp) != 0;
-    if (path)
+    if (!path.empty())
         fclose(fp);
     if (err)
     {
-        if (path)
-            _unlink(path);
+        if (!path.empty())
+            T_remove(path);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -254,7 +311,7 @@ static int finish_output_file(FILE *fp, const char *path)
 
 // Run `command_line`, capture stdout+stderr into `output`.
 // Returns true when the process exits with code 0.
-static bool run_process(const std::string& command_line, std::string& output)
+static bool run_process(const MString& command_line, std::string& output)
 {
 #if defined(_WIN32) && !defined(WONVER)
     MProcessMaker maker;
@@ -287,6 +344,13 @@ static bool run_process(const std::string& command_line, std::string& output)
 
 //////////////////////////////////////////////////////////////////////////////
 // Parsing helpers
+//
+// NOTE: Everything below this point works on the *contents* produced by the
+// mcpp preprocessor (RC source / message table text). That text is always
+// narrow, code-page-tagged data (its encoding is controlled at the RC level
+// via `#pragma code_page(...)` and the `-c`/`--codepage` option), which is
+// unrelated to the Unicode-ness of file *paths*. It is therefore left as
+// plain std::string / char*, exactly as before.
 
 bool do_directive_line(char*& ptr)
 {
@@ -593,7 +657,7 @@ int eat_output(const std::string& output)
                             if (memcmp("MESSAGETABLEDX", p2, 14) == 0 &&
                                 (mchr_is_space(p2[14]) || p2[14] == 0 || p2[14] == '{'))
                             {
-                                g_table_id = MIdOrString(token.c_str());
+                                g_table_id = MIdOrString(MAnsiToWide(g_wCodePage, token.c_str()).c_str());
                                 ptr  = const_cast<char *>(p2);
                                 found = true;
                             }
@@ -669,7 +733,7 @@ int eat_output(const std::string& output)
 //////////////////////////////////////////////////////////////////////////////
 // Save functions
 
-int save_rc(const char *output_file)
+int save_rc(const MString& output_file)
 {
     FILE *fp = open_output_file(output_file);
     if (!fp)
@@ -695,7 +759,7 @@ int save_rc(const char *output_file)
     return finish_output_file(fp, output_file);
 }
 
-int save_res(const char *output_file)
+int save_res(const MString& output_file)
 {
     MByteStreamEx bs;
     ResHeader header;
@@ -740,9 +804,9 @@ int save_res(const char *output_file)
     return finish_output_file(fp, output_file);
 }
 
-int save_coff(const char *output_file)
+int save_coff(const MString& output_file)
 {
-    char temp_file[MAX_PATH];
+    MString temp_file;
     if (FILE *fp = tmpfilenam(temp_file))
         fclose(fp);
     else
@@ -751,28 +815,28 @@ int save_coff(const char *output_file)
         return EXITCODE_CANT_MAKE_TEMP;
     }
 
-    AutoDeleteFileA auto_delete_0(temp_file);
+    AutoDeleteFile auto_delete_0(temp_file);
 
     if (int ret = save_res(temp_file))
         return ret;
 
-    MStringA command_line;
+    MString command_line;
     command_line += g_windres;
-    command_line += " \"";
+    command_line += TEXT(" \"");
     command_line += temp_file;
-    if (output_file)
+    if (!output_file.empty())
     {
-        command_line += "\" \"";
+        command_line += TEXT("\" \"");
         command_line += output_file;
-        command_line += "\"";
+        command_line += TEXT("\"");
     }
     else
     {
-        command_line += "\" -O coff";
+        command_line += TEXT("\" -O coff");
     }
 
 #if defined(_WIN32) && !defined(WONVER)
-    SetEnvironmentVariableA("LANG", "en_US");
+    SetEnvironmentVariable(TEXT("LANG"), TEXT("en_US"));
 #endif
 
     std::string output;
@@ -787,7 +851,7 @@ int save_coff(const char *output_file)
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
-int save_bin(const char *output_file)
+int save_bin(const MString& output_file)
 {
     MessageRes msg_res = g_msg_tables.begin()->second;
 
@@ -805,9 +869,9 @@ int save_bin(const char *output_file)
 //////////////////////////////////////////////////////////////////////////////
 // Load functions
 
-bool IsUTF16File(const char *input_file)
+bool IsUTF16File(const MString& input_file)
 {
-    FILE *fp = fopen(input_file, "rb");
+    FILE *fp = T_fopen(input_file, TEXT("rb"));
     if (!fp)
         return false;
 
@@ -818,7 +882,7 @@ bool IsUTF16File(const char *input_file)
     return result;
 }
 
-int load_rc(const char *input_file)
+int load_rc(const MString& input_file)
 {
     // Apply undefinitions
     for (const auto& undef : g_undefinitions)
@@ -828,8 +892,8 @@ int load_rc(const char *input_file)
         {
             if (g_definitions[k].find(undef) == 0)
             {
-                char c = g_definitions[k].c_str()[ulen];
-                if (c == 0 || c == '=')
+                MString::value_type c = g_definitions[k].c_str()[ulen];
+                if (c == 0 || c == TEXT('='))
                 {
                     g_definitions.erase(g_definitions.begin() + k);
                     --k;
@@ -840,23 +904,23 @@ int load_rc(const char *input_file)
 
     // Build preprocessor command line
     MString command_line = g_cpp;
-    command_line += ' ';
+    command_line += TEXT(" ");
     for (const auto& def : g_definitions)
     {
-        command_line += " -D";
+        command_line += TEXT(" -D");
         command_line += def;
     }
     for (const auto& inc : g_include_directories)
     {
-        command_line += " -I\"";
+        command_line += TEXT(" -I\"");
         command_line += inc;
-        command_line += "\"";
+        command_line += TEXT("\"");
     }
-    command_line += " \"";
+    command_line += TEXT(" \"");
     command_line += input_file;
-    command_line += "\"";
+    command_line += TEXT("\"");
 
-    g_strFile  = input_file;
+    g_strFile  = to_narrow(input_file);
     g_nLineNo  = 1;
 
     std::string output;
@@ -868,7 +932,7 @@ int load_rc(const char *input_file)
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
-int load_bin(const char *input_file)
+int load_bin(const MString& input_file)
 {
     std::string contents;
     if (!read_file_contents(input_file, contents))
@@ -888,7 +952,7 @@ int load_bin(const char *input_file)
     return EXITCODE_SUCCESS;
 }
 
-int load_res(const char *input_file)
+int load_res(const MString& input_file)
 {
     std::string contents;
     if (!read_file_contents(input_file, contents))
@@ -932,38 +996,40 @@ int load_res(const char *input_file)
 //////////////////////////////////////////////////////////////////////////////
 // Format dispatch
 
-const char *get_format(const char *file_path)
+const char *get_format(const MString& file_path)
 {
-    const char *pch = mstrrchr(file_path, '.');
-    if (!pch)             return "rc";
-    if (strcmp(pch, ".rc")   == 0) return "rc";
-    if (strcmp(pch, ".res")  == 0) return "res";
-    if (strcmp(pch, ".bin")  == 0) return "bin";
-    if (strcmp(pch, ".o")    == 0 ||
-        strcmp(pch, ".obj")  == 0 ||
-        strcmp(pch, ".coff") == 0) return "coff";
+    const MString::value_type *pch = mstrrchr(file_path.c_str(), TEXT('.'));
+    if (!pch)
+        return "rc";
+
+    MString ext(pch);
+    if (ext == TEXT(".rc"))   return "rc";
+    if (ext == TEXT(".res"))  return "res";
+    if (ext == TEXT(".bin"))  return "bin";
+    if (ext == TEXT(".o") || ext == TEXT(".obj") || ext == TEXT(".coff"))
+        return "coff";
     return "rc";
 }
 
 int just_do_it(void)
 {
     // Load
-    if (strcmp(g_inp_format, "rc") == 0)
+    if (g_inp_format == "rc")
     {
-        if (int r = load_rc(g_input_file))  
+        if (int r = load_rc(g_input_file))
             return r;
     }
-    else if (strcmp(g_inp_format, "res") == 0) 
-    { 
-        if (int r = load_res(g_input_file)) 
-            return r; 
+    else if (g_inp_format == "res")
+    {
+        if (int r = load_res(g_input_file))
+            return r;
     }
-    else if (strcmp(g_inp_format, "bin") == 0) 
-    { 
-        if (int r = load_bin(g_input_file)) 
-            return r; 
+    else if (g_inp_format == "bin")
+    {
+        if (int r = load_bin(g_input_file))
+            return r;
     }
-    else if (strcmp(g_inp_format, "coff") == 0)
+    else if (g_inp_format == "coff")
     {
         fprintf(stderr, "ERROR: COFF input format is not supported yet.\n");
         return EXITCODE_NOT_SUPPORTED_YET;
@@ -975,13 +1041,13 @@ int just_do_it(void)
     }
 
     // Save
-    if (strcmp(g_out_format, "rc") == 0) 
+    if (g_out_format == "rc")
         return save_rc(g_output_file);
-    else if (strcmp(g_out_format, "res") == 0)
+    else if (g_out_format == "res")
         return save_res(g_output_file);
-    else if (strcmp(g_out_format, "bin") == 0) 
+    else if (g_out_format == "bin")
         return save_bin(g_output_file);
-    else if (strcmp(g_out_format, "coff") == 0) 
+    else if (g_out_format == "coff")
         return save_coff(g_output_file);
     else
     {
@@ -991,86 +1057,244 @@ int just_do_it(void)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Entry point
+// Command-line option table (replaces getopt_long; no external dependency)
 
-int main(int argc, char **argv)
+struct OptionSpec
+{
+    const MString::value_type *name;   // long option name, e.g. "input"
+    char code;                         // short option letter
+    bool has_arg;
+};
+
+static const OptionSpec s_options[] =
+{
+    { TEXT("help"),           'h', false },
+    { TEXT("version"),        'V', false },
+    { TEXT("input"),          'i', true  },
+    { TEXT("output"),         'o', true  },
+    { TEXT("input-format"),   'J', true  },
+    { TEXT("output-format"),  'O', true  },
+    { TEXT("include-dir"),    'I', true  },
+    { TEXT("define"),         'D', true  },
+    { TEXT("undefine"),       'U', true  },
+    { TEXT("codepage"),       'c', true  },
+    { TEXT("language"),       'l', true  },
+    { TEXT("preprocessor"),   'p', true  },
+    { TEXT("windres"),        'w', true  },
+};
+
+// Applies one parsed option. Returns -1 to continue parsing, or an
+// EXITCODE_* value (>= 0) when parsing should stop immediately.
+static int apply_option(char code, const MString *value)
+{
+    switch (code)
+    {
+    case 'h':
+        show_help();
+        return EXITCODE_SUCCESS;
+    case 'V':
+        show_version();
+        return EXITCODE_SUCCESS;
+    case 'i':
+        if (!g_input_file.empty())
+        {
+            fprintf(stderr, "ERROR: Too many input files\n");
+            return EXITCODE_INVALID_ARGUMENT;
+        }
+        g_input_file = *value;
+        return -1;
+    case 'o':
+        if (!g_output_file.empty())
+        {
+            fprintf(stderr, "ERROR: Too many output files\n");
+            return EXITCODE_INVALID_ARGUMENT;
+        }
+        g_output_file = *value;
+        return -1;
+    case 'J':
+        g_inp_format = to_narrow(*value);
+        return -1;
+    case 'O':
+        g_out_format = to_narrow(*value);
+        return -1;
+    case 'I':
+        g_include_directories.push_back(*value);
+        return -1;
+    case 'D':
+        g_definitions.push_back(*value);
+        return -1;
+    case 'U':
+        g_undefinitions.push_back(*value);
+        return -1;
+    case 'c':
+        g_wCodePage = (uint16_t)mstr_parse_int(value->c_str(), false, 0);
+        return -1;
+    case 'l':
+        {
+            uint16_t w    = (uint16_t)mstr_parse_int(value->c_str(), false, 0);
+            uint8_t  bPrim = LOBYTE(w);
+            uint8_t  bSub  = HIBYTE(w);
+            g_langid = MAKELANGID(bPrim, bSub);
+        }
+        return -1;
+    case 'p':
+        g_cpp = *value;
+        return -1;
+    case 'w':
+        g_windres = *value;
+        return -1;
+    default:
+        fprintf(stderr, "ERROR: Unknown option\n");
+        return EXITCODE_INVALID_ARGUMENT;
+    }
+}
+
+// Returns true/false via 'known' for whether c is a recognized short option,
+// and (when known) whether it takes an argument.
+static bool short_option_lookup(char c, bool& needs_arg)
+{
+    switch (c)
+    {
+    case 'h': case 'V':
+        needs_arg = false;
+        return true;
+    case 'i': case 'o': case 'J': case 'O': case 'I':
+    case 'D': case 'U': case 'c': case 'l': case 'p': case 'w':
+        needs_arg = true;
+        return true;
+    default:
+        needs_arg = false;
+        return false;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Entry point (platform-neutral; works on an array of MString arguments)
+
+int mcdx_main(int argc, MString *argv)
 {
 #ifdef _WIN32
     srand(GetTickCount());
 #endif
-    static const struct option long_options[] =
-    {
-        {"help",          required_argument, NULL, 'h'},
-        {"version",       no_argument,       NULL, 'V'},
-        {"input",         required_argument, NULL, 'i'},
-        {"output",        required_argument, NULL, 'o'},
-        {"input-format",  required_argument, NULL, 'J'},
-        {"output-format", required_argument, NULL, 'O'},
-        {"include-dir",   required_argument, NULL, 'I'},
-        {"define",        required_argument, NULL, 'D'},
-        {"undefine",      required_argument, NULL, 'U'},
-        {"codepage",      required_argument, NULL, 'c'},
-        {"language",      required_argument, NULL, 'l'},
-        {"preprocessor",  required_argument, NULL, 'p'},
-        {"windres",       required_argument, NULL, 'w'},
-        {0, 0, NULL, 0}
-    };
+
+    g_definitions.push_back(TEXT("RC_INVOKED"));
+    g_definitions.push_back(TEXT("MCDX_INVOKED"));
 
 #ifdef __CYGWIN__
     extern char __declspec(dllimport) *__progname;
     g_progname = __progname;
 #else
-    g_progname = argv[0];
+    if (argc > 0)
+        g_progname = argv[0];
 #endif
 
-    g_definitions.push_back("RC_INVOKED");
-    g_definitions.push_back("MCDX_INVOKED");
+    std::vector<MString> positional;
+    bool no_more_opts = false;
 
-    int c, option_index = 0;
-    while ((c = getopt_long(argc, argv, "hVi:o:J:O:I:D:U:c:l:",
-                            long_options, &option_index)) != -1)
+    for (int i = 1; i < argc; ++i)
     {
-        switch (c)
+        const MString& arg = argv[i];
+
+        if (!no_more_opts && arg == TEXT("--"))
         {
-        case 'h': show_help();    return EXITCODE_SUCCESS;
-        case 'V': show_version(); return EXITCODE_SUCCESS;
-        case 'i':
-            if (g_input_file)
-                { fprintf(stderr, "ERROR: Too many input files\n"); return EXITCODE_INVALID_ARGUMENT; }
-            g_input_file = optarg;
-            break;
-        case 'o':
-            if (g_output_file)
-                { fprintf(stderr, "ERROR: Too many output files\n"); return EXITCODE_INVALID_ARGUMENT; }
-            g_output_file = optarg;
-            break;
-        case 'J': g_inp_format = optarg; break;
-        case 'O': g_out_format = optarg; break;
-        case 'I': g_include_directories.push_back(optarg); break;
-        case 'D': g_definitions.push_back(optarg); break;
-        case 'U': g_undefinitions.push_back(optarg); break;
-        case 'c': g_wCodePage = (uint16_t)strtol(optarg, NULL, 0); break;
-        case 'l':
-            {
-                uint16_t w    = (uint16_t)strtol(optarg, NULL, 0);
-                uint8_t bPrim = LOBYTE(w);
-                uint8_t bSub  = HIBYTE(w);
-                g_langid = MAKELANGID(bPrim, bSub);
-            }
-            break;
-        case 'p': g_cpp     = optarg; break;
-        case 'w': g_windres = optarg; break;
-        default:  assert(0); break;
+            no_more_opts = true;
+            continue;
         }
+
+        if (!no_more_opts && arg.size() >= 2 && arg[0] == TEXT('-') && arg[1] == TEXT('-'))
+        {
+            MString body = arg.substr(2);
+            MString name = body;
+            MString value;
+            bool has_value = false;
+
+            size_t eq = body.find(TEXT('='));
+            if (eq != MString::npos)
+            {
+                name  = body.substr(0, eq);
+                value = body.substr(eq + 1);
+                has_value = true;
+            }
+
+            const OptionSpec *spec = NULL;
+            for (size_t k = 0; k < _countof(s_options); ++k)
+            {
+                if (name == s_options[k].name)
+                {
+                    spec = &s_options[k];
+                    break;
+                }
+            }
+            if (!spec)
+            {
+                fprintf(stderr, "ERROR: Unknown option: --%s\n", to_narrow(name).c_str());
+                return EXITCODE_INVALID_ARGUMENT;
+            }
+
+            if (spec->has_arg && !has_value)
+            {
+                if (i + 1 >= argc)
+                {
+                    fprintf(stderr, "ERROR: Option --%s requires an argument\n", to_narrow(name).c_str());
+                    return EXITCODE_INVALID_ARGUMENT;
+                }
+                value = argv[++i];
+                has_value = true;
+            }
+
+            int ret = apply_option(spec->code, has_value ? &value : NULL);
+            if (ret >= 0)
+                return ret;
+            continue;
+        }
+
+        if (!no_more_opts && arg.size() >= 2 && arg[0] == TEXT('-'))
+        {
+            char c = (char)arg[1];
+            bool needs_arg = false;
+            if (!short_option_lookup(c, needs_arg))
+            {
+                fprintf(stderr, "ERROR: Unknown option: -%c\n", c);
+                return EXITCODE_INVALID_ARGUMENT;
+            }
+
+            MString value;
+            bool has_value = false;
+            if (needs_arg)
+            {
+                if (arg.size() > 2)
+                {
+                    value = arg.substr(2);
+                    has_value = true;
+                }
+                else
+                {
+                    if (i + 1 >= argc)
+                    {
+                        fprintf(stderr, "ERROR: Option -%c requires an argument\n", c);
+                        return EXITCODE_INVALID_ARGUMENT;
+                    }
+                    value = argv[++i];
+                    has_value = true;
+                }
+            }
+
+            int ret = apply_option(c, has_value ? &value : NULL);
+            if (ret >= 0)
+                return ret;
+            continue;
+        }
+
+        positional.push_back(arg);
     }
 
     // Positional arguments
-    while (optind < argc)
+    for (size_t k = 0; k < positional.size(); ++k)
     {
-        if (!g_input_file)
-            g_input_file = argv[optind++];
-        else if (!g_output_file)
-            g_output_file = argv[optind++];
+        if (g_input_file.empty())
+            g_input_file = positional[k];
+        else if (g_output_file.empty())
+            g_output_file = positional[k];
         else
         {
             fprintf(stderr, "ERROR: Too many arguments\n");
@@ -1078,33 +1302,70 @@ int main(int argc, char **argv)
         }
     }
 
-    AutoDeleteFileA auto_delete_1;
+    AutoDeleteFile auto_delete_1;
 
     // Read stdin into temp file when no input file given
-    if (!g_input_file)
+    if (g_input_file.empty())
     {
-        static char s_szTempFile[MAX_PATH] = "";
-        FILE *fp = tmpfilenam(s_szTempFile);
+        MString temp_file;
+        FILE *fp = tmpfilenam(temp_file);
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to create temporary file\n");
             return EXITCODE_CANT_MAKE_TEMP;
         }
-        auto_delete_1.m_file = s_szTempFile;
+        auto_delete_1.m_file = temp_file;
         char buf[512];
         while (fgets(buf, _countof(buf), stdin))
             fputs(buf, fp);
         fclose(fp);
-        g_input_file = s_szTempFile;
+        g_input_file = temp_file;
     }
 
-    if (!g_inp_format)
+    if (g_inp_format.empty())
         g_inp_format = get_format(g_input_file);
 
-    if (!g_out_format)
-        g_out_format = g_output_file ? get_format(g_output_file) : "rc";
+    if (g_out_format.empty())
+        g_out_format = !g_output_file.empty() ? get_format(g_output_file) : "rc";
 
     return just_do_it();
 }
+
+#if defined(_WIN32) && !defined(WONVER)
+
+// Windows entry point: obtains the *original* Unicode command line via the
+// Win32 API (CommandLineToArgvW) instead of relying on a CRT-provided
+// wmain()/argv, and instead of any getopt-style shim. This is what gives
+// mcdx correct Unicode support for file paths and arguments on Windows.
+int main()
+{
+    int argc = 0;
+    LPWSTR *wargv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
+    if (!wargv)
+    {
+        fprintf(stderr, "ERROR: Unable to parse command line.\n");
+        return EXITCODE_INVALID_ARGUMENT;
+    }
+
+    std::vector<MString> args(argc);
+    for (int i = 0; i < argc; ++i)
+        args[i] = wargv[i];
+    ::LocalFree(wargv);
+
+    return mcdx_main(argc, args.empty() ? NULL : &args[0]);
+}
+
+#else
+
+int main(int argc, char **argv)
+{
+    std::vector<MString> args(argc);
+    for (int i = 0; i < argc; ++i)
+        args[i] = argv[i];
+
+    return mcdx_main(argc, args.empty() ? NULL : &args[0]);
+}
+
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
