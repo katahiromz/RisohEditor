@@ -208,6 +208,33 @@ struct AutoDeleteFile
 
 static FILE *tmpfilenam(MString& pathname)
 {
+#if defined(_WIN32) && !defined(WONVER)
+    TCHAR path[MAX_PATH];
+    DWORD len = GetTempPath(_countof(path), path);
+    if (len == 0 || len >= _countof(path))
+    {
+        pathname.clear();
+        return NULL;
+    }
+
+    TCHAR file[MAX_PATH];
+    if (GetTempFileName(path, TEXT("mcd"), 0, file) == 0)
+    {
+        pathname.clear();
+        return NULL;
+    }
+
+    FILE *fp = T_fopen(file, TEXT("wb"));
+    if (!fp)
+    {
+        ::DeleteFile(file);
+        pathname.clear();
+        return NULL;
+    }
+
+    pathname = file;
+    return fp;
+#else
     MString tmp = T_getenv(TEXT("TMP"));
     if (tmp.empty())
         tmp = T_getenv(TEXT("TEMP"));
@@ -215,35 +242,20 @@ static FILE *tmpfilenam(MString& pathname)
         tmp = TEXT(".");
     mstr_trim_right(tmp, TEXT("/\\"));
 
-    FILE *fp = NULL;
-    MString file;
-    const int retry_count = 64;
+    MString file = tmp;
+    file += TEXT("/");
+    file += TEXT("mcdx.tmp");
 
-    for (int k = 0; k < retry_count && !fp; ++k)
+    FILE *fp = T_fopen(file, TEXT("wb"));
+    if (!fp)
     {
-        MString name;
-        for (int j = 0; j < 8; ++j)
-            name += (MString::value_type)(TEXT('A') + rand() % ('Z' - 'A' + 1));
-        name += TEXT(".tmp");
-
-        file = tmp;
-#ifdef _WIN32
-        file += TEXT("\\");
-#else
-        file += TEXT("/");
-#endif
-        file += name;
-
-        if (!T_file_exists(file))
-            fp = T_fopen(file, TEXT("wb"));
+        pathname.clear();
+        return NULL;
     }
 
-    if (fp)
-        pathname = file;
-    else
-        pathname.clear();
-
+    pathname = file;
     return fp;
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////
