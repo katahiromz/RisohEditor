@@ -560,7 +560,7 @@ VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/,
 	// again a moment later is exactly the redundant transition that used to
 	// show up as m_hCodeEditor/m_hBmpView flicker.
 	if (!bWillRePreview)
-		SetShowMode(SHOW_CODEONLY);
+		SetShowMode(SHOW_CODEONLY, FALSE);
 
 	// recalculate the splitter (skipped while Preview() is batching; it will
 	// post a single WM_SIZE itself once the whole batch is done, via

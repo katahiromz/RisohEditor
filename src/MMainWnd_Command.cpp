@@ -4194,7 +4194,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		if (g_res.empty())
 		{
 			HidePreview(STV_RESETTEXT);
-			m_tab.SetCurSel(0);
 		}
 	}
 
