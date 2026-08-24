@@ -152,7 +152,7 @@ static FILE *T_fopen(const MString& path, const MString& mode)
 static bool T_remove(const MString& path)
 {
 #if defined(_WIN32) && !defined(WONVER)
-    return DeleteFileW(path.c_str());
+    return !!DeleteFileW(path.c_str());
 #else
     return unlink(path.c_str()) == 0;
 #endif
@@ -161,7 +161,7 @@ static bool T_remove(const MString& path)
 static bool T_file_exists(const MString& path)
 {
 #if defined(_WIN32) && !defined(WONVER)
-    return PathFileExistsW(path.c_str());
+    return !!PathFileExistsW(path.c_str());
 #else
     struct stat st;
     return stat(path.c_str(), &st) == 0;
