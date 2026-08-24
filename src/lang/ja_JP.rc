@@ -1618,7 +1618,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "リソース名が空です。16ビット整数（-32768～65535）または文字列リテラルを入力してください。"
     IDS_NAMEOUTOFRANGE "リソース名が範囲外です。16ビット整数（-32768～65535）または文字列リテラルを入力してください。"
     IDS_INVALIDNAME "リソース名が無効です。16ビット整数（-32768～65535）または文字列リテラルを入力してください。"
-    IDS_INTEGERORSTRLITERAL "(整数か文字列リテラル)"
     IDS_CANTMAKETEMPFILE "一時ファイルの作成に失敗しました。コンパイルできませんでした。"
     IDS_ENTERPASSWORD "空ではないパスワード文字列を入力してください。"
     IDS_ENTERSALT "16文字以上のソルト文字列を入力してください。"

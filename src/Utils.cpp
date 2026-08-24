@@ -2056,7 +2056,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 	MIdOrString id2 = id;
 	if (id2 == BAD_NAME) id2.clear();
 
-	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORSTRLITERAL);
+	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
 	// set the text of the ID
 	SetWindowTextW(hCmb, id2.c_str());
@@ -2134,7 +2134,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 // initialize the resource name combobox
 void InitResNameComboBoxDword(HWND hCmb, const DWORD& id, IDTYPE_ nIDTYPE_)
 {
-	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORSTRLITERAL);
+	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
 	// set the text of the ID
 	SetWindowTextW(hCmb, mstr_hex(id).c_str());
@@ -2215,7 +2215,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
 	MIdOrString id2 = id;
 	if (id2 == BAD_NAME) id2.clear();
 
-	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORSTRLITERAL);
+	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
 	// set the ID text to combobox
 	SetWindowTextW(hCmb, id2.c_str());

@@ -1614,7 +1614,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "资源名称为空。请输入一个 16 位整数（-32768 至 65535）或字符串字面量。"
     IDS_NAMEOUTOFRANGE "资源名称超出范围。请输入 16 位整数（-32768 至 65535）或字符串字面量。"
     IDS_INVALIDNAME "资源名称无效。请输入 16 位整数（-32768 至 65535）或字符串字面量。"
-    IDS_INTEGERORSTRLITERAL "（整数或字符串字面量）"
     IDS_CANTMAKETEMPFILE "临时文件创建失败。编译失败。"
     IDS_ENTERPASSWORD "请输入非空密码。"
     IDS_ENTERSALT "请输入长度不低于 16 个字符的盐值字符串。"

@@ -369,7 +369,6 @@
 #define IDS_NAMEISEMPTY                     386
 #define IDS_NAMEOUTOFRANGE                  387
 #define IDS_INVALIDNAME                     388
-#define IDS_INTEGERORSTRLITERAL             389
 #define IDS_CANTMAKETEMPFILE                390
 #define IDS_ENTERPASSWORD                   391
 #define IDS_ENTERSALT                       392

@@ -1615,7 +1615,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "Kaynak adı boş. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
     IDS_NAMEOUTOFRANGE "Kaynak adı aralık dışı. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
     IDS_INVALIDNAME "Kaynak adı geçersiz. Lütfen 16 bitlik bir tamsayı (-32768..65535) veya bir dize değişmezi girin."
-    IDS_INTEGERORSTRLITERAL "(Tamsayı veya dize değişmez değeri)"
     IDS_CANTMAKETEMPFILE "Geçici dosya oluşturulamadı. Derleme başarısız oldu."
     IDS_ENTERPASSWORD "Lütfen boş olmayan bir parola girin."
     IDS_ENTERSALT "Lütfen en az 16 karakterden oluşan bir tuz dizesi girin."

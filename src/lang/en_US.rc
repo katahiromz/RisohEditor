@@ -1615,7 +1615,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "The resource name is empty. Please enter a 16-bit integer (-32768..65535) or string literal."
     IDS_NAMEOUTOFRANGE "The resource name is out of range. Please enter a 16-bit integer (-32768..65535) or string literal."
     IDS_INVALIDNAME "The resource name is invalid. Please enter a 16-bit integer (-32768..65535) or string literal."
-    IDS_INTEGERORSTRLITERAL "(integer or string literal)"
     IDS_CANTMAKETEMPFILE "Failed to create a temporary file. Compilation failed."
     IDS_ENTERPASSWORD "Please enter a non-empty password string."
     IDS_ENTERSALT "Please enter a salt string of at least 16 characters."

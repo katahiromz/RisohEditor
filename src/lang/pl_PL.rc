@@ -1615,7 +1615,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "Nazwa zasobu jest pusta. Wprowadź liczbę całkowitą 16-bitową (-32768..65535) lub literał ciągu znaków."
     IDS_NAMEOUTOFRANGE "Nazwa zasobu wykracza poza dopuszczalny zakres. Wprowadź liczbę całkowitą 16-bitową (od -32768 do 65535) lub literał ciągu znaków."
     IDS_INVALIDNAME "Nazwa zasobu jest nieprawidłowa. Wprowadź liczbę całkowitą 16-bitową (zakres od -32768 do 65535) lub literał ciągu znaków."
-    IDS_INTEGERORSTRLITERAL "(Liczba całkowita lub ciąg znaków)"
     IDS_CANTMAKETEMPFILE "Nie udało się utworzyć pliku tymczasowego. Kompilacja nie powiodła się."
     IDS_ENTERPASSWORD "Proszę wpisać ciąg znaków hasła, który nie jest pusty."
     IDS_ENTERSALT "Proszę wprowadzić ciąg znaków składający się z 16 lub więcej znaków."

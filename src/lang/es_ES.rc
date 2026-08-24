@@ -1617,7 +1617,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "El nombre del recurso está vacío. Introduzca un entero de 16 bits (-32768 a 65535) o un literal de cadena."
     IDS_NAMEOUTOFRANGE "El nombre del recurso está fuera de rango. Introduzca un entero de 16 bits (-32768..65535) o un literal de cadena."
     IDS_INVALIDNAME "El nombre del recurso no es válido. Introduzca un entero de 16 bits (-32768..65535) o un literal de cadena."
-    IDS_INTEGERORSTRLITERAL "(Entero o cadena de caracteres)"
     IDS_CANTMAKETEMPFILE "No se pudo crear el archivo temporal. La compilación falló."
     IDS_ENTERPASSWORD "Por favor, introduzca una contraseña que no esté vacía."
     IDS_ENTERSALT "Introduzca una cadena de sal de 16 caracteres o más."

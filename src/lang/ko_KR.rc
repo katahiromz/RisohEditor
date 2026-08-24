@@ -1615,7 +1615,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "리소스 이름이 비어 있습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
     IDS_NAMEOUTOFRANGE "리소스 이름이 범위를 벗어났습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
     IDS_INVALIDNAME "리소스 이름이 유효하지 않습니다. 16비트 정수(-32768~65535) 또는 문자열 리터럴을 입력하십시오."
-    IDS_INTEGERORSTRLITERAL "(정수 또는 문자열 리터럴)"
     IDS_CANTMAKETEMPFILE "임시 파일을 작성하지 못했습니다. 컴파일할 수 없습니다."
     IDS_ENTERPASSWORD "비어 있지 않은 암호 문자열을 입력합니다."
     IDS_ENTERSALT "16자 이상의 솔트 문자열을 입력합니다."

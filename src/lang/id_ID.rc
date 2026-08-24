@@ -1617,7 +1617,6 @@ STRINGTABLE
     IDS_NAMEISEMPTY "Nama sumber daya kosong. Harap masukkan bilangan bulat 16-bit (-32768..65535) atau literal string."
     IDS_NAMEOUTOFRANGE "Nama sumber daya berada di luar rentang. Harap masukkan bilangan bulat 16-bit (-32768..65535) atau literal string."
     IDS_INVALIDNAME "Nama sumber daya tidak valid. Harap masukkan bilangan bulat 16-bit (-32768..65535) atau literal string."
-    IDS_INTEGERORSTRLITERAL "(Bilangan bulat atau literal string)"
     IDS_CANTMAKETEMPFILE "Gagal membuat file sementara. Kompilasi gagal."
     IDS_ENTERPASSWORD "Silakan masukkan kata sandi yang tidak kosong."
     IDS_ENTERSALT "Silakan masukkan string garam dengan panjang 16 karakter atau lebih."
