@@ -492,17 +492,15 @@ public:
 			if (wFlags & FVIRTKEY)
 			{
 				auto& sz0 = a_entry.sz0;
-				if (sz0.size() == 4 && sz0[1] == L'^')
+				entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", sz0);
+				if (sz0.size() == 4 && (sz0[0] == L'"' && sz0[1] == L'^' && sz0[3] == L'"'))
 				{
-					wFlags &= ~FVIRTKEY;
-					entry.fFlags &= ~FVIRTKEY;
-				}
-				else
-				{
-					entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);	
+					// "^A" ... "^Z"
+					wFlags |= FCONTROL;
+					entry.fFlags = wFlags;
 				}
 			}
-			if (!(wFlags & FVIRTKEY))
+			else
 			{
 				std::wstring str, str2 = a_entry.sz0;
 				LPCWSTR pch = str2.c_str();

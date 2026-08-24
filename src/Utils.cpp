@@ -3210,15 +3210,6 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
 			ComboBox_AddString(hCmb1, table_entry.name.c_str());
 		}
 	}
-
-	// "^A" ... "^Z"
-	for (WCHAR ch = L'A'; ch <= L'Z'; ++ch)
-	{
-		MStringW str = L"\"^";
-		str += ch;
-		str += L'\"';
-		ComboBox_AddString(hCmb1, str.c_str());
-	}
 }
 
 // verify the virtual key combobox

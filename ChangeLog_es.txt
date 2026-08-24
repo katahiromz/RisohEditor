@@ -1,6 +1,7 @@
 ﻿## HISTORIA
 
 - v.6.1.7 (2026-XX-YY)
+    - Corregido error en MEditAccelDlg ("^A", etc.).
 - v.6.1.6 (2026-08-24)
     - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
     - Se añadió el botón [Ayuda] a MConstantDlg.
