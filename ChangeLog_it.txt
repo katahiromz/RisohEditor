@@ -1,6 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.1.6 (2026-XX-YY)
+- v.6.1.6 (24.08.2026)
     - Miglioramenti minori a UI/UX.
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
     - Risolto un crash in MRadWindow::AlignSelection.

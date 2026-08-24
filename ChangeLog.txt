@@ -1,6 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
-- v.6.1.6 (2026-XX-YY)
+- v.6.1.6 (2026-08-24)
     - Minor UI/UX improvements.
     - Added [Help] button to MConstantDlg.
     - Fixed crash in MRadWindow::AlignSelection.

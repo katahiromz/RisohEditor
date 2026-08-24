@@ -1,6 +1,6 @@
 ﻿## SEJARAH
 
-- v.6.1.6 (2026-XX-YY)
+- v.6.1.6 (2026-08-24)
     - Peningkatan kecil pada UI/UX.
     - Menambahkan tombol [Bantuan] ke MConstantDlg.
     - Memperbaiki masalah *crash* pada MRadWindow::AlignSelection.
