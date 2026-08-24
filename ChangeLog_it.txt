@@ -1,9 +1,9 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.1.7 (2026-XX-YY)
-    - Corretto bug in MEditAccelDlg ("^A" ecc.).
+    - Corretto bug MEditAccelDlg ("^A" ecc.).
     - Reso mcdx meno sospetto.
-    - Corretto il dump di MessageRes.
+    - Corretto dump MessageRes.
 - v.6.1.6 (24.08.2026)
     - Miglioramenti minori a UI/UX.
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
