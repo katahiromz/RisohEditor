@@ -10,6 +10,7 @@
     - Gestione accelerata degli elementi di risorsa.
     - Corretto un errore nella visualizzazione del nome della risorsa RISOHTEMPLATE.
     - Corretta la gestione di importazione, estrazione e salvataggio di RT_BITMAP.
+    - Non racchiudere tra virgolette i nomi delle risorse per garantire la compatibilità con MSVC.
 - v.6.1.5 (22.08.2026)
     - Accelerata MDialogFontSubstDlg.
     - Aggiunta schermata iniziale.

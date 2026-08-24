@@ -10,6 +10,7 @@
     - Penanganan item sumber daya yang dipercepat.
     - Memperbaiki kesalahan pada tampilan nama sumber daya RISOHTEMPLATE.
     - Memperbaiki impor, ekstraksi, dan penyimpanan RT_BITMAP.
+    - Jangan gunakan tanda kutip pada nama sumber daya demi kompatibilitas MSVC.
 - v.6.1.5 (2026-08-22)
     - Percepat MDialogFontSubstDlg.
     - Menambahkan jendela splash.

@@ -10,6 +10,7 @@
     - Manuseio acelerado de itens de recursos.
     - Corrigido um erro na exibição do nome do recurso RISOHTEMPLATE.
     - Corrigida a importação, extração e salvamento de RT_BITMAP.
+    - Não coloque nomes de recursos entre aspas, para garantir compatibilidade com o MSVC.
 - v.6.1.5 (2026-08-22)
     - Acelere o MDialogFontSubstDlg.
     - Adicionada a tela de abertura.
