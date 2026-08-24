@@ -24,8 +24,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline const WORD *
-ExecuteDlgInitEntryDx(HWND hwnd, const WORD *pw, SIZE_T& cbData)
+static inline const UNALIGNED WORD *
+ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
 {
     const SIZE_T cbHeader = 4 * sizeof(WORD);
     if (cbData < cbHeader)
@@ -76,7 +76,7 @@ ExecuteDlgInitEntryDx(HWND hwnd, const WORD *pw, SIZE_T& cbData)
     }
 
     cbData -= dwLen;
-    return reinterpret_cast<const WORD *>(reinterpret_cast<const BYTE *>(pw) + dwLen);
+    return reinterpret_cast<const UNALIGNED WORD *>(reinterpret_cast<const UNALIGNED BYTE *>(pw) + dwLen);
 }
 
 inline BOOL
