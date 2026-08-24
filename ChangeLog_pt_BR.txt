@@ -3,6 +3,7 @@
 - v.6.1.7 (2026-XX-YY)
     - Corrigido o bug do MEditAccelDlg ("^A" etc.).
     - Tornou o mcdx menos suspeito.
+    - Corrigido o dump do MessageRes.
 - v.6.1.6 (2026-08-24)
     - Pequenas melhorias de UI/UX.
     - Adicionado botão [Ajuda] ao MConstantDlg.

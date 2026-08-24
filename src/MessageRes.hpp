@@ -238,10 +238,8 @@ public:
 		// Emit optional table-id prefix when not the default integer 1.
 		if (tableId.is_str())
 		{
-			// String name: emit as a quoted literal, e.g.  "MyTable" MESSAGETABLEDX
-			ret += WIDE("\"");
-			ret += mstr_escape(MStringW(MTextToWide(CP_ACP, tableId.c_str()).c_str()));
-			ret += WIDE("\" ");
+			ret += MTextToWide(CP_ACP, tableId.c_str()).c_str();
+			ret += WIDE(" ");
 		}
 		else if (tableId.m_id != 1)
 		{
@@ -276,9 +274,8 @@ public:
 		// Emit optional table-id prefix when not the default integer 1.
 		if (tableId.is_str())
 		{
-			ret += WIDE("\"");
-			ret += mstr_escape(MStringW(MTextToWide(CP_ACP, tableId.c_str()).c_str()));
-			ret += WIDE("\" ");
+			ret += MTextToWide(CP_ACP, tableId.c_str()).c_str();
+			ret += WIDE(" ");
 		}
 		else if (tableId.m_id != 1)
 		{
