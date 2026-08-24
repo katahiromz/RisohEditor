@@ -95,18 +95,19 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 #endif
 		{
 			std::string str;
-			if (!mchr_is_alnum(entry.wAscii))
+			if (('A' <= entry.wAscii && entry.wAscii <= 'Z') ||
+				('0' <= entry.wAscii && entry.wAscii <= '9'))
+			{
+				str += (char)entry.wAscii;
+				ret += MAnsiToWide(CP_ACP, mstr_quote(str));
+			}
+			else
 			{
 				// NOTE: "^A" will be lost in windres compilation. We should avoid it.
 				ret += L"\"\\x";
 				ret += L"0123456789ABCDEF"[entry.wAscii & 0xF];
 				ret += L"0123456789ABCDEF"[(entry.wAscii >> 4) & 0xF];
 				ret += L"\"";
-			}
-			else
-			{
-				str += (char)entry.wAscii;
-				ret += MAnsiToWide(CP_ACP, mstr_quote(str));
 			}
 		}
 		ret += L", ";
