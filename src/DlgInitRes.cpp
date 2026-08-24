@@ -23,7 +23,7 @@ bool DlgInitRes::LoadFromStream(const MByteStreamEx& stream)
 		if (!stream.ReadWord(entry.wMsg) || !stream.ReadDword(cchLen))
 			return false;
 
-		if (cchLen < 0 || cchLen > uint32_t(LONG_MAX / sizeof(WCHAR)))
+		if (cchLen < 0 || cchLen > int32_t(LONG_MAX / sizeof(WCHAR)))
 			return false;
 
 		if (cchLen)
