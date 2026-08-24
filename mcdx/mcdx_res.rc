@@ -1,0 +1,89 @@
+// mcdx_res.rc
+// このファイルは リソーエディタ 6.1.7 によって自動生成されました。
+// † <-- このダガー記号は、UTF-8の検出に役立ちます。
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE 1 から生成されました
+
+
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE 2 から生成されました
+
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#include <richedit.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+//////////////////////////////////////////////////////////////////////////////
+
+#pragma code_page(65001) // UTF-8
+
+//////////////////////////////////////////////////////////////////////////////
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+//////////////////////////////////////////////////////////////////////////////
+// RT_VERSION
+
+1 VERSIONINFO
+FILEVERSION     0, 9, 4, 0
+PRODUCTVERSION  0, 9, 4, 0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4" // en_US, Multilingual
+        {
+            VALUE "CompanyName", "Katayama Hirofumi MZ"
+            VALUE "FileDescription", "mcdx"
+            VALUE "FileVersion", "0.9.4"
+            VALUE "LegalCopyright", "Copyright © 2026 Katayama Hirofumi MZ"
+            VALUE "ProductName", "mcdx"
+            VALUE "ProductVersion", "0.9.4"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 0x04E4
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+#ifdef APSTUDIO_INVOKED
+
+1 TEXTINCLUDE
+{
+    "resource.h\0"
+}
+
+2 TEXTINCLUDE
+{
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include <windows.h>\r\n"
+    "#include <commctrl.h>\r\n"
+    "#include <richedit.h>\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+}
+
+3 TEXTINCLUDE
+{
+    "\r\n"
+    "\0"
+}
+
+#endif // def APSTUDIO_INVOKED
+
+//////////////////////////////////////////////////////////////////////////////
+// TEXTINCLUDE 3 から生成されました
+
+#ifndef APSTUDIO_INVOKED
+
+#endif // ndef APSTUDIO_INVOKED
+
+//////////////////////////////////////////////////////////////////////////////

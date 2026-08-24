@@ -11,7 +11,7 @@ project(mcdx VERSION 0.9.3 LANGUAGES CXX RC)
 include_directories(../src)
 
 # mcdx.exe
-add_executable(mcdx mcdx.cpp)
+add_executable(mcdx mcdx.cpp mcdx_res.rc)
 
 if (WIN32)
     target_compile_definitions(mcdx PRIVATE UNICODE _UNICODE)
