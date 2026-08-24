@@ -323,6 +323,9 @@ static int finish_output_file(FILE *fp, const MString& path)
 
 #if defined(_WIN32) && !defined(WONVER)
 
+// Quote one argument according to the Windows command-line parsing rules.
+// In particular, backslashes immediately preceding a '"' or the closing
+// '"' have to be doubled.
 static void append_process_arg(MString& command_line, const MString& arg)
 {
     command_line += TEXT("\"");
