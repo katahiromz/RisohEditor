@@ -4,12 +4,12 @@
     - Miglioramenti minori a UI/UX.
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
     - Risolto un crash in MRadWindow::AlignSelection.
-    - Traduzione del programma di installazione migliorata.
-    - Risolto un crash relativo a EGA RES_delete.
+    - Traduzione programma di installazione migliorata.
+    - Risolto crash relativo a EGA RES_delete.
     - Corretto bug in MEditAccelDlg ("^A" ecc.). Il bug di windres relativo agli ACCELERATORI con "^A" persiste.
-    - Gestione accelerata degli elementi di risorsa.
-    - Corretto un errore nella visualizzazione del nome della risorsa RISOHTEMPLATE.
-    - Corretta la gestione di importazione, estrazione e salvataggio di RT_BITMAP.
+    - Gestione accelerata elementi risorsa.
+    - Corretto errore nella visualizzazione del nome della risorsa RISOHTEMPLATE.
+    - Corretta gestione importazione, estrazione e salvataggio di RT_BITMAP.
     - Non racchiudere tra virgolette i nomi delle risorse per garantire la compatibilità con MSVC.
 - v.6.1.5 (22.08.2026)
     - Accelerata MDialogFontSubstDlg.
