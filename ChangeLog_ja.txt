@@ -1,12 +1,13 @@
 ﻿## 更新履歴
 
+- v.6.1.7 (2026-XX-YY)
 - v.6.1.6 (2026-08-24)
     - UI/UXの軽微な改善。
     - MConstantDlgに[ヘルプ]ボタンを追加。
     - MRadWindow::AlignSelection で発生していたクラッシュを修正。
     - インストーラーの翻訳を改善。
     - EGA RES_deleteでのクラッシュを修正。
-    - MEditAccelDlgのバグ（「^A」など）を修正。windresの「^A」に関するACCELERATORSのバグは残ったまま。
+    - MEditAccelDlgのバグ（「^A」など）を修正。
     - リソースアイテムの処理を高速化。
     - RISOHTEMPLATEのリソース名の表示が間違っていたのを修正。
     - RT_BITMAPのインポート、抽出、保存を修正。

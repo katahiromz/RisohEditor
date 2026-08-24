@@ -1,12 +1,13 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
+- v.6.1.7 (2026-XX-YY)
 - v.6.1.6 (24.08.2026)
     - Miglioramenti minori a UI/UX.
     - Aggiunto pulsante [Aiuto] a MConstantDlg.
     - Risolto un crash in MRadWindow::AlignSelection.
     - Traduzione programma di installazione migliorata.
     - Risolto crash relativo a EGA RES_delete.
-    - Corretto bug in MEditAccelDlg ("^A" ecc.). Il bug di windres relativo agli ACCELERATORI con "^A" persiste.
+    - Corretto bug in MEditAccelDlg ("^A" ecc.).
     - Gestione accelerata elementi risorsa.
     - Corretto errore nella visualizzazione del nome della risorsa RISOHTEMPLATE.
     - Corretta gestione importazione, estrazione e salvataggio di RT_BITMAP.

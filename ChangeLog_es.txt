@@ -1,12 +1,13 @@
 ﻿## HISTORIA
 
+- v.6.1.7 (2026-XX-YY)
 - v.6.1.6 (2026-08-24)
     - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
     - Se añadió el botón [Ayuda] a MConstantDlg.
     - Se ha corregido un bloqueo en MRadWindow::AlignSelection.
     - Traducción del instalador mejorada.
     - Se ha corregido el bloqueo de EGA RES_delete.
-    - Corregido error en MEditAccelDlg ("^A", etc.). Persiste el error de `windres` con los aceleradores en "^A".
+    - Corregido error en MEditAccelDlg ("^A", etc.).
     - Gestión acelerada de elementos de recursos.
     - Se corrigió un error en la visualización del nombre del recurso RISOHTEMPLATE.
     - Se corrigió la importación, extracción y guardado de RT_BITMAP.

@@ -1,12 +1,13 @@
 ﻿## HISTORY (ChangeLog)
 
+- v.6.1.7 (2026-XX-YY)
 - v.6.1.6 (2026-08-24)
     - Minor UI/UX improvements.
     - Added [Help] button to MConstantDlg.
     - Fixed crash in MRadWindow::AlignSelection.
     - Improved installer translation.
     - Fixed EGA RES_delete crash.
-    - Fixed MEditAccelDlg bug ("^A" etc.). windres's ACCELERATORS bug on "^A" remains.
+    - Fixed MEditAccelDlg bug ("^A" etc.).
     - Accelerated resource item handling.
     - Fixed the incorrect display of the RISOHTEMPLATE resource name.
     - Fixed RT_BITMAP importing, extracting, and saving.

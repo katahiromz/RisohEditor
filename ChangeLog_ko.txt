@@ -1,13 +1,14 @@
 ﻿/////////////////////////////////////////////////////
 // 업데이트 내역
 
+- v.6.1.7 (2026-XX-YY)
 - v.6.1.6 (2026-08-24)
     - UI/UX를 약간 개선했습니다.
     - MConstantDlg 함수에 [도움말] 버튼을 추가했습니다.
     - MRadWindow::AlignSelection 함수에서 발생하던 충돌을 수정했습니다.
     - 설치 프로그램 번역 개선.
     - EGA RES_delete 관련 충돌 문제를 수정했습니다.
-    - MEditAccelDlg 버그 수정 ("^A" 등). windres의 "^A" 관련 ACCELERATORS 버그가 여전히 남아 있습니다.
+    - MEditAccelDlg 버그 수정 ("^A" 등).
     - 리소스 항목 처리 가속화.
     - RISOHTEMPLATE의 자원 이름 표시가 잘못되었던 문제를 수정했습니다.
     - RT_BITMAP 가져오기, 추출 및 저장 기능을 수정했습니다.
