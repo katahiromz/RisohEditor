@@ -556,3 +556,110 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 
 	return hbm;
 }
+
+static inline WORD ReadU16(const std::vector<BYTE>& d, size_t off)
+{
+	DWORD dw0 = d[off], dw1 = d[off + 1];
+	return static_cast<WORD>(dw0 | (dw1 << 8));
+}
+
+static inline DWORD ReadU32(const std::vector<BYTE>& d, size_t off)
+{
+	DWORD dw0 = d[off + 0], dw1 = d[off + 1], dw2 = d[off + 2], dw3 = d[off + 3];
+	return static_cast<DWORD>(dw0 | (dw1 << 8) | (dw2 << 16) | (dw3 << 24));
+}
+
+BOOL Bitmap_DropFileHeader(std::vector<BYTE>& data)
+{
+	if (data.size() < sizeof(BITMAPFILEHEADER) || data[0] != 'B' || data[1] != 'M')
+		return FALSE;
+
+	BITMAPFILEHEADER fileHeader;
+	memcpy(&fileHeader, data.data(), sizeof(BITMAPFILEHEADER));
+
+	if (fileHeader.bfOffBits < sizeof(BITMAPFILEHEADER) || fileHeader.bfOffBits > data.size())
+		return FALSE;
+
+	data.erase(data.begin(), data.begin() + sizeof(BITMAPFILEHEADER));
+	return TRUE;
+}
+
+BOOL Bitmap_AddFileHeader(std::vector<BYTE>& data)
+{
+	if (data.size() < 4)
+		return FALSE;
+
+	const DWORD biSize = ReadU32(data, 0);
+	if (data.size() < biSize)
+		return FALSE;
+
+	WORD  biBitCount = 0;
+	DWORD biCompression = BI_RGB;
+	DWORD biClrUsed = 0;
+	DWORD paletteEntrySize = sizeof(RGBQUAD);
+	DWORD headerSize = biSize;
+	DWORD extraMaskBytes = 0;
+
+	if (biSize == sizeof(BITMAPCOREHEADER))
+	{
+		if (data.size() < sizeof(BITMAPCOREHEADER))
+			return FALSE;
+		biBitCount = ReadU16(data, 10);
+		biCompression = 0;
+		biClrUsed = 0;
+		paletteEntrySize = sizeof(RGBTRIPLE);
+	}
+	else if (biSize >= sizeof(BITMAPINFOHEADER))
+	{
+		biBitCount = ReadU16(data, 14);
+		biCompression = ReadU32(data, 16);
+		biClrUsed = ReadU32(data, 32);
+		paletteEntrySize = sizeof(RGBQUAD);
+
+		if (biSize == sizeof(BITMAPINFOHEADER))
+		{
+#ifndef BI_ALPHABITFIELDS
+	#define BI_ALPHABITFIELDS 6
+#endif
+			if (biCompression == BI_BITFIELDS)
+				extraMaskBytes = 12; // R,G,B
+			else if (biCompression == BI_ALPHABITFIELDS)
+				extraMaskBytes = 16; // R,G,B,A
+		}
+	}
+	else
+	{
+		biBitCount = 0;
+		biCompression = 0;
+		biClrUsed  = 0;
+		paletteEntrySize = 4;
+	}
+
+	if (biClrUsed > 256)
+		biClrUsed = 0;
+
+	DWORD colorTableEntries = 0;
+	if (biClrUsed != 0)
+		colorTableEntries = biClrUsed;
+	else if (biBitCount != 0 && biBitCount <= 8)
+		colorTableEntries = (1u << biBitCount);
+	const DWORD colorTableBytes = colorTableEntries * paletteEntrySize;
+
+	const DWORD fileHeaderSize = sizeof(BITMAPFILEHEADER);
+	DWORD offBits = fileHeaderSize + headerSize + extraMaskBytes + colorTableBytes;
+
+	if (offBits - fileHeaderSize > static_cast<DWORD>(data.size()))
+		offBits = fileHeaderSize + headerSize;
+
+	const DWORD fileSize = fileHeaderSize + static_cast<DWORD>(data.size());
+
+	BITMAPFILEHEADER header;
+	header.bfType      = 0x4D42; // "BM"
+	header.bfSize      = fileSize;
+	header.bfReserved1 = 0;
+	header.bfReserved2 = 0;
+	header.bfOffBits   = offBits;
+	const BYTE* pb = reinterpret_cast<const BYTE*>(&header);
+	data.insert(data.begin(), pb, pb + sizeof(header));
+	return TRUE;
+}

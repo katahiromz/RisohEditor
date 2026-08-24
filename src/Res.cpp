@@ -35,9 +35,6 @@ struct AutoDeleteFileW
 LONG EntryBaseBase::s_alive_count = 0;
 #endif
 
-BOOL Bitmap_AddFileHeader(std::vector<BYTE>& data);
-BOOL Bitmap_DropFileHeader(std::vector<BYTE>& data);
-
 BOOL
 Res_IsEntityType(const MIdOrString& type)
 {

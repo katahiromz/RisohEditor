@@ -20,3 +20,5 @@ HBITMAP PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize);
 HICON PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIcon);
 BOOL PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm);
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz);
+BOOL Bitmap_DropFileHeader(std::vector<BYTE>& data);
+BOOL Bitmap_AddFileHeader(std::vector<BYTE>& data);

@@ -152,5 +152,3 @@ MStringW GetDlgItemTextW(HWND hwnd, INT nCtrlID);
 MStringW GetListViewItemText(HWND hwndListView, INT iItem, INT iSubItem);
 INT ErrorBoxDx(UINT nStringID, UINT uType = MB_ICONERROR);
 INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, UINT uType = MB_ICONINFORMATION);
-BOOL Bitmap_DropFileHeader(std::vector<BYTE>& data);
-BOOL Bitmap_AddFileHeader(std::vector<BYTE>& data);
