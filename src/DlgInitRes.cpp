@@ -71,7 +71,7 @@ MStringW DlgInitRes::Dump(const MIdOrString& id_or_str) const
 
 	if (id_or_str.is_str())
 	{
-		ret += mstr_quote_with_wrap(id_or_str.str());
+		ret += id_or_str.str();
 	}
 	else
 	{
