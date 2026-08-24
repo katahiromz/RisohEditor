@@ -273,12 +273,6 @@ public:
 	{
 		switch (id)
 		{
-		case chx1:
-			if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-			{
-				Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1));
-			}
-			break;
 		case IDOK:
 			OnOK(hwnd);
 			break;
@@ -497,11 +491,15 @@ public:
 			entry.fFlags = wFlags;
 			if (wFlags & FVIRTKEY)
 			{
-				entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
-				if (!mchr_is_alnum(entry.wAscii))
+				auto& sz0 = a_entry.sz0;
+				if (sz0.size() == 4 && sz0[1] == L'^')
 				{
 					wFlags &= ~FVIRTKEY;
 					entry.fFlags &= ~FVIRTKEY;
+				}
+				else
+				{
+					entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);	
 				}
 			}
 			if (!(wFlags & FVIRTKEY))

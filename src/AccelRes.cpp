@@ -105,8 +105,8 @@ MStringW AccelRes::Dump(const MIdOrString &id_or_str) const
 			{
 				// NOTE: "^A" will be lost in windres compilation. We should avoid it.
 				ret += L"\"\\x";
-				ret += L"0123456789ABCDEF"[entry.wAscii & 0xF];
 				ret += L"0123456789ABCDEF"[(entry.wAscii >> 4) & 0xF];
+				ret += L"0123456789ABCDEF"[entry.wAscii & 0xF];
 				ret += L"\"";
 			}
 		}
