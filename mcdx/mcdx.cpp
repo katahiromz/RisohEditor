@@ -321,24 +321,84 @@ static int finish_output_file(FILE *fp, const MString& path)
 //////////////////////////////////////////////////////////////////////////////
 // Process helper (abstracts Win32 vs POSIX)
 
+#if defined(_WIN32) && !defined(WONVER)
+
+static void append_process_arg(MString& command_line, const MString& arg)
+{
+    command_line += TEXT("\"");
+
+    for (size_t i = 0; i < arg.size(); ++i)
+    {
+        MString::value_type ch = arg[i];
+
+        if (ch == TEXT('\\'))
+        {
+            size_t j = i;
+            while (j < arg.size() && arg[j] == TEXT('\\'))
+                ++j;
+
+            size_t count = j - i;
+
+            if (j == arg.size())
+            {
+                // Backslashes before the closing quote must be doubled.
+                command_line.append(count * 2, TEXT('\\'));
+            }
+            else if (arg[j] == TEXT('"'))
+            {
+                // Backslashes before a quote must be doubled,
+                // and the quote itself must be escaped.
+                command_line.append(count * 2 + 1, TEXT('\\'));
+            }
+            else
+            {
+                command_line.append(count, TEXT('\\'));
+            }
+
+            i = j - 1;
+        }
+        else if (ch == TEXT('"'))
+        {
+            command_line += TEXT("\\\"");
+        }
+        else
+        {
+            command_line += ch;
+        }
+    }
+
+    command_line += TEXT("\"");
+}
+
+#endif
+
 // Run `command_line`, capture stdout+stderr into `output`.
 // Returns true when the process exits with code 0.
-static bool run_process(const MString& command_line, std::string& output)
+static bool run_process(
+    const MString& application,
+    const MString& command_line,
+    std::string& output)
 {
 #if defined(_WIN32) && !defined(WONVER)
     MProcessMaker maker;
+
     maker.SetCreationFlags(CREATE_NO_WINDOW);
+
     MFile hInputWrite, hOutputRead;
     if (!maker.PrepareForRedirect(&hInputWrite, &hOutputRead) ||
-        !maker.CreateProcessDx(NULL, command_line.c_str()))
+        !maker.CreateProcessDx(application.c_str(), command_line.c_str()))
     {
         return false;
     }
+
     maker.ReadAll(output, hOutputRead);
     return maker.GetExitCode() == 0;
 #else
     putenv(g_lang_english);
-    FILE *fp = popen(command_line.c_str(), "r");
+    MString command_line_2 = application;
+    command_line_2 += ' ';
+    command_line_2 += command_line;
+    FILE *fp = popen(command_line_2.c_str(), "r");
     if (!fp)
         return false;
 
@@ -832,18 +892,15 @@ int save_coff(const MString& output_file)
         return ret;
 
     MString command_line;
-    command_line += g_windres;
-    command_line += TEXT(" \"");
-    command_line += temp_file;
+    append_process_arg(command_line, temp_file);
     if (!output_file.empty())
     {
-        command_line += TEXT("\" \"");
-        command_line += output_file;
-        command_line += TEXT("\"");
+        command_line += TEXT(" ");
+        append_process_arg(command_line, output_file);
     }
     else
     {
-        command_line += TEXT("\" -O coff");
+        command_line += TEXT(" -O coff");
     }
 
 #if defined(_WIN32) && !defined(WONVER)
@@ -851,7 +908,7 @@ int save_coff(const MString& output_file)
 #endif
 
     std::string output;
-    if (run_process(command_line, output))
+    if (run_process(g_windres, command_line, output))
         return EXITCODE_SUCCESS;
 
     if (output.find(": no resources") != std::string::npos)
@@ -914,28 +971,25 @@ int load_rc(const MString& input_file)
     }
 
     // Build preprocessor command line
-    MString command_line = g_cpp;
-    command_line += TEXT(" ");
+    MString command_line;
     for (const auto& def : g_definitions)
     {
         command_line += TEXT(" -D");
-        command_line += def;
+        append_process_arg(command_line, def);
     }
     for (const auto& inc : g_include_directories)
     {
-        command_line += TEXT(" -I\"");
-        command_line += inc;
-        command_line += TEXT("\"");
+        command_line += TEXT(" -I");
+        append_process_arg(command_line, inc);
     }
-    command_line += TEXT(" \"");
-    command_line += input_file;
-    command_line += TEXT("\"");
+    command_line += TEXT(" ");
+    append_process_arg(command_line, input_file);
 
     g_strFile  = to_narrow(input_file);
     g_nLineNo  = 1;
 
     std::string output;
-    if (run_process(command_line, output))
+    if (run_process(g_cpp, command_line, output))
         return eat_output(output);
 
     fputs(output.c_str(), stderr);
@@ -1184,10 +1238,6 @@ static bool short_option_lookup(char c, bool& needs_arg)
 
 int mcdx_main(int argc, MString *argv)
 {
-#ifdef _WIN32
-    srand(GetTickCount());
-#endif
-
     g_definitions.push_back(TEXT("RC_INVOKED"));
     g_definitions.push_back(TEXT("MCDX_INVOKED"));
 
