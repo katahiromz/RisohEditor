@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cassert>
 #include <cstring>
+#include <utility>
 
 /////////////////////////////////////////////////////////////////////////
 // the BNF (subset of C language:
@@ -90,7 +91,10 @@ namespace MacroParser
 	}
 	inline bool isspace(char ch)
 	{
-		return strchr(" \t\n\r\f\v", ch) != NULL;
+		// NOTE: direct comparisons are much faster than strchr() here,
+		// since this is called for every character while tokenizing.
+		return ch == ' ' || ch == '\t' || ch == '\n' ||
+			   ch == '\r' || ch == '\f' || ch == '\v';
 	}
 
 	/////////////////////////////////////////////////////////////////////////
@@ -103,11 +107,11 @@ namespace MacroParser
 		int m_integer;
 
 		Token(string_type str, TokenType type)
-			: m_str(str), m_type(type), m_integer(0)
+			: m_str(std::move(str)), m_type(type), m_integer(0)
 		{
 		}
 		Token(string_type str, TokenType type, int i)
-			: m_str(str), m_type(type), m_integer(i)
+			: m_str(std::move(str)), m_type(type), m_integer(i)
 		{
 		}
 
@@ -123,7 +127,10 @@ namespace MacroParser
 	class StringScanner
 	{
 	public:
-		StringScanner(const string_type& str) : m_str(str), m_index(0)
+		// NOTE: take by value + move to avoid an extra copy of the
+		// (potentially large) source string when constructed from a
+		// temporary or an rvalue.
+		StringScanner(string_type str) : m_str(std::move(str)), m_index(0)
 		{
 		}
 
@@ -141,6 +148,10 @@ namespace MacroParser
 		const char *peek() const
 		{
 			return &m_str[m_index];
+		}
+		size_t size() const
+		{
+			return m_str.size();
 		}
 		bool match_get(const char *psz, string_type& str)
 		{
@@ -193,12 +204,12 @@ namespace MacroParser
 		size_t size() const;
 
 		TokenType type() const;
-		string_type str() const;
+		const string_type& str() const;
 		int integer() const;
 
 		void print() const;
 
-		void push_back(const Token& t);
+		void push_back(Token t);
 
 	protected:
 		size_t          m_index;
@@ -483,7 +494,7 @@ namespace MacroParser
 		{
 			return m_stream.type();
 		}
-		string_type str() const
+		const string_type& str() const
 		{
 			return m_stream.str();
 		}
@@ -516,9 +527,9 @@ namespace MacroParser
 		return false;
 	}
 
-	inline void TokenStream::push_back(const Token& t)
+	inline void TokenStream::push_back(Token t)
 	{
-		m_tokens.push_back(t);
+		m_tokens.push_back(std::move(t));
 	}
 
 	inline Token& TokenStream::token()
@@ -538,7 +549,7 @@ namespace MacroParser
 		return token().m_type;
 	}
 
-	inline string_type TokenStream::str() const
+	inline const string_type& TokenStream::str() const
 	{
 		return token().m_str;
 	}
@@ -584,9 +595,14 @@ namespace MacroParser
 	inline bool TokenStream::read_tokens()
 	{
 		m_tokens.clear();
+		// Heuristic: most tokens are a few characters long, so
+		// reserving up front avoids repeated reallocation/copying
+		// of m_tokens as it grows.
+		m_tokens.reserve(m_scanner.size() / 2 + 8);
 
 		char ch;
 		string_type str;
+		str.reserve(32);
 		for (;;)
 		{
 			ch = getch();
@@ -614,8 +630,10 @@ namespace MacroParser
 					str += ch;
 				}
 				int i = strtoul(str.c_str(), NULL, 0);
-				Token token(str, TOK_INTEGER, i);
-				m_tokens.push_back(token);
+				// emplace_back constructs the Token in place inside the
+				// vector, and moving str into it avoids an extra string
+				// copy compared to building a local Token and push_back'ing it.
+				m_tokens.emplace_back(std::move(str), TOK_INTEGER, i);
 			}
 			else if (iscsymf(ch) || ch == '_')
 			{
@@ -628,9 +646,8 @@ namespace MacroParser
 					if (ch == '"')
 					{
 						ungetch();
-						str = m_scanner.get_quoted();
-						Token token("L" + str, TOK_STRING);
-						m_tokens.push_back(token);
+						str = "L" + m_scanner.get_quoted();
+						m_tokens.emplace_back(std::move(str), TOK_STRING);
 						continue;
 					}
 					ungetch();
@@ -650,21 +667,18 @@ namespace MacroParser
 					}
 					str += ch;
 				}
-				Token token(str, TOK_IDENT);
-				m_tokens.push_back(token);
+				m_tokens.emplace_back(std::move(str), TOK_IDENT);
 			}
 			else if (ch == '"')
 			{
 				// "string"
 				ungetch();
 				str = m_scanner.get_quoted();
-				Token token(str, TOK_STRING);
-				m_tokens.push_back(token);
+				m_tokens.emplace_back(std::move(str), TOK_STRING);
 			}
 			else if (ch == -1)
 			{
-				Token token("", TOK_EOF);
-				m_tokens.push_back(token);
+				m_tokens.emplace_back(string_type(), TOK_EOF);
 				return true;
 			}
 			else
@@ -673,8 +687,7 @@ namespace MacroParser
 				str += ch;
 				if (strchr("+-*/%~()^,?:", ch) != NULL)
 				{
-					Token token(str, TOK_SYMBOL);
-					m_tokens.push_back(token);
+					m_tokens.emplace_back(std::move(str), TOK_SYMBOL);
 				}
 				else
 				{
@@ -693,8 +706,7 @@ namespace MacroParser
 						m_scanner.match_get("!=", str) ||
 						m_scanner.match_get("!", str))
 					{
-						Token token(str, TOK_SYMBOL);
-						m_tokens.push_back(token);
+						m_tokens.emplace_back(std::move(str), TOK_SYMBOL);
 					}
 					else
 					{
@@ -942,7 +954,7 @@ namespace MacroParser
 		BaseAst *first = visit_relational_expression();
 		while (first)
 		{
-			string_type s = str();
+			const string_type& s = str();
 			if (type() == TOK_SYMBOL && (s == "==" || s == "!="))
 			{
 				next();
@@ -969,7 +981,7 @@ namespace MacroParser
 		BaseAst *first = visit_shift_expression();
 		while (first)
 		{
-			string_type s = str();
+			const string_type& s = str();
 			if (type() == TOK_SYMBOL &&
 				(s == "<" || s == ">" || s == "<=" || s == ">="))
 			{
@@ -997,7 +1009,7 @@ namespace MacroParser
 		BaseAst *first = visit_additive_expression();
 		while (first)
 		{
-			string_type s = str();
+			const string_type& s = str();
 			if (type() == TOK_SYMBOL && (s == "<<" || s == ">>"))
 			{
 				next();
@@ -1024,7 +1036,7 @@ namespace MacroParser
 		BaseAst *first = visit_multiplicative_expression();
 		while (first)
 		{
-			string_type s = str();
+			const string_type& s = str();
 			if (type() == TOK_SYMBOL && (s == "+" || s == "-"))
 			{
 				next();
@@ -1051,7 +1063,7 @@ namespace MacroParser
 		BaseAst *first = visit_cast_expression();
 		while (first)
 		{
-			string_type s = str();
+			const string_type& s = str();
 			if (type() == TOK_SYMBOL && (s == "*" || s == "/" || s == "%"))
 			{
 				next();
@@ -1079,7 +1091,7 @@ namespace MacroParser
 		if (type() == TOK_SYMBOL &&
 			(str() == "+" || str() == "-" || str() == "~" || str() == "!"))
 		{
-			string_type op = str();
+			const string_type& op = str();
 			next();
 			BaseAst *arg = visit_unary_expression();
 			if (arg)

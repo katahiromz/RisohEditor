@@ -52,7 +52,6 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 #include "MBitmapDx.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"
-#include "MacroParser.hpp"
 #include "MWaitCursor.hpp"
 #include "settings.h"
 
