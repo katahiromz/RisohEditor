@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       20 /* Version 20 */
+#define MZC4_MSTRING_HPP_       21 /* Version 21 */
 
 // class MString;
 // class MStringA;
@@ -91,166 +91,19 @@ const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch);
 
 ////////////////////////////////////////////////////////////////////////////
 
-enum MTextEncoding
-{
-	MTENC_UNKNOWN = 0,
-	MTENC_ASCII,
-	MTENC_ANSI,
-	MTENC_UNICODE_LE,
-	MTENC_UNICODE_BE,
-	MTENC_UTF8,
-	MTENC_UNICODE = MTENC_UNICODE_LE,
-};
-
-enum MTextNewLineType
-{
-	MNEWLINE_UNKNOWN,
-	MNEWLINE_NOCHANGE,
-	MNEWLINE_CRLF,
-	MNEWLINE_LF,
-	MNEWLINE_CR
-};
-
-struct MTextType
-{
-	MTextEncoding       nEncoding;
-	MTextNewLineType    nNewLine;
-	bool                bHasBOM;
-};
-
-////////////////////////////////////////////////////////////////////////////
-// string
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
-
-template <typename T_CHAR>
-bool mchr_is_digit(T_CHAR ch);
-
-template <typename T_CHAR>
-bool mchr_is_xdigit(T_CHAR ch);
-
-template <typename T_CHAR>
-bool mchr_is_upper(T_CHAR ch);
-template <typename T_CHAR>
-bool mchr_is_lower(T_CHAR ch);
-
 template <typename T_CHAR>
 bool mchr_is_alpha(T_CHAR ch);
-
 template <typename T_CHAR>
 bool mchr_is_alnum(T_CHAR ch);
-
-template <typename T_CHAR>
-bool mchr_is_space(T_CHAR ch);
-
-template <typename T_CHAR>
-int mstr_parse_int(const T_CHAR *str, bool is_signed = true, int base = 0);
-
-template <typename T_CHAR>
-void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
-template <typename T_CHAR>
-void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
-
-template <typename T_CHAR>
-void mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed = true);
-
-template <typename T_CHAR>
-bool mstr_is_text_ascii(const T_CHAR *str, size_t len);
-
-template <typename T_CHAR>
-bool mstr_is_text_ascii(const std::basic_string<T_CHAR>& str);
-
-bool mstr_is_text_utf8(const char *str, size_t len);
 bool mstr_is_text_utf8(const std::string& str);
+inline bool mstr_is_text_utf8(const char *str, size_t len);
 
-bool mstr_is_text_unicode(const void *ptr, size_t len);
+bool guts_escape(std::string& str, const char*& pch);
+bool guts_escape(MStringW& str, const WCHAR*& pch);
+bool guts_quote(std::string& str, const char*& pch);
+bool guts_quote(MStringW& str, const WCHAR*& pch);
 
-template <typename T_CHAR>
-void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR, size_t siz>
-void mstr_trim(T_CHAR (&str)[siz], const T_CHAR *spaces);
-
-template <typename T_CHAR>
-void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR, size_t siz>
-void mstr_trim_left(T_CHAR (&str)[siz], const T_CHAR *spaces);
-
-template <typename T_CHAR>
-void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR, size_t siz>
-void mstr_trim_right(T_CHAR (&str)[siz], const T_CHAR *spaces);
-
-template <typename T_CHAR>
-T_CHAR *mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces);
-
-template <typename T_CHAR>
-const T_CHAR *mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces);
-
-inline char *mstr_skip_space(char *pch)
-{
-	return mstr_skip_space(pch, " \t\n\r\f\v");
-}
-inline const char *mstr_skip_space(const char *pch)
-{
-	return mstr_skip_space(pch, " \t\n\r\f\v");
-}
-inline WCHAR *mstr_skip_space(WCHAR *pch)
-{
-	return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
-}
-inline const WCHAR *mstr_skip_space(const WCHAR *pch)
-{
-	return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
-}
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_repeat(const std::basic_string<T_CHAR>& str, size_t count);
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_repeat(const T_CHAR *str, size_t count);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_escape(const std::basic_string<T_CHAR>& str);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str);
-
-template <typename T_STR>
-bool mstr_replace_all(T_STR& str, const T_STR& from, const T_STR& to);
-template <typename T_STR>
-bool mstr_replace_all(T_STR& str,
-					  const typename T_STR::value_type *from,
-					  const typename T_STR::value_type *to);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_quote(const std::basic_string<T_CHAR>& str);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_quote(const T_CHAR *str);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_quote_with_wrap(const std::basic_string<T_CHAR>& str);
-
-template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mstr_quote_with_wrap(const T_CHAR *str);
-
-template <typename T_STR_CONTAINER>
-void mstr_split(T_STR_CONTAINER& container,
-				const typename T_STR_CONTAINER::value_type& str,
-				const typename T_STR_CONTAINER::value_type& chars);
-
-template <typename T_STR_CONTAINER>
-typename T_STR_CONTAINER::value_type
-mstr_join(const T_STR_CONTAINER& container,
-		  const typename T_STR_CONTAINER::value_type& sep);
+////////////////////////////////////////////////////////////////////////////
 
 inline void mstr_upper(char* str)
 {
@@ -440,7 +293,70 @@ inline bool mchr_is_space(T_CHAR ch)
 }
 
 template <typename T_CHAR>
-inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
+inline T_CHAR *
+mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces)
+{
+	const T_CHAR *ptr;
+	while (*pch)
+	{
+		for (ptr = spaces; *ptr; ++ptr)
+		{
+			if (*ptr == *pch)
+			{
+				ptr = NULL;
+				break;
+			}
+		}
+		if (ptr)
+			return pch;
+
+		++pch;
+	}
+	return pch;
+}
+
+template <typename T_CHAR>
+inline const T_CHAR *
+mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces)
+{
+	const T_CHAR *ptr;
+	while (*pch)
+	{
+		for (ptr = spaces; *ptr; ++ptr)
+		{
+			if (*ptr == *pch)
+			{
+				ptr = NULL;
+				break;
+			}
+		}
+		if (ptr)
+			return pch;
+
+		++pch;
+	}
+	return pch;
+}
+
+inline char *mstr_skip_space(char *pch)
+{
+	return mstr_skip_space(pch, " \t\n\r\f\v");
+}
+inline const char *mstr_skip_space(const char *pch)
+{
+	return mstr_skip_space(pch, " \t\n\r\f\v");
+}
+inline WCHAR *mstr_skip_space(WCHAR *pch)
+{
+	return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
+}
+inline const WCHAR *mstr_skip_space(const WCHAR *pch)
+{
+	return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
+}
+
+template <typename T_CHAR>
+inline int mstr_parse_int(const T_CHAR *str, bool is_signed = true, int base = 0)
 {
 	str = mstr_skip_space(str);
 
@@ -539,33 +455,6 @@ mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value)
 		str += T_CHAR(hex[value & 0xF]);
 		value >>= 4;
 	}
-	std::reverse(str.begin(), str.end());
-	if (str.empty())
-		str += T_CHAR('0');
-}
-
-template <typename T_CHAR>
-inline void
-mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed)
-{
-	static const char dec[] = "0123456789";
-	str.clear();
-	bool is_minus = false;
-	if (is_signed && value < 0)
-	{
-		is_minus = true;
-		value = -value;
-	}
-	size_t i = 0;
-	unsigned int uvalue = value;
-	while (uvalue)
-	{
-		str += T_CHAR(dec[uvalue % 10]);
-		uvalue /= 10;
-		++i;
-	}
-	if (is_minus)
-		str += T_CHAR('-');
 	std::reverse(str.begin(), str.end());
 	if (str.empty())
 		str += T_CHAR('0');
@@ -885,52 +774,6 @@ mstr_join(const T_STR_CONTAINER& container,
 	return result;
 }
 
-template <typename T_CHAR>
-inline T_CHAR *
-mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces)
-{
-	const T_CHAR *ptr;
-	while (*pch)
-	{
-		for (ptr = spaces; *ptr; ++ptr)
-		{
-			if (*ptr == *pch)
-			{
-				ptr = NULL;
-				break;
-			}
-		}
-		if (ptr)
-			return pch;
-
-		++pch;
-	}
-	return pch;
-}
-
-template <typename T_CHAR>
-inline const T_CHAR *
-mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces)
-{
-	const T_CHAR *ptr;
-	while (*pch)
-	{
-		for (ptr = spaces; *ptr; ++ptr)
-		{
-			if (*ptr == *pch)
-			{
-				ptr = NULL;
-				break;
-			}
-		}
-		if (ptr)
-			return pch;
-
-		++pch;
-	}
-	return pch;
-}
-
 ////////////////////////////////////////////////////////////////////////////
 
 inline void mstr_trim(MStringA& str)
@@ -988,6 +831,322 @@ template <size_t siz>
 inline void mstr_trim_right(WCHAR (&str)[siz])
 {
 	mstr_trim_right(str, WIDE(" \t\n\r\f\v"));
+}
+
+template <typename T_CHAR>
+inline void
+mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed = true)
+{
+	static const char dec[] = "0123456789";
+	str.clear();
+	bool is_minus = false;
+	if (is_signed && value < 0)
+	{
+		is_minus = true;
+		value = -value;
+	}
+	size_t i = 0;
+	unsigned int uvalue = value;
+	while (uvalue)
+	{
+		str += T_CHAR(dec[uvalue % 10]);
+		uvalue /= 10;
+		++i;
+	}
+	if (is_minus)
+		str += T_CHAR('-');
+	std::reverse(str.begin(), str.end());
+	if (str.empty())
+		str += T_CHAR('0');
+}
+
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_word(WORD value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, value);
+	return ret;
+}
+
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_short(SHORT value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, (short)value);
+	return ret;
+}
+
+template <typename T_CHAR = TCHAR>
+std::basic_string<T_CHAR> mstr_dec_dword(DWORD value)
+{
+	std::basic_string<T_CHAR> ret;
+	mstr_to_dec(ret, value);
+	return ret;
+}
+
+inline MString mstr_dec(int value)
+{
+	MString ret;
+	mstr_to_dec(ret, value);
+	return ret;
+}
+
+inline MString mstr_hex(int value)
+{
+	MString ret, str;
+	if (value == 0)
+	{
+		ret = TEXT("0");
+	}
+	else
+	{
+		ret += TEXT("0x");
+		mstr_to_hex(str, value);
+		ret += str;
+	}
+	return ret;
+}
+
+inline MString mstr_hex_word(WORD value)
+{
+	MString ret, str;
+	ret += TEXT("0x");
+	mstr_to_hex(str, value);
+	if (str.size() < 4)
+	{
+		ret += MString(4 - str.size(), TEXT('0'));
+	}
+	ret += str;
+	return ret;
+}
+
+inline bool mstr_unquote(std::string& str)
+{
+	std::string str2 = str;
+	const char *pch = str2.c_str();
+	return guts_quote(str, pch);
+}
+
+inline bool mstr_unquote(MStringW& str)
+{
+	MStringW str2 = str;
+	const WCHAR *pch = str2.c_str();
+	return guts_quote(str, pch);
+}
+
+template <size_t siz>
+inline bool mstr_unquote(char (&str)[siz])
+{
+	std::string s = str;
+	bool ret = mstr_unquote(s);
+	mstrcpy(str, s.c_str());
+	return ret;
+}
+
+template <size_t siz>
+inline bool mstr_unquote(WCHAR (&str)[siz])
+{
+	MStringW s = str;
+	bool ret = mstr_unquote(s);
+	mstrcpy(str, s.c_str());
+	return ret;
+}
+
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const std::basic_string<T_CHAR>& str2)
+{
+	size_t count = 0;
+	for (size_t i = 0; i < str1.size(); i += str2.size())
+	{
+		if (str1.find(str2, i) != i)
+			break;
+
+		++count;
+	}
+	return count;
+}
+
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const T_CHAR *str1, const std::basic_string<T_CHAR>& str2)
+{
+	std::basic_string<T_CHAR> s1(str1);
+	return mstr_repeat_count(s1, str2);
+}
+
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const T_CHAR *str2)
+{
+	std::basic_string<T_CHAR> s2(str2);
+	return mstr_repeat_count(str1, s2);
+}
+
+////////////////////////////////////////////////////////////////////////////
+
+inline bool guts_escape(MStringW& str, const WCHAR*& pch)
+{
+	using namespace std;
+	switch (*pch)
+	{
+	case L'\\': str += L'\\'; ++pch; break;
+	case L'"': str += L'\"'; ++pch; break;
+	case L'a': str += L'\a'; ++pch; break;
+	case L'b': str += L'\b'; ++pch; break;
+	case L'f': str += L'\f'; ++pch; break;
+	case L'n': str += L'\n'; ++pch; break;
+	case L'r': str += L'\r'; ++pch; break;
+	case L't': str += L'\t'; ++pch; break;
+	case L'v': str += L'\v'; ++pch; break;
+	case L'x':
+		{
+			++pch;
+			MStringW strNum;
+			if (mchr_is_xdigit(*pch))
+			{
+				strNum += *pch;
+				++pch;
+				if (mchr_is_xdigit(*pch))
+				{
+					strNum += *pch;
+					++pch;
+				}
+			}
+			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
+		}
+		break;
+	case L'0': case L'1': case L'2': case L'3':
+	case L'4': case L'5': case L'6': case L'7':
+		{
+			MStringW strNum;
+			if (L'0' <= *pch && *pch <= L'7')
+			{
+				strNum += *pch;
+				++pch;
+				if (L'0' <= *pch && *pch <= L'7')
+				{
+					strNum += *pch;
+					++pch;
+					if (L'0' <= *pch && *pch <= L'7')
+					{
+						strNum += *pch;
+						++pch;
+					}
+				}
+			}
+			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 8);
+		}
+		break;
+	case 'u':
+		{
+			++pch;
+			MStringW strNum;
+			if (mchr_is_xdigit(*pch))
+			{
+				strNum += *pch;
+				++pch;
+				if (mchr_is_xdigit(*pch))
+				{
+					strNum += *pch;
+					++pch;
+					if (mchr_is_xdigit(*pch))
+					{
+						strNum += *pch;
+						++pch;
+						if (mchr_is_xdigit(*pch))
+						{
+							strNum += *pch;
+							++pch;
+						}
+					}
+				}
+			}
+			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
+		}
+		break;
+	default:
+		str += *pch;
+		++pch;
+		return false;
+	}
+	return true;
+}
+
+inline bool guts_quote(std::string& str, const char*& pch)
+{
+	using namespace std;
+	str.clear();
+
+	pch = mstr_skip_space(pch);
+	if (*pch != L'\"')
+		return false;
+
+	for (++pch; *pch; ++pch)
+	{
+		if (*pch == L'\\')
+		{
+			++pch;
+			guts_escape(str, pch);
+			--pch;
+		}
+		else if (*pch == L'\"')
+		{
+			++pch;
+			if (*pch == L'\"')
+			{
+				str += L'\"';
+			}
+			else
+			{
+				break;
+			}
+		}
+		else
+		{
+			str += *pch;
+		}
+	}
+
+	return true;
+}
+
+inline bool guts_quote(MStringW& str, const WCHAR*& pch)
+{
+	using namespace std;
+	str.clear();
+
+	pch = mstr_skip_space(pch);
+	if (*pch != L'\"')
+		return false;
+
+	for (++pch; *pch; ++pch)
+	{
+		if (*pch == L'\\')
+		{
+			++pch;
+			guts_escape(str, pch);
+			--pch;
+		}
+		else if (*pch == L'\"')
+		{
+			++pch;
+			if (*pch == L'\"')
+			{
+				str += L'\"';
+			}
+			else
+			{
+				break;
+			}
+		}
+		else
+		{
+			str += *pch;
+		}
+	}
+
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////

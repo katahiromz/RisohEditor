@@ -1,7 +1,40 @@
+// MStrBin.hpp --- String and binary
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2017-2026 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// License: GPL-3 or later
+
 #pragma once
 
 #include "MString.hpp"
 #include "MTextToText.hpp"
+
+enum MTextEncoding
+{
+	MTENC_UNKNOWN = 0,
+	MTENC_ASCII,
+	MTENC_ANSI,
+	MTENC_UNICODE_LE,
+	MTENC_UNICODE_BE,
+	MTENC_UTF8,
+	MTENC_UNICODE = MTENC_UNICODE_LE,
+};
+
+enum MTextNewLineType
+{
+	MNEWLINE_UNKNOWN,
+	MNEWLINE_NOCHANGE,
+	MNEWLINE_CRLF,
+	MNEWLINE_LF,
+	MNEWLINE_CR
+};
+
+struct MTextType
+{
+	MTextEncoding       nEncoding;
+	MTextNewLineType    nNewLine;
+	bool                bHasBOM;
+};
 
 inline void
 mbin_swap_endian(void *ptr, size_t len)
