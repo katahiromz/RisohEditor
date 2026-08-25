@@ -1,5 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
+- v.6.1.8 (2026-XX-YY)
 - v.6.1.7 (25.08.2026)
     - Corretto bug MEditAccelDlg ("^A" ecc.).
     - Reso mcdx meno sospetto.
