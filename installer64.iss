@@ -90,7 +90,7 @@ Source: "mcdx\MESSAGETABLEDX.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\Release\RisohEditor64.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
-Source: "build\Release\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "build\Release\mcdx.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "src\MOleHost.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MOleHost.cpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion

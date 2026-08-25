@@ -2,6 +2,7 @@
 
 - v.6.1.8 (2026-XX-YY)
     - Peningkatan kecil pada UI/UX.
+    - Memindahkan lokasi mcdx.
 - v.6.1.7 (2026-08-25)
     - Memperbaiki bug MEditAccelDlg ("^A" dll.).
     - Membuat mcdx tidak terlalu mencurigakan.
