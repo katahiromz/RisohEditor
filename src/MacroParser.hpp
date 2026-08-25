@@ -314,7 +314,7 @@ namespace MacroParser
 		string_type m_str;
 		BaseAst *m_arg;
 
-		UnaryAst(const string_type& str, BaseAst *arg = NULL)
+		UnaryAst(const string_type& str, BaseAst *arg = nullptr)
 			: BaseAst(ASTID_UNARY), m_str(str), m_arg(arg)
 		{
 		}
@@ -428,7 +428,7 @@ namespace MacroParser
 	class Parser
 	{
 	public:
-		Parser(TokenStream& stream) : m_stream(stream), m_ast(NULL)
+		Parser(TokenStream& stream) : m_stream(stream), m_ast(nullptr)
 		{
 		}
 		~Parser()
@@ -629,7 +629,7 @@ namespace MacroParser
 					}
 					str += ch;
 				}
-				int i = strtoul(str.c_str(), NULL, 0);
+				int i = strtoul(str.c_str(), nullptr, 0);
 				// emplace_back constructs the Token in place inside the
 				// vector, and moving str into it avoids an extra string
 				// copy compared to building a local Token and push_back'ing it.
@@ -685,7 +685,7 @@ namespace MacroParser
 			{
 				str.clear();
 				str += ch;
-				if (strchr("+-*/%~()^,?:", ch) != NULL)
+				if (strchr("+-*/%~()^,?:", ch) != nullptr)
 				{
 					m_tokens.emplace_back(std::move(str), TOK_SYMBOL);
 				}
@@ -751,11 +751,11 @@ namespace MacroParser
 
 		delete m_ast;
 		m_ast = visit_constant_expression();
-		if (m_ast != NULL && type() == TOK_EOF)
+		if (m_ast != nullptr && type() == TOK_EOF)
 			return true;
 
 		delete m_ast;
-		m_ast = NULL;
+		m_ast = nullptr;
 		return false;
 	}
 
@@ -764,8 +764,8 @@ namespace MacroParser
 	inline BaseAst *Parser::visit_constant_expression()
 	{
 		BaseAst *cond = visit_conditional_expression();
-		if (cond == NULL)
-			return NULL;
+		if (cond == nullptr)
+			return nullptr;
 
 		if (type() == TOK_SYMBOL && str() == ",")
 		{
@@ -775,10 +775,10 @@ namespace MacroParser
 			{
 				next();
 				cond = visit_conditional_expression();
-				if (cond == NULL)
+				if (cond == nullptr)
 				{
 					delete comma;
-					return NULL;
+					return nullptr;
 				}
 				comma->add(cond);
 			} while (type() == TOK_SYMBOL && str() == ",");
@@ -792,8 +792,8 @@ namespace MacroParser
 	inline BaseAst* Parser::visit_conditional_expression()
 	{
 		BaseAst *first = visit_logical_or_expression();
-		if (first == NULL)
-			return NULL;
+		if (first == nullptr)
+			return nullptr;
 
 		if (type() == TOK_SYMBOL && str() == "?")
 		{
@@ -813,7 +813,7 @@ namespace MacroParser
 			}
 			delete second;
 			delete first;
-			return NULL;
+			return nullptr;
 		}
 		return first;
 	}
@@ -834,7 +834,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -860,7 +860,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -886,7 +886,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -912,7 +912,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -938,7 +938,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -965,7 +965,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -993,7 +993,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -1020,7 +1020,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -1047,7 +1047,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -1074,7 +1074,7 @@ namespace MacroParser
 					continue;
 				}
 				delete first;
-				return NULL;
+				return nullptr;
 			}
 			else
 			{
@@ -1096,7 +1096,7 @@ namespace MacroParser
 			BaseAst *arg = visit_unary_expression();
 			if (arg)
 				return new UnaryAst(op, arg);
-			return NULL;
+			return nullptr;
 		}
 		return visit_postfix_expression();
 	}
@@ -1107,7 +1107,7 @@ namespace MacroParser
 	//                        | '(' <constant_expression> ')'
 	inline BaseAst* Parser::visit_primary_expression()
 	{
-		BaseAst *ast = NULL;
+		BaseAst *ast = nullptr;
 		switch (type())
 		{
 		case TOK_IDENT:
@@ -1135,16 +1135,16 @@ namespace MacroParser
 						return ast;
 					}
 					delete ast;
-					ast = NULL;
+					ast = nullptr;
 				}
 			}
 			else
 			{
-				ast = NULL;
+				ast = nullptr;
 			}
 			break;
 		case TOK_EOF:
-			ast = NULL;
+			ast = nullptr;
 			break;
 		}
 		return ast;
