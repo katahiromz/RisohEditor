@@ -24,6 +24,7 @@
 #include "MTextToText.hpp"
 
 #include <cctype>
+#include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <vector>
@@ -279,12 +280,26 @@ static bool read_file_contents(const MString& path, std::string& out)
     if (!fp)
         return false;
 
-    char buf[256];
+    // Pre-size the buffer from the file size when available so the string
+    // doesn't have to repeatedly grow/reallocate/copy while reading (this
+    // matters for the potentially large .res/.bin inputs).
+    out.clear();
+    if (fseek(fp, 0, SEEK_END) == 0)
+    {
+        long size = ftell(fp);
+        if (size > 0)
+            out.reserve((size_t)size);
+        fseek(fp, 0, SEEK_SET);
+    }
+
+    // Heap-allocated (not a stack array): keeps the frame small regardless
+    // of the caller's stack depth or thread stack size.
+    std::vector<char> buf(65536);
     for (;;)
     {
-        size_t len = fread(buf, 1, sizeof(buf), fp);
+        size_t len = fread(buf.data(), 1, buf.size(), fp);
         if (!len) break;
-        out.append(buf, len);
+        out.append(buf.data(), len);
     }
     fclose(fp);
     return true;
@@ -405,12 +420,15 @@ static bool run_process(
     if (!fp)
         return false;
 
-    char buf[256];
+    // A larger buffer means far fewer read()/append() round-trips for the
+    // (often multi-megabyte) preprocessor output than the previous 256-byte
+    // chunks did. Heap-allocated for the same reason as read_file_contents().
+    std::vector<char> buf(65536);
     for (;;)
     {
-        size_t count = fread(buf, 1, sizeof(buf), fp);
+        size_t count = fread(buf.data(), 1, buf.size(), fp);
         if (!count) break;
-        output.append(buf, count);
+        output.append(buf.data(), count);
     }
     return pclose(fp) == 0;
 #endif
@@ -471,6 +489,54 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
     return EXITCODE_SUCCESS;
 }
 
+// Fast path for the (overwhelmingly common) case where a message-table id
+// is a bare integer literal such as "1", "0x20", or "-5", with no
+// surrounding whitespace other than what's trimmed here. Avoids building a
+// StringScanner/TokenStream/Parser and heap-allocated AST nodes -- which
+// dominates do_mode_2()'s cost on large message tables -- for entries that
+// don't need real expression evaluation. Returns false (leaving 'value'
+// untouched) for anything that isn't a single plain literal, so callers can
+// fall back to the full MacroParser for real expressions such as
+// "WM_USER+1" or "(1<<2)".
+static bool try_parse_plain_int(const char *str, size_t len, int& value)
+{
+    size_t i = 0;
+    while (i < len && mchr_is_space(str[i]))
+        ++i;
+
+    size_t start = i;
+    if (i < len && (str[i] == '+' || str[i] == '-'))
+        ++i;
+
+    size_t digits_start = i;
+    if (i + 1 < len && str[i] == '0' && (str[i + 1] == 'x' || str[i + 1] == 'X'))
+    {
+        i += 2;
+        size_t hex_start = i;
+        while (i < len && mchr_is_xdigit(str[i]))
+            ++i;
+        if (i == hex_start)
+            return false;
+    }
+    else
+    {
+        while (i < len && mchr_is_digit(str[i]))
+            ++i;
+        if (i == digits_start)
+            return false;
+    }
+
+    size_t end = i;
+    while (i < len && mchr_is_space(str[i]))
+        ++i;
+    if (i != len)
+        return false; // trailing junk: not a plain literal, needs the real parser
+
+    std::string token(str + start, end - start);
+    value = mstr_parse_int(token.c_str(), true, 0);
+    return true;
+}
+
 int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
 {
     ptr = mstr_skip_space(ptr);
@@ -502,15 +568,21 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
     char *ptr0 = ptr;
     while (*ptr && *ptr != ',' && *ptr != '"')
         ++ptr;
-    MStringA str(ptr0, ptr);
 
-    using namespace MacroParser;
-    StringScanner scanner(str);
-    TokenStream ts(scanner);
-    ts.read_tokens();
-    Parser parser(ts);
-    if (!parser.parse() || !eval_int(parser.ast(), g_value))
-        return syntax_error();
+    if (!try_parse_plain_int(ptr0, ptr - ptr0, g_value))
+    {
+        // Not a bare literal (e.g. a macro/operator expression): fall back
+        // to the full expression parser.
+        MStringA str(ptr0, ptr);
+
+        using namespace MacroParser;
+        StringScanner scanner(str);
+        TokenStream ts(scanner);
+        ts.read_tokens();
+        Parser parser(ts);
+        if (!parser.parse() || !eval_int(parser.ast(), g_value))
+            return syntax_error();
+    }
 
     if (*ptr == ',' || *ptr == '"')
     {
@@ -629,6 +701,9 @@ int eat_output(const std::string& output)
     g_msg_tables.clear();
 
     std::vector<std::string> lines;
+    // Preprocessed message-table output is easily tens of thousands of
+    // lines; reserving avoids repeated vector growth/copy while splitting.
+    lines.reserve(std::count(output.begin(), output.end(), '\n') + 1);
     mstr_split(lines, output, "\n");
     for (auto& l : lines)
         mstr_trim(l);
@@ -746,18 +821,23 @@ int eat_output(const std::string& output)
                             ++ptr;
                         if (ptr != ptr0)
                         {
-                            MStringA token(ptr0, ptr);
                             char *p2 = mstr_skip_space(ptr);
                             if (memcmp("MESSAGETABLEDX", p2, 14) == 0 &&
                                 (mchr_is_space(p2[14]) || p2[14] == 0 || p2[14] == '{'))
                             {
-                                using namespace MacroParser;
-                                StringScanner scanner(token);
-                                TokenStream ts(scanner);
-                                ts.read_tokens();
-                                Parser parser(ts);
                                 int val = 1;
-                                if (parser.parse() && eval_int(parser.ast(), val))
+                                bool ok = try_parse_plain_int(ptr0, ptr - ptr0, val);
+                                if (!ok)
+                                {
+                                    MStringA token(ptr0, ptr);
+                                    using namespace MacroParser;
+                                    StringScanner scanner(token);
+                                    TokenStream ts(scanner);
+                                    ts.read_tokens();
+                                    Parser parser(ts);
+                                    ok = parser.parse() && eval_int(parser.ast(), val);
+                                }
+                                if (ok)
                                 {
                                     g_table_id = MIdOrString((WORD)(uint16_t)val);
                                     ptr   = p2;

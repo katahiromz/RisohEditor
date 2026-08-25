@@ -3,6 +3,7 @@
 - v.6.1.8 (2026-XX-YY)
     - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
     - Se cambió la ubicación de mcdx.
+    - mcdx acelerado.
 - v.6.1.7 (2026-08-25)
     - Corregido error en MEditAccelDlg ("^A", etc.).
     - Hizo mcdx menos sospechosa.
