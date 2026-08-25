@@ -1141,6 +1141,8 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 	if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
 		return nullptr;
 
+	Bitmap_DropFileHeader(stream.data());
+
 	HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&stream[0], stream.size());
 	DeleteObject(hbm);
 	if (!hbm)
@@ -1154,8 +1156,6 @@ EntryBase *EntrySet::add_bitmap(const MIdOrString& name, LANGID lang, const MStr
 			return nullptr;
 		DeleteObject(hbm);
 	}
-
-	Bitmap_DropFileHeader(stream.data());
 
 	// add the entry
 	return add_lang_entry(RT_BITMAP, name, lang, stream.data());

@@ -476,21 +476,6 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
 
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 {
-	// PackedDIB_* works on a "packed DIB" -- BITMAPINFOHEADER + color
-	// table + bits, with NO BITMAPFILEHEADER -- exactly how RT_BITMAP
-	// resources are stored. It's an easy mistake to instead pass the raw
-	// bytes of an actual .bmp *file*, which does start with a 14-byte
-	// BITMAPFILEHEADER ("BM" + bfSize/bfOffBits/...). Detect that case and
-	// skip it transparently, rather than letting PackedDIB_GetBitsOffset
-	// misread the file header as (garbage) BITMAPINFOHEADER fields and
-	// fail outright.
-	const BYTE *pb0 = (const BYTE *)ptr;
-	if (siz > sizeof(BITMAPFILEHEADER) && pb0[0] == 'B' && pb0[1] == 'M')
-	{
-		ptr = pb0 + sizeof(BITMAPFILEHEADER);
-		siz -= sizeof(BITMAPFILEHEADER);
-	}
-
 	HBITMAP hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
 	if (hbm)
 	{
