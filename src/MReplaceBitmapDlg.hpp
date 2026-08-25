@@ -104,6 +104,11 @@ public:
 		}
 	}
 
+	void OnPsh2(HWND hwnd)
+	{
+		SendMessage(GetParent(hwnd), WM_COMMAND, ID_IDLIST, 0);
+	}
+
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		switch (id)
@@ -116,6 +121,9 @@ public:
 			break;
 		case psh1:
 			OnPsh1(hwnd);
+			break;
+		case psh2:
+			OnPsh2(hwnd);
 			break;
 		}
 	}
