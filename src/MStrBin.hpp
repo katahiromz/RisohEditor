@@ -3,15 +3,80 @@
 #include "MString.hpp"
 #include "MTextToText.hpp"
 
-// mstr_... functions
-// mbin_... functions
+inline void
+mbin_swap_endian(void *ptr, size_t len)
+{
+	char *pb = (char *)ptr;
+	len /= 2;
+	while (--len)
+	{
+		char b = pb[0];
+		pb[0] = pb[1];
+		pb[1] = b;
+		++pb;
+		++pb;
+	}
+}
+
+inline void mbin_swap_endian(std::string& bin)
+{
+	if (bin.size())
+		mbin_swap_endian(&bin[0], bin.size());
+}
+
+inline void
+mstr_normalize_newlines_to_crlf(MStringW& ret, MTextType *pType = nullptr)
+{
+	bool bHadCRLF = false;
+	bool bHadAnyBreak = false;
+
+	MStringW out;
+	out.reserve(ret.size());
+
+	const size_t n = ret.size();
+	for (size_t i = 0; i < n; ++i)
+	{
+		WCHAR ch = ret[i];
+		if (ch == WCHAR('\r'))
+		{
+			bHadAnyBreak = true;
+			if (i + 1 < n && ret[i + 1] == WCHAR('\n'))
+			{
+				bHadCRLF = true;
+				++i;
+			}
+			out += WIDE("\r\n");
+		}
+		else if (ch == WCHAR('\n'))
+		{
+			bHadAnyBreak = true;
+			out += WIDE("\r\n");
+		}
+		else
+		{
+			out += ch;
+		}
+	}
+
+	ret.swap(out);
+
+	if (pType)
+	{
+		if (bHadCRLF)
+			pType->nNewLine = MNEWLINE_CRLF;
+		else if (bHadAnyBreak)
+			pType->nNewLine = MNEWLINE_LF;
+		else
+			pType->nNewLine = MNEWLINE_UNKNOWN;
+	}
+}
 
 inline MStringW
-mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
+mstr_from_bin(const void *bin, size_t len, MTextType *pType = nullptr)
 {
 	MStringW ret;
 
-	if (bin == NULL || len == 0)
+	if (bin == nullptr || len == 0)
 	{
 		// empty
 		if (pType)
@@ -54,8 +119,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 				pType->nEncoding = MTENC_UTF8;
 				pType->bHasBOM = true;
 			}
-			std::string str(&pch[3], len - 3);
-			ret = MAnsiToWide(CP_UTF8, str);
+			ret = MAnsiToWide(CP_UTF8, &pch[3], int(len - 3));
 		}
 		else if (mstr_is_text_ascii((const char *)bin, len))
 		{
@@ -65,8 +129,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 				pType->nEncoding = MTENC_ASCII;
 				pType->bHasBOM = false;
 			}
-			std::string str(pch, len);
-			ret = MAnsiToWide(CP_ACP, str);
+			ret = MAnsiToWide(CP_ACP, pch, int(len));
 		}
 		else if (mstr_is_text_utf8((const char *)bin, len))
 		{
@@ -96,47 +159,51 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 				pType->nEncoding = MTENC_ANSI;
 				pType->bHasBOM = false;
 			}
-			std::string str(pch, len);
-			ret = MAnsiToWide(CP_ACP, str);
+			ret = MAnsiToWide(CP_ACP, pch, int(len));
 		}
 	}
 
 	if (!pType || pType->nNewLine != MNEWLINE_NOCHANGE)
 	{
-		if (pType)
-		{
-			pType->nNewLine = MNEWLINE_UNKNOWN;
-		}
-		if (mstr_replace_all(ret, WIDE("\r\n"), WIDE("\n")))
-		{
-			if (pType)
-			{
-				pType->nNewLine = MNEWLINE_CRLF;
-			}
-		}
-		if (mstr_replace_all(ret, WIDE("\r"), WIDE("\n")))
-		{
-			if (pType && pType->nNewLine != MNEWLINE_CRLF)
-			{
-				pType->nNewLine = MNEWLINE_CR;
-			}
-		}
-		if (mstr_replace_all(ret, WIDE("\n"), WIDE("\r\n")))
-		{
-			if (pType && pType->nNewLine != MNEWLINE_CRLF)
-			{
-				pType->nNewLine = MNEWLINE_LF;
-			}
-		}
+		mstr_normalize_newlines_to_crlf(ret, pType);
 	}
 
 	return ret;
 }
 
 inline MStringW
-mstr_from_bin(const std::string& bin, MTextType *pType/* = NULL*/)
+mstr_from_bin(const std::string& bin, MTextType *pType = nullptr)
 {
 	return mstr_from_bin(&bin[0], bin.size(), pType);
+}
+
+inline void
+mstr_convert_newlines(MStringW& str, const WCHAR *newline, size_t newline_len)
+{
+	MStringW out;
+	out.reserve(str.size());
+
+	const size_t n = str.size();
+	for (size_t i = 0; i < n; ++i)
+	{
+		WCHAR ch = str[i];
+		if (ch == WCHAR('\r'))
+		{
+			if (i + 1 < n && str[i + 1] == WCHAR('\n'))
+				++i;
+			out.append(newline, newline_len);
+		}
+		else if (ch == WCHAR('\n'))
+		{
+			out.append(newline, newline_len);
+		}
+		else
+		{
+			out += ch;
+		}
+	}
+
+	str.swap(out);
 }
 
 inline std::string
@@ -151,17 +218,13 @@ mbin_from_str(const MStringW& str, const MTextType& type)
 	case MNEWLINE_NOCHANGE:
 		break;
 	case MNEWLINE_CRLF:
-		mstr_replace_all(str2, WIDE("\r\n"), WIDE("\n"));
-		mstr_replace_all(str2, WIDE("\r"), WIDE("\r\n"));
-		mstr_replace_all(str2, WIDE("\n"), WIDE("\r\n"));
+		mstr_convert_newlines(str2, WIDE("\r\n"), 2);
 		break;
 	case MNEWLINE_LF:
-		mstr_replace_all(str2, WIDE("\r\n"), WIDE("\n"));
-		mstr_replace_all(str2, WIDE("\r"), WIDE("\n"));
+		mstr_convert_newlines(str2, WIDE("\n"), 1);
 		break;
 	case MNEWLINE_CR:
-		mstr_replace_all(str2, WIDE("\r\n"), WIDE("\r"));
-		mstr_replace_all(str2, WIDE("\n"), WIDE("\r"));
+		mstr_convert_newlines(str2, WIDE("\r"), 1);
 		break;
 	}
 

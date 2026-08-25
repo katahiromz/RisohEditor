@@ -305,19 +305,6 @@ inline bool mstr_is_identifier(const std::wstring& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////
-// binary
-
-void mbin_swap_endian(void *ptr, size_t len);
-void mbin_swap_endian(std::string& bin);
-
-MStringW
-mstr_from_bin(const void *bin, size_t len, MTextType *pType = NULL);
-MStringW
-mstr_from_bin(const std::string& bin, MTextType *pType = NULL);
-
-std::string mbin_from_str(const MStringW& str, const MTextType& type);
-
-////////////////////////////////////////////////////////////////////////////
 
 #include "MTextToText.hpp"
 
@@ -820,26 +807,6 @@ mstr_replace_all(T_STR& str,
 				 const typename T_STR::value_type *to)
 {
 	return mstr_replace_all(str, T_STR(from), T_STR(to));
-}
-
-inline void
-mbin_swap_endian(void *ptr, size_t len)
-{
-	char *pb = (char *)ptr;
-	len /= 2;
-	while (--len)
-	{
-		char b = pb[0];
-		pb[0] = pb[1];
-		pb[1] = b;
-		++pb;
-		++pb;
-	}
-}
-
-inline void mbin_swap_endian(std::string& bin)
-{
-	mbin_swap_endian(&bin[0], bin.size());
 }
 
 template <typename T_CHAR>
