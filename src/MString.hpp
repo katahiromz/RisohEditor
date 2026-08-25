@@ -450,6 +450,7 @@ mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value)
 {
 	static const char hex[] = "0123456789ABCDEF";
 	str.clear();
+	str.reserve(sizeof(unsigned int) * 2);
 	while (value)
 	{
 		str += T_CHAR(hex[value & 0xF]);
@@ -508,17 +509,16 @@ inline bool mstr_is_text_utf8(const std::string& str)
 template <typename T_CHAR>
 inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
 {
-	typedef std::basic_string<T_CHAR> string_type;
-	size_t i = str.find_first_not_of(spaces);
-	size_t j = str.find_last_not_of(spaces);
-	if ((i == string_type::npos) || (j == string_type::npos))
+	size_t end = str.find_last_not_of(spaces);
+	if (end == str.npos)
 	{
 		str.clear();
+		return;
 	}
-	else
-	{
-		str = str.substr(i, j - i + 1);
-	}
+	str.erase(end + 1);
+	size_t start = str.find_first_not_of(spaces);
+	if (start)
+		str.erase(0, start);
 }
 
 template <typename T_CHAR, size_t siz>
@@ -533,16 +533,11 @@ inline void mstr_trim(T_CHAR (&str)[siz], const T_CHAR *spaces)
 template <typename T_CHAR>
 inline void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
 {
-	typedef std::basic_string<T_CHAR> string_type;
-	size_t i = str.find_first_not_of(spaces);
-	if (i == string_type::npos)
-	{
+	size_t start = str.find_first_not_of(spaces);
+	if (start == std::basic_string<T_CHAR>::npos)
 		str.clear();
-	}
-	else
-	{
-		str = str.substr(i);
-	}
+	else if (start != 0)
+		str.erase(0, start);
 }
 
 template <typename T_CHAR, size_t siz>
@@ -557,16 +552,11 @@ inline void mstr_trim_left(T_CHAR (&str)[siz], const T_CHAR *spaces)
 template <typename T_CHAR>
 inline void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
 {
-	typedef std::basic_string<T_CHAR> string_type;
-	size_t j = str.find_last_not_of(spaces);
-	if (j == string_type::npos)
-	{
+	size_t end = str.find_last_not_of(spaces);
+	if (end == std::basic_string<T_CHAR>::npos)
 		str.clear();
-	}
 	else
-	{
-		str = str.substr(0, j + 1);
-	}
+		str.erase(end + 1);
 }
 
 template <typename T_CHAR, size_t siz>
@@ -583,6 +573,9 @@ inline std::basic_string<T_CHAR>
 mstr_repeat(const std::basic_string<T_CHAR>& str, size_t count)
 {
 	std::basic_string<T_CHAR> ret;
+	if (count == 0 || str.empty())
+		return ret;
+	ret.reserve(str.size() * count);
 	while (count-- > 0)
 	{
 		ret += str;
@@ -602,6 +595,7 @@ inline std::basic_string<T_CHAR>
 mstr_escape(const std::basic_string<T_CHAR>& str)
 {
 	std::basic_string<T_CHAR> ret;
+	ret.reserve(str.size() * 2);
 
 	for (size_t i = 0; i < str.size(); ++i)
 	{
@@ -640,6 +634,7 @@ inline std::basic_string<T_CHAR>
 mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str)
 {
 	std::basic_string<T_CHAR> ret;
+	ret.reserve(str.size() * 2);
 
 	for (size_t i = 0; i < str.size(); ++i)
 	{
@@ -677,17 +672,33 @@ template <typename T_STR>
 inline bool
 mstr_replace_all(T_STR& str, const T_STR& from, const T_STR& to)
 {
-	bool ret = false;
-	size_t i = 0;
-	for (;;) {
-		i = str.find(from, i);
-		if (i == T_STR::npos)
-			break;
-		ret = true;
-		str.replace(i, from.size(), to);
-		i += to.size();
+	if (from.empty())
+		return false;
+
+	size_t count = 0, pos = 0;
+	while ((pos = str.find(from, pos)) != T_STR::npos)
+	{
+		++count;
+		pos += from.size();
 	}
-	return ret;
+	if (count == 0)
+		return false;
+
+	T_STR result;
+	result.reserve(str.size() + count * (to.size() - from.size()));
+
+	pos = 0;
+	size_t last = 0;
+	while ((pos = str.find(from, last)) != T_STR::npos)
+	{
+		result.append(str, last, pos - last);
+		result += to;
+		last = pos + from.size();
+	}
+	result.append(str, last, str.size() - last);
+
+	str.swap(result);
+	return true;
 }
 template <typename T_STR>
 inline bool
@@ -703,6 +714,7 @@ inline std::basic_string<T_CHAR>
 mstr_quote(const std::basic_string<T_CHAR>& str)
 {
 	std::basic_string<T_CHAR> ret;
+	ret.reserve(str.size() * 2 + 2);
 	ret += T_CHAR('\"');
 	ret += mstr_escape(str);
 	ret += T_CHAR('\"');
@@ -722,6 +734,7 @@ inline std::basic_string<T_CHAR>
 mstr_quote_with_wrap(const std::basic_string<T_CHAR>& str)
 {
 	std::basic_string<T_CHAR> ret;
+	ret.reserve(str.size() * 2 + 2);
 	ret += T_CHAR('\"');
 	ret += mstr_escape_with_wrap(str);
 	ret += T_CHAR('\"');
@@ -839,6 +852,7 @@ mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed = true)
 {
 	static const char dec[] = "0123456789";
 	str.clear();
+	str.reserve(12);
 	bool is_minus = false;
 	if (is_signed && value < 0)
 	{
@@ -985,84 +999,146 @@ mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const T_CHAR *str2)
 
 ////////////////////////////////////////////////////////////////////////////
 
-inline bool guts_escape(MStringW& str, const WCHAR*& pch)
+inline bool guts_escape(std::string& str, const char*& pch)
 {
-	using namespace std;
 	switch (*pch)
 	{
-	case L'\\': str += L'\\'; ++pch; break;
-	case L'"': str += L'\"'; ++pch; break;
-	case L'a': str += L'\a'; ++pch; break;
-	case L'b': str += L'\b'; ++pch; break;
-	case L'f': str += L'\f'; ++pch; break;
-	case L'n': str += L'\n'; ++pch; break;
-	case L'r': str += L'\r'; ++pch; break;
-	case L't': str += L'\t'; ++pch; break;
-	case L'v': str += L'\v'; ++pch; break;
-	case L'x':
+	case '\\': str += '\\'; ++pch; break;
+	case '"':  str += '\"'; ++pch; break;
+	case 'a':  str += '\a'; ++pch; break;
+	case 'b':  str += '\b'; ++pch; break;
+	case 'f':  str += '\f'; ++pch; break;
+	case 'n':  str += '\n'; ++pch; break;
+	case 'r':  str += '\r'; ++pch; break;
+	case 't':  str += '\t'; ++pch; break;
+	case 'v':  str += '\v'; ++pch; break;
+	case 'x':
 		{
 			++pch;
-			MStringW strNum;
-			if (mchr_is_xdigit(*pch))
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 2 && mchr_is_xdigit(*pch))
 			{
-				strNum += *pch;
+				value <<= 4;
+				if (*pch <= '9')
+					value |= *pch - '0';
+				else if (*pch <= 'F')
+					value |= *pch - 'A' + 10;
+				else
+					value |= *pch - 'a' + 10;
 				++pch;
-				if (mchr_is_xdigit(*pch))
-				{
-					strNum += *pch;
-					++pch;
-				}
+				++digits;
 			}
-			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
+			str += static_cast<char>(value);
 		}
 		break;
-	case L'0': case L'1': case L'2': case L'3':
-	case L'4': case L'5': case L'6': case L'7':
+	case '0': case '1': case '2': case '3':
+	case '4': case '5': case '6': case '7':
 		{
-			MStringW strNum;
-			if (L'0' <= *pch && *pch <= L'7')
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 3 && *pch >= '0' && *pch <= '7')
 			{
-				strNum += *pch;
+				value = (value << 3) | (*pch - '0');
 				++pch;
-				if (L'0' <= *pch && *pch <= L'7')
-				{
-					strNum += *pch;
-					++pch;
-					if (L'0' <= *pch && *pch <= L'7')
-					{
-						strNum += *pch;
-						++pch;
-					}
-				}
+				++digits;
 			}
-			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 8);
+			str += static_cast<char>(value);
 		}
 		break;
 	case 'u':
 		{
 			++pch;
-			MStringW strNum;
-			if (mchr_is_xdigit(*pch))
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 4 && mchr_is_xdigit(*pch))
 			{
-				strNum += *pch;
+				value <<= 4;
+				if (*pch <= '9')
+					value |= *pch - '0';
+				else if (*pch <= 'F')
+					value |= *pch - 'A' + 10;
+				else
+					value |= *pch - 'a' + 10;
 				++pch;
-				if (mchr_is_xdigit(*pch))
-				{
-					strNum += *pch;
-					++pch;
-					if (mchr_is_xdigit(*pch))
-					{
-						strNum += *pch;
-						++pch;
-						if (mchr_is_xdigit(*pch))
-						{
-							strNum += *pch;
-							++pch;
-						}
-					}
-				}
+				++digits;
 			}
-			str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
+			str += static_cast<char>(value);
+		}
+		break;
+	default:
+		str += *pch;
+		++pch;
+		return false;
+	}
+	return true;
+}
+
+inline bool guts_escape(MStringW& str, const WCHAR*& pch)
+{
+	switch (*pch)
+	{
+	case L'\\': str += L'\\'; ++pch; break;
+	case L'"':  str += L'\"'; ++pch; break;
+	case L'a':  str += L'\a'; ++pch; break;
+	case L'b':  str += L'\b'; ++pch; break;
+	case L'f':  str += L'\f'; ++pch; break;
+	case L'n':  str += L'\n'; ++pch; break;
+	case L'r':  str += L'\r'; ++pch; break;
+	case L't':  str += L'\t'; ++pch; break;
+	case L'v':  str += L'\v'; ++pch; break;
+	case L'x':
+		{
+			++pch;
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 2 && mchr_is_xdigit(*pch))
+			{
+				value <<= 4;
+				if (*pch <= L'9')
+					value |= *pch - L'0';
+				else if (*pch <= L'F')
+					value |= *pch - L'A' + 10;
+				else
+					value |= *pch - L'a' + 10;
+				++pch;
+				++digits;
+			}
+			str += static_cast<WCHAR>(value);
+		}
+		break;
+	case L'0': case L'1': case L'2': case L'3':
+	case L'4': case L'5': case L'6': case L'7':
+		{
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 3 && *pch >= L'0' && *pch <= L'7')
+			{
+				value = (value << 3) | (*pch - L'0');
+				++pch;
+				++digits;
+			}
+			str += static_cast<WCHAR>(value);
+		}
+		break;
+	case L'u':
+		{
+			++pch;
+			unsigned int value = 0;
+			int digits = 0;
+			while (digits < 4 && mchr_is_xdigit(*pch))
+			{
+				value <<= 4;
+				if (*pch <= L'9')
+					value |= *pch - L'0';
+				else if (*pch <= L'F')
+					value |= *pch - L'A' + 10;
+				else
+					value |= *pch - L'a' + 10;
+				++pch;
+				++digits;
+			}
+			str += static_cast<WCHAR>(value);
 		}
 		break;
 	default:
@@ -1075,76 +1151,102 @@ inline bool guts_escape(MStringW& str, const WCHAR*& pch)
 
 inline bool guts_quote(std::string& str, const char*& pch)
 {
-	using namespace std;
 	str.clear();
+	str.reserve(64);
 
 	pch = mstr_skip_space(pch);
-	if (*pch != L'\"')
+	if (*pch != '"')
 		return false;
 
-	for (++pch; *pch; ++pch)
+	++pch;
+	const char* start = pch;
+
+	while (*pch)
 	{
-		if (*pch == L'\\')
+		if (*pch == '\\')
 		{
+			if (pch > start)
+				str.append(start, pch - start);
+
 			++pch;
 			guts_escape(str, pch);
-			--pch;
+			start = pch;
+			continue;
 		}
-		else if (*pch == L'\"')
+		else if (*pch == '"')
 		{
+			if (pch > start)
+				str.append(start, pch - start);
+
 			++pch;
-			if (*pch == L'\"')
+			if (*pch == '"')
 			{
-				str += L'\"';
+				str += '"';
+				start = pch + 1;
+				++pch;
+				continue;
 			}
 			else
 			{
 				break;
 			}
 		}
-		else
-		{
-			str += *pch;
-		}
+		++pch;
 	}
+
+	if (pch > start)
+		str.append(start, pch - start);
 
 	return true;
 }
 
 inline bool guts_quote(MStringW& str, const WCHAR*& pch)
 {
-	using namespace std;
 	str.clear();
+	str.reserve(64);
 
 	pch = mstr_skip_space(pch);
-	if (*pch != L'\"')
+	if (*pch != L'"')
 		return false;
 
-	for (++pch; *pch; ++pch)
+	++pch;
+	const WCHAR* start = pch;
+
+	while (*pch)
 	{
 		if (*pch == L'\\')
 		{
+			if (pch > start)
+				str.append(start, pch - start);
+
 			++pch;
 			guts_escape(str, pch);
-			--pch;
+			start = pch;
+			continue;
 		}
-		else if (*pch == L'\"')
+		else if (*pch == L'"')
 		{
+			if (pch > start)
+				str.append(start, pch - start);
+
 			++pch;
-			if (*pch == L'\"')
+			if (*pch == L'"')
 			{
-				str += L'\"';
+				str += L'"';
+				start = pch + 1;
+				++pch;
+				continue;
 			}
 			else
 			{
 				break;
 			}
 		}
-		else
-		{
-			str += *pch;
-		}
+		++pch;
 	}
+
+	if (pch > start)
+		str.append(start, pch - start);
 
 	return true;
 }
