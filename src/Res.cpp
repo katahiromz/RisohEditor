@@ -7,6 +7,7 @@
 #include "Res.hpp"
 #include "ToolbarRes.hpp"
 #include "resource.h"
+#include <process.h>   // _beginthreadex
 #ifdef ENABLE_CRYPTO
 #include "WonRes.h"
 #endif
@@ -1982,6 +1983,33 @@ BOOL EntrySet::IsUTF16File(LPCWSTR pszRCFile) const
 	return FALSE;
 }
 
+namespace
+{
+	// Runs mcdx.exe (message-table extraction) on a worker thread so it can
+	// overlap with windres.exe below. It reads pszRCFile directly and
+	// writes to its own private temp file/EntrySet, so it has nothing in
+	// common with the windres pass except the (read-only) source file --
+	// nothing to serialize on.
+	struct MSG_TABLE_PARAM
+	{
+		EntrySet es;
+		LPCWSTR pszRCFile;
+		MStringA strOutput;
+		const MString *pstrMcdxExe;
+		const MStringW *pstrMacrosDump;
+		const MStringW *pstrIncludesDump;
+		BOOL bOK;
+	};
+
+	unsigned __stdcall LoadMsgTableThreadProc(void *pv)
+	{
+		auto param = reinterpret_cast<MSG_TABLE_PARAM *>(pv);
+		param->bOK = param->es.load_msg_table(param->pszRCFile, param->strOutput,
+			*param->pstrMcdxExe, *param->pstrMacrosDump, *param->pstrIncludesDump);
+		return 0;
+	}
+}
+
 BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 	const MString& strWindresExe, const MString& strCppExe,
 	const MString& strMcdxExe, const MStringW& strMacrosDump,
@@ -2014,6 +2042,21 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 	strCmdLine += L'\"';
 	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
+	// Start mcdx.exe (message-table pass) on a worker thread right away,
+	// concurrently with windres.exe below, instead of waiting for windres
+	// to finish first. mcdx doesn't need windres's output -- it just reads
+	// pszRCFile on its own -- so the two used to be serialized for no
+	// reason. We only *use* the mcdx result if windres succeeds (matching
+	// the original behavior), but starting it early means its time is
+	// hidden behind windres's time instead of adding to it.
+	MSG_TABLE_PARAM msgParam;
+	msgParam.pszRCFile = pszRCFile;
+	msgParam.pstrMcdxExe = &strMcdxExe;
+	msgParam.pstrMacrosDump = &strMacrosDump;
+	msgParam.pstrIncludesDump = &strIncludesDump;
+	msgParam.bOK = FALSE;
+	uintptr_t hMsgThread = _beginthreadex(nullptr, 0, LoadMsgTableThreadProc, &msgParam, 0, nullptr);
+
 	BOOL bSuccess = FALSE;
 
 	// create a windres.exe process
@@ -2041,14 +2084,24 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 		}
 	}
 
-	if (bSuccess)
+	// join the mcdx pass (if it couldn't even be started, run it here
+	// synchronously so we still get a correct, if slower, result)
+	if (hMsgThread)
+	{
+		::WaitForSingleObject(reinterpret_cast<HANDLE>(hMsgThread), INFINITE);
+		::CloseHandle(reinterpret_cast<HANDLE>(hMsgThread));
+	}
+	else if (bSuccess)
+	{
+		LoadMsgTableThreadProc(&msgParam);
+	}
+
+	if (bSuccess && msgParam.bOK)
 	{
 		// load the message table if any
-		EntrySet es;
-		if (es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump))
-		{
-			merge(es);
-		}
+		// (append its output after windres's, same order as before)
+		strOutput += msgParam.strOutput;
+		merge(msgParam.es);
 	}
 
 	return bSuccess;
