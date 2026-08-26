@@ -7,7 +7,6 @@
 #include "Res.hpp"
 #include "ToolbarRes.hpp"
 #include "resource.h"
-#include <process.h>   // _beginthreadex
 #ifdef ENABLE_CRYPTO
 #include "WonRes.h"
 #endif

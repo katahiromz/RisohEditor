@@ -14,6 +14,7 @@
 #include "resource.h"
 #include "protection.h"
 #include <process.h>   // _beginthreadex
+#include <tuple>       // for std::tuple (DoLoadRC's res2 existence index)
 
 LPWSTR g_pszLogFile = NULL;
 
@@ -3014,22 +3015,28 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 	// the RC file loaded with APSTUDIO_INVOKED
 	if (bOK2)
 	{
+		// Index res2 by (type, name, lang) once, so the "does entry1 also
+		// exist in res2" check below is an O(log res2.size()) lookup
+		// instead of an O(res2.size()) scan repeated for every entry in
+		// res1 (this loop used to be O(res1.size() * res2.size())).
+		std::set<std::tuple<MIdOrString, MIdOrString, LANGID>> res2_keys;
+		for (auto& entry2 : res2)
+		{
+			res2_keys.emplace(entry2->m_type, entry2->m_name, entry2->m_lang);
+		}
+
 		// TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
-retry:
+		// Single pass over res1: decide what to drop and collect it, rather
+		// than deleting one entry and restarting the whole scan from the
+		// top each time (delete_entry() only marks entries invalid --
+		// actual removal happens later in delete_invalid() -- so it's safe
+		// to keep iterating res1 after calling it).
+		std::vector<EntryBase *> to_delete;
 		for (auto& entry1 : res1)
 		{
 			// res2 の中に res1 と一致する項目があるか確認する。
-			bool exists_in_res2 = false;
-			for (auto& entry2 : res2)
-			{
-				if (entry2->m_type == entry1->m_type &&
-					entry2->m_name == entry1->m_name &&
-					entry2->m_lang == entry1->m_lang)
-				{
-					exists_in_res2 = true;
-					break;
-				}
-			}
+			bool exists_in_res2 = res2_keys.count(
+				std::make_tuple(entry1->m_type, entry1->m_name, entry1->m_lang)) != 0;
 
 			// 存在しない、かつ TEXTINCLUDEではない場合、
 			if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
@@ -3054,13 +3061,18 @@ retry:
 					}
 				}
 
-				// 取り込まない場合は、該当項目を削除してやり直し。
+				// 取り込まない場合は、該当項目を削除対象に加える(このループでは削除しない)。
 				if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
 				{
-					res1.delete_entry(entry1);
-					goto retry;
+					to_delete.push_back(entry1);
 				}
 			}
+		}
+
+		// 削除対象をまとめて削除する。
+		for (auto entry1 : to_delete)
+		{
+			res1.delete_entry(entry1);
 		}
 	}
 
