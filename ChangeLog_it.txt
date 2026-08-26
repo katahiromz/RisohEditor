@@ -3,8 +3,8 @@
 - v.6.1.8 (2026-XX-YY)
     - Miglioramenti minori a UI/UX.
     - Spostata la posizione di mcdx.
-    - mcdx accelerato.
-    - Accelerated loading RC files.
+    - Accelerato mcdx.
+    - Accelerato caricamento file rc.
 - v.6.1.7 (25.08.2026)
     - Corretto bug MEditAccelDlg ("^A" ecc.).
     - Reso mcdx meno sospetto.
