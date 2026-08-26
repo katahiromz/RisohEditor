@@ -620,7 +620,7 @@ int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
         g_msg_tables[{g_langid, g_table_id}].m_map[(DWORD)g_value] = wstr;
 
         const char *ptr0 = ptr;
-        guts_quote(str, ptr0);
+        gulp_quote(str, ptr0);
         ptr = const_cast<char *>(ptr0);
 
         nMode = 2;
@@ -807,7 +807,7 @@ int eat_output(const std::string& output)
                     {
                         std::string token;
                         const char *p2 = ptr;
-                        if (guts_quote(token, p2))
+                        if (gulp_quote(token, p2))
                         {
                             p2 = mstr_skip_space(p2);
                             if (memcmp("MESSAGETABLEDX", p2, 14) == 0 &&
