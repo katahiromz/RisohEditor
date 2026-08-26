@@ -52,9 +52,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// is the resource type an "entity type" ?
-BOOL Res_IsEntityType(const MIdOrString& type);
-
 // has the resource type no name?
 inline BOOL
 Res_HasNoName(const MIdOrString& type)
