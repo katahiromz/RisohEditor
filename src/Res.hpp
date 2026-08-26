@@ -13,6 +13,7 @@
 #include <cwchar>
 #include <set>
 #include <map>
+#include <tuple>             // for std::tuple (EntrySet::merge/import_res key)
 #include <memory>            // for std::shared_ptr
 #include <shlwapi.h>
 
@@ -521,14 +522,39 @@ struct EntrySet : protected EntrySetBase
 	bool intersect(const EntrySet& another) const;
 
 	// merge another
+	//
+	// NOTE: add_lang_entry() below has to locate any pre-existing entry
+	// with the same (type, name, lang) before it can add/overwrite it,
+	// which used to mean an O(size()) find() scan *for every entry in
+	// `another`* -- an O(size() * another.size()) cost overall. For an
+	// *.rc file with many resources (see DoLoadRC in RisohEditor.cpp)
+	// that dominates load time. Here we build a one-off (type, name,
+	// lang) -> entry index of *this before the loop, so each lookup
+	// becomes an O(log size()) std::map lookup instead. The index lives
+	// only on this call's stack -- nothing is cached on the EntrySet
+	// itself -- so find()/add_lang_entry() elsewhere are untouched and it
+	// can never go stale.
 	void merge(const EntrySet& another)
 	{
+		typedef std::tuple<MIdOrString, MIdOrString, LANGID> LangKey;
+		std::map<LangKey, EntryBase *> index;
+		for (auto entry : *this)
+		{
+			if (entry->m_et == ET_LANG)
+				index[LangKey(entry->m_type, entry->m_name, entry->m_lang)] = entry;
+		}
+
 		for (auto entry : another)
 		{
 			if (entry->m_et != ET_LANG)
 				continue;   // we will merge the ET_LANG entries only
 
-			add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data);
+			LangKey key(entry->m_type, entry->m_name, entry->m_lang);
+			auto it = index.find(key);
+			EntryBase *existing = (it != index.end()) ? it->second : nullptr;
+
+			index[key] = add_lang_entry(entry->m_type, entry->m_name, entry->m_lang,
+										 entry->m_data, existing);
 		}
 	}
 
@@ -541,7 +567,22 @@ struct EntrySet : protected EntrySetBase
 	}
 	EntryBase *
 	add_lang_entry(const MIdOrString& type, const MIdOrString& name,
-				   LANGID lang, const EntryBase::data_type& data);
+				   LANGID lang, const EntryBase::data_type& data)
+	{
+		// same as the general form below, just with the "does it already
+		// exist" lookup done here via the normal O(size()) find() -- fine
+		// for one-off calls, just not for a tight loop (see merge() and
+		// import_res(), which look it up themselves so they can share one
+		// index across the whole loop instead).
+		return add_lang_entry(type, name, lang, data, find(ET_LANG, type, name, lang, true));
+	}
+	// Same as add_lang_entry(type, name, lang, data) above, but the caller
+	// has already looked up (or knows there is no) existing entry with
+	// this (type, name, lang), so this skips doing it again internally.
+	// Pass nullptr for `entry` if none exists yet.
+	EntryBase *
+	add_lang_entry(const MIdOrString& type, const MIdOrString& name,
+				   LANGID lang, const EntryBase::data_type& data, EntryBase *entry);
 
 	// delete an entry (and related entries)
 	void delete_entry(EntryBase *entry);

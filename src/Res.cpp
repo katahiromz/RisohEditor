@@ -7,6 +7,7 @@
 #include "Res.hpp"
 #include "ToolbarRes.hpp"
 #include "resource.h"
+#include <process.h>   // _beginthreadex
 #ifdef ENABLE_CRYPTO
 #include "WonRes.h"
 #endif
@@ -219,7 +220,7 @@ bool EntrySet::intersect(const EntrySet& another) const
 
 EntryBase *
 EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
-						 LANGID lang, const EntryBase::data_type& data)
+						 LANGID lang, const EntryBase::data_type& data, EntryBase *entry)
 {
 	if (m_hwndTV)   // it has the treeview handle
 	{
@@ -230,8 +231,6 @@ EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
 		}
 	}
 
-	// find the entry
-	auto entry = find(ET_LANG, type, name, lang, true);
 	if (!entry)
 	{
 		// if not found, then create it
@@ -1567,6 +1566,21 @@ BOOL EntrySet::import_res(LPCWSTR pszResFile)
 	if (!stream.LoadFromFile(pszResFile))
 		return FALSE;   // failure
 
+	// Same reasoning as merge() above: this loop used to call
+	// add_lang_entry(type, name, lang, data) per resource in the *.res
+	// file, each doing its own O(size()) find() scan -- O(size() *
+	// resource count) overall, and this is the very first place windres's
+	// /mcdx's output gets loaded into an EntrySet (see DoCompileRC /
+	// DoCompileMsgTable in RisohEditor.cpp), so it runs on every RC
+	// compile. Track what's been added so far in a local index instead.
+	typedef std::tuple<MIdOrString, MIdOrString, LANGID> LangKey;
+	std::map<LangKey, EntryBase *> index;
+	for (auto entry : *this)
+	{
+		if (entry->m_et == ET_LANG)
+			index[LangKey(entry->m_type, entry->m_name, entry->m_lang)] = entry;
+	}
+
 	BOOL bAdded = FALSE;
 	ResHeader header;
 	while (header.ReadFrom(stream))     // repeat reading
@@ -1596,7 +1610,10 @@ BOOL EntrySet::import_res(LPCWSTR pszResFile)
 		}
 
 		// add a language entry with data
-		add_lang_entry(header.type, header.name, header.LanguageId, data);
+		LangKey key(header.type, header.name, header.LanguageId);
+		auto it = index.find(key);
+		EntryBase *existing = (it != index.end()) ? it->second : nullptr;
+		index[key] = add_lang_entry(header.type, header.name, header.LanguageId, data, existing);
 
 		// adjust the alignment
 		stream.ReadDwordAlignment();
