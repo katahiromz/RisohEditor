@@ -486,6 +486,9 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
     if (nMode != 2 && *ptr && !mchr_is_digit(*ptr))
         return syntax_error();
 
+    if (nMode == 2 && *ptr)
+        do_retry = true;
+
     return EXITCODE_SUCCESS;
 }
 
@@ -771,10 +774,14 @@ int eat_output(const std::string& output)
                 ptr = mstr_skip_space(ptr);
                 if (mchr_is_digit(*ptr))
                 {
-                    bSubLang = (uint8_t)strtoul(ptr, NULL, 0);
+                    char *ptr0 = ptr;
+                    while (mchr_is_alnum(*ptr))
+                        ++ptr;
+                    bSubLang = (uint8_t)strtoul(ptr0, NULL, 0);
                     g_langid = MAKELANGID(bPrimLang, bSubLang);
                     nMode = 0;
-                    break;
+                    if (*ptr)
+                        do_retry = true;
                 }
                 else if (*ptr)
                 {
