@@ -304,6 +304,11 @@ public:
 	// wraps this and adds the UI-thread-only side effects (error boxes,
 	// HidePreview, WM_SIZE).
 	BOOL DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput, BOOL bApStudio) const;
+	// Runs mcdx.exe to extract the message table from an *.rc file into
+	// res. Used by DoCompileRC as the mcdx half of its parallel
+	// windres/mcdx compile (formerly EntrySet::load_msg_table).
+	BOOL DoCompileMsgTable(LPCWSTR pszRCFile, EntrySet& res, MStringA& strOutput,
+		const MStringW& strMacrosDump, const MStringW& strIncludesDump) const;
 	BOOL DoLoadRES(HWND hwnd, LPCWSTR szPath);
 	BOOL DoLoadRC(HWND hwnd, LPCWSTR szPath);
 	BOOL DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress);
@@ -386,6 +391,17 @@ protected:
 	BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
 	BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
 	BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide);
+	// Runs dfmsc.exe (m_szDFMSC) to convert a Delphi DFM resource between
+	// its binary and text forms (formerly the free functions
+	// dfm_text_from_binary and dfm_binary_from_text).
+	std::string DoDfmTextFromBinary(const void *binary, size_t size, INT codepage, BOOL bComments) const;
+	EntryBase::data_type DoDfmBinaryFromText(const std::string& text, INT codepage, BOOL no_unicode, INT& iLine) const;
+	// Runs OleBow.exe (m_szOleBow) / midlwrap.bat (m_szMidlWrap, m_szVCBat)
+	// to convert a TYPELIB resource between its binary and IDL text forms
+	// (formerly the free functions tlb_text_from_binary and
+	// tlb_binary_from_text).
+	std::string DoTlbTextFromBinary(const void *binary, size_t size) const;
+	EntryBase::data_type DoTlbBinaryFromText(MStringA& strOutput, const std::string& text, bool is_64bit) const;
 	BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
 	BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
 	BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);

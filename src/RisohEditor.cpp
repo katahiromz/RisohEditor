@@ -314,7 +314,7 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
 		{
 			if (FILE *fp = _wfopen(szFile, L"wb"))
 			{
-				auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size(),
+				auto ansi = DoDfmTextFromBinary(entry->ptr(), entry->size(),
 												 g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
 				fwrite(ansi.c_str(), ansi.size(), 1, fp);
 				fflush(fp);
@@ -372,7 +372,7 @@ void MMainWnd::OnExtractTLB(HWND hwnd)
 	if (lstrcmpiW(dotext, L".txt") == 0 || lstrcmpiW(dotext, L".idl") == 0)
 	{
 		std::string ansi;
-		ansi = tlb_text_from_binary(m_szOleBow, entry->ptr(), entry->size());
+		ansi = DoTlbTextFromBinary(entry->ptr(), entry->size());
 		if (FILE *fp = _wfopen(szFile, L"wb"))
 		{
 			fwrite(ansi.c_str(), ansi.size(), 1, fp);
@@ -1845,6 +1845,284 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 	return bOK;
 }
 
+// Runs dfmsc.exe (m_szDFMSC) to convert a Delphi DFM resource from its
+// binary form to text. (Formerly the free function dfm_text_from_binary.)
+std::string MMainWnd::DoDfmTextFromBinary(const void *binary, size_t size, INT codepage, BOOL bComments) const
+{
+	// get the temporary file path
+	WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
+	StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
+	StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
+	StringCbCatW(szPath5, sizeof(szPath5), L".txt");
+
+	// create the temporary file and wait
+	DWORD cbWritten;
+	MFile r4(szPath4, TRUE);
+	r4.WriteFile(binary, DWORD(size), &cbWritten);
+	r4.FlushFileBuffers();
+	r4.CloseHandle();
+
+	AutoDeleteFileW ad4(szPath4);
+	AutoDeleteFileW ad5(szPath5);
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L'\"';
+	strCmdLine += m_szDFMSC;
+	strCmdLine += L"\" --b2t";
+	if (bComments)
+	{
+		strCmdLine += L" --comments";
+	}
+	if (codepage != 0)
+	{
+		strCmdLine += L" --codepage ";
+		strCmdLine += mstr_dec_word(codepage);
+	}
+	strCmdLine += L" \"";
+	strCmdLine += szPath4;
+	strCmdLine += L"\"";
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	BOOL bSuccess = FALSE;
+
+	// create an mcdx.exe process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
+
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
+		pmaker.WaitForSingleObject();
+		pmaker.CloseAll();
+
+		bSuccess = PathFileExistsW(szPath5);
+	}
+
+	if (bSuccess)
+	{
+		MStringA text;
+		MFile input(szPath5);
+		if (input.ReadAll(text))
+			return text;
+	}
+
+	return std::string();
+}
+
+// Runs dfmsc.exe (m_szDFMSC) to convert a Delphi DFM resource from text to
+// its binary form. (Formerly the free function dfm_binary_from_text.)
+EntryBase::data_type MMainWnd::DoDfmBinaryFromText(const std::string& text, INT codepage, BOOL no_unicode, INT& iLine) const
+{
+	// get the temporary file path
+	WCHAR szPath6[MAX_PATH], szPath7[MAX_PATH];
+	StringCbCopyW(szPath6, sizeof(szPath6), GetTempFileNameDx(L"R6"));
+	StringCbCopyW(szPath7, sizeof(szPath7), szPath6);
+	StringCbCatW(szPath7, sizeof(szPath7), L".dfm");
+
+	// create the temporary file and wait
+	DWORD cbWritten;
+	MFile r6(szPath6, TRUE);
+	r6.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
+	r6.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
+	r6.FlushFileBuffers();
+	r6.CloseHandle();
+
+	AutoDeleteFileW adf6(szPath6);
+	AutoDeleteFileW adf7(szPath7);
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L'\"';
+	strCmdLine += m_szDFMSC;
+	strCmdLine += L"\" --t2b";
+	if (no_unicode)
+	{
+		strCmdLine += L" --no-unicode";
+	}
+	if (codepage != 0)
+	{
+		strCmdLine += L" --codepage ";
+		strCmdLine += mstr_dec_word(codepage);
+	}
+	strCmdLine += L" \"";
+	strCmdLine += szPath6;
+	strCmdLine += L"\"";
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	BOOL bSuccess = FALSE;
+
+	// create an mcdx.exe process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
+
+	MFile error;
+	pmaker.PrepareForRedirect(nullptr, &error, &error);
+
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
+		pmaker.WaitForSingleObject();
+		DWORD dwExitCode = pmaker.GetExitCode();
+		pmaker.CloseAll();
+
+		if (dwExitCode == 0 && PathFileExistsW(szPath7))
+		{
+			bSuccess = TRUE;
+		}
+		else
+		{
+			std::string strOutput;
+			error.ReadAll(strOutput);
+			size_t ich = strOutput.find("expected on line ");
+			if (ich != strOutput.npos)
+			{
+				ich += 17; // "expected on line "
+				iLine = INT(strtoul(&strOutput[ich], nullptr, 10));
+			}
+		}
+	}
+
+	if (bSuccess)
+	{
+		MStringA text;
+		MFile input(szPath7);
+		if (input.ReadAll(text))
+			return EntryBase::data_type(text.begin(), text.end());
+	}
+
+	return EntryBase::data_type();
+}
+
+// Runs OleBow.exe (m_szOleBow) to convert a TYPELIB resource from its
+// binary form to IDL text. (Formerly the free function tlb_text_from_binary.)
+std::string MMainWnd::DoTlbTextFromBinary(const void *binary, size_t size) const
+{
+	// get the temporary file path
+	WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
+	StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
+	StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
+	StringCbCatW(szPath5, sizeof(szPath5), L".idl");
+
+	// create the temporary file and wait
+	DWORD cbWritten;
+	MFile r4(szPath4, TRUE);
+	r4.WriteFile(binary, DWORD(size), &cbWritten);
+	r4.FlushFileBuffers();
+	r4.CloseHandle();
+
+	AutoDeleteFileW ad4(szPath4);
+	AutoDeleteFileW ad5(szPath5);
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L'\"';
+	strCmdLine += m_szOleBow;
+	strCmdLine += L"\" --codepage 65001 --sort \"";
+	strCmdLine += szPath4;
+	strCmdLine += L"\" \"";
+	strCmdLine += szPath5;
+	strCmdLine += L"\"";
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	BOOL bSuccess = FALSE;
+
+	// create an OleBow.exe process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
+
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
+		pmaker.WaitForSingleObject(16 * 1000);
+		pmaker.CloseAll();
+
+		bSuccess = PathFileExistsW(szPath5);
+	}
+
+	if (bSuccess)
+	{
+		MStringA text;
+		MFile input(szPath5);
+		if (input.ReadAll(text))
+			return text;
+	}
+
+	return std::string();
+}
+
+// Runs midlwrap.bat (m_szMidlWrap, m_szVCBat) to convert a TYPELIB
+// resource from IDL text to its binary form. (Formerly the free function
+// tlb_binary_from_text.)
+EntryBase::data_type MMainWnd::DoTlbBinaryFromText(MStringA& strOutput, const std::string& text, bool is_64bit) const
+{
+	EntryBase::data_type ret;
+
+	// get the temporary file path
+	WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
+	StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
+	StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
+	StringCbCatW(szPath5, sizeof(szPath5), L".tlb");
+
+	// create the temporary file and wait
+	DWORD cbWritten;
+	MFile r4(szPath4, TRUE);
+	r4.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
+	r4.FlushFileBuffers();
+	r4.CloseHandle();
+
+	AutoDeleteFileW ad4(szPath4);
+	AutoDeleteFileW ad5(szPath5);
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L"cmd /C call \"";
+	strCmdLine += m_szMidlWrap;
+	strCmdLine += L"\" \"";
+	strCmdLine += m_szVCBat;
+	if (is_64bit)
+		strCmdLine += L"\" amd64 \"";
+	else
+		strCmdLine += L"\" x86 \"";
+	strCmdLine += szPath4;
+	strCmdLine += L"\" \"";
+	strCmdLine += szPath5;
+	strCmdLine += L"\"";
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	BOOL bSuccess = FALSE;
+
+	// create an midlwrap.bat process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
+
+	MFile error;
+	pmaker.PrepareForRedirect(nullptr, &error, &error);
+
+	if (pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
+		pmaker.WaitForSingleObject(16 * 1000);
+		pmaker.CloseAll();
+
+		error.ReadAll(strOutput);
+
+		bSuccess = PathFileExistsW(szPath5);
+	}
+
+	if (bSuccess)
+	{
+		MStringA text;
+		MFile input(szPath5);
+		if (input.ReadAll(text))
+		{
+			ret.assign(text.begin(), text.end());
+		}
+	}
+
+	return ret;
+}
+
 BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, LANGID lang, const MStringW& strWide)
 {
 	// convert strWide to ANSI
@@ -1852,7 +2130,7 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, LANG
 
 	bool is_64bit = (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64);
 
-	auto binary = tlb_binary_from_text(m_szMidlWrap, m_szVCBat, strOutput, ansi, is_64bit);
+	auto binary = DoTlbBinaryFromText(strOutput, ansi, is_64bit);
 	if (binary.empty())
 	{
 		// error message
@@ -1927,9 +2205,9 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, LANGI
 
 	INT iLine = 0;
 	EntryBase::data_type data =
-		dfm_binary_from_text(m_szDFMSC, ansi,
+		DoDfmBinaryFromText(ansi,
 							 g_settings.nDfmCodePage, g_settings.bDfmNoUnicode, iLine);
-	auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(),
+	auto text = DoDfmTextFromBinary(data.data(), data.size(),
 									 g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
 	if (text.empty())
 	{
@@ -3249,6 +3527,91 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 	return DoLoadResH(hwnd, szPath);
 }
 
+// Runs mcdx.exe to extract the message table from an *.rc file, importing
+// the result into res. This is run on a worker thread by DoCompileRC below
+// so it can overlap with windres.exe: it reads pszRCFile directly and
+// writes to its own private temp file/EntrySet, so it has nothing in
+// common with the windres pass except the (read-only) source file --
+// nothing to serialize on.
+// (Formerly EntrySet::load_msg_table.)
+BOOL MMainWnd::DoCompileMsgTable(LPCWSTR pszRCFile, EntrySet& res, MStringA& strOutput,
+	const MStringW& strMacrosDump, const MStringW& strIncludesDump) const
+{
+	// get the temporary file path
+	WCHAR szPath3[MAX_PATH];
+	StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
+
+	// create the temporary file and wait
+	MFile r3(szPath3, TRUE);
+	r3.CloseHandle();
+
+	AutoDeleteFileW ad3(szPath3);
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L'\"';
+	strCmdLine += m_szMcdxExe;
+	strCmdLine += L"\" -DMCDX_INVOKED=1 ";
+	strCmdLine += strMacrosDump;
+	strCmdLine += L' ';
+	strCmdLine += strIncludesDump;
+	strCmdLine += L" -o \"";
+	strCmdLine += szPath3;
+	strCmdLine += L"\" -J rc -O res \"";
+	strCmdLine += pszRCFile;
+	strCmdLine += L'\"';
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	BOOL bSuccess = FALSE;
+
+	// create an mcdx.exe process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW);
+
+	MFile hInputWrite, hOutputRead;
+	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+		pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		// read all with timeout
+		pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+
+		if (pmaker.GetExitCode() == 0)
+		{
+			// import from the temporary file
+			if (res.import_res(szPath3))
+			{
+				bSuccess = TRUE;
+			}
+		}
+	}
+
+	return bSuccess;
+}
+
+namespace
+{
+	// Parameters/results for the background mcdx.exe (message-table) pass
+	// started by DoCompileRC below.
+	struct MSG_TABLE_PARAM
+	{
+		const MMainWnd *pThis;
+		EntrySet es;
+		LPCWSTR pszRCFile;
+		MStringA strOutput;
+		const MStringW *pstrMacrosDump;
+		const MStringW *pstrIncludesDump;
+		BOOL bOK;
+	};
+
+	unsigned __stdcall LoadMsgTableThreadProc(void *pv)
+	{
+		auto param = reinterpret_cast<MSG_TABLE_PARAM *>(pv);
+		param->bOK = param->pThis->DoCompileMsgTable(param->pszRCFile, param->es, param->strOutput,
+			*param->pstrMacrosDump, *param->pstrIncludesDump);
+		return 0;
+	}
+}
+
 // Pure compile step: spawns windres.exe (and mcdx.exe for the message
 // table) and fills in res/strOutput. Deliberately does NOT touch hwnd,
 // the tree view, the preview pane, or show any UI -- it only reads
@@ -3256,11 +3619,102 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 // GetIncludesDump just format strings from g_settings, no mutation), so
 // it is safe to run concurrently on a background thread. See DoLoadRC,
 // which now runs the plain and APSTUDIO_INVOKED compiles in parallel.
+// (Formerly EntrySet::load_rc.)
 BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput, BOOL bApStudio) const
 {
-	return res.load_rc(szRCFile, strOutput, m_szWindresExe,
-						m_szMCppExe, m_szMcdxExe, GetMacroDump(bApStudio),
-						GetIncludesDump());
+	// get the temporary file path
+	WCHAR szPath3[MAX_PATH];
+	StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
+
+	// create the temporary file and wait
+	MFile r3(szPath3, TRUE);
+	r3.CloseHandle();
+
+	AutoDeleteFileW ad3(szPath3);
+
+	MStringW strMacrosDump = GetMacroDump(bApStudio);
+	MStringW strIncludesDump = GetIncludesDump();
+
+	// build the command line text
+	MStringW strCmdLine;
+	strCmdLine += L'\"';
+	strCmdLine += m_szWindresExe;
+	strCmdLine += L"\" -DRC_INVOKED ";
+	strCmdLine += strMacrosDump;
+	strCmdLine += L' ';
+	strCmdLine += strIncludesDump;
+	strCmdLine += L" -o \"";
+	strCmdLine += szPath3;
+	strCmdLine += L"\" --codepage=65001 -J rc -O res -F pe-i386 \"--preprocessor=";
+	strCmdLine += m_szMCppExe;
+	strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+	strCmdLine += szRCFile;
+	strCmdLine += L'\"';
+	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
+
+	// Start mcdx.exe (message-table pass) on a worker thread right away,
+	// concurrently with windres.exe below, instead of waiting for windres
+	// to finish first. mcdx doesn't need windres's output -- it just reads
+	// szRCFile on its own -- so the two used to be serialized for no
+	// reason. We only *use* the mcdx result if windres succeeds (matching
+	// the original behavior), but starting it early means its time is
+	// hidden behind windres's time instead of adding to it.
+	MSG_TABLE_PARAM msgParam;
+	msgParam.pThis = this;
+	msgParam.pszRCFile = szRCFile;
+	msgParam.pstrMacrosDump = &strMacrosDump;
+	msgParam.pstrIncludesDump = &strIncludesDump;
+	msgParam.bOK = FALSE;
+	uintptr_t hMsgThread = _beginthreadex(nullptr, 0, LoadMsgTableThreadProc, &msgParam, 0, nullptr);
+
+	BOOL bSuccess = FALSE;
+
+	// create a windres.exe process
+	MProcessMaker pmaker;
+	pmaker.SetCreationFlags(CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT);
+
+	MFile hInputWrite, hOutputRead;
+
+	if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+		pmaker.CreateProcessDx(nullptr, strCmdLine.c_str()))
+	{
+		// read all with timeout
+		pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+
+		if (pmaker.GetExitCode() == 0)
+		{
+			// import the resource from the temporary file
+			bSuccess = res.import_res(szPath3);
+		}
+		else if (strOutput.find(": no resources") != MStringA::npos)
+		{
+			// there is no resource data
+			bSuccess = TRUE;
+			strOutput.clear();
+		}
+	}
+
+	// join the mcdx pass (if it couldn't even be started, run it here
+	// synchronously so we still get a correct, if slower, result)
+	if (hMsgThread)
+	{
+		::WaitForSingleObject(reinterpret_cast<HANDLE>(hMsgThread), INFINITE);
+		::CloseHandle(reinterpret_cast<HANDLE>(hMsgThread));
+	}
+	else if (bSuccess)
+	{
+		LoadMsgTableThreadProc(&msgParam);
+	}
+
+	if (bSuccess && msgParam.bOK)
+	{
+		// load the message table if any
+		// (append its output after windres's, same order as before)
+		strOutput += msgParam.strOutput;
+		res.merge(msgParam.es);
+	}
+
+	return bSuccess;
 }
 
 // load an RC file
@@ -7708,7 +8162,7 @@ LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	auto& entry = *(const EntryBase *)lParam;
 
 	std::string ansi;
-	ansi = tlb_text_from_binary(m_szOleBow, entry.ptr(), entry.size());
+	ansi = DoTlbTextFromBinary(entry.ptr(), entry.size());
 	MAnsiToWide a2w(CP_UTF8, ansi);
 	str = a2w.c_str();
 	return 0;
@@ -7720,7 +8174,7 @@ LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	auto& str = *(MString *)wParam;
 	auto& entry = *(const EntryBase *)lParam;
 
-	auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size(),
+	auto ansi = DoDfmTextFromBinary(entry.ptr(), entry.size(),
 									 g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
 	MAnsiToWide a2w(CP_UTF8, ansi);
 	str = a2w.c_str();

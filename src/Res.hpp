@@ -364,19 +364,13 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, LANGID lang =
 	return std::make_shared<EntryBase>(ET_LANG, type, name, lang);
 }
 
-std::string
-dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
-					 INT codepage, BOOL bComments);
-
-EntryBase::data_type
-dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
-					 INT codepage, BOOL no_unicode, INT& iLine);
-
-std::string
-tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size);
-
-EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput, const std::string& text, bool is_64bit);
+// NOTE: dfm_text_from_binary, dfm_binary_from_text, tlb_text_from_binary,
+// and tlb_binary_from_text used to live here as free functions. They were
+// only ever called from within MMainWnd (using its m_szDFMSC/m_szOleBow/
+// m_szMidlWrap/m_szVCBat tool paths), so they have been moved there and
+// renamed to MMainWnd::DoDfmTextFromBinary, MMainWnd::DoDfmBinaryFromText,
+// MMainWnd::DoTlbTextFromBinary, and MMainWnd::DoTlbBinaryFromText.
+// See RisohEditor.cpp.
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet
@@ -794,15 +788,13 @@ public:
 	// import the resource data from the specified *.res file
 	BOOL import_res(LPCWSTR pszResFile);
 
-	// load the message table from a *.rc file
-	BOOL load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& strMcdxExe,
-						const MStringW& strMacrosDump, const MStringW& strIncludesDump);
-
-	// load the resources from a *.rc file
-	BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
-		const MString& strWindresExe, const MString& strCppExe,
-		const MString& strMcdxExe, const MStringW& strMacrosDump,
-		const MStringW& strIncludesDump);
+	// NOTE: load_msg_table and load_rc used to live here. They were only
+	// ever called on a caller-owned EntrySet (never *g_res* directly) from
+	// within MMainWnd, using its m_szWindresExe/m_szMCppExe/m_szMcdxExe
+	// tool paths, so they have been moved there and renamed to
+	// MMainWnd::DoCompileMsgTable and MMainWnd::DoCompileRC (which now
+	// takes an EntrySet& out-parameter instead of being a method on it).
+	// See RisohEditor.cpp.
 
 	void add_default_TEXTINCLUDE();
 };
