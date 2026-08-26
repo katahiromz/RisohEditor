@@ -3462,10 +3462,13 @@ BOOL WritePayloadLoaderRC(PCWSTR resource_h, PCWSTR payload, PCWSTR payload_load
 
 BOOL CreateEmptyFile(PCWSTR filename)
 {
-	FILE *fout = _wfopen(filename, L"wb");
-	if (!fout)
+	HANDLE hFile = CreateFileW(filename, GENERIC_WRITE,
+	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+	                           nullptr, CREATE_ALWAYS,
+	                           FILE_ATTRIBUTE_NORMAL | FILE_FLAG_NO_BUFFERING, nullptr);
+	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
-	fclose(fout);
+	CloseHandle(hFile);
 	return TRUE;
 }
 
