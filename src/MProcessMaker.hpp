@@ -521,6 +521,15 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
 			if (!IsRunning())
 				return TRUE;
 
+			// NOTE: Don't busy-spin here. PeekNamedPipe is a poll, and
+			// looping on it with no wait pegs a full CPU core for as long
+			// as the child process (windres.exe/mcdx.exe) is running. That
+			// matters even more now that MMainWnd::DoLoadRC can have two
+			// of these loops going at once on different threads. A short
+			// sleep costs at most ~1ms of extra latency once output is
+			// actually ready, but frees up the core for the child process
+			// (and its sibling thread) to actually make progress.
+			::Sleep(1);
 			continue;
 		}
 
@@ -558,6 +567,7 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeo
 			if (!IsRunning())
 				return TRUE;
 
+			::Sleep(1);   // see ReadAll(strOutput, hOutputRead) above
 			continue;
 		}
 

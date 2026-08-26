@@ -298,6 +298,12 @@ public:
 	void DoLoadLangInfo(VOID);
 	BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
 	BOOL DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res, BOOL bApStudio = FALSE);
+	// Pure compile step used by DoLoadRC: runs windres (and mcdx for the
+	// message table) and fills res/strOutput. Touches no UI/window state
+	// at all, so it is safe to call from a background thread. DoLoadRCEx
+	// wraps this and adds the UI-thread-only side effects (error boxes,
+	// HidePreview, WM_SIZE).
+	BOOL DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput, BOOL bApStudio) const;
 	BOOL DoLoadRES(HWND hwnd, LPCWSTR szPath);
 	BOOL DoLoadRC(HWND hwnd, LPCWSTR szPath);
 	BOOL DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress);

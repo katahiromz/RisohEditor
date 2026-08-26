@@ -46,7 +46,11 @@ class MFile;
 inline LPWSTR
 GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 {
-	static WCHAR TempFile[MAX_PATH];
+	// NOTE: thread_local (not plain static) so that concurrent RC compiles
+	//       running on different threads (see MMainWnd::DoLoadRC) never
+	//       race on this buffer or hand out the same temp file name to
+	//       two callers at once.
+	thread_local WCHAR TempFile[MAX_PATH];
 	WCHAR szPath[MAX_PATH];
 	GetTempPathW(_countof(szPath), szPath);
 	GetTempFileNameW(szPath, L"KRE", 0, TempFile);

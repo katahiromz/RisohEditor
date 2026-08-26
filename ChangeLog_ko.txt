@@ -5,6 +5,7 @@
     - UI/UX를 약간 개선했습니다.
     - mcdx 위치를 변경했습니다.
     - 가속화된 mcdx.
+    - Accelerated loading RC files.
 - v.6.1.7 (2026-08-25)
     - MEditAccelDlg의 버그 ("^A" 등)를 수정했습니다.
     - mcdx의 오인 가능성을 줄였습니다.

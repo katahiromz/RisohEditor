@@ -2602,11 +2602,126 @@ static MStringW GetTextInclude1HeaderFile(const EntrySet& res, LPCWSTR szRCPath)
 	return L"";
 }
 
+namespace
+{
+	// Parameters/results for one background RC compile (see DoLoadRC).
+	// The two compiles (plain and APSTUDIO_INVOKED) read the same RC file
+	// but write to their own EntrySet/MStringA, so they have no shared
+	// mutable state and can safely run on separate threads at once.
+	struct RC_COMPILE_PARAM
+	{
+		const MMainWnd *pThis;
+		LPCWSTR szRCFile;
+		EntrySet *pRes;
+		MStringA strOutput;
+		BOOL bApStudio;
+		BOOL bOK;
+	};
+
+	unsigned __stdcall RcCompileThreadProc(void *pv)
+	{
+		auto param = reinterpret_cast<RC_COMPILE_PARAM *>(pv);
+		param->bOK = param->pThis->DoCompileRC(param->szRCFile, *param->pRes,
+												param->strOutput, param->bApStudio);
+		return 0;
+	}
+}
+
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 {
-	// load the RC file to the res1 variable
-	EntrySet res1;
-	if (!DoLoadRCEx(hwnd, szPath, res1, FALSE))
+	MWaitCursor wait;   // this can take a while; show the hourglass
+
+	// Compile the RC file twice -- once as-is (res1) and once with
+	// APSTUDIO_INVOKED defined (res2, used below to detect/merge
+	// TEXTINCLUDE) -- concurrently instead of one after another. Both
+	// runs are independent, read-only invocations of windres.exe against
+	// the same file, so running them side by side roughly halves the
+	// wall-clock time of the slow part of loading an RC file. While we
+	// wait for them, we still pump the message queue so the window keeps
+	// repainting and doesn't appear to hang.
+	EntrySet res1, res2;
+	RC_COMPILE_PARAM param1 = { this, szPath, &res1, MStringA(), FALSE, FALSE };
+	RC_COMPILE_PARAM param2 = { this, szPath, &res2, MStringA(), TRUE, FALSE };
+
+	// Disable the main window while compiling so the message pump below
+	// can't let the user re-enter DoLoadRC (or edit g_res) while res1/res2
+	// are still being filled in on background threads.
+	BOOL bWasEnabled = IsWindowEnabled(hwnd);
+	EnableWindow(hwnd, FALSE);
+
+	// Both compiles run on worker threads -- the UI thread's only job
+	// during the wait is to pump messages, so the window keeps repainting
+	// and doesn't turn into a "Not Responding" ghost even while a big RC
+	// file is being compiled.
+	uintptr_t hThread1 = _beginthreadex(nullptr, 0, RcCompileThreadProc, &param1, 0, nullptr);
+	uintptr_t hThread2 = _beginthreadex(nullptr, 0, RcCompileThreadProc, &param2, 0, nullptr);
+
+	if (!hThread1)
+	{
+		// couldn't spawn a thread at all (extremely low resources); fall
+		// back to running it synchronously so we still get a result
+		RcCompileThreadProc(&param1);
+	}
+
+	HANDLE ahWait[2];
+	DWORD cWait = 0;
+	if (hThread1)
+		ahWait[cWait++] = reinterpret_cast<HANDLE>(hThread1);
+	if (hThread2)
+		ahWait[cWait++] = reinterpret_cast<HANDLE>(hThread2);
+
+	while (cWait > 0)
+	{
+		DWORD dwWait = MsgWaitForMultipleObjects(cWait, ahWait, FALSE, INFINITE, QS_ALLINPUT);
+		if (dwWait >= WAIT_OBJECT_0 && dwWait < WAIT_OBJECT_0 + cWait)
+		{
+			// one of the compiles finished; stop waiting on it
+			DWORD i = dwWait - WAIT_OBJECT_0;
+			ahWait[i] = ahWait[cWait - 1];
+			--cWait;
+			continue;
+		}
+
+		// woken by input/paint/etc.: pump it so the UI stays responsive
+		MSG msg;
+		while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessageW(&msg);
+		}
+	}
+
+	if (hThread1)
+		CloseHandle(reinterpret_cast<HANDLE>(hThread1));
+	if (hThread2)
+		CloseHandle(reinterpret_cast<HANDLE>(hThread2));
+	// If hThread2 failed to spawn, param2/res2 simply stay at their
+	// default (not-OK) state, same as the original single-threaded
+	// fallback when the APSTUDIO_INVOKED pass didn't run.
+
+	if (IsWindow(hwnd))
+		EnableWindow(hwnd, bWasEnabled);
+
+	BOOL bOK1 = param1.bOK, bOK2 = param2.bOK;
+	MStringA& strOutput1 = param1.strOutput;
+
+	// UI-thread-only follow-up that used to live inside DoLoadRCEx, now
+	// done once for both compiles instead of once per compile.
+	if (!bOK1)
+	{
+		// failed. show error message
+		if (strOutput1.empty())
+			MsgBoxDx(LoadStringDx(IDS_COMPILEERROR), MB_ICONERROR);
+		else
+		{
+			MAnsiToWide a2w(CP_ACP, strOutput1);
+			ErrorBoxDx(a2w.c_str());
+		}
+	}
+	HidePreview();
+	PostMessageDx(WM_SIZE);
+
+	if (!bOK1)
 	{
 		ErrorBoxDx(IDS_CANNOTOPEN);
 		return FALSE;
@@ -2618,9 +2733,8 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 		INCLUDE_TEXTINCLUDE3_UNKNOWN = -1,
 	} include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_UNKNOWN;
 
-	// Load the RC file with APSTUDIO_INVOKED
-	EntrySet res2;
-	if (DoLoadRCEx(hwnd, szPath, res2, TRUE))
+	// the RC file loaded with APSTUDIO_INVOKED
+	if (bOK2)
 	{
 		// TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
 retry:
@@ -3135,14 +3249,26 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 	return DoLoadResH(hwnd, szPath);
 }
 
+// Pure compile step: spawns windres.exe (and mcdx.exe for the message
+// table) and fills in res/strOutput. Deliberately does NOT touch hwnd,
+// the tree view, the preview pane, or show any UI -- it only reads
+// settings that were captured before the call (GetMacroDump/
+// GetIncludesDump just format strings from g_settings, no mutation), so
+// it is safe to run concurrently on a background thread. See DoLoadRC,
+// which now runs the plain and APSTUDIO_INVOKED compiles in parallel.
+BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput, BOOL bApStudio) const
+{
+	return res.load_rc(szRCFile, strOutput, m_szWindresExe,
+						m_szMCppExe, m_szMcdxExe, GetMacroDump(bApStudio),
+						GetIncludesDump());
+}
+
 // load an RC file
 BOOL MMainWnd::DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res, BOOL bApStudio)
 {
 	// load the RC file to the res variable
 	MStringA strOutput;
-	BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe,
-						   m_szMCppExe, m_szMcdxExe, GetMacroDump(bApStudio),
-						   GetIncludesDump());
+	BOOL bOK = DoCompileRC(szRCFile, res, strOutput, bApStudio);
 	if (!bOK && !bApStudio)
 	{
 		// failed. show error message
