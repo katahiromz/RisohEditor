@@ -801,8 +801,6 @@ public:
 	BOOL load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& strMcdxExe,
 						const MStringW& strMacrosDump, const MStringW& strIncludesDump);
 
-	BOOL IsUTF16File(LPCWSTR pszRCFile) const;
-
 	// load the resources from a *.rc file
 	BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 		const MString& strWindresExe, const MString& strCppExe,

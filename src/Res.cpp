@@ -1960,29 +1960,6 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
 	return bSuccess;
 }
 
-BOOL EntrySet::IsUTF16File(LPCWSTR pszRCFile) const
-{
-	if (FILE *fp = _wfopen(pszRCFile, L"rb"))
-	{
-		BYTE ab[2];
-		if (fread(ab, 1, 2, fp) == 2)
-		{
-			if (memcmp(ab, "\xFF\xFE", 2) == 0)
-			{
-				fclose(fp);
-				return TRUE;
-			}
-			if (ab[0] && !ab[1])
-			{
-				fclose(fp);
-				return TRUE;
-			}
-		}
-		fclose(fp);
-	}
-	return FALSE;
-}
-
 namespace
 {
 	// Runs mcdx.exe (message-table extraction) on a worker thread so it can
