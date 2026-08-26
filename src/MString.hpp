@@ -1188,6 +1188,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
 			}
 			else
 			{
+				start = pch;
 				break;
 			}
 		}
@@ -1239,6 +1240,7 @@ inline bool guts_quote(MStringW& str, const WCHAR*& pch)
 			}
 			else
 			{
+				start = pch;
 				break;
 			}
 		}
