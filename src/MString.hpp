@@ -98,10 +98,10 @@ bool mchr_is_alnum(T_CHAR ch);
 bool mstr_is_text_utf8(const std::string& str);
 inline bool mstr_is_text_utf8(const char *str, size_t len);
 
-bool guts_escape(std::string& str, const char*& pch);
-bool guts_escape(MStringW& str, const WCHAR*& pch);
-bool guts_quote(std::string& str, const char*& pch);
-bool guts_quote(MStringW& str, const WCHAR*& pch);
+bool gulp_escape(std::string& str, const char*& pch);
+bool gulp_escape(MStringW& str, const WCHAR*& pch);
+bool gulp_quote(std::string& str, const char*& pch);
+bool gulp_quote(MStringW& str, const WCHAR*& pch);
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -938,14 +938,14 @@ inline bool mstr_unquote(std::string& str)
 {
 	std::string str2 = str;
 	const char *pch = str2.c_str();
-	return guts_quote(str, pch);
+	return gulp_quote(str, pch);
 }
 
 inline bool mstr_unquote(MStringW& str)
 {
 	MStringW str2 = str;
 	const WCHAR *pch = str2.c_str();
-	return guts_quote(str, pch);
+	return gulp_quote(str, pch);
 }
 
 template <size_t siz>
@@ -999,7 +999,7 @@ mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const T_CHAR *str2)
 
 ////////////////////////////////////////////////////////////////////////////
 
-inline bool guts_escape(std::string& str, const char*& pch)
+inline bool gulp_escape(std::string& str, const char*& pch)
 {
 	switch (*pch)
 	{
@@ -1074,7 +1074,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
 	return true;
 }
 
-inline bool guts_escape(MStringW& str, const WCHAR*& pch)
+inline bool gulp_escape(MStringW& str, const WCHAR*& pch)
 {
 	switch (*pch)
 	{
@@ -1149,7 +1149,7 @@ inline bool guts_escape(MStringW& str, const WCHAR*& pch)
 	return true;
 }
 
-inline bool guts_quote(std::string& str, const char*& pch)
+inline bool gulp_quote(std::string& str, const char*& pch)
 {
 	str.clear();
 	str.reserve(64);
@@ -1169,7 +1169,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
 				str.append(start, pch - start);
 
 			++pch;
-			guts_escape(str, pch);
+			gulp_escape(str, pch);
 			start = pch;
 			continue;
 		}
@@ -1201,7 +1201,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
 	return true;
 }
 
-inline bool guts_quote(MStringW& str, const WCHAR*& pch)
+inline bool gulp_quote(MStringW& str, const WCHAR*& pch)
 {
 	str.clear();
 	str.reserve(64);
@@ -1221,7 +1221,7 @@ inline bool guts_quote(MStringW& str, const WCHAR*& pch)
 				str.append(start, pch - start);
 
 			++pch;
-			guts_escape(str, pch);
+			gulp_escape(str, pch);
 			start = pch;
 			continue;
 		}

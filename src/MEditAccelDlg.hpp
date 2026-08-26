@@ -504,7 +504,7 @@ public:
 			{
 				std::wstring str, str2 = a_entry.sz0;
 				LPCWSTR pch = str2.c_str();
-				if (guts_quote(str, pch))
+				if (gulp_quote(str, pch))
 				{
 					if (str.size() == 2)
 						entry.wAscii = WORD((str[1] - L'A') + 0x01);
