@@ -451,6 +451,11 @@ protected:
 	BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
 	void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
 	void OnSysColorChange(HWND hwnd);
+	// Reasserts the wait cursor (see MWaitCursor::IsActive()) while it's
+	// active, so long operations that keep pumping messages (DoLoadRC's
+	// parallel-compile wait, for one) don't have DefWindowProc quietly
+	// swap the cursor back to normal the moment the mouse moves.
+	BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, int codeHitTest, UINT msg);
 	void OnSetFocus(HWND hwnd, HWND hwndOldFocus);
 	void OnKillFocus(HWND hwnd, HWND hwndNewFocus);
 	void OnPlay(HWND hwnd);

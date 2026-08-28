@@ -949,54 +949,78 @@ HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
 	if (m_hwndTV == nullptr)
 		return nullptr;    // no treeview handle
 
-	// get the entries to determine the position
-	self_type found;
+	// determine the target
+	EntryBase *target = nullptr;
 	switch (entry->m_et)
 	{
 	case ET_TYPE:
-		search(found, ET_TYPE);
+		// No type prefix to narrow by here -- we're placing a new type
+		// node among *all* existing ones. The number of ET_TYPE entries
+		// is bounded by the number of distinct resource types in the
+		// file (usually well under a hundred), so this was never the
+		// O(n^2) driver -- see scan_group_for_position()'s comment in
+		// Res.hpp for the case that was (ET_LANG, below).
+		for (auto e : *this)
+		{
+			if (e->m_et != ET_TYPE || !e->valid())
+				continue;
+			if (*e < *entry && (!target || *target < *e))
+				target = e;
+		}
 		break;
 
 	case ET_NAME:
-		search(found, ET_NAME, entry->m_type);
+		scan_group_for_position(ET_NAME, entry->m_type, false, MIdOrString(), entry, target);
 		if (entry->m_type == RT_STRING)
-			search(found, ET_STRING, entry->m_type);
+			scan_group_for_position(ET_STRING, entry->m_type, false, MIdOrString(), entry, target);
 		break;
 
 	case ET_STRING:
-		search(found, ET_STRING, entry->m_type);
-		search(found, ET_NAME, entry->m_type);
+		scan_group_for_position(ET_STRING, entry->m_type, false, MIdOrString(), entry, target);
+		scan_group_for_position(ET_NAME, entry->m_type, false, MIdOrString(), entry, target);
 		break;
 
 	case ET_LANG:
-		search(found, ET_LANG, entry->m_type, entry->m_name);
+		scan_group_for_position(ET_LANG, entry->m_type, true, entry->m_name, entry, target);
 		break;
 
 	default:
 		return nullptr;
 	}
 
-	// determine the target
-	EntryBase *target = nullptr;
-	for (auto e : found)
-	{
-		if (*e < *entry)
-		{
-			if (!target)    // there is no target yet
-			{
-				target = e;     // set the target
-			}
-			else if (*target < *e)  // check the position
-			{
-				target = e;     // set the new target
-			}
-		}
-	}
-
 	if (target)
 		return target->m_hItem;     // returns the target
 
 	return TVI_FIRST;   // insert as a first
+}
+
+void EntrySet::scan_group_for_position(EntryType et, const MIdOrString& type, bool filter_name,
+	const MIdOrString& name, EntryBase *entry, EntryBase*& target)
+{
+	// Seek straight to the first entry that could possibly match: same
+	// (type, et), and same name too if filter_name -- everything before
+	// that point in the set's order is guaranteed to sort earlier (see
+	// EntryBase::operator<), so lower_bound() finds it in O(log size())
+	// instead of scanning from the very beginning.
+	EntryBase lo(et, type, filter_name ? name : MIdOrString((WORD)0), 0);
+	for (auto it = lower_bound(&lo); it != end(); ++it)
+	{
+		EntryBase *e = *it;
+
+		// Past the matching (type, et[, name]) run -- since the set is
+		// ordered by (type, et, name, lang), nothing further can match
+		// either, so stop instead of scanning the rest of the set.
+		if (e->m_type != type || e->m_et != et)
+			break;
+		if (filter_name && e->m_name != name)
+			break;
+
+		if (!e->valid())
+			continue;
+
+		if (*e < *entry && (!target || *target < *e))
+			target = e;
+	}
 }
 
 EntryBase *EntrySet::get_parent(EntryBase *entry)

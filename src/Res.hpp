@@ -694,6 +694,22 @@ struct EntrySet : protected EntrySetBase
 	// get the insertion position
 	HTREEITEM get_insert_position(EntryBase *entry);
 
+	// Helper for get_insert_position(): *this is ordered by
+	// (type, et, name, lang) -- see EntryBase::operator<. For a fixed
+	// (type, et[, name]) prefix, every matching entry sits in one
+	// contiguous run of the set, so lower_bound() can seek straight to
+	// the start of that run instead of the O(size()) search() scan that
+	// used to run *per entry inserted* (the dominant cost when loading
+	// an *.rc file with many resources -- see DoLoadRC in
+	// RisohEditor.cpp). Pass filter_name=false to match every name under
+	// (type, et) -- e.g. "all ET_NAME entries of this type" -- or
+	// filter_name=true to narrow further to one exact name -- e.g. "all
+	// ET_LANG siblings (languages) of this one resource". Updates
+	// `target` in place to the closest entry that sorts before `entry`,
+	// same as the old search()-then-scan-`found` two-step.
+	void scan_group_for_position(EntryType et, const MIdOrString& type, bool filter_name,
+		const MIdOrString& name, EntryBase *entry, EntryBase*& target);
+
 	// get the parent entry
 	EntryBase *get_parent(EntryBase *entry);
 
