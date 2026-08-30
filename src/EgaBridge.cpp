@@ -7,6 +7,7 @@
 #include "EgaBridge.hpp"
 #include <windows.h>
 #include <queue>
+#include <memory>
 #include <utility>
 #include "MMainWnd.hpp"
 #include "../EGA/ega.hpp"
@@ -26,6 +27,7 @@ namespace
 {
 	static CRITICAL_SECTION s_cs;
 	static bool     s_bCsReady    = false; // s_csの準備ＯＫ？
+	static bool     s_bPrimitivesReady = false; // CS/イベントがプロセス寿命で確保済みか？
 	static HANDLE   s_hThread     = NULL;  // スレッド
 	static HANDLE   s_hStopEvent  = NULL;  // manual-reset
 	static volatile bool s_bRunning = false; // 実行中？
@@ -35,9 +37,42 @@ namespace
 	static std::queue<std::string> s_fileQueue; // ファイルのキュー。
 
 	// UIスレッドで実行する処理のキュー。
-	static std::queue<std::pair<std::function<void(void*)>, void*>> s_uiQueue;
+	//
+	// NOTE: each queued task owns its OWN completion event (UiTaskDone),
+	// instead of everyone sharing a single s_hUIDone. Previously, a
+	// RunOnUIThread() call that gave up waiting (because s_hStopEvent
+	// fired, the window was gone, or PostMessageW failed) left its task
+	// sitting at the front of a single shared FIFO. The next, unrelated
+	// RunOnUIThread() call could then have ITS OWN WM_EGA_DO_RUN_ON_UI
+	// message end up popping and running that stale task instead of its
+	// own -- and the shared s_hUIDone would still get signalled, so the
+	// new caller would wrongly believe *its* task had completed, while
+	// reading whatever default value its own (never actually touched)
+	// output variable still held. Giving every task its own completion
+	// object removes any possibility of cross-task mixups: whoever
+	// signals a given UiTaskDone can only be that task's own execution.
+	// The event is owned via shared_ptr so it stays alive exactly as
+	// long as either side (the possibly-already-given-up caller, or the
+	// not-yet-run queued task) might still touch it; nobody ever closes
+	// a handle the other side could still be signalling/waiting on.
+	struct UiTaskDone
+	{
+		HANDLE hEvent = nullptr;
+		UiTaskDone() { hEvent = ::CreateEventW(NULL, TRUE, FALSE, NULL); } // manual-reset
+		~UiTaskDone() { if (hEvent) ::CloseHandle(hEvent); }
+	};
+	struct UiTask
+	{
+		std::function<void(void*)> fn;
+		void* param = nullptr;
+		std::shared_ptr<UiTaskDone> done;
+
+		UiTask() {}
+		UiTask(std::function<void(void*)> fn_, void* param_, std::shared_ptr<UiTaskDone> done_)
+			: fn(std::move(fn_)), param(param_), done(std::move(done_)) {}
+	};
+	static std::queue<UiTask> s_uiQueue;
 	static CRITICAL_SECTION s_uiCs; // UIスレッドのクリティカルセクション。
-	static HANDLE s_hUIDone = NULL; // UI処理終了か？
 
 	// Enter/input handshake state (owned by EgaBridge so that it is
 	// re-created every session -- see Initialize()/Uninitialize()).
@@ -90,40 +125,61 @@ static DWORD WINAPI EgaBridgeThreadProc(LPVOID args)
 namespace EgaBridge
 {
 	// 初期化。
+	//
+	// NOTE: the CRITICAL_SECTIONs and the two bridge-owned events
+	// (s_hStopEvent, s_hInputDone) are now created ONCE, the first time
+	// Initialize() succeeds, and are never destroyed by Uninitialize().
+	// See the long comment in Uninitialize() for why: StopInteractive()'s
+	// wait for the worker thread to exit can time out, and if we deleted
+	// these out from under a thread that is still (rarely, but possibly)
+	// running, any further EgaBridge call it makes -- EnterCriticalSection
+	// on a deleted CRITICAL_SECTION, WaitForMultipleObjects on a closed
+	// HANDLE -- is undefined behavior and can crash or corrupt memory.
+	// Keeping them alive for the rest of the process sidesteps that
+	// entirely; it is a deliberate trade-off of a small, one-time,
+	// process-lifetime allocation against a use-after-free.
 	bool Initialize()
 	{
 		if (s_bInitialized)
 			return true;
 
-		InitializeCriticalSection(&s_cs);
-		InitializeCriticalSection(&s_fileCs);
-		InitializeCriticalSection(&s_uiCs);
-		InitializeCriticalSection(&s_inputCs);
-		InitializeCriticalSection(&s_printCs);
-		s_fileCsReady = true;
-		s_inputCsReady = true;
-		s_printCsReady = true;
-
-		s_hStopEvent = ::CreateEventW(NULL, TRUE, FALSE, NULL); // Manual-reset
-		s_hUIDone    = ::CreateEventW(NULL, FALSE, FALSE, NULL); // auto-reset
-		s_hInputDone = ::CreateEventW(NULL, FALSE, FALSE, NULL); // auto-reset
-		if (!s_hStopEvent || !s_hUIDone || !s_hInputDone)
+		if (!s_bPrimitivesReady)
 		{
-			if (s_hInputDone) { ::CloseHandle(s_hInputDone); s_hInputDone = NULL; }
-			if (s_hUIDone) { ::CloseHandle(s_hUIDone); s_hUIDone = NULL; }
-			if (s_hStopEvent) { ::CloseHandle(s_hStopEvent); s_hStopEvent = NULL; }
-			DeleteCriticalSection(&s_printCs);
-			DeleteCriticalSection(&s_inputCs);
-			DeleteCriticalSection(&s_uiCs);
-			DeleteCriticalSection(&s_fileCs);
-			DeleteCriticalSection(&s_cs);
-			s_printCsReady = false;
-			s_inputCsReady = false;
-			s_fileCsReady = false;
-			return false;
+			InitializeCriticalSection(&s_cs);
+			InitializeCriticalSection(&s_fileCs);
+			InitializeCriticalSection(&s_uiCs);
+			InitializeCriticalSection(&s_inputCs);
+			InitializeCriticalSection(&s_printCs);
+
+			s_hStopEvent = ::CreateEventW(NULL, TRUE, FALSE, NULL); // Manual-reset
+			s_hInputDone = ::CreateEventW(NULL, FALSE, FALSE, NULL); // auto-reset
+			if (!s_hStopEvent || !s_hInputDone)
+			{
+				if (s_hInputDone) { ::CloseHandle(s_hInputDone); s_hInputDone = NULL; }
+				if (s_hStopEvent) { ::CloseHandle(s_hStopEvent); s_hStopEvent = NULL; }
+				DeleteCriticalSection(&s_printCs);
+				DeleteCriticalSection(&s_inputCs);
+				DeleteCriticalSection(&s_uiCs);
+				DeleteCriticalSection(&s_fileCs);
+				DeleteCriticalSection(&s_cs);
+				return false;
+			}
+
+			s_bPrimitivesReady = true;
+		}
+		else
+		{
+			// Reused from a previous session: a stale "stop requested"
+			// or leftover input-done signal must not leak into this
+			// fresh session.
+			::ResetEvent(s_hStopEvent);
+			::ResetEvent(s_hInputDone);
 		}
 
 		s_bCsReady = true;
+		s_fileCsReady = true;
+		s_inputCsReady = true;
+		s_printCsReady = true;
 
 		// Fresh session: make sure no state leaks in from a previous
 		// EGA dialog session.
@@ -134,17 +190,9 @@ namespace EgaBridge
 		if (!EGA_init())
 		{
 			s_bCsReady = false;
-			::CloseHandle(s_hInputDone); s_hInputDone = NULL;
-			::CloseHandle(s_hUIDone); s_hUIDone = NULL;
-			::CloseHandle(s_hStopEvent); s_hStopEvent = NULL;
-			DeleteCriticalSection(&s_printCs);
-			DeleteCriticalSection(&s_inputCs);
-			DeleteCriticalSection(&s_uiCs);
-			DeleteCriticalSection(&s_fileCs);
-			s_printCsReady = false;
-			s_inputCsReady = false;
 			s_fileCsReady = false;
-			DeleteCriticalSection(&s_cs);
+			s_inputCsReady = false;
+			s_printCsReady = false;
 			return false;
 		}
 
@@ -153,6 +201,13 @@ namespace EgaBridge
 	}
 
 	// 終了。
+	//
+	// NOTE: this intentionally does NOT delete the critical sections or
+	// close s_hStopEvent/s_hInputDone anymore -- see the comment on
+	// Initialize(). Only per-session *data* (queues, buffers, flags,
+	// and the "ready" gates that other EgaBridge calls check) is reset
+	// here; the OS synchronization objects themselves persist for the
+	// life of the process.
 	void Uninitialize()
 	{
 		if (!s_bInitialized)
@@ -162,24 +217,34 @@ namespace EgaBridge
 		StopInteractive(true);
 		EGA_uninit();
 
-		if (s_hStopEvent) { ::CloseHandle(s_hStopEvent); s_hStopEvent = NULL; }
-		if (s_bCsReady)   { DeleteCriticalSection(&s_cs); s_bCsReady = false; }
-		if (s_fileCsReady) { DeleteCriticalSection(&s_fileCs); s_fileCsReady = false; }
-		if (s_hUIDone) { ::CloseHandle(s_hUIDone); s_hUIDone = nullptr; }
-		::DeleteCriticalSection(&s_uiCs);
+		s_bCsReady = false;
+		s_fileCsReady = false;
+		s_inputCsReady = false;
+		s_printCsReady = false;
 
-		if (s_hInputDone) { ::CloseHandle(s_hInputDone); s_hInputDone = NULL; }
-		if (s_inputCsReady) { DeleteCriticalSection(&s_inputCs); s_inputCsReady = false; }
 		s_bEnterPressed = false;
 		s_inputBuffer.clear();
-
-		if (s_printCsReady) { DeleteCriticalSection(&s_printCs); s_printCsReady = false; }
 		s_printBuffer.clear();
 
+		EnterCriticalSection(&s_fileCs);
 		while (!s_fileQueue.empty())
 			s_fileQueue.pop();
+		LeaveCriticalSection(&s_fileCs);
+
+		// Drain any UI tasks nobody ran yet (see StopInteractive(), which
+		// already does this on every stop -- this is just a final,
+		// belt-and-braces sweep in case something was queued afterward).
+		// Signal each one's completion event so nothing is left waiting
+		// on it forever.
+		EnterCriticalSection(&s_uiCs);
 		while (!s_uiQueue.empty())
+		{
+			auto& front = s_uiQueue.front();
+			if (front.done && front.done->hEvent)
+				::SetEvent(front.done->hEvent);
 			s_uiQueue.pop();
+		}
+		LeaveCriticalSection(&s_uiCs);
 	}
 
 	// EGA入力関数をセット。
@@ -250,6 +315,24 @@ namespace EgaBridge
 
 		EGA_stop();
 		::SetEvent(s_hStopEvent);
+
+		// Drop any UI tasks that have been queued but not yet executed:
+		// the script is being aborted, so their side effects (resource
+		// edits, etc.) must not run. This also prevents a later, wholly
+		// unrelated RunOnUIThread() call's WM_EGA_DO_RUN_ON_UI message
+		// from ever finding one of these stale tasks still sitting at
+		// the front of the queue. Each task's own completion event is
+		// signalled so a caller that is (or was) waiting on it never
+		// blocks forever.
+		EnterCriticalSection(&s_uiCs);
+		while (!s_uiQueue.empty())
+		{
+			auto& front = s_uiQueue.front();
+			if (front.done && front.done->hEvent)
+				::SetEvent(front.done->hEvent);
+			s_uiQueue.pop();
+		}
+		LeaveCriticalSection(&s_uiCs);
 
 		if (s_hwndEga)
 			PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
@@ -326,9 +409,16 @@ namespace EgaBridge
 		if (IsStopRequested())
 			return false;
 
+		// See the comment on the UiTask/UiTaskDone definitions above:
+		// this call's completion is tracked by an event that belongs
+		// only to this one task, not a queue-wide shared one.
+		auto done = std::make_shared<UiTaskDone>();
+		if (!done->hEvent)
+			return false;
+
 		HWND hwnd;
 		EnterCriticalSection(&s_uiCs);
-		s_uiQueue.push(std::make_pair(fn, param));
+		s_uiQueue.push(UiTask(std::move(fn), param, done));
 		hwnd = s_hwndEga;
 		LeaveCriticalSection(&s_uiCs);
 
@@ -347,7 +437,7 @@ namespace EgaBridge
 		// looking at, a busy message pump, ...) must not be confused
 		// with an actual stop request. So we wait indefinitely and
 		// only give up when the real stop event (s_hStopEvent) fires.
-		HANDLE waitHandles[2] = { s_hUIDone, s_hStopEvent };
+		HANDLE waitHandles[2] = { done->hEvent, s_hStopEvent };
 		DWORD wait = WaitForMultipleObjects(2, waitHandles, FALSE, INFINITE);
 
 		if (wait == WAIT_OBJECT_0 + 1)  // StopEvent
@@ -359,25 +449,25 @@ namespace EgaBridge
 	// UIタスクを実行。
 	void ExecuteUITask(void*)
 	{
-		std::function<void(void*)> task;
-		void* param = nullptr;
+		UiTask entry;
+		bool bHas = false;
 
 		EnterCriticalSection(&s_uiCs);
 
 		if (!s_uiQueue.empty())
 		{
-			task  = std::move(s_uiQueue.front().first);
-			param = s_uiQueue.front().second;
+			entry = std::move(s_uiQueue.front());
 			s_uiQueue.pop();
+			bHas = true;
 		}
 
 		LeaveCriticalSection(&s_uiCs);
 
-		if (task)
+		if (bHas && entry.fn)
 		{
 			try
 			{
-				task(param);
+				entry.fn(entry.param);
 			}
 			catch (...)
 			{
@@ -385,7 +475,11 @@ namespace EgaBridge
 			}
 		}
 
-		::SetEvent(s_hUIDone);
+		// Signal only this task's own completion event -- never a
+		// shared one -- so we can only ever wake the caller that is
+		// actually waiting on this specific task.
+		if (bHas && entry.done && entry.done->hEvent)
+			::SetEvent(entry.done->hEvent);
 	}
 
 	// Enterキーが押されたのを通知。
