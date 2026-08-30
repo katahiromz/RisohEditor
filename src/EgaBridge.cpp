@@ -29,6 +29,20 @@ namespace
 	static bool     s_bCsReady    = false; // s_csの準備ＯＫ？
 	static bool     s_bPrimitivesReady = false; // CS/イベントがプロセス寿命で確保済みか？
 	static HANDLE   s_hThread     = NULL;  // スレッド
+	// A worker thread handle we gave up waiting on (StopInteractive()'s
+	// 3-second wait timed out). We deliberately do NOT close this handle
+	// and do NOT assume the thread is gone: EGA_init()/EGA_uninit() (in
+	// ega.cpp) mutate global, unsynchronized state (s_fn_map, s_var_map)
+	// that a still-running worker thread reads on every function call
+	// and every variable access. Calling EGA_uninit()'s clear()s, or
+	// EGA_init()'s re-population, while that could still be happening is
+	// a real data race on those containers (crash / corruption), not
+	// just a theoretical one. So: while a zombie is outstanding, we
+	// refuse to touch s_fn_map/s_var_map at all (skip EGA_uninit() and
+	// refuse to start a new session), and opportunistically check on
+	// every Initialize()/StopInteractive() call whether it has actually
+	// finished by now.
+	static HANDLE   s_hZombieThread = NULL;
 	static HANDLE   s_hStopEvent  = NULL;  // manual-reset
 	static volatile bool s_bRunning = false; // 実行中？
 	static volatile bool s_bInitialized = false;// 初期化済み？
@@ -90,6 +104,26 @@ namespace
 	static CRITICAL_SECTION s_printCs; // 出力用のクリティカルセクション。
 	static bool     s_printCsReady = false; // s_printCs準備ＯＫ？
 	static std::wstring s_printBuffer; // 出力バッファ。protected by s_printCs
+
+	// Non-blocking check of s_hZombieThread (see its declaration above).
+	// Returns true if there is no outstanding zombie (either there never
+	// was one, or it has since actually exited and was just reaped).
+	// Returns false if a zombie is still outstanding / unconfirmed.
+	static bool ReapZombieThreadIfDone()
+	{
+		if (!s_hZombieThread)
+			return true;
+
+		if (::WaitForSingleObject(s_hZombieThread, 0) == WAIT_OBJECT_0)
+		{
+			DBGOUT("ReapZombieThreadIfDone: zombie thread finally exited\n");
+			::CloseHandle(s_hZombieThread);
+			s_hZombieThread = NULL;
+			return true;
+		}
+
+		return false;
+	}
 }
 
 // EGAを実行するためのスレッド関数。
@@ -142,6 +176,17 @@ namespace EgaBridge
 	{
 		if (s_bInitialized)
 			return true;
+
+		// Refuse to start a new session -- and, critically, refuse to
+		// touch ega.cpp's s_fn_map/s_var_map via EGA_init() below --
+		// while a previous session's worker thread might still be
+		// running and reading/writing those same, unsynchronized
+		// containers. See the comment on s_hZombieThread.
+		if (!ReapZombieThreadIfDone())
+		{
+			DBGOUT("Initialize: refusing to start, previous worker thread not confirmed exited\n");
+			return false;
+		}
 
 		if (!s_bPrimitivesReady)
 		{
@@ -215,7 +260,21 @@ namespace EgaBridge
 
 		s_bInitialized = false;
 		StopInteractive(true);
-		EGA_uninit();
+
+		// Only touch ega.cpp's s_fn_map/s_var_map if we're sure nothing
+		// is still reading them. See the comment on s_hZombieThread: if
+		// StopInteractive() just failed to confirm the worker thread's
+		// exit, EGA_uninit()'s clear()s would race that thread's still-
+		// possible EGA_get_fn()/EGA_eval_var() lookups on the very same,
+		// unsynchronized containers. Skip it this time; Initialize()
+		// will keep refusing to start a new session (and therefore won't
+		// call EGA_init(), which repopulates the same containers) until
+		// ReapZombieThreadIfDone() confirms the old thread is finally
+		// gone.
+		if (!s_hZombieThread)
+			EGA_uninit();
+		else
+			DBGOUT("Uninitialize: skipping EGA_uninit(), zombie worker thread not confirmed exited\n");
 
 		s_bCsReady = false;
 		s_fileCsReady = false;
@@ -262,6 +321,20 @@ namespace EgaBridge
 	// EGAとの対話を開始。
 	bool StartInteractive()
 	{
+		// Must not proceed without a successful Initialize(): besides
+		// the general precondition, this is also what makes the
+		// s_hZombieThread guard in Initialize() actually effective --
+		// if Initialize() refused to run (a previous session's worker
+		// thread is not confirmed exited yet), a caller that pressed
+		// ahead and called StartInteractive() anyway would spin up a
+		// second thread that races the zombie on ega.cpp's s_fn_map/
+		// s_var_map, exactly what Initialize() was refusing to allow.
+		if (!s_bInitialized)
+		{
+			DBGOUT("StartInteractive: not initialized, refusing\n");
+			return false;
+		}
+
 		if (s_bRunning)
 		{
 			DBGOUT("already running\n");
@@ -345,14 +418,36 @@ namespace EgaBridge
 		{
 			DWORD dwWait = WaitForSingleObject(hThread, 3000);  // 3秒待機
 			if (dwWait == WAIT_TIMEOUT)
-				DBGOUT("StopInteractive: Thread did not exit in time. Forcing...\n");
+			{
+				// NOTE: we do NOT know that the thread has exited, so we
+				// must not pretend it has. Closing the handle here (as
+				// the old code did) threw away the only way we had left
+				// to ever find out it finished; instead, keep ownership
+				// of the handle as a tracked "zombie" so
+				// ReapZombieThreadIfDone() can notice, later, once it
+				// really is done. Until then, Initialize()/Uninitialize()
+				// will refuse to touch ega.cpp's shared, unsynchronized
+				// s_fn_map/s_var_map (see EGA_init()/EGA_uninit()),
+				// since this thread could still be reading them.
+				DBGOUT("StopInteractive: Thread did not exit in time. Tracking as zombie, not forcing.\n");
 
-			CloseHandle(hThread);
+				EnterCriticalSection(&s_cs);
+				if (s_hZombieThread)
+					::CloseHandle(s_hZombieThread); // an even older zombie that we're now replacing; best effort
+				s_hZombieThread = hThread;
+				if (s_hThread == hThread)
+					s_hThread = NULL;
+				LeaveCriticalSection(&s_cs);
+			}
+			else
+			{
+				CloseHandle(hThread);
 
-			EnterCriticalSection(&s_cs);
-			if (s_hThread == hThread)
-				s_hThread = NULL;
-			LeaveCriticalSection(&s_cs);
+				EnterCriticalSection(&s_cs);
+				if (s_hThread == hThread)
+					s_hThread = NULL;
+				LeaveCriticalSection(&s_cs);
+			}
 		}
 
 		// ファイル入力をクリア。

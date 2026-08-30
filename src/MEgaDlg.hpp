@@ -64,6 +64,14 @@ protected:
 	HFONT m_hFont;
 	HICON m_hIcon;
 	HICON m_hIconSm;
+	// True only if EgaBridge::Initialize() actually succeeded for this
+	// dialog instance. It can legitimately fail if a previous session's
+	// worker thread has not yet been confirmed to have exited (see
+	// EgaBridge.cpp's s_hZombieThread) -- in that case we must not call
+	// EGA_extension()/StartInteractive(), since those touch the same
+	// unsynchronized ega.cpp globals (s_fn_map/s_var_map) that thread
+	// might still be reading.
+	bool m_bEgaReady = false;
 	MResizable m_resizable;
 	WNDPROC m_fnOldEditWndProc = nullptr;
 	WNDPROC m_fnOldLst1WndProc = nullptr;

@@ -110,11 +110,19 @@ MEgaDlg::MEgaDlg() : MDialogBase(IDD_EGA)
 	m_hIcon = LoadIconDx(IDI_SMILY);
 	m_hIconSm = LoadSmallIconDx(IDI_SMILY);
 
-	EgaBridge::Initialize();
-	EgaBridge::SetInputFn(EGA_dialog_input);
-	EgaBridge::SetPrintFn(EGA_dialog_print);
+	m_bEgaReady = EgaBridge::Initialize();
+	if (m_bEgaReady)
+	{
+		EgaBridge::SetInputFn(EGA_dialog_input);
+		EgaBridge::SetPrintFn(EGA_dialog_print);
 
-	EGA_extension();
+		// NOTE: EGA_extension() also calls EGA_add_fn(), i.e. it also
+		// writes into ega.cpp's s_fn_map. It must only run when
+		// Initialize() actually succeeded, for the same reason
+		// Initialize() itself refuses to call EGA_init() otherwise --
+		// see the comment on EgaBridge's s_hZombieThread.
+		EGA_extension();
+	}
 
 	m_bDynamicCreated = true;
 
@@ -270,7 +278,19 @@ BOOL MEgaDlg::OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	}
 
 	// Start the EGA thread
-	EgaBridge::StartInteractive();
+	if (m_bEgaReady)
+	{
+		EgaBridge::StartInteractive();
+	}
+	else
+	{
+		// A previous EGA session's worker thread has not been confirmed
+		// to have exited yet (see EgaBridge.cpp's s_hZombieThread). We
+		// must not start a new one on top of it -- so just tell the
+		// user instead of silently pretending the console works.
+		AppendEgaOutput(hwnd,
+			L"[EGA] Previous session is still shutting down. Please close this window and try again shortly.\r\n");
+	}
 
 	// EGA出力バッファを定期的にpullする。worker threadのprint速度に
 	// UIの描画頻度を依存させないための仕組み(WM_EGA_DO_PRINTの乱発対策)。
