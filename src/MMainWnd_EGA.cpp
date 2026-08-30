@@ -337,24 +337,27 @@ EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 		MIdOrString name;
 		LANGID      lang;
 	};
-	std::vector<FoundItem> items;
+	// See the comment in RES_load: output must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto items = std::make_shared<std::vector<FoundItem>>();
 
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &items](void*)
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, items](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, type, name, lang);
 
-		items.reserve(found.size());
+		items->reserve(found.size());
 		for (auto& item : found)
 		{
-			items.push_back({ item->m_type, item->m_name, item->m_lang });
+			items->push_back({ item->m_type, item->m_name, item->m_lang });
 		}
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
 	auto array = make_arg<AstContainer>(AST_ARRAY, 0, "RES_LIST");
-	for (auto& item : items)
+	for (auto& item : *items)
 	{
 		auto child = make_arg<AstContainer>(AST_ARRAY, 0, "RES");
 		child->add(EGA_set_id_or_str(item.type));
@@ -387,17 +390,20 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
     if (arg2)
         lang = (WORD)EGA_get_int(arg2);
 
-    bool ret = false;
+    // See the comment in RES_load: ret must be captured by value via
+    // shared_ptr, not by reference, since a queued UI task can still run
+    // after this function has thrown EGA_control_break and unwound.
+    auto ret = std::make_shared<bool>(false);
 
-    bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
+    bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, ret](void*)
     {
         EntrySet found;
-        ret = g_res.search(found, ET_ANY, type, name, lang);
+        *ret = g_res.search(found, ET_ANY, type, name, lang);
         for (auto entry : found)
             entry->mark_invalid();
         g_res.delete_invalid();
 
-        if (ret)
+        if (*ret)
         {
             DoSetFileModified(TRUE);
             if (g_res.empty())
@@ -407,7 +413,7 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
     if (!completed)
         throw EGA_control_break(0);
 
-    return make_arg<AstInt>(ret);
+    return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
@@ -432,8 +438,11 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 	if (arg2)
 		dest_name = EGA_get_id_or_str(arg2);
 
-	bool ret = false;
-	bool completed = EgaBridge::RunOnUIThread([this, type, src_name, dest_name, lang, &ret](void*)
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<bool>(false);
+	bool completed = EgaBridge::RunOnUIThread([this, type, src_name, dest_name, lang, ret](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, type, src_name, lang);
@@ -465,12 +474,12 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 		if (!found.empty())
 			DoSetFileModified(TRUE);
 
-		ret = !found.empty();
+		*ret = !found.empty();
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
@@ -499,8 +508,11 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 	if (arg3)
 		dest_lang = (WORD)EGA_get_int(arg3);
 
-	bool ret = false;
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, src_lang, dest_lang, &ret](void*)
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<bool>(false);
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, src_lang, dest_lang, ret](void*)
 	{
 		EntrySet found2;
 		g_res.search(found2, ET_LANG, type, name, src_lang);
@@ -562,12 +574,12 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 		if (!found2.empty())
 			DoSetFileModified(TRUE);
 
-		ret = !found2.empty();
+		*ret = !found2.empty();
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
@@ -578,8 +590,11 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 	MAnsiToWide a2w(CP_ACP, name);
 	std::wstring wname = a2w.c_str();
 
-	INT value = 0;
-	bool completed = EgaBridge::RunOnUIThread([this, name, wname, &value](void*)
+	// See the comment in RES_load: value must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto value = std::make_shared<INT>(0);
+	bool completed = EgaBridge::RunOnUIThread([this, name, wname, value](void*)
 	{
 		ConstantsDB::ValueType dbValue;
 		BOOL bOK = g_db.GetValueOfName(wname.c_str(), dbValue);
@@ -589,7 +604,7 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 			{
 				if (name == pair.first)
 				{
-					value = strtol(pair.second.c_str(), NULL, 0);
+					*value = strtol(pair.second.c_str(), NULL, 0);
 					bOK = TRUE;
 					break;
 				}
@@ -597,13 +612,13 @@ EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 		}
 		else
 		{
-			value = dbValue;
+			*value = dbValue;
 		}
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(value);
+	return make_arg<AstInt>(*value);
 }
 
 EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
@@ -629,19 +644,22 @@ EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
 
 	EntryBase::data_type data(contents.begin(), contents.end());
 
-	int ret = 0;
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<int>(0);
 
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, data, &ret](void*)
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, data, ret](void*)
 	{
 		if (g_res.add_lang_entry(type, name, lang, data))
-			ret = 1;
+			*ret = 1;
 
 		DoSetFileModified(TRUE);
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
@@ -666,8 +684,11 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	std::string ret;
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<std::string>();
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, ret](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, type, name, lang);
@@ -676,8 +697,8 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 		{
 			for (auto e : found)
 			{
-				ret.resize(e->size());
-				memcpy(&ret[0], &e->m_data[0], e->size());
+				ret->resize(e->size());
+				memcpy(&(*ret)[0], &e->m_data[0], e->size());
 				break;
 			}
 		}
@@ -685,7 +706,7 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstStr>(ret);
+	return make_arg<AstStr>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
@@ -700,8 +721,11 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 	MIdOrString name = EGA_get_id_or_str(arg1);
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg2));
 
-	std::wstring ret;
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &ret](void*)
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<std::wstring>();
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, ret](void*)
 	{
 		auto bHideID = g_settings.bHideID; // Save old value
 		g_settings.bHideID = TRUE;
@@ -710,7 +734,7 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 		if (entry)
 		{
 			ResToText res2text;
-			ret = res2text.DumpEntry(*entry);
+			*ret = res2text.DumpEntry(*entry);
 		}
 
 		g_settings.bHideID = bHideID;
@@ -718,7 +742,7 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 	if (!completed)
 		throw EGA_control_break(0);
 
-	MWideToAnsi ansi(CP_UTF8, ret);
+	MWideToAnsi ansi(CP_UTF8, *ret);
 	return make_arg<AstStr>(ansi.str());
 }
 
@@ -739,12 +763,15 @@ EGA::arg_t MMainWnd::RES_set_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 
 	std::wstring wtext = wide.str();
 
-	BOOL ret = FALSE;
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, wtext, &ret](void*)
+	// See the comment in RES_load: ret must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ret = std::make_shared<BOOL>(FALSE);
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, wtext, ret](void*)
 	{
 		MStringA strOutput;
 		++g_bNoGuiMode;
-		ret = CompileParts(strOutput, type, name, lang, wtext, FALSE);
+		*ret = CompileParts(strOutput, type, name, lang, wtext, FALSE);
 		--g_bNoGuiMode;
 
 		DoSetFileModified(TRUE);
@@ -752,7 +779,7 @@ EGA::arg_t MMainWnd::RES_set_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ret);
+	return make_arg<AstInt>(*ret);
 }
 
 EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
@@ -762,9 +789,12 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 	arg0 = EGA_eval_arg(arg0, true);
 	LANGID lang = static_cast<LANGID>(EGA_get_int(arg0));
 
-	bool ok = false;
-	std::map<WORD, std::wstring> strMap;
-	bool completed = EgaBridge::RunOnUIThread([this, lang, &ok, &strMap](void*)
+	// See the comment in RES_load: output must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ok = std::make_shared<bool>(false);
+	auto strMap = std::make_shared<std::map<WORD, std::wstring>>();
+	bool completed = EgaBridge::RunOnUIThread([this, lang, ok, strMap](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
@@ -780,17 +810,17 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 				return;
 		}
 
-		strMap = str_res.map();
-		ok = true;
+		*strMap = str_res.map();
+		*ok = true;
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	if (!ok)
+	if (!*ok)
 		return make_arg<AstContainer>(); // error
 
 	auto array1 = make_arg<AstContainer>();
-	for (auto& pair : strMap)
+	for (auto& pair : *strMap)
 	{
 		MWideToAnsi ansi(CP_UTF8, pair.second);
 
@@ -815,9 +845,12 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
 	if (index < 0)
 		return make_arg<AstStr>();
 
-	bool ok = false;
-	std::wstring value;
-	bool completed = EgaBridge::RunOnUIThread([this, lang, index, &ok, &value](void*)
+	// See the comment in RES_load: output must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto ok = std::make_shared<bool>(false);
+	auto value = std::make_shared<std::wstring>();
+	bool completed = EgaBridge::RunOnUIThread([this, lang, index, ok, value](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
@@ -837,8 +870,8 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
 		{
 			if (pair.first == static_cast<WORD>(index))
 			{
-				value = pair.second;
-				ok = true;
+				*value = pair.second;
+				*ok = true;
 				return;
 			}
 		}
@@ -846,10 +879,10 @@ EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
 	if (!completed)
 		throw EGA_control_break(0);
 
-	if (!ok)
+	if (!*ok)
 		return make_arg<AstStr>(); // error
 
-	MWideToAnsi ansi(CP_UTF8, value);
+	MWideToAnsi ansi(CP_UTF8, *value);
 	return make_arg<AstStr>(ansi.str());
 }
 
@@ -876,8 +909,12 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 		str_res.map()[str_id] = wide.c_str();
 	}
 
-	bool ok = true;
-	bool completed = EgaBridge::RunOnUIThread([this, &str_res, lang, &ok](void*)
+	// See the comment in RES_load: str_res and ok must be captured by
+	// value (str_res via copy, ok via shared_ptr), not by reference,
+	// since a queued UI task can still run after this function has
+	// thrown EGA_control_break and unwound.
+	auto ok = std::make_shared<bool>(true);
+	bool completed = EgaBridge::RunOnUIThread([this, str_res, lang, ok](void*) mutable
 	{
 		EntrySet found;
 		g_res.search(found, ET_ANY, RT_STRING, BAD_NAME, lang);
@@ -902,7 +939,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 
 				if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
 				{
-					ok = false;
+					*ok = false;
 					return;
 				}
 			}
@@ -917,7 +954,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(ok ? 1 : 0);
+	return make_arg<AstInt>(*ok ? 1 : 0);
 }
 
 EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
@@ -931,10 +968,15 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 
 	std::string str = EGA_get_str(arg2);
 	MAnsiToWide wide(CP_UTF8, str);
+	std::wstring wtext = wide.c_str();
 
-	int result = 0;
+	// See the comment in RES_load: output must be captured by value
+	// (wtext as a std::wstring copy, result via shared_ptr), not by
+	// reference, since a queued UI task can still run after this
+	// function has thrown EGA_control_break and unwound.
+	auto result = std::make_shared<int>(0);
 
-	bool completed = EgaBridge::RunOnUIThread([this, lang, str_id, &wide, &result](void*)
+	bool completed = EgaBridge::RunOnUIThread([this, lang, str_id, wtext, result](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, RT_STRING, BAD_NAME, lang);
@@ -948,7 +990,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 				return;
 		}
 
-		str_res.map()[str_id] = wide;
+		str_res.map()[str_id] = wtext;
 
 		WORD name = str_res.NameFromId(str_id);
 
@@ -974,12 +1016,12 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
 		if (g_res.empty())
 			HidePreview(STV_RESETTEXTANDMODIFIED);
 
-		result = 1; // success
+		*result = 1; // success
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(result);
+	return make_arg<AstInt>(*result);
 }
 
 EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
@@ -1004,14 +1046,18 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 	if (arg2)
 		lang = (WORD)EGA_get_int(arg2);
 
-	bool found_any = false;
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, &found_any](void*)
+	// See the comment in RES_load: found_any must be captured by value
+	// via shared_ptr, not by reference, since a queued UI task can
+	// still run after this function has thrown EGA_control_break and
+	// unwound.
+	auto found_any = std::make_shared<bool>(false);
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, found_any](void*)
 	{
 		EntrySet found;
 		g_res.search(found, ET_LANG, type, name, lang);
 
-		found_any = !found.empty();
-		if (found_any)
+		*found_any = !found.empty();
+		if (*found_any)
 		{
 			g_RES_select_type = type;
 			g_RES_select_name = name;
@@ -1021,7 +1067,7 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 	if (!completed)
 		throw EGA_control_break(0);
 
-	return make_arg<AstInt>(found_any);
+	return make_arg<AstInt>(*found_any);
 }
 
 void MMainWnd::OnStartEgaConsole(HWND hwnd, PCWSTR file)
@@ -1193,23 +1239,26 @@ EGA::arg_t MMainWnd::RES_extract(const EGA::args_t& args)
 	if (args.size() == 4)
 		filename = EGA_get_str(arg3);
 
-	MStringA fname; // result
-	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, filename, &fname](void*)
+	// See the comment in RES_load: fname must be captured by value via
+	// shared_ptr, not by reference, since a queued UI task can still run
+	// after this function has thrown EGA_control_break and unwound.
+	auto fname = std::make_shared<MStringA>(); // result
+	bool completed = EgaBridge::RunOnUIThread([this, type, name, lang, filename, fname](void*)
 	{
 		auto* entry = g_res.find(ET_LANG, type, name, lang);
 		if (!entry)
 			return;
 
 		if (filename.empty())
-			fname = ExtractEntry(entry, nullptr);
+			*fname = ExtractEntry(entry, nullptr);
 		else
-			fname = ExtractEntry(entry, filename.c_str());
+			*fname = ExtractEntry(entry, filename.c_str());
 	});
 	if (!completed)
 		throw EGA_control_break(0);
 
-	if (fname.size())
-		return make_arg<AstStr>(fname.c_str());
+	if (fname->size())
+		return make_arg<AstStr>(fname->c_str());
 
 	return make_arg<AstInt>(0);
 }
