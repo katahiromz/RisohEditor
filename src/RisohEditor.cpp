@@ -6414,9 +6414,15 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
 	{
 		if (IsWindow(m_id_list_dlg))
 			DestroyWindow(m_id_list_dlg);
+
+		HWND hwndPrevActive = GetActiveWindow();
+
 		m_id_list_dlg.CreateDialogDx(hwnd);
 		ShowWindow(m_id_list_dlg, (g_bNoGuiMode ? SW_HIDE : SW_SHOWNOACTIVATE));
 		UpdateWindow(m_id_list_dlg);
+
+		if (hwndPrevActive && hwndPrevActive != m_id_list_dlg && IsWindow(hwndPrevActive))
+			SetActiveWindow(hwndPrevActive);
 	}
 	else
 	{
