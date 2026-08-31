@@ -1649,6 +1649,7 @@ STRINGTABLE
     IDS_ENTERFILE "ファイルを指定してください。"
     IDS_CANTADDEMPTYDATA "ファイルが空です。リソースに空のデータは追加できません。"
     IDS_FILEWASTOOLARGE "ファイルが大きすぎます。"
+    IDS_CTRLIDWASEMPTY "コントロールIDが空です。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

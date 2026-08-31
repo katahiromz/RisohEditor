@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_ENTERFILE "请指定文件名。"
     IDS_CANTADDEMPTYDATA "文件为空。您不能向资源中添加空数据。"
     IDS_FILEWASTOOLARGE "文件过大。"
+    IDS_CTRLIDWASEMPTY "控件 ID 为空。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

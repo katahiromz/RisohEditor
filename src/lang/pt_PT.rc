@@ -1646,6 +1646,7 @@ STRINGTABLE
     IDS_ENTERFILE "Por favor especifique o ficheiro."
     IDS_CANTADDEMPTYDATA "O ficheiro está vazio. Não é possível adicionar dados vazios a um recurso."
     IDS_FILEWASTOOLARGE "O ficheiro é muito grande."
+    IDS_CTRLIDWASEMPTY "O ID de controlo está vazio."
 }
 
 //////////////////////////////////////////////////////////////////////////////

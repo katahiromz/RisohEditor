@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_ENTERFILE "Bitte geben Sie die Datei an."
     IDS_CANTADDEMPTYDATA "Die Datei ist leer. Sie können einer Ressource keine leeren Daten hinzufügen."
     IDS_FILEWASTOOLARGE "Die Datei ist zu groß."
+    IDS_CTRLIDWASEMPTY "Die Kontroll-ID ist leer."
 }
 
 //////////////////////////////////////////////////////////////////////////////

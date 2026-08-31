@@ -1646,6 +1646,7 @@ STRINGTABLE
     IDS_ENTERFILE "Please specify the file."
     IDS_CANTADDEMPTYDATA "The file is empty. Empty data cannot be added to the resource."
     IDS_FILEWASTOOLARGE "The file is too large."
+    IDS_CTRLIDWASEMPTY "The control ID is empty."
 }
 
 //////////////////////////////////////////////////////////////////////////////

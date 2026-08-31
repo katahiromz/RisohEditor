@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_ENTERFILE "Määritä tiedosto."
     IDS_CANTADDEMPTYDATA "Tiedosto on tyhjä. Et voi lisätä tyhjiä tietoja resurssiin."
     IDS_FILEWASTOOLARGE "Tiedosto on liian suuri."
+    IDS_CTRLIDWASEMPTY "Kontrollin tunnus on tyhjä."
 }
 
 //////////////////////////////////////////////////////////////////////////////

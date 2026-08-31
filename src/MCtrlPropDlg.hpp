@@ -219,6 +219,14 @@ public:
 			ErrorBoxDx(IDS_NOSUCHID);
 			return 0xFFFFFFFF;
 		}
+		else if (m_indeces.size() <= 1)
+		{
+			HWND hCmb3 = GetDlgItem(m_hwnd, cmb3);
+			ComboBox_SetEditSel(hCmb3, 0, -1);
+			SetFocus(hCmb3);
+			ErrorBoxDx(IDS_CTRLIDWASEMPTY);
+			return 0xFFFFFFFF;
+		}
 		if (flags & F_ID)
 			item.m_id = (WORD)id;
 

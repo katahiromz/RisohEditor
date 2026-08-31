@@ -1646,6 +1646,7 @@ STRINGTABLE
     IDS_ENTERFILE "파일을 지정합니다."
     IDS_CANTADDEMPTYDATA "파일이 비어 있습니다. 리소스에 빈 데이터를 추가할 수 없습니다."
     IDS_FILEWASTOOLARGE "파일이 너무 큽니다."
+    IDS_CTRLIDWASEMPTY "컨트롤 ID가 비어 있습니다."
 }
 
 //////////////////////////////////////////////////////////////////////////////

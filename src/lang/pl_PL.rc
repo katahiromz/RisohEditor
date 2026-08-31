@@ -1646,6 +1646,7 @@ STRINGTABLE
     IDS_ENTERFILE "Proszę podać plik."
     IDS_CANTADDEMPTYDATA "Plik jest pusty. Nie można dodać pustych danych do zasobu."
     IDS_FILEWASTOOLARGE "Plik jest za duży."
+    IDS_CTRLIDWASEMPTY "Identyfikator kontrolki jest pusty."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1648,6 +1648,7 @@ STRINGTABLE
     IDS_ENTERFILE "Mohon sebutkan file-nya."
     IDS_CANTADDEMPTYDATA "Berkas tersebut kosong. Anda tidak dapat menambahkan data kosong ke suatu sumber daya."
     IDS_FILEWASTOOLARGE "Ukuran file terlalu besar."
+    IDS_CTRLIDWASEMPTY "ID kontrol kosong."
 }
 
 //////////////////////////////////////////////////////////////////////////////

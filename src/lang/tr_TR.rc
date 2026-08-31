@@ -1646,6 +1646,7 @@ STRINGTABLE
     IDS_ENTERFILE "Lütfen dosyayı belirtin."
     IDS_CANTADDEMPTYDATA "Dosya boş. Kaynağa boş veri ekleyemezsiniz."
     IDS_FILEWASTOOLARGE "Dosya çok büyük."
+    IDS_CTRLIDWASEMPTY "Kontrol kimliği boş."
 }
 
 //////////////////////////////////////////////////////////////////////////////
