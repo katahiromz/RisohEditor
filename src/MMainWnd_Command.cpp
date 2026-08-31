@@ -2038,12 +2038,22 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 	if (!CompileIfNecessary(TRUE))
 		return;
 
+	// needs reopen?
+	BOOL bReopen = IsWindowVisible(m_rad_window);
+	if (bReopen)
+		GetWindowRect(m_rad_window, &m_rcRadWindow);
+	else
+		SetRectEmpty(&m_rcRadWindow);
+
 	// toggle the flag
 	g_settings.bUseIDC_STATIC = !g_settings.bUseIDC_STATIC;
 
 	// select the entry to update the text
 	auto entry = g_res.get_entry();
 	SelectTV(entry, FALSE, STV_RESETTEXT);
+
+	if (bReopen && entry && entry->m_type == RT_DIALOG)
+		PostMessageDx(MYWM_REOPENRAD);
 }
 
 // ID_HIDEIDMACROS: show/hide the ID macros
