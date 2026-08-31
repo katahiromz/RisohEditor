@@ -234,6 +234,9 @@ void MModifyMItemDlg::OnOK(HWND hwnd)
 	m_entry.szFlags = GetMenuTypeAndState(dwType, dwState);
 
 	m_entry.szHelpID = ::GetDlgItemTextW(hwnd, cmb3);
+	ReplaceFullWithHalf(m_entry.szHelpID);
+	mstr_trim(m_entry.szHelpID);
+
 	DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
 	m_entry.szHelpID = g_db.GetNameOfResID(IDTYPE_HELP, help);
 

@@ -373,8 +373,6 @@ public:
 	BOOL ApplyEncoding(HWND hwnd)
 	{
 		INT iItem, nCount = ListView_GetItemCount(m_hLst1);
-		if (nCount == 0)
-			return FALSE;
 
 		auto& map = g_settings.encoding_map;
 		map.clear();
@@ -389,7 +387,12 @@ public:
 			mstr_trim(szText2);
 
 			MIdOrString type;
-			ParseType(szText1, type);
+			INT ids = ParseType(szText1, type);
+			if (ids)
+			{
+				ErrorBoxDx(ids);
+				return FALSE;
+			}
 
 			MString enc = txt2enc(szText2);
 
