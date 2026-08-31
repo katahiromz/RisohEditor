@@ -245,9 +245,8 @@ public:
 		if (iItem < 0)
 			return;
 
-		ListView_DeleteItem(m_hLst1, iItem);
-
 		MString strKey = GetListViewItemText(m_hLst1, iItem, 0);
+		ListView_DeleteItem(m_hLst1, iItem);
 		m_map.erase(strKey);
 		SetModifiedDx();
 	}
@@ -467,14 +466,14 @@ public:
 
 				MString strValue = m_map[m_strTemp];
 				m_map.erase(m_strTemp);
-				m_map[pInfo->item.pszText] = std::move(strValue);
+				m_map[strNewKey] = std::move(strValue);
 
 				LV_ITEM item;
 				ZeroMemory(&item, sizeof(item));
 				item.iItem = iItem;
 				item.mask = LVIF_TEXT;
 				item.iSubItem = 0;
-				item.pszText = pInfo->item.pszText;
+				item.pszText = const_cast<PWSTR>(strNewKey.c_str());
 				ListView_SetItem(m_hLst1, &item);
 			}
 			if (pnmhdr->code == LVN_GETINFOTIP)
