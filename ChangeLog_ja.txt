@@ -4,7 +4,7 @@
     - UI/UXの軽微な改善。
     - mcdxの場所を移動。
     - mcdxを高速化。
-    - Accelerated loading RC files.
+    - RCファイルの読み込みを高速化。
 - v.6.1.7 (2026-08-25)
     - MEditAccelDlgのバグ（「^A」など）を修正。
     - mcdxをそれほど怪しくないように変更。
