@@ -343,7 +343,7 @@ public:
 	void OnUp(HWND hwnd)
 	{
 		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-		if (iItem == 0)
+		if (iItem <= 0)
 			return;
 
 		ACCEL_ENTRY ae0, ae1;
@@ -368,6 +368,8 @@ public:
 	void OnDown(HWND hwnd)
 	{
 		INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+		if (iItem < 0)
+			return;
 		if (iItem + 1 == ListView_GetItemCount(m_hLst1))
 			return;
 
