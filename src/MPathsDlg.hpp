@@ -328,6 +328,10 @@ public:
 			{
 				OnSelChange(hwnd);
 			}
+			else if (codeNotify == LBN_DBLCLK)
+			{
+				OnModify(hwnd);
+			}
 			break;
 		}
 	}
@@ -361,6 +365,15 @@ public:
 		EnableWindow(GetDlgItem(hwnd, psh5), bSelected);
 	}
 
+	int OnVkeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)
+	{
+		if (vk == VK_DELETE)
+		{
+			OnDelete(hwnd);
+		}
+		return SetDlgMsgResult(hwnd, WM_VKEYTOITEM, -1);
+	}
+
 	INT_PTR CALLBACK
 	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
@@ -371,37 +384,7 @@ public:
 			HANDLE_MSG(hwnd, WM_SIZE, OnSize);
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
-		case WM_NOTIFY:
-			{
-				LPNMHDR pnmhdr = (LPNMHDR)lParam;
-				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
-				{
-					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
-				}
-				return OnNotify(hwnd, (INT)wParam, pnmhdr);
-			}
-		}
-		return 0;
-	}
-
-	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
-	{
-		if (idFrom == lst1)
-		{
-			if (pnmhdr->code == LVN_KEYDOWN)
-			{
-				LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
-				if (KeyDown->wVKey == VK_DELETE)
-				{
-					OnDelete(hwnd);
-					return 0;
-				}
-			}
-			if (pnmhdr->code == NM_DBLCLK)
-			{
-				OnModify(hwnd);
-				return 0;
-			}
+			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVkeyToItem);
 		}
 		return 0;
 	}

@@ -174,7 +174,8 @@ void MOleSite::OnPaint(HWND hwnd)
 	PAINTSTRUCT ps;
 	if (HDC hdc = ::BeginPaint(hwnd, &ps))
 	{
-		::OleDraw(m_pOleObject, DVASPECT_CONTENT, hdc, &m_rc);
+		if (m_pOleObject)
+			::OleDraw(m_pOleObject, DVASPECT_CONTENT, hdc, &m_rc);
 		::EndPaint(hwnd, &ps);
 	}
 }
