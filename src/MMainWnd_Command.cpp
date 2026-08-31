@@ -4237,8 +4237,8 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 		L"ET_LANG"
 	};
 
-	MStringW type = entry->m_type.str();
-	MStringW name = entry->m_name.str();
+	MStringW type = entry->m_type.str(true);
+	MStringW name = entry->m_name.str(true);
 	StringCchPrintfW(sz, _countof(sz),
 		L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p, strLabel:%s", apszI_[entry->m_et],
 		type.c_str(), name.c_str(), entry->m_lang, entry, entry->m_hItem, entry->m_strLabel.c_str());

@@ -215,7 +215,7 @@ MString MIDListDlg::GetTypeTextFromEntry(const EntryBase *entry) const
 	}
 	else
 	{
-		typeText = entry->m_type.str();
+		typeText = entry->m_type.str(true);
 	}
 
 	if (typeText.empty())

@@ -1167,9 +1167,9 @@ MStringA MMainWnd::ExtractEntry(EntryBase *entry, PCSTR u8_filename)
 				wide_filename += std::to_wstring(entry->m_lang);
 				wide_filename += L"_";
 			}
-			wide_filename += entry->m_type.str();
+			wide_filename += entry->m_type.str(true);
 			wide_filename += L"_";
-			wide_filename += entry->m_name.str();
+			wide_filename += entry->m_name.str(true);
 			wide_filename += L".bin";
 		}
 		MWideToAnsi utf8(CP_UTF8, wide_filename.c_str());

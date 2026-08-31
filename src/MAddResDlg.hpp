@@ -353,9 +353,7 @@ public:
 		// cut off the text from " (" to end
 		size_t k = strIDType.find(L" (");
 		if (k != MString::npos)
-		{
 			strIDType = strIDType.substr(0, k);
-		}
 
 		// the resource type (RT_*) --> (type, iType)
 		MIdOrString type;
@@ -369,13 +367,9 @@ public:
 				iType = IDTYPE_RESOURCE;
 			}
 		}
-		else if (iType != IDTYPE_UNKNOWN && nRT_ != 0)
-		{
-			type = nRT_;
-		}
 		else
 		{
-			type.m_str = std::move(strIDType);
+			type = MIdOrString(strIDType.c_str());
 		}
 
 		if (HasSample(type, m_name, m_lang))

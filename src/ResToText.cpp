@@ -224,7 +224,7 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 		}
 		else
 		{
-			str += entry.m_type.str();
+			str += entry.m_type.str(true);
 			str += L"_";
 			str += DumpEscapedName(entry.m_name);
 			str += L".bin";
@@ -382,7 +382,7 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 		}
 		else
 		{
-			str += entry.m_type.str();
+			str += entry.m_type.str(true);
 			str += L"_";
 			str += DumpEscapedName(entry.m_name);
 			str += L".bin";
@@ -1041,7 +1041,7 @@ ResToText::GetResTypeName(const MIdOrString& type) const
 		case 241: return L"RT_TOOLBAR";
 		}
 	}
-	return type.str();
+	return type.str(true);
 }
 
 MString ResToText::DoWave(const EntryBase& entry)
@@ -1274,7 +1274,7 @@ MString ResToText::DoUnknown(const EntryBase& entry)
 
 	str += DumpName(entry.m_type, entry.m_name);
 	str += L" ";
-	str += entry.m_type.str();
+	str += entry.m_type.str(true);
 	str += L" \"";
 	str += GetEntryFileName(entry);
 	str += L"\"\r\n\r\n";
@@ -1839,7 +1839,7 @@ MStringW DumpTextInclude(const EntryBase& entry)
 	switch (entry.m_name.m_id)
 	{
 	case 1:
-		str += entry.m_name.str();
+		str += entry.m_name.str(true);
 		str += L" TEXTINCLUDE\r\n";
 		str += generate_begin() + L"\r\n";
 		str += L"    ";
@@ -1852,7 +1852,7 @@ MStringW DumpTextInclude(const EntryBase& entry)
 		str += generate_end() + L"\r\n";
 		break;
 	default:
-		str += entry.m_name.str();
+		str += entry.m_name.str(true);
 		str += L" TEXTINCLUDE\r\n";
 		str += generate_begin() + L"\r\n";
 		{

@@ -1954,7 +1954,7 @@ MString GetAssoc(const MString& name)
 				}
 				else
 				{
-					res_type = e->m_type.str();
+					res_type = e->m_type.str(true);
 				}
 
 				if (res_type.size())

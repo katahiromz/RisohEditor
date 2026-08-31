@@ -143,7 +143,9 @@ public:
 			buttons[i].iString = 0;
 			m_vecControls.push_back((*table)[i].name);
 		}
-		m_hTB.AddButtons(nCount, &buttons[0]);
+
+		if (buttons.size())
+			m_hTB.AddButtons(nCount, &buttons[0]);
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
