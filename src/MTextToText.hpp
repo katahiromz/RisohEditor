@@ -176,9 +176,9 @@ protected:
 	MAnsiToWide::do_it(int codepage, const char *str, size_t count)
 	{
 		int len = int(count);
-		int cch = ::MultiByteToWideChar(codepage, 0, str, len, NULL, 0);
+		int cch = ::MultiByteToWideChar(codepage, 0, str, len, nullptr, 0);
 		m_str.resize(cch);
-		if (!::MultiByteToWideChar(codepage, 0, str, len, &m_str[0], cch + 1))
+		if (!::MultiByteToWideChar(codepage, 0, str, len, &m_str[0], cch))
 		{
 			m_str.clear();
 		}
@@ -188,10 +188,9 @@ protected:
 	MWideToAnsi::do_it(int codepage, const WCHAR *str, size_t count)
 	{
 		int len = int(count);
-		int cch = ::WideCharToMultiByte(codepage, 0, str, len, NULL, 0, NULL, NULL);
+		int cch = ::WideCharToMultiByte(codepage, 0, str, len, nullptr, 0, nullptr, nullptr);
 		m_str.resize(cch);
-		if (!::WideCharToMultiByte(codepage, 0, str, len, &m_str[0], cch + 1,
-								   NULL, NULL))
+		if (!::WideCharToMultiByte(codepage, 0, str, len, &m_str[0], cch, nullptr, nullptr))
 		{
 			m_str.clear();
 		}
@@ -230,7 +229,7 @@ protected:
 				return "UCS-4LE";
 			default:
 				assert(0);
-				return NULL;
+				return nullptr;
 			}
 		}
 

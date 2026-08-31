@@ -156,9 +156,12 @@ public:
 		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
 
 		INT i = 0;
+		const size_t nItems = m_dialog_res.size();
 		for (HWND hCtrl = GetTopWindow(hwnd);
 			 hCtrl; hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT))
 		{
+			if (i >= (INT)nItems)
+				break;
 			DWORD style = GetWindowStyle(hCtrl);
 			SIZE siz = { 0, 0 };
 			GetWindowPosDx(hCtrl, NULL, &siz);
@@ -175,11 +178,15 @@ public:
 					if (style & SS_REALSIZEIMAGE)
 					{
 						ICONINFO info;
-						GetIconInfo(hIcon, &info);
-						BITMAP bm;
-						GetObject(info.hbmColor, sizeof(BITMAP), &bm);
-						siz.cx = bm.bmWidth;
-						siz.cy = bm.bmHeight;
+						if (hIcon && GetIconInfo(hIcon, &info))
+						{
+							BITMAP bm;
+							if (GetObject(info.hbmColor, sizeof(BITMAP), &bm))
+							{
+								siz.cx = bm.bmWidth;
+								siz.cy = bm.bmHeight;
+							}
+						}
 					}
 					else if (style & SS_REALSIZECONTROL)
 					{
@@ -200,9 +207,11 @@ public:
 					else
 					{
 						BITMAP bm;
-						GetObject(hbm, sizeof(BITMAP), &bm);
-						siz.cx = bm.bmWidth;
-						siz.cy = bm.bmHeight;
+						if (hbm && GetObject(hbm, sizeof(BITMAP), &bm))
+						{
+							siz.cx = bm.bmWidth;
+							siz.cy = bm.bmHeight;
+						}
 					}
 					SetWindowPosDx(hCtrl, NULL, &siz);
 				}
