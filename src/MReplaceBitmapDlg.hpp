@@ -133,6 +133,7 @@ public:
 		WCHAR file[MAX_PATH];
 		DragQueryFileW(hdrop, 0, file, _countof(file));
 		SetDlgItemTextW(hwnd, edt1, file);
+		DragFinish(hdrop);
 	}
 
 	INT_PTR CALLBACK

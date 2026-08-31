@@ -41,13 +41,12 @@ mbin_swap_endian(void *ptr, size_t len)
 {
 	char *pb = (char *)ptr;
 	len /= 2;
-	while (--len)
+	while (len--)
 	{
 		char b = pb[0];
 		pb[0] = pb[1];
 		pb[1] = b;
-		++pb;
-		++pb;
+		pb += 2;
 	}
 }
 

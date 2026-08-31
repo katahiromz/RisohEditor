@@ -183,6 +183,7 @@ public:
 			DestroyIcon(m_hIcon);
 		m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
 		Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
+		DragFinish(hdrop);
 	}
 
 	INT_PTR CALLBACK
