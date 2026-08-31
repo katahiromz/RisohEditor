@@ -39,6 +39,8 @@ public:
 	MBmpView()
 	{
 		ZeroMemory(&m_bm, sizeof(m_bm));
+		m_hBitmap = NULL;
+		m_hIcon = NULL;
 	}
 
 	~MBmpView()

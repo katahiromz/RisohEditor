@@ -221,8 +221,6 @@ public:
 		}
 		if (flags & F_ID)
 			item.m_id = (WORD)id;
-		else
-			item.m_id = 0;
 
 		MString strClass = GetDlgItemText(cmb4);
 		mstr_trim(strClass);

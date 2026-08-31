@@ -138,13 +138,15 @@ BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
 				try
 				{
 					pBitmap = Gdiplus::Bitmap::FromStream(pStream);
-
-					INT cx = pBitmap->GetWidth();
-					INT cy = pBitmap->GetHeight();
-					if (!cx || !cy)
+					if (pBitmap)
 					{
-						delete pBitmap;
-						pBitmap = nullptr;
+						INT cx = pBitmap->GetWidth();
+						INT cy = pBitmap->GetHeight();
+						if (!cx || !cy)
+						{
+							delete pBitmap;
+							pBitmap = nullptr;
+						}
 					}
 				}
 				catch (...)
@@ -191,6 +193,11 @@ void MBitmapDx::SetFrameIndex(UINT nFrameIndex)
 
 HBITMAP MBitmapDx::GetHBITMAP(LONG& cx, LONG& cy)
 {
+	if (!m_pBitmap)
+	{
+		cx = cy = 0;
+		return nullptr;
+	}
 	cx = (LONG)m_pBitmap->GetWidth();
 	cy = (LONG)m_pBitmap->GetHeight();
 
