@@ -1,6 +1,6 @@
 ﻿## HISTÓRICO
 
-- v.6.1.8 (2026-XX-YY)
+- v.6.1.8 (2026-09-01)
     - Pequenas melhorias de UI/UX.
     - Alterada a localização do mcdx.
     - mcdx acelerado.
