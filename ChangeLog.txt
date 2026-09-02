@@ -1,6 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
-- v.6.1.9 (2026-XX-YY)
+- v.6.1.9 (2026-09-02)
     - Fixed cursor response at the edges of the main window.
     - Fixed a bug where ET_TYPE items with no children would not disappear in EGA RES_delete function.
 - v.6.1.8 (2026-09-01)

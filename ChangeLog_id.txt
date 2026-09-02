@@ -1,6 +1,6 @@
 ﻿## SEJARAH
 
-- v.6.1.9 (2026-XX-YY)
+- v.6.1.9 (2026-09-02)
     - Memperbaiki respons kursor di tepi jendela utama.
     - Memperbaiki bug di mana item ET_TYPE tanpa anak tidak hilang dalam fungsi EGA RES_delete.
 - v.6.1.8 (2026-09-01)
