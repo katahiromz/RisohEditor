@@ -2,6 +2,7 @@
 
 - v.6.1.9 (2026-XX-YY)
     - Memperbaiki respons kursor di tepi jendela utama.
+    - Memperbaiki bug di mana entri ET_TYPE tanpa anak tidak akan hilang.
 - v.6.1.8 (2026-09-01)
     - Peningkatan kecil pada UI/UX.
     - Memindahkan lokasi mcdx.

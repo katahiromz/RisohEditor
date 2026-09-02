@@ -399,8 +399,19 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
     {
         EntrySet found;
         *ret = g_res.search(found, ET_ANY, type, name, lang);
+        // Use delete_entry() (not a bare mark_invalid()) for each matched
+        // entry. delete_entry() recursively marks a parent invalid too
+        // once it has become childless, so deleting an ET_LANG entry here
+        // also cascades to remove its now-childless ET_NAME parent, and
+        // that ET_NAME becoming empty in turn cascades to remove a
+        // now-childless ET_TYPE grandparent. A plain mark_invalid() loop
+        // followed by a single delete_invalid() call only catches one
+        // level of "just became childless" per call (delete_invalid()'s
+        // search_invalid() makes just one pass over the set), so an
+        // ET_LANG -> ET_NAME -> ET_TYPE cascade would leave the emptied
+        // ET_NAME/ET_TYPE nodes stranded in the treeview.
         for (auto entry : found)
-            entry->mark_invalid();
+            g_res.delete_entry(entry);
         g_res.delete_invalid();
 
         if (*ret)

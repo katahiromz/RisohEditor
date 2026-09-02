@@ -2,6 +2,7 @@
 
 - v.6.1.9 (2026-XX-YY)
     - Fixed cursor response at the edges of the main window.
+    - Fixed a bug where ET_TYPE items with no children would not disappear.
 - v.6.1.8 (2026-09-01)
     - Minor UI/UX improvements.
     - Moved mcdx location.
