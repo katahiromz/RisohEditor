@@ -153,20 +153,13 @@ void MMainWnd::OnSysColorChange(HWND hwnd)
 // WM_SETCURSOR
 BOOL MMainWnd::OnSetCursor(HWND hwnd, HWND hwndCursor, int codeHitTest, UINT msg)
 {
-	// SetCursor() only lasts until the next WM_SETCURSOR. Some long
-	// operations (DoLoadRC's parallel-compile wait loop, for one) keep
-	// pumping messages instead of just blocking, so that they don't hang
-	// the window -- but that means WM_SETCURSOR keeps arriving too, and
-	// without this handler, DefWindowProc's default handling would
-	// quietly swap the wait cursor set by MWaitCursor back to the normal
-	// arrow the moment the mouse moves. Reassert it here instead.
-	if (MWaitCursor::IsActive())
+	if (MWaitCursor::IsActive() && codeHitTest == HTCLIENT)
 	{
 		::SetCursor(::LoadCursor(nullptr, IDC_WAIT));
-		return TRUE;    // handled -- don't let DefWindowProc override it
+		return TRUE;
 	}
 
-	return FALSE;   // let the default handling set the normal cursor
+	return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, msg, DefaultProcDx);
 }
 
 // WM_SETFOCUS

@@ -1,6 +1,7 @@
 ﻿## SEJARAH
 
 - v.6.1.9 (2026-XX-YY)
+    - Memperbaiki respons kursor di tepi jendela utama.
 - v.6.1.8 (2026-09-01)
     - Peningkatan kecil pada UI/UX.
     - Memindahkan lokasi mcdx.
