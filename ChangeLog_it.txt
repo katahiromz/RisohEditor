@@ -2,7 +2,7 @@
 
 - v.6.1.9 (2026-XX-YY)
     - Corretta la risposta del cursore ai bordi della finestra principale.
-    - Risolto un bug per cui le voci ET_TYPE senza elementi secondari non scomparivano.
+    - Risolto un bug per cui gli elementi di tipo ET_TYPE privi di elementi figli non venivano rimossi dalla funzione EGA RES_delete.
 - v.6.1.8 (01.09.2026)
     - Miglioramenti minori a UI/UX.
     - Spostata la posizione di mcdx.

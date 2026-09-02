@@ -2,7 +2,7 @@
 
 - v.6.1.9 (2026-XX-YY)
     - Se ha corregido la respuesta del cursor en los bordes de la ventana principal.
-    - Se corrigió un error por el cual las entradas ET_TYPE sin elementos secundarios no desaparecían.
+    - Se corrigió un error por el cual los elementos de tipo ET_TYPE sin elementos hijos no desaparecían en la función EGA RES_delete.
 - v.6.1.8 (2026-09-01)
     - Mejoras menores en la interfaz y la experiencia de usuario (UI/UX).
     - Se cambió la ubicación de mcdx.
