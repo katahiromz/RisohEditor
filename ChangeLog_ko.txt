@@ -5,7 +5,7 @@
     - "TEXTFILE" 리소스 유형 지원. 
     - "UTF-16 (BOM 포함)" 및 "UTF-16 (BOM 미포함)" 인코딩 지원.
     - "XML", "XSLT", "SCHEMA", "REGINST", "REGISTRY" 리소스 유형 추가를 지원했습니다.
-    - "COLORNAMES", "FILERESNAMES", "SIZENAMES" 리소스 유형을 지원합니다.
+    - "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES", "SIZENAMES" 리소스 유형을 지원합니다.
     - "MultiSz" 인코딩을 지원합니다.
     - 'Microsoft MESSAGETABLE 사용' 설정을 삭제했습니다.
 - v.6.1.9 (2026-09-02)

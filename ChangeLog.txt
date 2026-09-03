@@ -4,7 +4,7 @@
     - Supported resource type "TEXTFILE".
     - Supported "UTF-16 (with BOM)" and "UTF-16 (without BOM)" encodings.
     - Supported adding "XML", "XSLT", "SCHEMA", "REGINST", and "REGISTRY" resource types.
-    - Supported resource types "COLORNAMES", "FILERESNAMES", and "SIZENAMES".
+    - Supported resource types "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES", and "SIZENAMES".
     - Supported "MultiSz" encoding.
     - Deleted "Use Microsoft MESSAGETABLE" setting.
 - v.6.1.9 (2026-09-02)

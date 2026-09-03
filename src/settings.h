@@ -186,6 +186,7 @@ struct RisohSettings
 		encoding_map[L"TEXTFILE"] = L"utf16";
 		encoding_map[L"COLORNAMES"] = L"multisz";
 		encoding_map[L"FILERESNAMES"] = L"multisz";
+		encoding_map[L"ORIGFILENAMES"] = L"multisz";
 		encoding_map[L"SIZENAMES"] = L"multisz";
 	}
 

@@ -4,7 +4,7 @@
     - Tipo de recurso "TEXTFILE" suportado. 
     - Codificações "UTF-16 (com BOM)" e "UTF-16 (sem BOM)" suportadas.
     - Adicionado suporte para incluir os tipos de recurso "XML", "XSLT", "SCHEMA", "REGINST" e "REGISTRY".
-    - Suporte aos tipos de recurso "COLORNAMES", "FILERESNAMES" e "SIZENAMES". 
+    - Suporte aos tipos de recurso "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES" e "SIZENAMES". 
     - Suporte à codificação "MultiSz".
     - Removida a configuração "Usar Microsoft MESSAGETABLE".
 - v.6.1.9 (2026-09-02)

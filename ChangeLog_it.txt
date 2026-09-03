@@ -4,7 +4,7 @@
     - Aggiunto supporto per il tipo di risorsa "TEXTFILE". 
     - Aggiunto supporto per le codifiche "UTF-16 (con BOM)" e "UTF-16 (senza BOM)".
     - Aggiunto supporto per i tipi di risorsa "XML", "XSLT", "SCHEMA", "REGINST" e "REGISTRY".
-    - Supporto per i tipi di risorsa "COLORNAMES", "FILERESNAMES" e "SIZENAMES". 
+    - Supporto per i tipi di risorsa "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES" e "SIZENAMES". 
     - Supporto per la codifica "MultiSz".
     - Rimossa l'impostazione "Usa tabella messaggi Microsoft".
 - v.6.1.9 (02.09.2026)
