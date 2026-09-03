@@ -2377,8 +2377,13 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		if (enc == L"utf8" || enc == L"utf8n")
 		{
 			data.assign(strUtf8.begin(), strUtf8.end());
-
-			if (enc != L"utf8n")
+			if (enc == L"utf8n")
+			{
+				// delete a UTF-8 BOM from data
+				if (data.size() >= 3 && memcmp(&data[0], "\xEF\xBB\xBF", 3) == 0)
+					data.erase(data.begin(), data.begin() + 3);
+			}
+			else
 			{
 				// add a UTF-8 BOM to data
 				data.insert(data.begin(), &bom[0], &bom[3]);
@@ -2393,19 +2398,41 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		else if (enc == L"wide")
 		{
 			data.assign((BYTE *)&strWide[0], (BYTE *)&strWide.c_str()[strWide.size()]);
+
+			// delete a UTF-16 BOM from data
+			if (data.size() >= 2 && memcmp(&data[0], "\xFF\xFE", 2) == 0)
+				data.erase(data.begin(), data.begin() + 2);
 		}
 		else if (enc == L"sjis")
 		{
 			MStringA TextSjis = MWideToAnsi(932, strWide).c_str();
 			data.assign(TextSjis.begin(), TextSjis.end());
 		}
+		else if (enc == L"utf16" || enc == L"utf16")
+		{
+			data.assign((BYTE *)&strWide[0], (BYTE *)&strWide.c_str()[strWide.size()]);
+			if (enc == L"utf16n")
+			{
+				// delete a UTF-16 BOM from data
+				if (data.size() >= 2 && memcmp(&data[0], "\xFF\xFE", 2) == 0)
+					data.erase(data.begin(), data.begin() + 2);
+			}
+			else
+			{
+				// add a UTF-16 BOM to data
+				if (data.size() >= 2 && memcmp(&data[0], "\xFF\xFE", 2) != 0)
+				{
+					BYTE ab[2] = { 0xFF, 0xFE };
+					data.insert(data.begin(), &ab[0], &ab[2]);
+				}
+			}
+		}
 		else
 		{
 			bDataOK = FALSE;
 		}
 	}
-	else if (type == RT_HTML || type == RT_MANIFEST ||
-			 type == L"RISOHTEMPLATE")
+	else if (type == RT_HTML || type == RT_MANIFEST || type == L"RISOHTEMPLATE")
 	{
 		data.assign(strUtf8.begin(), strUtf8.end());
 		data.insert(data.begin(), &bom[0], &bom[3]);

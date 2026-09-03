@@ -1647,6 +1647,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "The file is empty. Empty data cannot be added to the resource."
     IDS_FILEWASTOOLARGE "The file is too large."
     IDS_CTRLIDWASEMPTY "The control ID is empty."
+    IDS_UTF16 "UTF-16 (with BOM)"
+    IDS_UTF16N "UTF-16 (without BOM)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

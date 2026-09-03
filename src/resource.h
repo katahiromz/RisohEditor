@@ -397,6 +397,8 @@
 #define IDS_CANTADDEMPTYDATA                415
 #define IDS_FILEWASTOOLARGE                 416
 #define IDS_CTRLIDWASEMPTY                  417
+#define IDS_UTF16                           418
+#define IDS_UTF16N                          419
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

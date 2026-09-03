@@ -1649,6 +1649,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "Berkas tersebut kosong. Anda tidak dapat menambahkan data kosong ke suatu sumber daya."
     IDS_FILEWASTOOLARGE "Ukuran file terlalu besar."
     IDS_CTRLIDWASEMPTY "ID kontrol kosong."
+    IDS_UTF16 "UTF-16 (Dengan BOM)"
+    IDS_UTF16N "UTF-16 (Tanpa BOM)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

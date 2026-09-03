@@ -183,6 +183,7 @@ struct RisohSettings
 		encoding_map[L"SCHEMA"] = L"utf8";
 		encoding_map[L"REGINST"] = L"ansi";
 		encoding_map[mstr_dec((WORD)(UINT_PTR)RT_DLGINCLUDE)] = L"utf8n";
+		encoding_map[L"TEXTFILE"] = L"utf16";
 	}
 
 	void ResetAssoc()

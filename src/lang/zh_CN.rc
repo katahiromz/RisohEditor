@@ -1646,6 +1646,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "文件为空。您不能向资源中添加空数据。"
     IDS_FILEWASTOOLARGE "文件过大。"
     IDS_CTRLIDWASEMPTY "控件 ID 为空。"
+    IDS_UTF16 "UTF-16 (with BOM)"
+    IDS_UTF16N "UTF-16 (without BOM)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

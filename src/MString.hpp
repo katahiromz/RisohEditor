@@ -229,6 +229,10 @@ inline const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch)
 ////////////////////////////////////////////////////////////////////////////
 
 template <typename T_CHAR>
+inline void
+mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
+
+template <typename T_CHAR>
 inline std::basic_string<T_CHAR>
 mchr_to_hex(T_CHAR value)
 {

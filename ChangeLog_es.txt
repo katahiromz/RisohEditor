@@ -1,6 +1,8 @@
 ﻿## HISTORIA
 
 - v.6.2.0 (2026-XX-YY)
+    - Tipo de recurso "TEXTFILE" compatible. 
+    - Codificaciones "UTF-16 (con BOM)" y "UTF-16 (sin BOM)" compatibles.
 - v.6.1.9 (2026-09-02)
     - Se ha corregido la respuesta del cursor en los bordes de la ventana principal.
     - Se corrigió un error por el cual los elementos de tipo ET_TYPE sin elementos hijos no desaparecían en la función EGA RES_delete.

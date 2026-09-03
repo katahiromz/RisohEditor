@@ -1647,6 +1647,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "Il file è vuoto. Non è possibile aggiungere dati vuoti ad una risorsa."
     IDS_FILEWASTOOLARGE "Il file è troppo grande."
     IDS_CTRLIDWASEMPTY "L'ID controllo è vuoto."
+    IDS_UTF16 "UTF-16 (con BOM)"
+    IDS_UTF16N "UTF-16 (senza BOM)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

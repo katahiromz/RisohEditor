@@ -1539,8 +1539,8 @@ STRINGTABLE
     IDS_CANTWRITEBYLOCK "次のファイルがロックされているため、書き込めません。\r\n\r\n%s"
     IDS_ANSI "ANSI"
     IDS_WIDE "Unicode"
-    IDS_UTF8 "UTF-8 with BOM"
-    IDS_UTF8N "UTF-8 without BOM"
+    IDS_UTF8 "UTF-8 (BOMあり)"
+    IDS_UTF8N "UTF-8 (BOMなし)"
     IDS_SJIS "シフトJIS"
     IDS_RESTYPE "リソース型"
     IDS_ENCODING "エンコーディング"
@@ -1650,6 +1650,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "ファイルが空です。リソースに空のデータは追加できません。"
     IDS_FILEWASTOOLARGE "ファイルが大きすぎます。"
     IDS_CTRLIDWASEMPTY "コントロールIDが空です。"
+    IDS_UTF16 "UTF-16 (BOMあり)"
+    IDS_UTF16N "UTF-16 (BOMなし)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

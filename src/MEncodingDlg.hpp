@@ -35,6 +35,10 @@ inline MString txt2enc(const MString& txt)
 		return L"utf8n";
 	if (txt == LoadStringDx(IDS_SJIS))
 		return L"sjis";
+	if (txt == LoadStringDx(IDS_UTF16))
+		return L"utf16";
+	if (txt == LoadStringDx(IDS_UTF16N))
+		return L"utf16n";
 	return L"";
 }
 
@@ -50,6 +54,10 @@ inline MString enc2txt(const MString& enc)
 		return LoadStringDx(IDS_UTF8N);
 	if (enc == L"sjis")
 		return LoadStringDx(IDS_SJIS);
+	if (enc == L"utf16")
+		return LoadStringDx(IDS_UTF16);
+	if (enc == L"utf16n")
+		return LoadStringDx(IDS_UTF16N);
 	return L"";
 }
 
@@ -96,6 +104,8 @@ public:
 		INT k = ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8N));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
 
 		ComboBox_SetCurSel(hCmb2, k);
 
@@ -197,6 +207,8 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8N));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
 
 		MString txt = enc2txt(m_enc);
 		int k = ComboBox_FindStringExact(hCmb2, -1, txt.c_str());

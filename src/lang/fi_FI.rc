@@ -1646,6 +1646,8 @@ STRINGTABLE
     IDS_CANTADDEMPTYDATA "Tiedosto on tyhjä. Et voi lisätä tyhjiä tietoja resurssiin."
     IDS_FILEWASTOOLARGE "Tiedosto on liian suuri."
     IDS_CTRLIDWASEMPTY "Kontrollin tunnus on tyhjä."
+    IDS_UTF16 "UTF-16 (with BOM)"
+    IDS_UTF16N "UTF-16 (without BOM)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

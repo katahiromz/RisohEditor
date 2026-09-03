@@ -1204,12 +1204,14 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 			mstr_replace_all(wide, L"\n", L"\r\n");
 			return wide;
 		}
-		if (enc == L"wide")
+		if (enc == L"wide" || enc == L"utf16n" || enc == L"utf16")
 		{
 			std::wstring str(reinterpret_cast<const wchar_t *>(&entry.m_data[0]),
 							 entry.m_data.size() / sizeof(wchar_t));
 			mstr_replace_all(str, L"\r\n", L"\n");
 			mstr_replace_all(str, L"\n", L"\r\n");
+			if (str.size() && str[0] == 0xFEFF)
+				str.erase(0, 1);
 			return str;
 		}
 		if (enc == L"utf8" || enc == L"utf8n")
