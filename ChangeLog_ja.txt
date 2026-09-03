@@ -6,7 +6,8 @@
     - 「XML」「XSLT」「SCHEMA」「REGINST」「REGISTRY」リソース型の追加に対応。
     - リソース型「COLORNAMES」「FILERESNAMES」「ORIGFILENAMES」「SIZENAMES」をサポート。
     - 「MultiSz」「WORDs」エンコーディングをサポート。
-    - 「Microsoft MESSAGETABLEを使用する」設定を削除しました。
+    - 「Microsoft MESSAGETABLEを使用する」設定を削除。
+    - 「msstyles」ファイルに対応。
 - v.6.1.9 (2026-09-02)
     - メインウィンドウの端でのカーソルの反応を修正。
     - EGAのRES_delete関数において、子要素を持たないET_TYPEアイテムが消去されない不具合を修正。

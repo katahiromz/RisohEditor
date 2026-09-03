@@ -7,6 +7,7 @@
     - Supporto per i tipi di risorsa "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES" e "SIZENAMES". 
     - Supporto per le codifiche "MultiSz" e "WORDs".
     - Rimossa l'impostazione "Usa tabella messaggi Microsoft".
+    - Supporto per i file "msstyles".
 - v.6.1.9 (02.09.2026)
     - Corretta la risposta del cursore ai bordi della finestra principale.
     - Risolto un bug per cui gli elementi di tipo ET_TYPE privi di elementi figli non venivano rimossi dalla funzione EGA RES_delete.

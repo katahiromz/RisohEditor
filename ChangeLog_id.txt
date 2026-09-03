@@ -7,6 +7,7 @@
     - Mendukung jenis sumber daya "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES", dan "SIZENAMES". 
     - Mendukung pengodean "MultiSz" dan "WORDs".
     - Menghapus pengaturan "Use Microsoft MESSAGETABLE".
+    - Mendukung file "msstyles".
 - v.6.1.9 (2026-09-02)
     - Memperbaiki respons kursor di tepi jendela utama.
     - Memperbaiki bug di mana item ET_TYPE tanpa anak tidak hilang dalam fungsi EGA RES_delete.

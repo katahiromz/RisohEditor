@@ -7,6 +7,7 @@
     - Compatibilidad con los tipos de recurso "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES" y "SIZENAMES". 
     - Compatibilidad con las codificaciones "MultiSz" y "WORDs".
     - Se ha eliminado la configuración "Usar Microsoft MESSAGETABLE".
+    - Compatibilidad con archivos "msstyles".
 - v.6.1.9 (2026-09-02)
     - Se ha corregido la respuesta del cursor en los bordes de la ventana principal.
     - Se corrigió un error por el cual los elementos de tipo ET_TYPE sin elementos hijos no desaparecían en la función EGA RES_delete.
