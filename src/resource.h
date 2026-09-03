@@ -399,6 +399,7 @@
 #define IDS_CTRLIDWASEMPTY                  417
 #define IDS_UTF16                           418
 #define IDS_UTF16N                          419
+#define IDS_MULTISZ                         420
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

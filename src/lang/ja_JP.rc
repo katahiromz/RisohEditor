@@ -1652,6 +1652,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "コントロールIDが空です。"
     IDS_UTF16 "UTF-16 (BOMあり)"
     IDS_UTF16N "UTF-16 (BOMなし)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

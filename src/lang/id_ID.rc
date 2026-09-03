@@ -1651,6 +1651,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "ID kontrol kosong."
     IDS_UTF16 "UTF-16 (Dengan BOM)"
     IDS_UTF16N "UTF-16 (Tanpa BOM)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

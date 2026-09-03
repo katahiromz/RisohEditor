@@ -39,6 +39,8 @@ inline MString txt2enc(const MString& txt)
 		return L"utf16";
 	if (txt == LoadStringDx(IDS_UTF16N))
 		return L"utf16n";
+	if (txt == LoadStringDx(IDS_MULTISZ))
+		return L"multisz";
 	return L"";
 }
 
@@ -58,6 +60,8 @@ inline MString enc2txt(const MString& enc)
 		return LoadStringDx(IDS_UTF16);
 	if (enc == L"utf16n")
 		return LoadStringDx(IDS_UTF16N);
+	if (enc == L"multisz")
+		return LoadStringDx(IDS_MULTISZ);
 	return L"";
 }
 

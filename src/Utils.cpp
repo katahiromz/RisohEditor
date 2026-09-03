@@ -3980,3 +3980,48 @@ std::wstring SanitizeIdentifier(const std::wstring& name)
 
 	return result;
 }
+
+bool MultiSz_DataFromVector(std::vector<BYTE>& data, const std::vector<MStringW>& strs)
+{
+	data.clear();
+
+	size_t cb = sizeof(UNICODE_NULL);
+	for (const auto& str : strs)
+		cb += str.size() * sizeof(wchar_t) + sizeof(UNICODE_NULL);
+	data.reserve(cb);
+
+	for (const auto& str : strs)
+	{
+		data.insert(data.end(), reinterpret_cast<const BYTE*>(str.c_str()),
+		                        reinterpret_cast<const BYTE*>(str.c_str() + str.size()));
+		data.push_back(0);
+		data.push_back(0);
+	}
+	data.push_back(0);
+	data.push_back(0);
+	return true;
+}
+
+bool MultiSz_VectorFromData(std::vector<MStringW>& strs, const std::vector<BYTE>& data)
+{
+	strs.clear();
+	if (data.size() < 2)
+		return false;
+	if (data.size() & 1)
+		return false;
+
+	size_t cchMax = data.size() / sizeof(wchar_t);
+	const wchar_t* psz = reinterpret_cast<const wchar_t*>(data.data());
+
+	while (cchMax > 0 && *psz)
+	{
+		size_t cch = 0;
+		if (FAILED(StringCchLengthW(psz, cchMax, &cch)))
+			return false;
+
+		strs.emplace_back(psz, cch);
+		psz += cch + 1;
+		cchMax -= cch + 1;
+	}
+	return true;
+}

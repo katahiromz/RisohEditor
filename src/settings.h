@@ -184,6 +184,9 @@ struct RisohSettings
 		encoding_map[L"REGINST"] = L"ansi";
 		encoding_map[mstr_dec((WORD)(UINT_PTR)RT_DLGINCLUDE)] = L"utf8n";
 		encoding_map[L"TEXTFILE"] = L"utf16";
+		encoding_map[L"COLORNAMES"] = L"multisz";
+		encoding_map[L"FILERESNAMES"] = L"multisz";
+		encoding_map[L"SIZENAMES"] = L"multisz";
 	}
 
 	void ResetAssoc()

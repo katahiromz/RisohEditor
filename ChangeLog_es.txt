@@ -4,6 +4,8 @@
     - Tipo de recurso "TEXTFILE" compatible. 
     - Codificaciones "UTF-16 (con BOM)" y "UTF-16 (sin BOM)" compatibles.
     - Se añadió soporte para los tipos de recurso "XML", "XSLT", "SCHEMA", "REGINST" y "REGISTRY".
+    - Compatibilidad con los tipos de recurso "COLORNAMES", "FILERESNAMES" y "SIZENAMES". 
+    - Compatibilidad con la codificación "MultiSz".
 - v.6.1.9 (2026-09-02)
     - Se ha corregido la respuesta del cursor en los bordes de la ventana principal.
     - Se corrigió un error por el cual los elementos de tipo ET_TYPE sin elementos hijos no desaparecían en la función EGA RES_delete.

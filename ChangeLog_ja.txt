@@ -4,6 +4,8 @@
     - リソース型「TEXTFILE」に対応。
     - 「UTF-16 (BOMあり)」および「UTF-16 (BOMなし)」のエンコーディングに対応。
     - 「XML」「XSLT」「SCHEMA」「REGINST」「REGISTRY」リソース型の追加に対応。
+    - リソース型「COLORNAMES」「FILERESNAMES」「SIZENAMES」をサポート。
+    - 「MultiSz」エンコーディングをサポート。
 - v.6.1.9 (2026-09-02)
     - メインウィンドウの端でのカーソルの反応を修正。
     - EGAのRES_delete関数において、子要素を持たないET_TYPEアイテムが消去されない不具合を修正。

@@ -154,3 +154,5 @@ INT ErrorBoxDx(UINT nStringID, UINT uType = MB_ICONERROR);
 INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, UINT uType = MB_ICONINFORMATION);
 std::wstring SanitizeFileName(const std::wstring& name);
 std::wstring SanitizeIdentifier(const std::wstring& name);
+bool MultiSz_DataFromVector(std::vector<BYTE>& data, const std::vector<MStringW>& strs);
+bool MultiSz_VectorFromData(std::vector<MStringW>& strs, const std::vector<BYTE>& data);

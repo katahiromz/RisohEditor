@@ -1651,6 +1651,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "El ID de control está vacío."
     IDS_UTF16 "UTF-16 (con BOM)"
     IDS_UTF16N "UTF-16 (sin BOM)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

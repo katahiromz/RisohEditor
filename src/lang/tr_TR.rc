@@ -1649,6 +1649,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "Kontrol kimliği boş."
     IDS_UTF16 "UTF-16 (BOM ile)"
     IDS_UTF16N "UTF-16 (BOM'suz)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

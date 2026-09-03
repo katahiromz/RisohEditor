@@ -1648,6 +1648,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "控件 ID 為空。"
     IDS_UTF16 "UTF-16 (with BOM)"
     IDS_UTF16N "UTF-16 (without BOM)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

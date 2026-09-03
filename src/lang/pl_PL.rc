@@ -1649,6 +1649,7 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "Identyfikator kontrolki jest pusty."
     IDS_UTF16 "UTF-16 (z BOM)"
     IDS_UTF16N "UTF-16 (bez BOM)"
+    IDS_MULTISZ "MultiSz"
 }
 
 //////////////////////////////////////////////////////////////////////////////

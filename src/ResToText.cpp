@@ -10,6 +10,7 @@
 #include "ConstantsDB.hpp"
 #include "settings.h"
 #include "MStrBin.hpp"
+#include "Utils.h"
 
 #include "DialogRes.hpp"
 #include "MenuRes.hpp"
@@ -1236,6 +1237,12 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 			mstr_replace_all(wide, L"\r\n", L"\n");
 			mstr_replace_all(wide, L"\n", L"\r\n");
 			return wide;
+		}
+		if (enc == L"multisz")
+		{
+			std::vector<MStringW> strs;
+			MultiSz_VectorFromData(strs, entry.m_data);
+			return mstr_join(strs, L"\r\n") + L"\r\n";
 		}
 	}
 	else

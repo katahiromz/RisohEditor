@@ -2410,7 +2410,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 		}
 		else if (enc == L"utf16" || enc == L"utf16")
 		{
-			data.assign((BYTE *)&strWide[0], (BYTE *)&strWide.c_str()[strWide.size()]);
+			data.assign((PBYTE)&strWide[0], (PBYTE)&strWide.c_str()[strWide.size()]);
 			if (enc == L"utf16n")
 			{
 				// delete a UTF-16 BOM from data
@@ -2426,6 +2426,17 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 					data.insert(data.begin(), &ab[0], &ab[2]);
 				}
 			}
+		}
+		else if (enc == L"multisz")
+		{
+			MStringW str = strWide;
+			mstr_replace_all(str, L"\r\n", L"\n");
+			mstr_trim_right(str, L"\n");
+
+			std::vector<MStringW> strs;
+			mstr_split(strs, str, L"\n");
+			if (!MultiSz_DataFromVector(data, strs))
+				bDataOK = FALSE;
 		}
 		else
 		{
