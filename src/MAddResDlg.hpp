@@ -446,7 +446,7 @@ public:
 			break;
 
 		case cmb1:
-			if (codeNotify == CBN_SELCHANGE)
+			if (codeNotify == CBN_SELCHANGE || codeNotify == CBN_KILLFOCUS)
 			{
 				// selection of cmb1 was changed
 				OnCmb1(hwnd);

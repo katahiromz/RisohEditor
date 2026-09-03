@@ -3,6 +3,7 @@
 - v.6.2.0 (2026-XX-YY)
     - Supported resource type "TEXTFILE".
     - Supported "UTF-16 (with BOM)" and "UTF-16 (without BOM)" encodings.
+    - Supported adding "XML", "XSLT", "SCHEMA", "REGINST", and "REGISTRY" resource types.
 - v.6.1.9 (2026-09-02)
     - Fixed cursor response at the edges of the main window.
     - Fixed a bug where ET_TYPE items with no children would not disappear in EGA RES_delete function.

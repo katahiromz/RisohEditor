@@ -3,6 +3,7 @@
 - v.6.2.0 (2026-XX-YY)
     - Mendukung jenis sumber daya "TEXTFILE". 
     - Mendukung pengodean "UTF-16 (dengan BOM)" dan "UTF-16 (tanpa BOM)".
+    - Mendukung penambahan tipe sumber daya "XML", "XSLT", "SCHEMA", "REGINST", dan "REGISTRY".
 - v.6.1.9 (2026-09-02)
     - Memperbaiki respons kursor di tepi jendela utama.
     - Memperbaiki bug di mana item ET_TYPE tanpa anak tidak hilang dalam fungsi EGA RES_delete.
