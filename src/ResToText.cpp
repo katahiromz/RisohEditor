@@ -382,6 +382,46 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 				}
 			}
 		}
+		else if (entry.m_type == L"TEXTFILE")
+		{
+			str += entry.m_type.str(true);
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".txt";
+			ret = TRUE;
+		}
+		else if (entry.m_type == L"XML")
+		{
+			str += entry.m_type.str(true);
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".xml";
+			ret = TRUE;
+		}
+		else if (entry.m_type == L"XSLT")
+		{
+			str += entry.m_type.str(true);
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".xsl";
+			ret = TRUE;
+		}
+		else if (entry.m_type == L"SCHEMA")
+		{
+			str += entry.m_type.str(true);
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".xsd";
+			ret = TRUE;
+		}
+		else if (entry.m_type == L"REGINST" || entry.m_type == L"REGISTRY")
+		{
+			str += entry.m_type.str(true);
+			str += L"_";
+			str += DumpEscapedName(entry.m_name);
+			str += L".reg";
+			ret = TRUE;
+		}
 		else
 		{
 			str += entry.m_type.str(true);
