@@ -188,6 +188,8 @@ struct RisohSettings
 		encoding_map[L"FILERESNAMES"] = L"multisz";
 		encoding_map[L"ORIGFILENAMES"] = L"multisz";
 		encoding_map[L"SIZENAMES"] = L"multisz";
+		encoding_map[L"COMBODATA"] = L"words";
+		encoding_map[L"MINDEPTH"] = L"words";
 	}
 
 	void ResetAssoc()

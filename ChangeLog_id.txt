@@ -5,7 +5,7 @@
     - Mendukung pengodean "UTF-16 (dengan BOM)" dan "UTF-16 (tanpa BOM)".
     - Mendukung penambahan tipe sumber daya "XML", "XSLT", "SCHEMA", "REGINST", dan "REGISTRY".
     - Mendukung jenis sumber daya "COLORNAMES", "FILERESNAMES", "ORIGFILENAMES", dan "SIZENAMES". 
-    - Mendukung pengodean "MultiSz".
+    - Mendukung pengodean "MultiSz" dan "WORDs".
     - Menghapus pengaturan "Use Microsoft MESSAGETABLE".
 - v.6.1.9 (2026-09-02)
     - Memperbaiki respons kursor di tepi jendela utama.

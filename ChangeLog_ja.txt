@@ -5,7 +5,7 @@
     - 「UTF-16 (BOMあり)」および「UTF-16 (BOMなし)」のエンコーディングに対応。
     - 「XML」「XSLT」「SCHEMA」「REGINST」「REGISTRY」リソース型の追加に対応。
     - リソース型「COLORNAMES」「FILERESNAMES」「ORIGFILENAMES」「SIZENAMES」をサポート。
-    - 「MultiSz」エンコーディングをサポート。
+    - 「MultiSz」「WORDs」エンコーディングをサポート。
     - 「Microsoft MESSAGETABLEを使用する」設定を削除しました。
 - v.6.1.9 (2026-09-02)
     - メインウィンドウの端でのカーソルの反応を修正。

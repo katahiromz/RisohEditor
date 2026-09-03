@@ -463,7 +463,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 						lstrcmpW(pch, L"sjis") == 0 ||
 						lstrcmpW(pch, L"utf16") == 0 ||
 						lstrcmpW(pch, L"utf16n") == 0 ||
-						lstrcmpW(pch, L"multisz") == 0)
+						lstrcmpW(pch, L"multisz") == 0 ||
+						lstrcmpW(pch, L"words") == 0)
 					{
 						g_settings.encoding_map[szText] = pch;
 					}

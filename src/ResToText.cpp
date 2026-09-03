@@ -20,6 +20,7 @@
 #include "DlgInitRes.hpp"
 #include "MessageRes.hpp"
 #include "ToolbarRes.hpp"
+#include "WordsRes.hpp"
 
 #define SUPPORT_OLD_ENVIRONMENTS TRUE // Borland C++ is still alive in some places
 
@@ -1243,6 +1244,14 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 			std::vector<MStringW> strs;
 			MultiSz_VectorFromData(strs, entry.m_data);
 			return mstr_join(strs, L"\r\n") + L"\r\n";
+		}
+		if (enc == L"words")
+		{
+			str += GetLanguageStatement(entry.m_lang);
+			WordsRes words;
+			words.m_data = entry.m_data;
+			str += words.Dump(entry.m_type, entry.m_name);
+			return str;
 		}
 	}
 	else

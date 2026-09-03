@@ -1650,6 +1650,7 @@ STRINGTABLE
     IDS_UTF16 "UTF-16 (com BOM)"
     IDS_UTF16N "UTF-16 (sem BOM)"
     IDS_MULTISZ "MultiSz"
+    IDS_WORDS "WORDs"
 }
 
 //////////////////////////////////////////////////////////////////////////////

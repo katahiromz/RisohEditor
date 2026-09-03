@@ -2438,6 +2438,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 			if (!MultiSz_DataFromVector(data, strs))
 				bDataOK = FALSE;
 		}
+		else if (enc == L"words")
+		{
+			bDataOK = FALSE;
+		}
 		else
 		{
 			bDataOK = FALSE;
