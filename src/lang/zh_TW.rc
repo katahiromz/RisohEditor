@@ -977,7 +977,6 @@ FONT 9, "宋體", 0, 0, 136 // CHINESEBIG5_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "導出RC文件將生成一些相關文件。您可以選擇以下選項:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "使用微軟訊息表(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "按語言分開資源檔(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 關鍵字(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "通過 LANGUAGE_ * 巨集使語言可選(&M)", chx3, 5, 100, 240, 14
@@ -1078,7 +1077,6 @@ FONT 9, "宋體", 0, 0, 136 // CHINESEBIG5_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "保存RC文件將生成一些相關文件。您可以選擇以下選項。", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "使用微軟訊息表(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "按語言分開資源檔(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 關鍵字(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "通過 LANGUAGE_ * 巨集使語言可選(&M)", chx3, 5, 100, 240, 14

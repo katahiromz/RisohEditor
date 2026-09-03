@@ -6,6 +6,7 @@
     - Mendukung penambahan tipe sumber daya "XML", "XSLT", "SCHEMA", "REGINST", dan "REGISTRY".
     - Mendukung jenis sumber daya "COLORNAMES", "FILERESNAMES", dan "SIZENAMES". 
     - Mendukung pengodean "MultiSz".
+    - Menghapus pengaturan "Use Microsoft MESSAGETABLE".
 - v.6.1.9 (2026-09-02)
     - Memperbaiki respons kursor di tepi jendela utama.
     - Memperbaiki bug di mana item ET_TYPE tanpa anak tidak hilang dalam fungsi EGA RES_delete.

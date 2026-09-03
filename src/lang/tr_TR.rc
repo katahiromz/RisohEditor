@@ -978,7 +978,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Bir RC dosyasını dışa aktarmak, bazı ilişkili dosyalar oluşturacaktır. Aşağıdaki seçenekleri seçebilirsiniz:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Microsoft MESSAGE&TABLE kullan", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Kaynak dosyalarını &dile göre ayır", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "B&EGIN/END anahtar kelimelerini kullan", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Dili LANGUAGE_* makrosu ile seçilebilir yap", chx3, 5, 100, 240, 14
@@ -1079,7 +1078,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 162 // TURKISH_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Bir RC dosyasını kaydetmek, bazı ilişkili dosyalar oluşturacaktır. Aşağıdaki seçenekleri seçebilirsiniz:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Microsoft MESSAGE&TABLE kullan", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Kaynak dosyalarını &dile göre ayır", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "B&EGIN/END anahtar kelimelerini kullan", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Dili LANGUAGE_* makrosu ile seçilebilir yap", chx3, 5, 100, 240, 14

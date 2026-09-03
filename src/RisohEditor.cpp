@@ -5272,6 +5272,8 @@ UINT MMainWnd::DoGetCodePageOfWritingRC() const
 // do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
 {
+	g_settings.bUseMSMSGTABLE = TRUE;
+
 	if (found.empty())
 	{
 		// unable to export the empty data
@@ -5339,8 +5341,6 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
 		for (auto e : found)
 		{
 			if (e->m_type == RT_STRING || e->m_type == RT_FONTDIR)
-				continue;
-			if (e->m_type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
 				continue;
 			if (e->m_type == L"TEXTINCLUDE")
 				continue;

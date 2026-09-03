@@ -980,7 +980,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Exportar um arquivo RC gerará alguns arquivos relacionados. Você pode escolher as seguintes opções:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Usar Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Arquivos de recursos separados por &idioma", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usar palavras chaves B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Tornar a linguagem selecionável por LANGUAGE_* macro", chx3, 5, 100, 240, 14
@@ -1081,7 +1080,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Salvar um arquivo RC gerará alguns arquivos relacionados. Você pode escolher as seguintes opções:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Usar Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Arquivos de recursos separados por &idioma", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usar palavras chaves B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Tornar a linguagem selecionável por LANGUAGE_* macro", chx3, 5, 100, 240, 14

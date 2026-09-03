@@ -223,7 +223,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 	keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
 	keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
 	keyRisoh.QueryDword(TEXT("bDfmNoUnicode"), (DWORD&)g_settings.bDfmNoUnicode);
-	keyRisoh.QueryDword(TEXT("bUseMSMSGTABLE"), (DWORD&)g_settings.bUseMSMSGTABLE);
+	//keyRisoh.QueryDword(TEXT("bUseMSMSGTABLE"), (DWORD&)g_settings.bUseMSMSGTABLE);
 	keyRisoh.QueryDword(TEXT("bUseWonRes"), (DWORD&)g_settings.bUseWonRes);
 	keyRisoh.QueryDword(TEXT("nCodePageForRC"), (DWORD&)g_settings.nCodePageForRC);
 	keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
@@ -568,7 +568,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 	keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
 	keyRisoh.SetDword(TEXT("bDfmNoUnicode"), g_settings.bDfmNoUnicode);
 	keyRisoh.SetDword(TEXT("bUseWonRes"), g_settings.bUseWonRes);
-	keyRisoh.SetDword(TEXT("bUseMSMSGTABLE"), g_settings.bUseMSMSGTABLE);
+	//keyRisoh.SetDword(TEXT("bUseMSMSGTABLE"), g_settings.bUseMSMSGTABLE);
 	keyRisoh.SetDword(TEXT("nCodePageForRC"), g_settings.nCodePageForRC);
 	keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
 	keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);

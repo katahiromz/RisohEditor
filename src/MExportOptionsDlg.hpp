@@ -29,7 +29,7 @@ public:
 		CheckDlgButton(hwnd, chx4, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx5, g_settings.bRedundantComments ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hwnd, chx6, g_settings.bWrapManifest ? BST_CHECKED : BST_UNCHECKED);
-		CheckDlgButton(hwnd, chx8, g_settings.bUseMSMSGTABLE ? BST_CHECKED : BST_UNCHECKED);
+		//CheckDlgButton(hwnd, chx8, g_settings.bUseMSMSGTABLE ? BST_CHECKED : BST_UNCHECKED);
 
 		HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_CODEPAGE65001));
@@ -100,7 +100,7 @@ public:
 		g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
 		g_settings.bRedundantComments = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
 		g_settings.bWrapManifest = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
-		g_settings.bUseMSMSGTABLE = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+		//g_settings.bUseMSMSGTABLE = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
 
 		MStringW strBackupSuffix = GetDlgItemText(cmb1);
 		mstr_trim(strBackupSuffix);

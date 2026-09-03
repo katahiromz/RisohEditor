@@ -977,7 +977,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "L'exportation d'un fichier RC générera certains fichiers associés. Vous pouvez choisir les options suivantes :", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
@@ -1078,7 +1077,6 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "L'enregistrement d'un fichier RC générera des fichiers associés. Vous pouvez choisir les options suivantes :", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
