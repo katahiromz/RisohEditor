@@ -67,8 +67,8 @@ IDR_MAINMENU MENU
             MENUITEM "&Значок...", ID_EXTRACTICON
             MENUITEM "&Курсор...", ID_EXTRACTCURSOR
             MENUITEM "К&артинку...", ID_EXTRACTBITMAP
-            MENUITEM "Извлечь &как RC файл...", ID_EXTRACTRC
-            MENUITEM "Двоичный ресурсный элемент...", ID_EXTRACTBIN
+            MENUITEM "Из&влечь как RC файл...", ID_EXTRACTRC
+            MENUITEM "&Двоичный ресурсный элемент...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "И&зменить тип/название/язык\tF2", ID_EDITLABEL
@@ -125,8 +125,8 @@ IDR_MAINMENU MENU
     POPUP "&Справка"
     {
         MENUITEM "О&ткрыть файл README.txt (английский)", ID_OPENREADME
-        MENUITEM "О&ткрыть файл README_ru.txt", ID_OPENREADMERU
-        MENUITEM "Открыть файл ChangeLog.txt", ID_OPENHISTORY
+        MENUITEM "Открыть файл README_&ru.txt", ID_OPENREADMERU
+        MENUITEM "Открыть файл &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Руководство пользователя RisohEditor", ID_GUIDE

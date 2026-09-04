@@ -49,7 +49,7 @@ IDR_MAINMENU MENU
             MENUITEM "Adicionar Tabela de cadeia&s...", ID_ADDSTRINGTABLE
             MENUITEM "Adicionar Tabela de m&ensagens...", ID_ADDMESSAGETABLE
             MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar Aceleradores...", ID_ADDACCEL
+            MENUITEM "Adicionar Ace&leradores...", ID_ADDACCEL
             MENUITEM "Adicionar Info da &versão...", ID_ADDVERINFO
             MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
             MENUITEM "Adicionar Barra de ferramen&tas", ID_ADDTOOLBAR
@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Alterar tipo/nome/idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "C&lone...", ID_CLONE
-        MENUITEM "Copiar para vários idiomas...", ID_COPYTOMULTILANG
+        MENUITEM "Copiar &para vários idiomas...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Fazer &teste", ID_TEST
         MENUITEM SEPARATOR
@@ -83,7 +83,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuração...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Redefinir configuração", ID_RESETSETTINGS
+        MENUITEM "Re&definir configuração", ID_RESETSETTINGS
     }
     POPUP "&Procurar"
     {
@@ -116,7 +116,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Act&ualizar", ID_REFRESHALL
     }
-    POPUP "&Automatização"
+    POPUP "Aut&omatização"
     {
         MENUITEM "Linguagem de programação &EGA...", ID_EGA
         MENUITEM "Executa&r programa EGA...", ID_EGA_PROGRAM
@@ -125,7 +125,7 @@ IDR_MAINMENU MENU
     POPUP "&Ajuda"
     {
         MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
-        MENUITEM "Abrir ChangeLog.txt", ID_OPENHISTORY
+        MENUITEM "Abrir &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Um &Guia do RisohEditor", ID_GUIDE

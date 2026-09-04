@@ -10,7 +10,7 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_DEFAULT
 
 IDR_MAINMENU MENU
 {
-    POPUP "Arquivo"
+    POPUP "&Arquivo"
     {
         MENUITEM "&Novo\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
@@ -21,7 +21,7 @@ IDR_MAINMENU MENU
         MENUITEM "Im&portar...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportar...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Recarregar resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "&Recarregar resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Salvar reso&urce.h...", ID_UPDATERESHBANG
         MENUITEM "C&onselho de Modificação em resource.h...", ID_ADVICERESH
         MENUITEM "&Descarregar resource.h", ID_UNLOADRESH
@@ -49,7 +49,7 @@ IDR_MAINMENU MENU
             MENUITEM "Adicionar Tabela de &String...", ID_ADDSTRINGTABLE
             MENUITEM "Adicionar Tabela de M&ensagem...", ID_ADDMESSAGETABLE
             MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar Aceleradores...", ID_ADDACCEL
+            MENUITEM "Adicio&nar Aceleradores...", ID_ADDACCEL
             MENUITEM "Adicionar Informação da &Versão...", ID_ADDVERINFO
             MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
             MENUITEM "Adicionar Barra de Ferramen&tas...", ID_ADDTOOLBAR
@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM "A&lterar tipo/nome/idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clo&ne...", ID_CLONE
-        MENUITEM "Copiar Para Vários Idiomas...", ID_COPYTOMULTILANG
+        MENUITEM "Copiar &Para Vários Idiomas...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Testar", ID_TEST
         MENUITEM SEPARATOR
@@ -83,7 +83,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "&Configuração...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Redefinir configuração", ID_RESETSETTINGS
+        MENUITEM "&Redefinir configuração", ID_RESETSETTINGS
     }
     POPUP "&Pesquisar"
     {
@@ -102,14 +102,14 @@ IDR_MAINMENU MENU
         MENUITEM "Barra de Ferra&mentas", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binário", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "Expandir Todos\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "&Expandir Todos\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Rec&olher Todos\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "IDs de recu&rso", ID_IDLIST
-        MENUITEM "Lista de idiomas...", ID_SHOWLANGS
+        MENUITEM "L&ista de idiomas...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "Sempre declarar CONTRO&LE", ID_ALWAYSCONTROL
-        MENUITEM "Não usar macros de ID", ID_HIDEIDMACROS
+        MENUITEM "&Não usar macros de ID", ID_HIDEIDMACROS
         MENUITEM "Usar IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Quebra de &Palavra", ID_WORD_WRAP
         MENUITEM "Usar BEGIN/EN&D", ID_USEBEGINEND
@@ -125,9 +125,9 @@ IDR_MAINMENU MENU
     POPUP "A&juda"
     {
         MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
-        MENUITEM "Abrir README_pt_BR.txt", ID_OPENREADMEPTB
-        MENUITEM "Abrir ChangeLog.txt", ID_OPENHISTORY
-        MENUITEM "Abrir ChangeLog_pt_BR.txt", ID_OPENHISTORYPTB
+        MENUITEM "Abrir README_&pt_BR.txt", ID_OPENREADMEPTB
+        MENUITEM "Abrir &ChangeLog.txt", ID_OPENHISTORY
+        MENUITEM "Abrir ChangeLog_p&t_BR.txt", ID_OPENHISTORYPTB
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guia do RisohEditor", ID_GUIDE
