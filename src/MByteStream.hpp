@@ -405,7 +405,7 @@ public:
 	}
 	bool WriteSz(const MStringW& str)
 	{
-		return WriteData(&str[0], (str.size() + 1) * sizeof(WCHAR));
+		return WriteData(str.c_str(), (str.size() + 1) * sizeof(WCHAR));
 	}
 
 protected:
