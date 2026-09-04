@@ -2960,8 +2960,39 @@ namespace
 	}
 }
 
+namespace
+{
+	// Sets a bool flag for the lifetime of this object, then clears it.
+	// Used below to guard DoLoadRC's re-entrancy flag: DoLoadRC has
+	// several early "return FALSE;" paths, and doing this by hand at
+	// each one is exactly the kind of thing that's easy to forget on a
+	// future edit. An RAII guard clears the flag on every path,
+	// including any added later, the same way MWaitCursor guarantees
+	// the wait cursor is released no matter how its scope is exited.
+	class MFlagScope
+	{
+	public:
+		explicit MFlagScope(bool& flag) : m_flag(flag)
+		{
+			m_flag = true;
+		}
+		~MFlagScope()
+		{
+			m_flag = false;
+		}
+	private:
+		bool& m_flag;
+	};
+}
+
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 {
+	// Re-entrancy guard: see m_bLoadingRC's declaration in MMainWnd.hpp
+	// for why this replaced an EnableWindow(hwnd, FALSE)/TRUE pair.
+	if (m_bLoadingRC)
+		return FALSE;
+	MFlagScope loadingRCScope(m_bLoadingRC);
+
 	MWaitCursor wait;   // this can take a while; show the hourglass
 
 	// Compile the RC file twice -- once as-is (res1) and once with
@@ -2975,12 +3006,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 	EntrySet res1, res2;
 	RC_COMPILE_PARAM param1 = { this, szPath, &res1, MStringA(), FALSE, FALSE };
 	RC_COMPILE_PARAM param2 = { this, szPath, &res2, MStringA(), TRUE, FALSE };
-
-	// Disable the main window while compiling so the message pump below
-	// can't let the user re-enter DoLoadRC (or edit g_res) while res1/res2
-	// are still being filled in on background threads.
-	BOOL bWasEnabled = IsWindowEnabled(hwnd);
-	EnableWindow(hwnd, FALSE);
 
 	// Both compiles run on worker threads -- the UI thread's only job
 	// during the wait is to pump messages, so the window keeps repainting
@@ -3022,6 +3047,21 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
 		}
+
+		// The above pump lets WM_SETCURSOR reach whatever window is under
+		// the mouse. MMainWnd::OnSetCursor (which checks
+		// MWaitCursor::IsActive()) only fires for WM_SETCURSOR sent to
+		// m_hwnd itself -- but the tree view, code editor, and splitters
+		// are separate child windows that cover almost the entire client
+		// area and handle their own WM_SETCURSOR (arrow, I-beam, resize
+		// cursor, ...) with no knowledge of MWaitCursor. So relying on
+		// OnSetCursor alone only shows the hourglass over whatever sliver
+		// of m_hwnd's own background happens to be visible, if any.
+		// Force it back here, unconditionally, after every pump: we're
+		// inside DoLoadRC's own MWaitCursor scope, so it's always
+		// correct to be showing the hourglass at this point regardless
+		// of which child window last touched the cursor.
+		::SetCursor(::LoadCursor(NULL, IDC_WAIT));
 	}
 
 	if (hThread1)
@@ -3031,9 +3071,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 	// If hThread2 failed to spawn, param2/res2 simply stay at their
 	// default (not-OK) state, same as the original single-threaded
 	// fallback when the APSTUDIO_INVOKED pass didn't run.
-
-	if (IsWindow(hwnd))
-		EnableWindow(hwnd, bWasEnabled);
 
 	BOOL bOK1 = param1.bOK, bOK2 = param2.bOK;
 	MStringA& strOutput1 = param1.strOutput;

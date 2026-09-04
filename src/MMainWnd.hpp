@@ -293,6 +293,21 @@ public:
 	void BeginPreviewBatch();
 	void EndPreviewBatch();
 
+	// Reentrancy guard for DoLoadRC. DoLoadRC pumps messages while it
+	// waits for its background windres compiles to finish, so without
+	// this flag a second WM_COMMAND delivered during that pump (File
+	// Open, drag&drop, a Recently Used entry, ...) could re-enter
+	// DoLoadRC and race on g_res/res1/res2 with the first call's
+	// background threads.
+	//
+	// This used to be done with EnableWindow(hwnd, FALSE) instead, but
+	// that had a side effect: while a window is disabled, Windows
+	// forces the arrow cursor over it regardless of what WM_SETCURSOR
+	// returns, so the MWaitCursor hourglass never actually showed up
+	// during an RC load. A plain flag blocks re-entry just as well
+	// while leaving the window enabled, so the wait cursor works.
+	bool m_bLoadingRC = false;
+
 	// actions
 	BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
 	void DoLoadLangInfo(VOID);
