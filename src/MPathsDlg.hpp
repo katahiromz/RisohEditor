@@ -161,7 +161,7 @@ public:
 			return FALSE;
 		}
 
-		g_settings.includes = m_list;
+		g_settings.includes = std::move(m_list);
 		g_settings.strWindResExe = std::move(strWindResExe);
 		g_settings.strCppExe = std::move(strCppExe);
 
@@ -385,6 +385,8 @@ public:
 			HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
 			HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
 			HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVkeyToItem);
+		case WM_NOTIFY:
+			return OnNotify(hwnd, (INT)wParam, (LPNMHDR)lParam);
 		}
 		return 0;
 	}
