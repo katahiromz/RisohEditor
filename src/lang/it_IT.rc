@@ -122,11 +122,12 @@ IDR_MAINMENU MENU
         MENUITEM "Esegui p&rogramma EGA...", ID_EGA_PROGRAM
         MENUITEM "Apri &manuale EGA", ID_OPEN_EGA_MANUAL
     }
-    POPUP "&?"
+    POPUP "&Aiuto"
     {
         MENUITEM "Apri file Leggimi (i&taliano)", ID_OPENREADMEIT
-        MENUITEM "Apri file info versioni programma (italiano)", ID_OPENHISTORYITA
         MENUITEM "Apri file Leggimi (&inglese)", ID_OPENREADME
+        MENUITEM "Apri file &ChangeLog (italiano)", ID_OPENHISTORYITA
+        MENUITEM "Apri file &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guida in linea RisohEditor", ID_GUIDE
         MENUITEM "&Controlla aggiornamenti RisohEditor...", ID_CHECKUPDATE
