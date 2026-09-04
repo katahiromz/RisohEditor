@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Перезавантажити resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Зберегт&и resource.h...", ID_UPDATERESHBANG
-        MENUITEM "&Рекомендувати змінити resource.h...", ID_ADVICERESH
+        MENUITEM "Поради &щодо зміни resource.h...", ID_ADVICERESH
         MENUITEM "Виванта&жити resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Завантажи&ти бібліотеку класів вікон...", ID_LOADWCLIB
@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "&Інформацію про версії...", ID_ADDVERINFO
             MENUITEM "Ма&нифест...", ID_ADDMANIFEST
             MENUITEM "&Панель інструментів...", ID_ADDTOOLBAR
-            MENUITEM "Ресурсний &элемент...", ID_ADDRES
+            MENUITEM "Ресурсний &елемент...", ID_ADDRES
         }
         POPUP "&Замінити"
         {
@@ -73,10 +73,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Змінити тип/назву/мову\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Кло&н...", ID_CLONE
-        MENUITEM "Копиювати на декілька мов...", ID_COPYTOMULTILANG
+        MENUITEM "Кло&нувати...", ID_CLONE
+        MENUITEM "Копіювати на кілька мов...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "В&ипробувати", ID_TEST
+        MENUITEM "&Тестувати", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Видалити\tDel", ID_DELETERES
         MENUITEM SEPARATOR
@@ -92,7 +92,7 @@ IDR_MAINMENU MENU
         MENUITEM "Знайти &попереднє\tShift+F3", ID_FINDUPWARD
         MENUITEM "Знайти &наступне\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "&Константа пошуку...", ID_QUERYCONSTANT
+        MENUITEM "Пошук &константи...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
         MENUITEM "&Перейти до вказаного рядка...\tCtrl+G", ID_GOTOLINE
     }
@@ -108,7 +108,7 @@ IDR_MAINMENU MENU
         MENUITEM "Ідент&ифікатори ресурсів", ID_IDLIST
         MENUITEM "Список &мов...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Зав&жди оператор CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "Завжди використовувати оператор CONTROL", ID_ALWAYSCONTROL
         MENUITEM "&Не використовувати ID-макроси", ID_HIDEIDMACROS
         MENUITEM "Ви&користовувати IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "П&еренос по словах", ID_WORD_WRAP
@@ -158,7 +158,7 @@ IDR_POPUPMENUS MENU
         {
             MENUITEM "&Наверх", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "Змень&шення індекса", ID_CTRLINDEXMINUS
+            MENUITEM "З&меншення індексу", ID_CTRLINDEXMINUS
             MENUITEM "Збіл&ьшення індекса", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "&Донизу", ID_CTRLINDEXBOTTOM
@@ -177,8 +177,8 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Оновити", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "Властивості до елемента ке&рування...", ID_CTRLPROP
-        MENUITEM "Властивості до &диалога...", ID_DLGPROP
+        MENUITEM "Властивості елемента ке&рування...", ID_CTRLPROP
+        MENUITEM "Властивості &діалогу...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -213,7 +213,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #5"
     {
-        MENUITEM "С&копіювати цілочисельне значення", ID_COPY
+        MENUITEM "&Копіювати ціле значення", ID_COPY
     }
     POPUP "Popup #6"
     {
@@ -222,8 +222,8 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Вище", psh4
         MENUITEM "&Нижче", psh5
-        MENUITEM "&Левее", psh6
-        MENUITEM "&Правее", psh7
+        MENUITEM "&Ліворуч", psh6
+        MENUITEM "&Праворуч", psh7
         MENUITEM SEPARATOR
         MENUITEM "&Видалити\tDel", psh3
     }
@@ -1491,7 +1491,7 @@ STRINGTABLE
     IDS_SAMELANG "Це та сама мова."
     IDS_SAMENAME "Це те саме ім'я ресурсу."
     IDS_AMERICA "Америка"
-    IDS_ENGLISH "Английська"
+    IDS_ENGLISH "Англійська"
     IDS_CHINA "Китай"
     IDS_CHINESE "Китайська"
     IDS_RUSSIA "Росія"
@@ -1512,14 +1512,14 @@ STRINGTABLE
     IDS_TOOL_CANCELEDIT "Скасування змін"
     IDS_TOOL_IMPORT "Імпорт..."
     IDS_TOOL_EXTRACT "Витягти..."
-    IDS_TOOL_GUIEDIT "Виправлення в GUI"
+    IDS_TOOL_GUIEDIT "Редагувати в графічному інтерфейсі"
     IDS_UNITEDKINGDOM "Сполучене Королівство"
-    IDS_GREATBRITAIN "Великобританія"
+    IDS_GREATBRITAIN "Велика Британія"
     IDS_BRITISH "Британський"
     IDS_FRANCE "Франція"
     IDS_FRENCH "Французька"
     IDS_GERMANY "Німеччина"
-    IDS_GERMAN "Немецька"
+    IDS_GERMAN "Німецька"
     IDS_SPAIN "Іспанія"
     IDS_SPANISH "Іспанська"
     IDS_INVALIDLANG "Нерозпізнана мова."
@@ -1553,8 +1553,8 @@ STRINGTABLE
     IDS_RECOMPILEOK "Перекомпіляція успішно виконана."
     IDS_RECOMPILEFAILED "Перекомпіляція не виконана (помилка синтаксису)."
     IDS_TOOL_EXPORT "Експорт..."
-    IDS_CODEEDITOR "Редактор кода"
-    IDS_HEXVIEWER "16-ковий перегляд"
+    IDS_CODEEDITOR "Редактор коду"
+    IDS_HEXVIEWER "Шістнадцятковий перегляд"
     IDS_INTEGERORIDENTIFIER "(ціле число або ідентифікатор)"
     IDS_NOTEXT " "
     IDS_NOUPDATE "У вас найновіша версія RisohEditor."
