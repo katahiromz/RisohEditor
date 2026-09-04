@@ -118,13 +118,14 @@ IDR_MAINMENU MENU
     }
     POPUP "&Automatisation"
     {
-        MENUITEM "&Langage de programmation &EGA...", ID_EGA
+        MENUITEM "Langage de programmation &EGA...", ID_EGA
         MENUITEM "&Exécuter le programme EGA...", ID_EGA_PROGRAM
         MENUITEM "&Ouvrir le manuel EGA", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Aide"
     {
         MENUITEM "&Ouvrir README.txt (anglais)", ID_OPENREADME
+        MENUITEM "Ouvrir &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Ouvrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guide pour RisohEditor", ID_GUIDE

@@ -37,7 +37,7 @@ IDR_MAINMENU MENU
     }
     POPUP "&Edycja"
     {
-        MENUITEM "Edytuj przez GUI...\tCtrl+U", ID_GUIEDIT
+        MENUITEM "Edytuj przez &GUI...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Dodaj"
         {
@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM "Z&mień typ/nazwę/język\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "K&lon...", ID_CLONE
-        MENUITEM "Kopiuj do wielu języków...", ID_COPYTOMULTILANG
+        MENUITEM "Kopiuj &do wielu języków...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Testuj", ID_TEST
         MENUITEM SEPARATOR
@@ -83,11 +83,11 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Konfigura&cja...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Resetuj konfigurację", ID_RESETSETTINGS
+        MENUITEM "&Resetuj konfigurację", ID_RESETSETTINGS
     }
     POPUP "&Szukaj"
     {
-        MENUITEM "Szukaj...\tCtrl+F", ID_FIND
+        MENUITEM "Sz&ukaj...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
         MENUITEM "Szukaj do &góry\tShift+F3", ID_FINDUPWARD
         MENUITEM "Szukaj do d&ołu\tF3", ID_FINDDOWNWARD
@@ -98,21 +98,21 @@ IDR_MAINMENU MENU
     }
     POPUP "&Widok"
     {
-        MENUITEM "Pasek stanu", ID_STATUSBAR
+        MENUITEM "Pasek s&tanu", ID_STATUSBAR
         MENUITEM "Pasek &narzędzi", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binarny", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "Rozwiń wszy&stko\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "&Zwiń wszystko\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "Lista ID zasobów...", ID_IDLIST
+        MENUITEM "&Lista ID zasobów...", ID_IDLIST
         MENUITEM "Lista &języków...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Zawsze &CONTROL statement", ID_ALWAYSCONTROL
-        MENUITEM "Nie używaj ID makra", ID_HIDEIDMACROS
+        MENUITEM "Zawsze używaj instrukcji &CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "N&ie używaj ID makra", ID_HIDEIDMACROS
         MENUITEM "Użyj IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Zawijanie wy&razów", ID_WORD_WRAP
-        MENUITEM "Użyj BEGIN/END", ID_USEBEGINEND
+        MENUITEM "&Użyj BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "O&dśwież", ID_REFRESHALL
     }
@@ -125,7 +125,8 @@ IDR_MAINMENU MENU
     POPUP "&Pomoc"
     {
         MENUITEM "Otwórz &README.txt (Angielski)", ID_OPENREADME
-        MENUITEM "Otwórz README_pl.txt", ID_OPENREADMEPL
+        MENUITEM "Otwórz README_&pl.txt", ID_OPENREADMEPL
+        MENUITEM "Otwórz &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Otwórz &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Pr&zewodnik po RisohEditor", ID_GUIDE

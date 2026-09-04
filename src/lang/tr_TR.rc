@@ -70,6 +70,7 @@ IDR_MAINMENU MENU
             MENUITEM "&RC dosyası olarak Çıkart...", ID_EXTRACTRC
             MENUITEM "İkili &Kaynak Öğesini Çıkart...", ID_EXTRACTBIN
         }
+        MENUITEM SEPARATOR
         MENUITEM "Türü/adı/dili &değiştir\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "&Klon...", ID_CLONE

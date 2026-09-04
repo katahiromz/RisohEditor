@@ -21,10 +21,10 @@ IDR_MAINMENU MENU
         MENUITEM "&Importieren...\tCtrl+I", ID_IMPORT
         MENUITEM "&Export...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Neu laden &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Speichern resour&ce.h...", ID_UPDATERESHBANG
+        MENUITEM "&resource.h neu laden...\tCtrl+R", ID_LOADRESH
+        MENUITEM "resour&ce.h speichern...", ID_UPDATERESHBANG
         MENUITEM "&Hinweis resource.h Änderung...", ID_ADVICERESH
-        MENUITEM "Entladen resource.h", ID_UNLOADRESH
+        MENUITEM "reso&urce.h entladen", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Fensterklassenbibliothek &laden...", ID_LOADWCLIB
         MENUITEM SEPARATOR
@@ -33,7 +33,7 @@ IDR_MAINMENU MENU
             MENUITEM "(Keiner)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "Beenden\tAlt+F4", ID_EXIT
+        MENUITEM "&Beenden\tAlt+F4", ID_EXIT
     }
     POPUP "&Bearbeiten"
     {
@@ -48,10 +48,10 @@ IDR_MAINMENU MENU
             MENUITEM "&Menü hinzufügen...", ID_ADDMENU
             MENUITEM "S&tring-Tabelle hinzufügen...", ID_ADDSTRINGTABLE
             MENUITEM "&Nachrichtentabelle hinzufügen...", ID_ADDMESSAGETABLE
-            MENUITEM "HTML hinzufügen...", ID_ADDHTML
+            MENUITEM "HTM&L hinzufügen...", ID_ADDHTML
             MENUITEM "Beschle&uniger hinzufügen...", ID_ADDACCEL
             MENUITEM "&Versionsinfo hinzufügen...", ID_ADDVERINFO
-            MENUITEM "Manifest hinzufügen...", ID_ADDMANIFEST
+            MENUITEM "Man&ifest hinzufügen...", ID_ADDMANIFEST
             MENUITEM "S&ymbolleiste hinzufügen...", ID_ADDTOOLBAR
             MENUITEM "&Ressourcenelement hinzufügen...", ID_ADDRES
         }
@@ -60,7 +60,7 @@ IDR_MAINMENU MENU
             MENUITEM "&Symbol ersetzen...", ID_REPLACEICON
             MENUITEM "&Cursor ersetzen...", ID_REPLACECURSOR
             MENUITEM "&Bitmap ersetzen...", ID_REPLACEBITMAP
-            MENUITEM "Binäres Ressourcenelement ersetzen...", ID_REPLACEBIN
+            MENUITEM "Binäres &Ressourcenelement ersetzen...", ID_REPLACEBIN
         }
         POPUP "&Extrakt"
         {
@@ -74,16 +74,16 @@ IDR_MAINMENU MENU
         MENUITEM "Typ/&Name/Sprache ändern\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "K&lon...", ID_CLONE
-        MENUITEM "In mehrere Sprachen kopieren...", ID_COPYTOMULTILANG
+        MENUITEM "&In mehrere Sprachen kopieren...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Testen", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "Löschen\tDel", ID_DELETERES
+        MENUITEM "Lö&schen\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Konfiguration...\tAlt+Enter", ID_CONFIG
-        MENUITEM "Konfiguration zurücksetzen", ID_RESETSETTINGS
+        MENUITEM "K&onfiguration...\tAlt+Enter", ID_CONFIG
+        MENUITEM "Konfiguration &zurücksetzen", ID_RESETSETTINGS
     }
     POPUP "&Suche"
     {
@@ -106,15 +106,15 @@ IDR_MAINMENU MENU
         MENUITEM "Alle &reduzieren\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "Ressourcen-&IDs", ID_IDLIST
-        MENUITEM "Liste der Sprachen...", ID_SHOWLANGS
+        MENUITEM "Liste &der Sprachen...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Immer CONTROL-Anweisung", ID_ALWAYSCONTROL
-        MENUITEM "Keine ID-Makros verwenden", ID_HIDEIDMACROS
-        MENUITEM "IDC_STATIC verwenden", ID_USEIDC_STATIC
+        MENUITEM "I&mmer CONTROL-Anweisung", ID_ALWAYSCONTROL
+        MENUITEM "&Keine ID-Makros verwenden", ID_HIDEIDMACROS
+        MENUITEM "IDC_STATIC ver&wenden", ID_USEIDC_STATIC
         MENUITEM "&Zeilenumbruch", ID_WORD_WRAP
         MENUITEM "BEGIN/END &verwenden", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "Aktualisieren", ID_REFRESHALL
+        MENUITEM "Ak&tualisieren", ID_REFRESHALL
     }
     POPUP "&Automatisierung"
     {
@@ -125,9 +125,10 @@ IDR_MAINMENU MENU
     POPUP "&Hilfe"
     {
         MENUITEM "Öffnen &README.txt (Englisch)", ID_OPENREADME
+        MENUITEM "Öffnen &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Öffnen &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "Ein Leitfaden für RisohEditor", ID_GUIDE
+        MENUITEM "&Ein Leitfaden für RisohEditor", ID_GUIDE
         MENUITEM "RisohEditor-&Update prüfen...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&Über...", ID_ABOUT

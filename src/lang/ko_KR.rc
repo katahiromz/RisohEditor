@@ -49,7 +49,7 @@ IDR_MAINMENU MENU
             MENUITEM "문자열 테이블 추가(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "메시지 테이블 추가(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "HTML 추가(&H)...", ID_ADDHTML
-            MENUITEM "액세스 키 추가(&L)...", ID_ADDACCEL
+            MENUITEM "액셀 추가(&L)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
             MENUITEM "도구모음 추가(&T)...", ID_ADDTOOLBAR
@@ -120,7 +120,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "프로그래밍 언어 EGA(&E)...", ID_EGA
         MENUITEM "EGA 프로그램 실행(&R)...", ID_EGA_PROGRAM
-        MENUITEM "EGA 수동 열기(&M)", ID_OPEN_EGA_MANUAL
+        MENUITEM "EGA 설명서 열기(&M)", ID_OPEN_EGA_MANUAL
     }
     POPUP "도움말(&H)"
     {

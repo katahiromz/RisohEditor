@@ -10,7 +10,7 @@ LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
 
 IDR_MAINMENU MENU
 {
-    POPUP "&File"
+    POPUP "&Tiedosto"
     {
         MENUITEM "&Uusi\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
@@ -33,7 +33,7 @@ IDR_MAINMENU MENU
             MENUITEM "(Ei mitään)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "Poistu\tAlt+&F4", ID_EXIT
+        MENUITEM "&Poistu\tAlt+F4", ID_EXIT
     }
     POPUP "&Muokkaus"
     {
@@ -125,6 +125,7 @@ IDR_MAINMENU MENU
     POPUP "O&hje"
     {
         MENUITEM "Avaa &README.txt (English)", ID_OPENREADME
+        MENUITEM "Avaa &ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "Avaa &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Opas RisohEditorille", ID_GUIDE
@@ -979,7 +980,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
-    AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
+    AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Luo &varmuuskopion", chx4, 5, 120, 110, 14
     RTEXT "jälkiliite:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
