@@ -79,7 +79,8 @@ UTF16_validate(const void *pv, size_t cb)
 		WCHAR wch = wide_str[k];
 		if (wch == 0 || wch == 0xFFFF ||
 			memcmp(&wch, "\xFE\xFF", 2) == 0 ||
-			memcmp(&wch, "\r\n", 2) == 0)
+			wch == MAKEWORD('\n', '\r') ||
+			wch == MAKEWORD('\r', '\n'))
 		{
 			return false;
 		}

@@ -53,7 +53,7 @@ struct WordsRes
 		else
 		{
 #ifndef NO_CONSTANTS_DB
-			ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id, true);
+			ret += g_db.GetNameOfResID(IDTYPE_RESOURCE, name.m_id, true);
 #else
 			ret += mstr_dec_short(name.m_id);
 #endif
