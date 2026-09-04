@@ -18,18 +18,9 @@ extern BOOL g_bEnableCrypto2;
 
 struct AutoDeleteFileW
 {
-	std::wstring m_file;
-	AutoDeleteFileW(const std::wstring& file) : m_file(file)
-	{
-	}
-	~AutoDeleteFileW()
-	{
-		::DeleteFileW(m_file.c_str());
-	}
-	// No copying
-	AutoDeleteFileW(const AutoDeleteFileW&) = delete;
-	void operator=(const AutoDeleteFileW&) = delete;
-	AutoDeleteFileW(AutoDeleteFileW&&) = delete;
+	MStringW m_file;
+	AutoDeleteFileW(PCWSTR file = nullptr) : m_file(file ? file : L"") { }
+	~AutoDeleteFileW() { if (m_file.size()) ::DeleteFileW(m_file.c_str()); }
 };
 
 #ifndef NDEBUG

@@ -8,6 +8,7 @@
     - Suporte para as codificações "MultiSz" e "WORDs".
     - Removida a configuração "Usar Microsoft MESSAGETABLE".
     - Suporte a arquivos "msstyles".
+    - Suporte à importação de arquivos RC com caminhos Unicode.
 - v.6.1.9 (2026-09-02)
     - Corrigida a resposta do cursor nas bordas da janela principal.
     - Corrigido um erro em que itens do tipo ET_TYPE sem filhos não desapareciam na função EGA RES_delete.

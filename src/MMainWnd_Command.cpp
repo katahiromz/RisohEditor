@@ -4230,7 +4230,8 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 	WCHAR sz[MAX_PATH * 2 + 32];
 
 	// show the file paths
-	StringCchPrintfW(sz, _countof(sz), L"%s\n\n%s", m_szFile, m_szResourceH);
+	StringCchPrintfW(sz, _countof(sz), L"%s\n\n%s\n\n%s\n\n%s",
+	                 m_szFile, m_szResourceH, m_szWindresExe, m_szMCppExe);
 	MsgBoxDx(sz, MB_ICONINFORMATION);
 
 	// get the selected entry

@@ -4025,3 +4025,17 @@ bool MultiSz_VectorFromData(std::vector<MStringW>& strs, const std::vector<BYTE>
 	}
 	return true;
 }
+
+BOOL ContainsUnicodeSpecificCharacters(PCWSTR path)
+{
+    assert(path != nullptr);
+
+	for (PCWSTR pch = path; *pch != UNICODE_NULL; ++pch)
+    {
+        wchar_t c = *pch;
+        if (c > 0x7F)
+            return TRUE;
+    }
+
+    return FALSE;
+}

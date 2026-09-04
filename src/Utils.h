@@ -23,8 +23,8 @@
 struct AutoDeleteFileW
 {
 	MStringW m_file;
-	AutoDeleteFileW(const std::wstring& file) : m_file(file) { }
-	~AutoDeleteFileW() { ::DeleteFileW(m_file.c_str()); }
+	AutoDeleteFileW(PCWSTR file = nullptr) : m_file(file ? file : L"") { }
+	~AutoDeleteFileW() { if (m_file.size()) ::DeleteFileW(m_file.c_str()); }
 };
 
 enum LANG_TYPE
@@ -156,3 +156,4 @@ std::wstring SanitizeFileName(const std::wstring& name);
 std::wstring SanitizeIdentifier(const std::wstring& name);
 bool MultiSz_DataFromVector(std::vector<BYTE>& data, const std::vector<MStringW>& strs);
 bool MultiSz_VectorFromData(std::vector<MStringW>& strs, const std::vector<BYTE>& data);
+BOOL ContainsUnicodeSpecificCharacters(PCWSTR path);

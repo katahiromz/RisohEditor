@@ -1793,7 +1793,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, LANGID lang, const MStrin
 	strCmdLine += GetIncludesDumpForWindres();
 	strCmdLine += L" -o \"";
 	strCmdLine += temp.szObject;
-	strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
+	strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" \"";
 	strCmdLine += temp.szPayloadLoader;
@@ -2255,7 +2255,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 	strCmdLine += L"\" ";
 	strCmdLine += GetMacroDump();
 	strCmdLine += GetIncludesDump();
-	strCmdLine += L" \"--preprocessor=";
+	strCmdLine += L" --preprocessor=\"";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" -o \"";
 	strCmdLine += temp.szObject;
@@ -3604,14 +3604,12 @@ BOOL MMainWnd::DoCompileMsgTable(LPCWSTR pszRCFile, EntrySet& res, MStringA& str
 	const MStringW& strMacrosDump, const MStringW& strIncludesDump) const
 {
 	// get the temporary file path
-	WCHAR szPath3[MAX_PATH];
-	StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
-
+	WCHAR szObjFile[MAX_PATH];
+	StringCchCopyW(szObjFile, _countof(szObjFile), GetTempFileNameDx(L"R3"));
 	// create the temporary file and wait
-	MFile r3(szPath3, TRUE);
+	MFile r3(szObjFile, TRUE);
 	r3.CloseHandle();
-
-	AutoDeleteFileW ad3(szPath3);
+	AutoDeleteFileW ad3(szObjFile);
 
 	// build the command line text
 	MStringW strCmdLine;
@@ -3622,7 +3620,7 @@ BOOL MMainWnd::DoCompileMsgTable(LPCWSTR pszRCFile, EntrySet& res, MStringA& str
 	strCmdLine += L' ';
 	strCmdLine += strIncludesDump;
 	strCmdLine += L" -o \"";
-	strCmdLine += szPath3;
+	strCmdLine += szObjFile;
 	strCmdLine += L"\" -J rc -O res \"";
 	strCmdLine += pszRCFile;
 	strCmdLine += L'\"';
@@ -3644,7 +3642,7 @@ BOOL MMainWnd::DoCompileMsgTable(LPCWSTR pszRCFile, EntrySet& res, MStringA& str
 		if (pmaker.GetExitCode() == 0)
 		{
 			// import from the temporary file
-			if (res.import_res(szPath3))
+			if (res.import_res(szObjFile))
 			{
 				bSuccess = TRUE;
 			}
@@ -3689,14 +3687,24 @@ namespace
 BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput, BOOL bApStudio) const
 {
 	// get the temporary file path
-	WCHAR szPath3[MAX_PATH];
-	StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
-
+	WCHAR szObjFile[MAX_PATH];
+	StringCchCopyW(szObjFile, _countof(szObjFile), GetTempFileNameDx(L"R3"));
 	// create the temporary file and wait
-	MFile r3(szPath3, TRUE);
+	MFile r3(szObjFile, TRUE);
 	r3.CloseHandle();
+	AutoDeleteFileW ad3(szObjFile);
 
-	AutoDeleteFileW ad3(szPath3);
+	// szRCFile can contains Unicode characters
+	PCWSTR rc_file = szRCFile;
+	WCHAR szFixedRCFile[MAX_PATH];
+	AutoDeleteFileW ad4;
+	if (ContainsUnicodeSpecificCharacters(szRCFile))
+	{
+		StringCchCopyW(szFixedRCFile, _countof(szFixedRCFile), GetTempFileNameDx(L"R4"));
+		CopyFileW(szRCFile, szFixedRCFile, FALSE);
+		ad4.m_file = szFixedRCFile;
+		rc_file = szFixedRCFile;
+	}
 
 	MStringW strMacrosDump = GetMacroDump(bApStudio);
 	MStringW strIncludesDump = GetIncludesDump();
@@ -3710,11 +3718,11 @@ BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput,
 	strCmdLine += L' ';
 	strCmdLine += strIncludesDump;
 	strCmdLine += L" -o \"";
-	strCmdLine += szPath3;
-	strCmdLine += L"\" --codepage=65001 -J rc -O res -F pe-i386 \"--preprocessor=";
+	strCmdLine += szObjFile;
+	strCmdLine += L"\" --codepage=65001 -J rc -O res -F pe-i386 --preprocessor=\"";
 	strCmdLine += m_szMCppExe;
 	strCmdLine += L"\" --preprocessor-arg=\"\" \"";
-	strCmdLine += szRCFile;
+	strCmdLine += rc_file;
 	strCmdLine += L'\"';
 	//MessageBoxW(nullptr, strCmdLine.c_str(), nullptr, 0);
 
@@ -3727,7 +3735,7 @@ BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput,
 	// hidden behind windres's time instead of adding to it.
 	MSG_TABLE_PARAM msgParam;
 	msgParam.pThis = this;
-	msgParam.pszRCFile = szRCFile;
+	msgParam.pszRCFile = rc_file;
 	msgParam.pstrMacrosDump = &strMacrosDump;
 	msgParam.pstrIncludesDump = &strIncludesDump;
 	msgParam.bOK = FALSE;
@@ -3750,7 +3758,7 @@ BOOL MMainWnd::DoCompileRC(LPCWSTR szRCFile, EntrySet& res, MStringA& strOutput,
 		if (pmaker.GetExitCode() == 0)
 		{
 			// import the resource from the temporary file
-			bSuccess = res.import_res(szPath3);
+			bSuccess = res.import_res(szObjFile);
 		}
 		else if (strOutput.find(": no resources") != MStringA::npos)
 		{
@@ -6356,6 +6364,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 		StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
 		StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
 	}
+	GetShortPathNameW(m_szWindresExe, m_szWindresExe, _countof(m_szWindresExe));
 
 	// cpp.exe
 	if (g_settings.strCppExe.size())
@@ -6369,6 +6378,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 		StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
 		StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
 	}
+	GetShortPathNameW(m_szMCppExe, m_szMCppExe, _countof(m_szMCppExe));
 }
 
 // update the name of the tree control
