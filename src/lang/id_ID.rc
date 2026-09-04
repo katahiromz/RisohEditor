@@ -15,16 +15,16 @@ IDR_MAINMENU MENU
         MENUITEM "&Baru\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
         MENUITEM "B&uka...\tCtrl+O", ID_OPEN
-        MENUITEM "Si&mpan...\tCtrl+S", ID_SAVE
-        MENUITEM "Simpan Seba&gai...\tShift+Ctrl+S", ID_SAVEAS
+        MENUITEM "&Simpan...\tCtrl+S", ID_SAVE
+        MENUITEM "Simpan Sebag&ai...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "&Impor...\tCtrl+I", ID_IMPORT
         MENUITEM "&Ekspor...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "Muat Ulang &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Simpan re&source.h...", ID_UPDATERESHBANG
-        MENUITEM "Sara&nkan Modifikasi resource.h...", ID_ADVICERESH
-        MENUITEM "&Copot resource.h", ID_UNLOADRESH
+        MENUITEM "Sara&n Perubahan resource.h...", ID_ADVICERESH
+        MENUITEM "Le&pas resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Muat Perpustakaan Kelas &Jendela...", ID_LOADWCLIB
         MENUITEM SEPARATOR
@@ -37,9 +37,9 @@ IDR_MAINMENU MENU
     }
     POPUP "&Edit"
     {
-        MENUITEM "Edit dengan &GUI...\tCtrl+U", ID_GUIEDIT
+        MENUITEM "Edit &dengan Antarmuka Grafis...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
-        POPUP "&Add"
+        POPUP "&Tambah"
         {
             MENUITEM "Tambah &Ikon...", ID_ADDICON
             MENUITEM "Tambah &Cursor...", ID_ADDCURSOR
@@ -60,7 +60,7 @@ IDR_MAINMENU MENU
             MENUITEM "Ganti &Ikon...", ID_REPLACEICON
             MENUITEM "Ganti &Cursor...", ID_REPLACECURSOR
             MENUITEM "Ganti &Bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Ganti Item Sumber Daya Bina&ry...", ID_REPLACEBIN
+            MENUITEM "Ganti Item Sumber Daya Bine&r...", ID_REPLACEBIN
         }
         POPUP "&Ekstrak"
         {
@@ -68,7 +68,7 @@ IDR_MAINMENU MENU
             MENUITEM "Ekstrak &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Ekstrak &Bitmap...", ID_EXTRACTBITMAP
             MENUITEM "Ekstrak Sebag&ai File RC...", ID_EXTRACTRC
-            MENUITEM "Ekstrak Item Sumber Daya Bina&ry...", ID_EXTRACTBIN
+            MENUITEM "Ekstrak Item Sumber Daya Bine&r...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "Uba&h tipe/nama/bahasa\tF2", ID_EDITLABEL
@@ -76,7 +76,7 @@ IDR_MAINMENU MENU
         MENUITEM "K&lon...", ID_CLONE
         MENUITEM "Salin ke beberapa bahasa...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "Lakukan &Tes", ID_TEST
+        MENUITEM "&Tes", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "Ha&pus\tDel", ID_DELETERES
         MENUITEM SEPARATOR
@@ -92,15 +92,15 @@ IDR_MAINMENU MENU
         MENUITEM "Cari ke &Atas\tShift+F3", ID_FINDUPWARD
         MENUITEM "Cari ke &Bawah\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "&Permintaan konstan...", ID_QUERYCONSTANT
+        MENUITEM "Cari Konsta&nta...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
-        MENUITEM "Pergi &ke baris yang ditentukan...\tCtrl+G", ID_GOTOLINE
+        MENUITEM "Pergi &ke Baris...\tCtrl+G", ID_GOTOLINE
     }
     POPUP "&Tampilan"
     {
         MENUITEM "&Bilah Status", ID_STATUSBAR
         MENUITEM "Bil&ah Alat", ID_SHOWHIDETOOLBAR
-        MENUITEM "Bi&nary", ID_BINARYPANE
+        MENUITEM "Bi&ner", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "&Perluas Semua\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "Ciut&kan Semua\tCtrl+L", ID_COLLAPSE_ALL
@@ -108,10 +108,10 @@ IDR_MAINMENU MENU
         MENUITEM "ID Su&mber Daya", ID_IDLIST
         MENUITEM "Daftar Baha&sa...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Selalu pernyataan &CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "Selalu gunakan pernyataan &CONTROL", ID_ALWAYSCONTROL
         MENUITEM "Jangan Gunakan Makro &ID", ID_HIDEIDMACROS
         MENUITEM "&Gunakan IDC_STATIC", ID_USEIDC_STATIC
-        MENUITEM "Kemas Ka&ta", ID_WORD_WRAP
+        MENUITEM "Bungkus Ka&ta", ID_WORD_WRAP
         MENUITEM "G&unakan BEGIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "Muat U&lang", ID_REFRESHALL
@@ -147,7 +147,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #1"
     {
-        MENUITEM "T&ambah control...", ID_ADDCTRL
+        MENUITEM "T&ambah kontrol...", ID_ADDCTRL
         MENUITEM SEPARATOR
         MENUITEM "Gun&ting\tCtrl+X", ID_CUT
         MENUITEM "&Salin\tCtrl+C", ID_COPY
@@ -163,7 +163,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "Ke &Bawah", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Tunjukkan/Sembuyikan Indeks\tCtrl+D", ID_SHOWINDEXLABELS
+            MENUITEM "Tampilkan/Sembunyikan Indeks\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "Pe&nataan"
         {
@@ -172,7 +172,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Penataan &Kiri", ID_LEFTALIGN
             MENUITEM "Penataan Ka&nan", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Muatkan ke &Ubin", ID_FITTOGRID
+            MENUITEM "Ses&uaikan ke Kisi", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
         MENUITEM "M&uat Ulang", ID_REFRESHDIALOG
@@ -186,7 +186,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "&Loncati!", ID_IDJUMP
+        MENUITEM "&Lompat!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Tambah ID...", ID_ADDRESID
         MENUITEM "&Ubah ID...", ID_MODIFYRESID
@@ -1469,8 +1469,8 @@ STRINGTABLE
     IDS_MACRONAME "Nama Makro"
     IDS_MACROVALUE "Nilai Makro"
     IDS_OPTIONAL "(Opsional)"
-    IDS_ADDINCLUDE "Tambah Pemasukan Direktori"
-    IDS_EDITINCLUDE "Edit Pemasukan Direktori"
+    IDS_ADDINCLUDE "Tambah Direktori Include"
+    IDS_EDITINCLUDE "Edit Direktori Include"
     IDS_WINDRESEXE "windres.exe|windres.exe|"
     IDS_CPPEXE "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH "Jalur tidak sah."
@@ -1481,9 +1481,9 @@ STRINGTABLE
     IDS_INTVALUE "Nilai Integer"
     IDS_PARENTWND "Jendela Tes Induk"
     IDS_CHOOSE_OLE_CLSID "Pilih OLE CLSID"
-    IDS_CONTROL "Control"
+    IDS_CONTROL "Kontrol"
     IDS_MESSAGE "Pesan"
-    IDS_STRING "String"
+    IDS_STRING "Teks"
     IDS_DATAISINVALID "Data tidak sah."
     IDS_DLGINIT1 "Anda bisa menentukan inisialisasi kotak kombo dan kotak daftar dengan mengatur data inisialisasi dalam data sumber daya RT_DLGINIT dengan nama yang sama pada sumber daya dialog. "
     IDS_DLGINIT2 "Ketika pesan WM_INITDIALOG muncul, aplikasi bisa memulai dialog dengan memanggil fungsi ExecuteDlgInitDx dari file yang terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
@@ -1493,7 +1493,7 @@ STRINGTABLE
     IDS_AMERICA "Amerika"
     IDS_ENGLISH "Inggris"
     IDS_CHINA "Tiongkok"
-    IDS_CHINESE "China"
+    IDS_CHINESE "Tionghoa"
     IDS_RUSSIA "Rusia"
     IDS_RUSSIAN "Rusia"
     IDS_WANNAGENRESH "Anda ingin membuat 'resource.h'?"
@@ -1512,7 +1512,7 @@ STRINGTABLE
     IDS_TOOL_CANCELEDIT "Batal Edit"
     IDS_TOOL_IMPORT "Impor..."
     IDS_TOOL_EXTRACT "Ekstrak..."
-    IDS_TOOL_GUIEDIT "Edit dengan GUI"
+    IDS_TOOL_GUIEDIT "Edit dengan Antarmuka Grafis"
     IDS_UNITEDKINGDOM "Britania Raya"
     IDS_GREATBRITAIN "Britain Raya"
     IDS_BRITISH "Britis"
@@ -1535,7 +1535,7 @@ STRINGTABLE
     IDS_IMPORTFILTER "File yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.mp3;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Biner (*.res)|*.res|File Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File Kursor (*.cur;*.ani)|*.cur;*.ani|File Ikon (*.ico)|*.ico|File Suara WAVE (*.wav)|*.wav|Suara MP3 (*.mp3)|*.mp3|File HTML (*.html;*.htm)|*.html;*.htm|File Manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua File (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK "Tidak bisa menulis file karena file tersebut terkunci.\r\n\r\n%s"
     IDS_ANSI "ANSI"
-    IDS_WIDE "Unikode"
+    IDS_WIDE "Unicode"
     IDS_UTF8 "UTF-8 (Dengan BOM)"
     IDS_UTF8N "UTF-8 (Tanpa BOM)"
     IDS_SJIS "Shift_JIS"
@@ -1550,12 +1550,12 @@ STRINGTABLE
     IDS_ENTERNONZEROTYPE "Mohon masukkan jenis sumber daya non-zero."
     IDS_HOMEPAGE "https://katahiromz.web.fc2.com/re/en/"
     IDS_FILESAVED "File tersimpan."
-    IDS_RECOMPILEOK "Penyusunan kembali selesai."
-    IDS_RECOMPILEFAILED "Penyusunan kembali gagal (kesalahan syntax)."
+    IDS_RECOMPILEOK "Kompilasi ulang berhasil."
+    IDS_RECOMPILEFAILED "Kompilasi ulang gagal (kesalahan sintaks)."
     IDS_TOOL_EXPORT "Ekspor..."
     IDS_CODEEDITOR "Editor Kode"
     IDS_HEXVIEWER "Penampil Hex"
-    IDS_INTEGERORIDENTIFIER "(integer atau identifier)"
+    IDS_INTEGERORIDENTIFIER "(bilangan bulat atau pengenal)"
     IDS_NOTEXT " "
     IDS_NOUPDATE "Anda menggunakan RisohEditor terbaru."
     IDS_THEREISUPDATE "RisohEditor %s tersedia. Unduh sekarang?"

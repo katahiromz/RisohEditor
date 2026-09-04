@@ -23,10 +23,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Перезагрузить resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Со&хранить resource.h...", ID_UPDATERESHBANG
-        MENUITEM "&Рекомендовать изменить resource.h...", ID_ADVICERESH
+        MENUITEM "Советы по из&менению resource.h...", ID_ADVICERESH
         MENUITEM "&Выгрузить resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "&Загрузить библиотеку классов окон...", ID_LOADWCLIB
+        MENUITEM "За&грузить библиотеку классов окон...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "Недавние файлы"
         {
@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM "И&зменить тип/название/язык\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "К&лон...", ID_CLONE
-        MENUITEM "Копировать на несколько языков ......", ID_COPYTOMULTILANG
+        MENUITEM "Копировать на несколько языков...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Про&тестировать", ID_TEST
         MENUITEM SEPARATOR

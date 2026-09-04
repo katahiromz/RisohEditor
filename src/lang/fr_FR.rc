@@ -14,8 +14,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Nouveau\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "&Ouvert...\tCtrl+O", ID_OPEN
-        MENUITEM "&Sauver...\tCtrl+S", ID_SAVE
+        MENUITEM "&Ouvrir...\tCtrl+O", ID_OPEN
+        MENUITEM "&Sauvegarder...\tCtrl+S", ID_SAVE
         MENUITEM "&Enregistrer sous...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "&Importation...\tCtrl+I", ID_IMPORT
@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Recharger &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Enregistrer resource.&h...", ID_UPDATERESHBANG
-        MENUITEM "Conseil &de modification de resource.h...", ID_ADVICERESH
+        MENUITEM "Conseils pour la modification &de resource.h...", ID_ADVICERESH
         MENUITEM "&Décharger resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Charger &la bibliothèque de classes de fenêtre...", ID_LOADWCLIB
@@ -33,11 +33,11 @@ IDR_MAINMENU MENU
             MENUITEM "(Aucun)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "Sor&tie\tAlt+F4", ID_EXIT
+        MENUITEM "Q&uitter\tAlt+F4", ID_EXIT
     }
     POPUP "&Éditer"
     {
-        MENUITEM "Modifier par &GUI...\tCtrl+U", ID_GUIEDIT
+        MENUITEM "Modifier via l'&interface graphique...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Ajouter"
         {
@@ -73,10 +73,10 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Modi&fier le type / nom / langue\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Cl&oner...", ID_CLONE
+        MENUITEM "Dupli&quer", ID_CLONE
         MENUITEM "Co&pier dans plusieurs langues...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "Faire un &test", ID_TEST
+        MENUITEM "&Tester", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "S&upprimer\tDel", ID_DELETERES
         MENUITEM SEPARATOR
@@ -108,26 +108,26 @@ IDR_MAINMENU MENU
         MENUITEM "Id&entifiants de ressource", ID_IDLIST
         MENUITEM "&Liste des langues...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Instruction &Always CONTROL", ID_ALWAYSCONTROL
-        MENUITEM "&N'utilisez pas de macros d'identification", ID_HIDEIDMACROS
+        MENUITEM "Toujours utiliser &CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "Masquer les macros d'&ID", ID_HIDEIDMACROS
         MENUITEM "&Utilisez IDC_STATIC", ID_USEIDC_STATIC
-        MENUITEM "&Habillage de mots", ID_WORD_WRAP
-        MENUITEM "Utili&sez BEGIN / END", ID_USEBEGINEND
+        MENUITEM "&Retour à la ligne automatique", ID_WORD_WRAP
+        MENUITEM "Utili&ser BEGIN / END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Rafraîchir", ID_REFRESHALL
     }
     POPUP "&Automatisation"
     {
-        MENUITEM "&Le langage de programmation EGA...", ID_EGA
+        MENUITEM "&Langage de programmation &EGA...", ID_EGA
         MENUITEM "&Exécuter le programme EGA...", ID_EGA_PROGRAM
         MENUITEM "&Ouvrir le manuel EGA", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Aide"
     {
-        MENUITEM "&Ouvrez README.txt (Anglais)", ID_OPENREADME
-        MENUITEM "Ouvrez &LICENSE.txt", ID_OPENLICENSE
+        MENUITEM "&Ouvrir README.txt (anglais)", ID_OPENREADME
+        MENUITEM "Ouvrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "Un &guide pour RisohEditor", ID_GUIDE
+        MENUITEM "&Guide pour RisohEditor", ID_GUIDE
         MENUITEM "&Vérifier la mise à jour de RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&À propos de...", ID_ABOUT
@@ -147,16 +147,16 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Ajouter un contrôle...", ID_ADDCTRL
         MENUITEM SEPARATOR
         MENUITEM "&Couper\tCtrl+X", ID_CUT
-        MENUITEM "C&opie&tCtrl+C", ID_COPY
-        MENUITEM "Pâte\tCtrl+V", ID_PASTE
+        MENUITEM "C&opier\tCtrl+C", ID_COPY
+        MENUITEM "Coller\tCtrl+V", ID_PASTE
         MENUITEM "&Supprimer\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
-        POPUP "&Indice"
+        POPUP "&Index"
         {
             MENUITEM "&Aller en haut", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "&Index de décrémentation", ID_CTRLINDEXMINUS
-            MENUITEM "In&dice d'incrément", ID_CTRLINDEXPLUS
+            MENUITEM "&Diminuer l'index", ID_CTRLINDEXMINUS
+            MENUITEM "&Augmenter l'index", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "All&er en bas", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
@@ -164,10 +164,10 @@ IDR_POPUPMENUS MENU
         }
         POPUP "&Alignement"
         {
-            MENUITEM "&Top-Align", ID_TOPALIGN
-            MENUITEM "&Bottom-Align", ID_BOTTOMALIGN
-            MENUITEM "&Left-Align", ID_LEFTALIGN
-            MENUITEM "&Right-Align", ID_RIGHTALIGN
+            MENUITEM "Aligner en &haut", ID_TOPALIGN
+            MENUITEM "Aligner en &bas", ID_BOTTOMALIGN
+            MENUITEM "Aligner à &gauche", ID_LEFTALIGN
+            MENUITEM "Aligner à &droite", ID_RIGHTALIGN
             MENUITEM SEPARATOR
             MENUITEM "&Ajuster à la grille", ID_FITTOGRID
         }
@@ -183,7 +183,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "Sau&t!", ID_IDJUMP
+        MENUITEM "All&er à...", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Ajouter un identifiant...", ID_ADDRESID
         MENUITEM "&Modifier l'ID...", ID_MODIFYRESID
@@ -222,7 +222,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Gauche", psh6
         MENUITEM "&Droite", psh7
         MENUITEM SEPARATOR
-        MENUITEM "Dele&te\tDel", psh3
+        MENUITEM "&Supprimer\tDel", psh3
     }
     POPUP "Popup #7"
     {
@@ -268,9 +268,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "&...", psh2, 195, 30, 15, 14
     LTEXT "&Langue de la ressource :", -1, 5, 57, 80, 12
     COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Binaire et fichier :", -1, 5, 85, 100, 12
+    LTEXT "Fichier binaire :", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 150, 60, 14
     {
@@ -285,7 +285,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier d'icône :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -303,7 +303,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier d'icône :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -321,7 +321,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier &bitmap :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
@@ -338,7 +338,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier &bitmap :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
@@ -361,9 +361,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     LTEXT "", stc1, 75, 43, 115, 10
     LTEXT "&Langue de la ressource :", -1, 5, 57, 80, 12
     COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Binaire et fichier :", -1, 5, 85, 100, 12
+    LTEXT "Fichier binaire :", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 150, 60, 14
@@ -376,7 +376,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier de &curseur :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -394,7 +394,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
 {
     LTEXT "Fichier de &curseur :", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Parcourir...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource :", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -721,7 +721,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     RTEXT "Hauteur de ComboBox :", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Habillage de mots", chx9, 130, 124, 75, 15
+    AUTOCHECKBOX "&Retour à la ligne automatique", chx9, 130, 124, 75, 15
     AUTOCHECKBOX "Demandez la mise à jour de ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Compressez EXE par UPX en l'enregistrant", chx8, 5, 165, 200, 14
     RTEXT "Nom des contrôles OLE :", -1, 5, 187, 80, 12
@@ -962,7 +962,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     PUSHBUTTON "Supprimer tout", psh6, 5, 130, 95, 14
     RTEXT "&windres.exe :", stc1, 5, 157, 55, 12
     COMBOBOX cmb1, 70, 155, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Feuilleter...", psh7, 230, 155, 60, 14
+    PUSHBUTTON "&Parcourir...", psh7, 230, 155, 60, 14
     RTEXT "&cpp.exe :", stc2, 5, 177, 55, 12
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "Parcourir...", psh8, 230, 175, 60, 14
@@ -1509,7 +1509,7 @@ STRINGTABLE
     IDS_TOOL_CANCELEDIT "Annuler la modification"
     IDS_TOOL_IMPORT "Importer..."
     IDS_TOOL_EXTRACT "Extraire..."
-    IDS_TOOL_GUIEDIT "Modifier par GUI"
+    IDS_TOOL_GUIEDIT "Modifier via l'interface graphique"
     IDS_UNITEDKINGDOM "Royaume-Uni"
     IDS_GREATBRITAIN "Grande Bretagne"
     IDS_BRITISH "Britanique"
@@ -1519,7 +1519,7 @@ STRINGTABLE
     IDS_GERMAN "Allemand"
     IDS_SPAIN "Espagne"
     IDS_SPANISH "Espagnol"
-    IDS_INVALIDLANG "Langue méconnaissable."
+    IDS_INVALIDLANG "Langue non reconnue."
     IDS_PNGRESBINFILTER "Image PNG (*.png)|*.png|Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
     IDS_JPEGRESBINFILTER "Image JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
     IDS_GIFRESBINFILTER "Image GIF (*.gif)|*.gif|Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
@@ -1591,7 +1591,7 @@ STRINGTABLE
     IDS_MENU_ID "ID du menu"
     IDS_DIALOG_ID "ID de dialogue"
     IDS_STRING_ID "ID de chaîne"
-    IDS_ACCEL_ID "Identifiant d'accès"
+    IDS_ACCEL_ID "ID d'accélérateur"
     IDS_ICON_ID "ID de l'icône"
     IDS_ANICURSOR_ID "ID de curseur animé"
     IDS_ANIICON_ID "ID de l'icône animée"
@@ -1635,7 +1635,7 @@ STRINGTABLE
     IDS_WARNMENUITEMEXHELPID "Un ou plusieurs éléments de menu possèdent un identifiant d'aide (Help ID), mais ces identifiants ne s'appliquent qu'aux éléments de sous-menu (POPUP) dans le format MENUEX. L'identifiant d'aide associé aux éléments autres que des sous-menus sera ignoré lors de l'enregistrement."
     IDS_WARNMENUHELPIDNOTSUPPORTED "Les identifiants d'aide ne sont pas pris en charge dans le menu standard."
     IDS_CONFIRMDELETE "Souhaitez-vous supprimer cet élément de ressource ?"
-    IDS_DONTUSEZEROFORMENUITEM "Vous ne pouvez pas spécifier un ID de commande égal à zéro pour un élément de menu qui n'est ni un séparateur ni une fenêtre contextuelle."
+    IDS_DONTUSEZEROFORMENUITEM "Vous ne pouvez pas spécifier un ID de commande égal à zéro pour un élément de menu qui n'est ni un séparateur ni une élément de sous-menu (POPUP)."
     IDS_ENTERCOMMAND "Veuillez saisir l'identifiant de la commande."
     IDS_INVALIDCOMMAND "L'identifiant de commande est invalide. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."
     IDS_COMMANDOUTOFRANGE "L'identifiant de commande est hors limites. Veuillez saisir un entier 16 bits (de -32768 à 65535) ou un identifiant."

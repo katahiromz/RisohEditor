@@ -73,7 +73,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "유형/이름/언어 변경(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "복제하다(&N)...", ID_CLONE
+        MENUITEM "복제(&N)...", ID_CLONE
         MENUITEM "여러 언어로 복사...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "테스트(&T)", ID_TEST
@@ -198,7 +198,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "10진수(&E)", ID_BASE10
         MENUITEM "16진수(&H)", ID_BASE16
         MENUITEM SEPARATOR
-        MENUITEM "디시 불러오기(&R)", ID_LOADRESH
+        MENUITEM "다시 불러오기(&R)", ID_LOADRESH
     }
     POPUP "Popup #4"
     {
@@ -1505,7 +1505,7 @@ STRINGTABLE
     IDS_TOOL_PLUS "항목 추가..."
     IDS_TOOL_MINUS "항목 삭제"
     IDS_TOOL_CHANGE "유형/이름/언어 변경"
-    IDS_TOOL_CLONE "복제하다..."
+    IDS_TOOL_CLONE "복제..."
     IDS_TOOL_RECOMPILE "재컴파일"
     IDS_TOOL_CANCELEDIT "편집 취소"
     IDS_TOOL_IMPORT "가져오기..."

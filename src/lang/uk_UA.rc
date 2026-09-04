@@ -74,7 +74,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Змінити тип/назву/мову\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Кло&н...", ID_CLONE
-        MENUITEM "Копиювати на декілька мов ......", ID_COPYTOMULTILANG
+        MENUITEM "Копиювати на декілька мов...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "В&ипробувати", ID_TEST
         MENUITEM SEPARATOR
