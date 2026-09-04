@@ -114,6 +114,7 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_WORDS));
 
 		ComboBox_SetCurSel(hCmb2, k);
 
@@ -217,6 +218,7 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_WORDS));
 
 		MString txt = enc2txt(m_enc);
 		int k = ComboBox_FindStringExact(hCmb2, -1, txt.c_str());
