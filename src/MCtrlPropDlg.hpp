@@ -404,7 +404,7 @@ public:
 		std::vector<TBBUTTON> buttons;
 
 		auto* table = g_db.GetTable(TEXT("CONTROLS.ICONS"));
-		size_t count = table ? table->size() : 00;
+		size_t count = table ? table->size() : 0;
 		UINT nCount = UINT(count);
 
 		m_vecControls.clear();
