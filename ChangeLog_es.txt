@@ -10,6 +10,7 @@
     - Compatibilidad con archivos "msstyles".
     - Se añadió soporte para importar archivos RC con rutas Unicode.
     - Se corrigió MPathsDlg.
+    - Traducción mejorada.
 - v.6.1.9 (2026-09-02)
     - Se ha corregido la respuesta del cursor en los bordes de la ventana principal.
     - Se corrigió un error por el cual los elementos de tipo ET_TYPE sin elementos hijos no desaparecían en la función EGA RES_delete.
