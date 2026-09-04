@@ -129,11 +129,6 @@ public:
 		}
 	}
 
-	LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
-	{
-	    return 0;
-	}
-
 	INT_PTR CALLBACK
 	DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
@@ -142,14 +137,7 @@ public:
 			HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
 			HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
 		case WM_NOTIFY:
-			{
-				LPNMHDR pnmhdr = (LPNMHDR)lParam;
-				if (pnmhdr->hwndFrom == ::GetParent(hwnd))
-				{
-					return MPropSheetPage::OnNotify(hwnd, (INT)wParam, pnmhdr);
-				}
-				return OnNotify(hwnd, (INT)wParam, pnmhdr);
-			}
+			return OnNotify(hwnd, (INT)wParam, (LPNMHDR)lParam);
 		}
 		return 0;
 	}

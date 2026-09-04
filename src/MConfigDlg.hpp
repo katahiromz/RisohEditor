@@ -104,6 +104,12 @@ public:
 		return TRUE;
 	}
 
+	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
+	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
+	{
+		return ApplySettings(hwnd);
+	}
+
 	// Was OnOK(HWND). Now invoked from OnApply (PSN_APPLY) instead of
 	// from an IDOK button, since a property page has no OK button of
 	// its own -- the sheet frame supplies one shared OK/Cancel/Apply.
@@ -165,12 +171,6 @@ public:
 		return TRUE;
 	}
 
-	// PSN_APPLY: called by the sheet frame when the user presses OK/Apply.
-	BOOL OnApply(HWND hwnd, BOOL bAllPages) override
-	{
-		return ApplySettings(hwnd);
-	}
-
 	void OnPsh5(HWND hwnd)
 	{
 #ifdef ENABLE_CRYPTO
@@ -224,9 +224,9 @@ public:
 		{
 			DO_MSG(WM_INITDIALOG, OnInitDialog);
 			DO_MSG(WM_COMMAND, OnCommand);
+		case WM_NOTIFY:
+			return OnNotify(hwnd, (INT)wParam, (LPNMHDR)lParam);
 		}
-		// Handles WM_NOTIFY (PSN_SETACTIVE/PSN_KILLACTIVE/PSN_APPLY/...)
-		// among other defaults.
-		return MPropSheetPage::DialogProcDx(hwnd, uMsg, wParam, lParam);
+		return 0;
 	}
 };
