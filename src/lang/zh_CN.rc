@@ -15,7 +15,7 @@ IDR_MAINMENU MENU
         MENUITEM "新建(&N)\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
         MENUITEM "打开(&O)...\tCtrl+O", ID_OPEN
-        MENUITEM "覆写(&S)...\tCtrl+S", ID_SAVE
+        MENUITEM "保存(&S)...\tCtrl+S", ID_SAVE
         MENUITEM "另存为(&A)...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "导入(&I)...\tCtrl+I", ID_IMPORT
@@ -23,12 +23,12 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "保存 resource.h(&H)...", ID_UPDATERESHBANG
-        MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
+        MENUITEM "建议修改(&V) resource.h ...", ID_ADVICERESH
         MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "加载窗口类DLL(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        POPUP "最近使用的文件夹"
+        POPUP "最近打开的文件"
         {
             MENUITEM "(无)", -1, GRAYED
         }
@@ -37,7 +37,7 @@ IDR_MAINMENU MENU
     }
     POPUP "编辑(&E)"
     {
-        MENUITEM "&GUI模式编辑...\tCtrl+U", ID_GUIEDIT
+        MENUITEM "&GUI 编辑...\tCtrl+U", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
@@ -49,32 +49,32 @@ IDR_MAINMENU MENU
             MENUITEM "添加字符串表(&S)...", ID_ADDSTRINGTABLE
             MENUITEM "添加消息表(&E)...", ID_ADDMESSAGETABLE
             MENUITEM "添加&HTML...", ID_ADDHTML
-            MENUITEM "添加加速器(&L)...", ID_ADDACCEL
+            MENUITEM "添加快捷键(&L)...", ID_ADDACCEL
             MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
             MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
             MENUITEM "添加工具栏(&T)...", ID_ADDTOOLBAR
-            MENUITEM "添加资源项目(&R)...", ID_ADDRES
+            MENUITEM "添加资源项(&R)...", ID_ADDRES
         }
         POPUP "替换(&R)"
         {
             MENUITEM "替换图标(&I)...", ID_REPLACEICON
             MENUITEM "替换光标(&C)...", ID_REPLACECURSOR
             MENUITEM "替换位图文件(&B)...", ID_REPLACEBITMAP
-            MENUITEM "替换二进制资源项目(&Y)...", ID_REPLACEBIN
+            MENUITEM "替换二进制资源项(&Y)...", ID_REPLACEBIN
         }
-        POPUP "导出(&E)"
+        POPUP "提取(&E)"
         {
-            MENUITEM "导出图标(&I)...", ID_EXTRACTICON
-            MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
-            MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
-            MENUITEM "导出 RC 文件(&A)...", ID_EXTRACTRC
-            MENUITEM "导出二进制资源文件(&Y)...", ID_EXTRACTBIN
+            MENUITEM "提取图标(&I)...", ID_EXTRACTICON
+            MENUITEM "提取光标(&C)...", ID_EXTRACTCURSOR
+            MENUITEM "提取位图文件(&B)...", ID_EXTRACTBITMAP
+            MENUITEM "提取为 RC 文件(&A)...", ID_EXTRACTRC
+            MENUITEM "提取二进制资源项(&Y)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "更改类型/名称/语言(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "复制(&N)...", ID_CLONE
-        MENUITEM "复制到多种语言...", ID_COPYTOMULTILANG
+        MENUITEM "克隆(&N)...", ID_CLONE
+        MENUITEM "复制到多个语言...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
@@ -89,8 +89,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "查询(&F)...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "向上搜索(&U)\tShift+F3", ID_FINDUPWARD
-        MENUITEM "向下搜索(&D)\tF3", ID_FINDDOWNWARD
+        MENUITEM "向上查找(&U)\tShift+F3", ID_FINDUPWARD
+        MENUITEM "向下查找(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "查询常量(&Q)...", ID_QUERYCONSTANT
         MENUITEM SEPARATOR
@@ -100,7 +100,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "状态栏(&S)", ID_STATUSBAR
         MENUITEM "工具栏(&T)", ID_SHOWHIDETOOLBAR
-        MENUITEM "二进制模式(&B)", ID_BINARYPANE
+        MENUITEM "二进制(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "全部展开(&X)\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "全部折叠(&O)\tCtrl+L", ID_COLLAPSE_ALL
@@ -108,19 +108,19 @@ IDR_MAINMENU MENU
         MENUITEM "资源ID列表(&R)", ID_IDLIST
         MENUITEM "语言列表(&L)...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "使用&CONTROL字段", ID_ALWAYSCONTROL
-        MENUITEM "不使用&ID宏定义", ID_HIDEIDMACROS
+        MENUITEM "始终使用&CONTROL语句", ID_ALWAYSCONTROL
+        MENUITEM "不使用&ID宏", ID_HIDEIDMACROS
         MENUITEM "使用IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "自动换行(&W)", ID_WORD_WRAP
         MENUITEM "使用BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
-        MENUITEM "更新到最新信息(&U)", ID_REFRESHALL
+        MENUITEM "刷新(&U)", ID_REFRESHALL
     }
     POPUP "自动化(&A)"
     {
         MENUITEM "电脑语言 &EGA...", ID_EGA
         MENUITEM "运行EGA程序(&R)...", ID_EGA_PROGRAM
-        MENUITEM "手动 (EGA)", ID_OPEN_EGA_MANUAL
+        MENUITEM "打开EGA手册", ID_OPEN_EGA_MANUAL
     }
     POPUP "帮助(&H)"
     {
@@ -128,8 +128,8 @@ IDR_MAINMENU MENU
         MENUITEM "打开更新日志 ChangeLog.txt", ID_OPENHISTORY
         MENUITEM "打开 &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "RisohEditor指南(&G)", ID_GUIDE
-        MENUITEM "检查 RisohEditor 更新(&U)...", ID_CHECKUPDATE
+        MENUITEM "在线指南(&G)", ID_GUIDE
+        MENUITEM "检查更新(&U)...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "关于(&A)...", ID_ABOUT
     }
@@ -161,7 +161,7 @@ IDR_POPUPMENUS MENU
             MENUITEM SEPARATOR
             MENUITEM "置底(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "切换显示模式(&S)\tCtrl+D", ID_SHOWINDEXLABELS
+            MENUITEM "切换显示(&S)\tCtrl+D", ID_SHOWINDEXLABELS
         }
         POPUP "排列方式(&A)"
         {
@@ -414,7 +414,7 @@ FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
 }
 
 IDD_ADDKEY DIALOGEX 0, 0, 190, 120
-CAPTION "添加键"
+CAPTION "添加快捷键"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
 {
@@ -433,7 +433,7 @@ FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
 }
 
 IDD_MODIFYKEY DIALOGEX 0, 0, 190, 120
-CAPTION "修改键"
+CAPTION "修改快捷键"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
 {
@@ -523,16 +523,16 @@ FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
     LTEXT "命令(&M) ID:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "呈灰(&G)", chx1, 5, 60, 60, 14
-    AUTOCHECKBOX "位图(&B)", chx3, 135, 60, 60, 14
+    AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
     AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
-    AUTOCHECKBOX "勾择(&C)", chx5, 75, 80, 60, 14
-    AUTOCHECKBOX "分离(&P)", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "菜单&BARBREAK", chx7, 5, 100, 75, 14
-    AUTOCHECKBOX "菜单B&REAK", chx8, 85, 100, 70, 14
-    AUTOCHECKBOX "设置(&D)", chx9, 5, 120, 60, 14
-    AUTOCHECKBOX "标亮(&H)", chx10, 70, 120, 60, 14
-    AUTOCHECKBOX "单选按钮选择(&K)", chx11, 135, 120, 60, 14
+    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
+    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
+    AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
+    AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
+    AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
     LTEXT "帮助 ID(&L):", -1, 5, 162, 45, 12
@@ -551,16 +551,16 @@ FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
     LTEXT "命令(&M) ID:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "呈灰(&G)", chx1, 5, 60, 60, 14
-    AUTOCHECKBOX "位图(&B)", chx3, 135, 60, 60, 14
+    AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
     AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
-    AUTOCHECKBOX "勾择(&C)", chx5, 75, 80, 60, 14
-    AUTOCHECKBOX "分离(&P)", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "菜单&BARBREAK", chx7, 5, 100, 75, 14
-    AUTOCHECKBOX "菜单B&REAK", chx8, 85, 100, 70, 14
-    AUTOCHECKBOX "设置(&D)", chx9, 5, 120, 60, 14
-    AUTOCHECKBOX "标亮(&H)", chx10, 70, 120, 60, 14
-    AUTOCHECKBOX "单选按钮选择(&K)", chx11, 135, 120, 60, 14
+    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
+    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
+    AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
+    AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
+    AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
     LTEXT "帮助 ID(&L):", -1, 5, 162, 45, 12
@@ -617,7 +617,7 @@ FONT 9, "宋体", 0, 0, 134 // GB2312_CHARSET
     LTEXT "大小(&Z):", -1, 110, 105, 38, 12
     EDITTEXT edt5, 110, 118, 25, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr5, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 23, 53, 12, 20
-    AUTOCHECKBOX "大胆的(&B)", chx2, 140, 118, 40, 14
+    AUTOCHECKBOX "粗体(&B)", chx2, 140, 118, 40, 14
     AUTOCHECKBOX "斜体(&I)", chx3, 188, 118, 40, 14
     LTEXT "字体类型(&R):", -1, 5, 138, 80, 11
     COMBOBOX cmb5, 5, 148, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -1576,7 +1576,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER "类型库数据 (*.tlb)|*.tlb|二进制资源 (*.res)|*.res|文本文件 (*.txt)|*.txt|MIDL 文件 (*.idl)|*.idl|所有文件 (*.*)|*.*|"
     IDS_USAGE "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(bom)(backup)(ms-msgtbl)"
     IDS_NOSELECTION "没有选择。"
-    IDS_TRANSLATORS "[译者]\r\n英语: 片山博文MZ\r\n芬兰: Veikko Muurikainen\r\n印度尼西亚: Mas Ahmad Muhammad\r\n意大利语: R.B.\r\n日文: 片山博文MZ\r\n朝鲜语: VenusGirl (비너스걸)\r\n波兰语: Piotr Hetnarowicz\r\n葡萄牙语（巴西）: JNylson\r\n葡萄牙语（葡萄牙）: Luis Neves\r\n俄语: Dmitry Yerokhin\r\n简体中文: 林鸿湘\r\n西班牙语: Cristobal Prieto\r\n土耳其语: OnurGVNGL\r\n乌克兰语（乌克兰）: Volodymyr Paliy"
+    IDS_TRANSLATORS "[多国语言翻译]\r\n英语: 片山博文MZ\r\n芬兰: Veikko Muurikainen\r\n印度尼西亚: Mas Ahmad Muhammad\r\n意大利语: R.B.\r\n日文: 片山博文MZ\r\n朝鲜语: VenusGirl (비너스걸)\r\n波兰语: Piotr Hetnarowicz\r\n葡萄牙语（巴西）: JNylson\r\n葡萄牙语（葡萄牙）: Luis Neves\r\n俄语: Dmitry Yerokhin\r\n简体中文: 林鸿湘 左远春\r\n西班牙语: Cristobal Prieto\r\n土耳其语: OnurGVNGL\r\n乌克兰语（乌克兰）: Volodymyr Paliy"
     IDS_EXPORTFILTER "RC 文件 (*.rc;*.rc2)|*.rc;*.rc2|二进制资源文件 (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE "// 从 TEXTINCLUDE %u 生成\r\n"
     IDS_TEXTINCLUDEREADONLY "该文件受 TEXTINCLUDE 1 写保护。\r\n\r\n您仍要写入该文件吗？"
