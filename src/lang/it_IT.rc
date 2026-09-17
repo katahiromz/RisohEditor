@@ -1648,8 +1648,8 @@ STRINGTABLE
     IDS_CTRLIDWASEMPTY "L'ID controllo è vuoto."
     IDS_UTF16 "UTF-16 (con BOM)"
     IDS_UTF16N "UTF-16 (senza BOM)"
-    IDS_MULTISZ "MultiDim"
-    IDS_WORDS "PAROLE"
+    IDS_MULTISZ "MultiSz"
+    IDS_WORDS "WORDs"
     IDS_PICTURE "Immagine"
 }
 
