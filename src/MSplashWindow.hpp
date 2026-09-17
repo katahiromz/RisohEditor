@@ -49,8 +49,12 @@ public:
 		if (HMODULE hUser32 = GetModuleHandle(TEXT("user32.dll")))
 		{
 			typedef UINT (WINAPI *GETDPIFORSYSTEM)(void);
-			if (auto pGetDpiForSystem = (GETDPIFORSYSTEM)GetProcAddress(hUser32, "GetDpiForSystem"))
+			if (FARPROC fn = GetProcAddress(hUser32, "GetDpiForSystem"))
+			{
+				GETDPIFORSYSTEM pGetDpiForSystem;
+				CopyMemory(&pGetDpiForSystem, &fn, sizeof(fn));
 				dpi = pGetDpiForSystem();
+			}
 		}
 		INT cx = MulDiv(bm.bmWidth, dpi, 96);
 		INT cy = MulDiv(bm.bmHeight, dpi, 96);
