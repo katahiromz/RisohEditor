@@ -1,7 +1,7 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.2.1 (2026-XX-YY)
-    - Aggiunta la codifica "Picture".
+    - Aggiunta la codifica "Immagine".
     - Aggiunto il tipo di risorsa "STREAM".
 - v.6.2.0 (10.09.2026)
     - Aggiunto supporto per il tipo di risorsa "TEXTFILE". 
