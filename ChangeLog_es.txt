@@ -1,5 +1,6 @@
 ﻿## HISTORIA
 
+- v.6.2.1 (2026-XX-YY)
 - v.6.2.0 (2026-09-10)
     - Tipo de recurso "TEXTFILE" compatible. 
     - Codificaciones "UTF-16 (con BOM)" y "UTF-16 (sin BOM)" compatibles.

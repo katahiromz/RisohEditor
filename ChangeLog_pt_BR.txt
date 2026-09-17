@@ -1,5 +1,6 @@
 ﻿## HISTÓRICO
 
+- v.6.2.1 (2026-XX-YY)
 - v.6.2.0 (2026-09-10)
     - Tipo de recurso "TEXTFILE" suportado. 
     - Codificações "UTF-16 (com BOM)" e "UTF-16 (sem BOM)" suportadas.
