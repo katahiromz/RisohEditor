@@ -330,6 +330,10 @@ BOOL MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 // preview the unknown resource
 BOOL MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 {
+	MStringW enc = GetResTypeEncoding(entry.m_type);
+	if (enc == L"picture")
+		return PreviewImage(hwnd, entry);
+
 	// dump the text to m_hCodeEditor
 	ResToText res2text;
 	MString str = res2text.DumpEntry(entry);
@@ -698,7 +702,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 			entry->m_type == L"JPG" || entry->m_type == L"TIF" ||
 			entry->m_type == L"EMF" || entry->m_type == L"ENHMETAFILE" ||
 			entry->m_type == L"ENHMETAPICT" ||
-			entry->m_type == L"WMF" || entry->m_type == L"IMAGE")
+			entry->m_type == L"WMF")
 		{
 			bValid = PreviewImage(hwnd, *entry);
 		}

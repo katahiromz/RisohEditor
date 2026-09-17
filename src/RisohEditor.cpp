@@ -1075,7 +1075,7 @@ bool MMainWnd::IsEntryTextEditable(const EntryBase *entry)
 		return true;
 
 	auto enc = GetResTypeEncoding(entry->m_type);
-	if (enc.size() && enc != L"bin")
+	if (enc.size() && enc != L"bin" && enc != L"picture")
 		return true;
 
 	return false;
@@ -2438,11 +2438,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 			if (!MultiSz_DataFromVector(data, strs))
 				bDataOK = FALSE;
 		}
-		else if (enc == L"words")
-		{
-			bDataOK = FALSE;
-		}
-		else
+		else if (enc == L"words" || enc == L"picture")
 		{
 			bDataOK = FALSE;
 		}
@@ -5275,10 +5271,6 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 			return g_res.extract_bin(filename.c_str(), entry);
 		}
 		if (entry->m_type == L"MP3")
-		{
-			return g_res.extract_bin(filename.c_str(), entry);
-		}
-		if (entry->m_type == L"IMAGE")
 		{
 			return g_res.extract_bin(filename.c_str(), entry);
 		}

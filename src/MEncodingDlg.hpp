@@ -43,6 +43,8 @@ inline MString txt2enc(const MString& txt)
 		return L"multisz";
 	if (txt == LoadStringDx(IDS_WORDS))
 		return L"words";
+	if (txt == LoadStringDx(IDS_PICTURE))
+		return L"picture";
 	return L"";
 }
 
@@ -66,6 +68,8 @@ inline MString enc2txt(const MString& enc)
 		return LoadStringDx(IDS_MULTISZ);
 	if (enc == L"words")
 		return LoadStringDx(IDS_WORDS);
+	if (enc == L"picture")
+		return LoadStringDx(IDS_PICTURE);
 	return L"";
 }
 
@@ -115,6 +119,7 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_WORDS));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_PICTURE));
 
 		ComboBox_SetCurSel(hCmb2, k);
 
@@ -219,6 +224,7 @@ public:
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF16N));
 		ComboBox_AddString(hCmb2, LoadStringDx(IDS_WORDS));
+		ComboBox_AddString(hCmb2, LoadStringDx(IDS_PICTURE));
 
 		MString txt = enc2txt(m_enc);
 		int k = ComboBox_FindStringExact(hCmb2, -1, txt.c_str());

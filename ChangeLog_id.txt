@@ -1,6 +1,8 @@
 ﻿## SEJARAH
 
 - v.6.2.1 (2026-XX-YY)
+    - Menambahkan pengodean "Picture".
+    - Menambahkan tipe sumber daya "STREAM".
 - v.6.2.0 (2026-09-10)
     - Mendukung jenis sumber daya "TEXTFILE". 
     - Mendukung pengodean "UTF-16 (dengan BOM)" dan "UTF-16 (tanpa BOM)".

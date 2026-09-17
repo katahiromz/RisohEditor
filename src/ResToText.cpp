@@ -337,51 +337,6 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 		{
 			// No output file
 		}
-		else if (entry.m_type == L"IMAGE")
-		{
-			if (entry.m_et == ET_LANG)
-			{
-				if (entry.size() >= 4)
-				{
-					if (memcmp(&entry[0], "BM", 2) == 0)
-					{
-						str += L"Image_";
-						str += DumpEscapedName(entry.m_name);
-						str += L".bmp";
-						ret = TRUE;
-					}
-					else if (memcmp(&entry[0], "GIF", 3) == 0)
-					{
-						str += L"Image_";
-						str += DumpEscapedName(entry.m_name);
-						str += L".gif";
-						ret = TRUE;
-					}
-					else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
-					{
-						str += L"Image_";
-						str += DumpEscapedName(entry.m_name);
-						str += L".png";
-						ret = TRUE;
-					}
-					else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
-					{
-						str += L"Image_";
-						str += DumpEscapedName(entry.m_name);
-						str += L".jpg";
-						ret = TRUE;
-					}
-					else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
-							 memcmp(&entry[0], "\x49\x49", 2) == 0)
-					{
-						str += L"Image_";
-						str += DumpEscapedName(entry.m_name);
-						str += L".tif";
-						ret = TRUE;
-					}
-				}
-			}
-		}
 		else if (entry.m_type == L"TEXTFILE")
 		{
 			str += entry.m_type.str(true);
@@ -421,6 +376,62 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 			str += DumpEscapedName(entry.m_name);
 			str += L".reg";
 			ret = TRUE;
+		}
+		else if (entry.m_et == ET_LANG && entry.size() >= 4)
+		{
+			MStringW enc = GetResTypeEncoding(entry.m_type);
+			if (enc == L"picture")
+			{
+				// Capitalize
+				MStringW type = entry.m_type.str(true);
+				mstr_lower(type);
+				MStringW type_name;
+				type_name += type[0];
+				mstr_upper(type_name);
+				type_name += type.substr(1);
+
+				if (memcmp(&entry[0], "BM", 2) == 0)
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".bmp";
+					ret = TRUE;
+				}
+				else if (memcmp(&entry[0], "GIF", 3) == 0)
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".gif";
+					ret = TRUE;
+				}
+				else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".png";
+					ret = TRUE;
+				}
+				else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".jpg";
+					ret = TRUE;
+				}
+				else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
+						 memcmp(&entry[0], "\x49\x49", 2) == 0)
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".tif";
+					ret = TRUE;
+				}
+			}
 		}
 		else
 		{
@@ -765,16 +776,14 @@ ResToText::DoText(const EntryBase& entry)
 		MTextType type;
 		type.nNewLine = MNEWLINE_CRLF;
 		if (entry.size())
-		{
 			str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
-		}
 	}
 	else
 	{
 		str += GetLanguageStatement(entry.m_lang);
 		str += DumpName(entry.m_type, entry.m_name);
 		str += L" ";
-		str += DumpEscapedName(entry.m_type);
+		str += entry.m_type.str(true);
 		str += L" \"";
 		str += GetEntryFileName(entry);
 		str += L"\"\r\n\r\n";
@@ -913,7 +922,7 @@ ResToText::DoImage(const EntryBase& entry)
 		str += GetEntryFileName(entry);
 		str += L"\"\r\n\r\n";
 	}
-	else if (entry.m_type == L"IMAGE")
+	else
 	{
 		if (entry.size() >= 4)
 		{
@@ -1023,7 +1032,7 @@ ResToText::DumpEntry(const EntryBase& entry)
 			type == L"JPEG" || type == L"TIFF" ||
 			type == L"JPG" || type == L"TIF" ||
 			type == L"EMF" || type == L"ENHMETAFILE" ||
-			type == L"ENHMETAPICT" || type == L"WMF" || type == L"IMAGE")
+			type == L"ENHMETAPICT" || type == L"WMF")
 		{
 			return DoImage(entry);
 		}
@@ -1293,13 +1302,24 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 			str += words.Dump(entry.m_type, entry.m_name);
 			return str;
 		}
+		if (enc == L"picture")
+		{
+			str += GetLanguageStatement(entry.m_lang);
+			str += DumpName(entry.m_type, entry.m_name);
+			str += L" ";
+			str += entry.m_type.str(true);
+			str += L" \"";
+			str += GetEntryFileName(entry);
+			str += L"\"\r\n\r\n";
+			return str;
+		}
 	}
 	else
 	{
 		str += GetLanguageStatement(entry.m_lang);
 		str += DumpName(entry.m_type, entry.m_name);
 		str += L" ";
-		str += DumpEscapedName(entry.m_type);
+		str += entry.m_type.str(true);
 		str += L" \"";
 		str += GetEntryFileName(entry);
 		str += L"\"\r\n\r\n";
@@ -1307,15 +1327,13 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 	return str;
 }
 
+MStringW GetResTypeEncoding(const MIdOrString& type);
+
 MString ResToText::DoUnknown(const EntryBase& entry)
 {
-	MStringW GetResTypeEncoding(const MIdOrString& type);
-
 	MStringW enc = GetResTypeEncoding(entry.m_type);
 	if (enc.size())
-	{
 		return DoEncodedText(entry, enc);
-	}
 
 	MString str;
 	if (entry.m_et != ET_LANG)
@@ -1342,13 +1360,9 @@ MString ResToText::DoUnknown(const EntryBase& entry)
 
 MString ResToText::DoFont(const EntryBase& entry)
 {
-	MStringW GetResTypeEncoding(const MIdOrString& type);
-
 	MStringW enc = GetResTypeEncoding(entry.m_type);
 	if (enc.size())
-	{
 		return DoEncodedText(entry, enc);
-	}
 
 	MString str;
 	if (entry.m_et != ET_LANG)
