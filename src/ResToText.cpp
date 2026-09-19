@@ -379,17 +379,17 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 		}
 		else if (entry.m_et == ET_LANG && entry.size() >= 4)
 		{
+			// Capitalize type name
+			MStringW type = entry.m_type.str(true);
+			mstr_lower(type);
+			MStringW type_name;
+			type_name += type[0];
+			mstr_upper(type_name);
+			type_name += type.substr(1);
+
 			MStringW enc = GetResTypeEncoding(entry.m_type);
 			if (enc == L"picture")
 			{
-				// Capitalize
-				MStringW type = entry.m_type.str(true);
-				mstr_lower(type);
-				MStringW type_name;
-				type_name += type[0];
-				mstr_upper(type_name);
-				type_name += type.substr(1);
-
 				if (memcmp(&entry[0], "BM", 2) == 0)
 				{
 					str += type_name;
@@ -431,6 +431,20 @@ BOOL ResToText::GetEntryFileNameEx(const EntryBase& entry, MStringW& str)
 					str += L".tif";
 					ret = TRUE;
 				}
+				else
+				{
+					str += type_name;
+					str += L"_";
+					str += DumpEscapedName(entry.m_name);
+					str += L".bin";
+					ret = TRUE;
+				}
+			} else {
+				str += type_name;
+				str += L"_";
+				str += DumpEscapedName(entry.m_name);
+				str += L".bin";
+				ret = TRUE;
 			}
 		}
 		else
