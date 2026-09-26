@@ -2531,14 +2531,16 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
 	}
 
 	WCHAR szPath[MAX_PATH], szFile[MAX_PATH];
-	GetTempPathW(_countof(szPath), szPath);
-	GetTempFileNameW(szPath, L"Upd", 0, szFile);
+	if (!GetTempPathW(_countof(szPath), szPath) ||
+		!GetTempFileNameW(szPath, L"Upd", 0, szFile))
+		return;
 
 	std::wstring page = L"https://katahiromz.web.fc2.com/re/version.html";
 	DeleteUrlCacheEntryW(page.c_str());
 	HRESULT hr = URLDownloadToFileW(NULL, page.c_str(), szFile, 0, NULL);
 	if (FAILED(hr))
 	{
+		DeleteFileW(szFile);
 		ErrorBoxDx(IDS_CANTCHECKUPDATE);
 		return;
 	}
@@ -3096,7 +3098,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 {
 	HWND hwndCodeEditor = m_hCodeEditor;
-	HWND hwndHexViewer = m_hHexViewer;
+	HWND hwndHexViewer = *m_phHexViewer;
 	HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
 	HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
 	HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
@@ -3120,7 +3122,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 
 	HWND ahwnd[] =
 	{
-		m_hwndTV, m_hCodeEditor, m_hHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
+		m_hwndTV, m_hCodeEditor, *m_phHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
 	};
 
 	UINT i;
@@ -3164,7 +3166,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 	else if (hwndHexViewer == ahwnd[i])
 	{
 		OnSelChange(hwnd, 1);
-		SetFocus(m_hHexViewer);
+		SetFocus(*m_phHexViewer);
 	}
 	else
 	{
@@ -3709,9 +3711,14 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		}
 	}
 
-	if (hwndCtl == m_hHexViewer)
+	if (hwndCtl == *m_phHexViewer)
 	{
-		if (codeNotify == LNEN_ZOOMIN)
+		if (codeNotify == BEN_CHANGE)
+		{
+			DoSetFileModified(TRUE);
+			return;
+		}
+		if (codeNotify == BEN_ZOOMIN)
 		{
 			g_settings.nBinFontSize += 2;
 			if (g_settings.nBinFontSize >= 48)
@@ -3719,7 +3726,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 			ReCreateFonts(hwnd);
 			return;
 		}
-		if (codeNotify == LNEN_ZOOMOUT)
+		if (codeNotify == BEN_ZOOMOUT)
 		{
 			g_settings.nBinFontSize -= 2;
 			if (g_settings.nBinFontSize < 8)

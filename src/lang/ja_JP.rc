@@ -257,6 +257,27 @@ IDR_POPUPMENUS MENU
     }
 }
 
+IDR_BINEDIT_CTX_MENU MENU
+{
+    POPUP "Popup #0"
+    {
+        MENUITEM "切り取り(&T)\tCtrl+X", ID_BINEDIT_CUT
+        MENUITEM "コピー(&C)\tCtrl+C", ID_BINEDIT_COPY
+        MENUITEM "貼り付け(&P)\tCtrl+V", ID_BINEDIT_PASTE
+        MENUITEM "削除(&D)\tDel", ID_BINEDIT_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "すべて選択(&A)\tCtrl+A", ID_BINEDIT_SELECTALL
+        MENUITEM "オフセットへ移動(&G)...\tCtrl+G", ID_BINEDIT_GOTO
+        MENUITEM SEPARATOR
+        MENUITEM "ANSI", ID_BINEDIT_ANSI
+        MENUITEM "UTF-8", ID_BINEDIT_UTF8
+        MENUITEM "UTF-16", ID_BINEDIT_UTF16
+        MENUITEM "シフトJIS", ID_BINEDIT_SJIS
+        MENUITEM SEPARATOR
+        MENUITEM "ダンプ文字列をコピー(&U)", ID_BINEDIT_COPYDUMPTEXT
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_DIALOG
 
@@ -1261,6 +1282,20 @@ FONT 9, "MS UI Gothic", 0, 0, 128 // SHIFTJIS_CHARSET
     LTEXT "暗号化したリソース項目はパスワードを付けてWonResで読み込む必要があります。", -1, 5, 103, 158, 21
     DEFPUSHBUTTON "OK", IDOK, 5, 130, 60, 15
     PUSHBUTTON "キャンセル", IDCANCEL, 70, 130, 60, 15
+}
+
+IDD_GOTO_OFFSET DIALOGEX 0, 0, 200, 92
+CAPTION "オフセットへ移動"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg", 0, 0, 128 // SHIFTJIS_CHARSET
+{
+    LTEXT "オフセット:", stc1, 7, 9, 52, 8
+    EDITTEXT edt1, 62, 7, 131, 12, ES_AUTOHSCROLL, WS_EX_CLIENTEDGE
+    LTEXT "", stc2, 7, 24, 186, 10
+    AUTORADIOBUTTON "16進数(&H)", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "10進数(&D)", rad2, 95, 40, 85, 10, WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 88, 68, 50, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 143, 68, 50, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////

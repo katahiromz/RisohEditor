@@ -1,6 +1,7 @@
 # libRisohEditor.a
 add_library(libRisohEditor STATIC
     AccelRes.cpp
+    BinEdit.cpp
     DialogRes.cpp
     DlgInitRes.cpp
     EgaBridge.cpp
@@ -46,7 +47,7 @@ add_executable(RisohEditor WIN32
 	res/Manifest_1.manifest)
 target_link_libraries(RisohEditor
     LineNumEdit_static libRisohEditor
-    libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet crypt32 wintrust
+    libega gdi32 comctl32 imm32 msimg32 winmm gdiplus vfw32 wininet crypt32 wintrust
     oledlg msimg32 advapi32 shlwapi version urlmon WonRes)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -64,7 +65,7 @@ add_executable(RisohEditorPortable WIN32
 	res/Manifest_1.manifest)
 target_link_libraries(RisohEditorPortable
     LineNumEdit_static libRisohEditor
-    libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet crypt32 wintrust
+    libega gdi32 comctl32 imm32 msimg32 winmm gdiplus vfw32 wininet crypt32 wintrust
     oledlg msimg32 advapi32 shlwapi version urlmon WonRes)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)

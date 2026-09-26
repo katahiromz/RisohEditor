@@ -78,6 +78,7 @@
 #define IDD_CLONEINNEWTYPE                  172
 #define IDD_CRYPTO                          173
 #define IDD_ENCRYPTTYPES                    174
+#define IDD_GOTO_OFFSET                     175
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -101,6 +102,7 @@
 #define IDR_TINYEXE64                       108
 #define IDR_TINYDLL64                       109
 #define IDR_SEARCHINGANICUR                 110
+#define IDR_BINEDIT_CTX_MENU                111
 
 #define IDS_TITLE                           101
 #define IDS_TITLEWITHFILE                   102
@@ -571,6 +573,17 @@
 #define ID_OPENREADMERU                     288
 #define ID_SELECTALL                        289
 #define ID_RESETSETTINGS                    290
+#define ID_BINEDIT_CUT                      291
+#define ID_BINEDIT_COPY                     292
+#define ID_BINEDIT_PASTE                    293
+#define ID_BINEDIT_DELETE                   294
+#define ID_BINEDIT_SELECTALL                295
+#define ID_BINEDIT_ANSI                     296
+#define ID_BINEDIT_UTF8                     297
+#define ID_BINEDIT_UTF16                    298
+#define ID_BINEDIT_SJIS                     299
+#define ID_BINEDIT_GOTO                     300
+#define ID_BINEDIT_COPYDUMPTEXT             301
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -581,7 +594,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    111
-        #define _APS_NEXT_COMMAND_VALUE     291
+        #define _APS_NEXT_COMMAND_VALUE     302
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

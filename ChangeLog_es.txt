@@ -2,6 +2,7 @@
 
 - v.6.2.2 (2026-XX-YY)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON se han fusionado en IDD_ADDRES.
+    - Se ha añadido un editor binario para los recursos.
 - v.6.2.1 (2026-09-19)
     - Se añadió la codificación "Picture".
     - Se añadió el tipo de recurso "STREAM".

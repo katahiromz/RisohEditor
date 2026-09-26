@@ -409,8 +409,9 @@ BOOL MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 
 	{
 		WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
-		GetTempPathW(_countof(szPath), szPath);
-		GetTempFileNameW(szPath, L"ani", 0, szTempFile);
+		if (!GetTempPathW(_countof(szPath), szPath) ||
+			!GetTempFileNameW(szPath, L"ani", 0, szTempFile))
+			return FALSE;
 
 		MFile file;
 		DWORD cbWritten = 0;
@@ -517,7 +518,7 @@ void MMainWnd::EndPreviewBatch()
 			m_splitter2.SendMessageDx(WM_SETREDRAW, TRUE, 0);
 
 		InvalidateRect(m_hCodeEditor, nullptr, TRUE);
-		InvalidateRect(m_hHexViewer, nullptr, TRUE);
+		InvalidateRect(*m_phHexViewer, nullptr, TRUE);
 		InvalidateRect(m_splitter2, nullptr, TRUE);
 		InvalidateRect(m_hBmpView, nullptr, TRUE);
 
@@ -539,9 +540,8 @@ VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/,
 		DestroyRadWindow();
 	}
 
-	// clear m_hHexViewer
-	SetWindowTextW(m_hHexViewer, NULL);
-	Edit_SetModify(m_hHexViewer, FALSE);
+	// clear m_phHexViewer
+	m_phHexViewer->SetDataSrc(nullptr);
 
 	// clear m_hCodeEditor
 	if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
@@ -599,9 +599,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 	if (bDestroyRad)
 		DestroyRadWindow();
 
-	SetWindowTextW(m_hHexViewer, NULL);
-	Edit_SetModify(m_hHexViewer, FALSE);
-	ClearHexCache();
+	m_phHexViewer->SetDataSrc(&const_cast<EntryBase*>(entry)->m_data);
 
 	if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
 	{

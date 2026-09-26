@@ -92,14 +92,12 @@ protected:
 	MIdOrString     m_name;
 	LANGID          m_lang;
 	BOOL            m_bShowBinEdit;
-	MStringW        m_strHexCache;
 
 	void UpdateHexViewerContent();
-	void ClearHexCache() { m_strHexCache.clear(); }
 
 	// classes
 	MRadWindow      m_rad_window;               // the RADical window
-	MHexEditCtrl    m_hHexViewer;               // the EDIT control for binary
+	BinEdit*        m_phHexViewer;              // the binary editor
 	HWND            m_hCodeEditor;              // the EDIT control for source
 	MBmpView        m_hBmpView;                 // the bitmap view
 	MSplitterWnd    m_splitter1;                // 1st splitter window
