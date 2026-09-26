@@ -1,5 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
+- v.6.2.2 (2026-XX-YY)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON sono stati uniti in IDD_ADDRES.
 - v.6.2.1 (19.09.2026)
     - Aggiunta la codifica "Immagine".
