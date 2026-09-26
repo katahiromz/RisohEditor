@@ -109,7 +109,7 @@ public:
 		{
 			DialogItem& item = m_dialog_res[i];
 			if (item.m_class == 0x0082 ||
-				lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+				lstrcmpiW(item.m_class.str().c_str(), L"STATIC") == 0)
 			{
 				// static
 				if ((item.m_style & SS_TYPEMASK) == SS_ICON)

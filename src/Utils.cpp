@@ -2059,7 +2059,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
 	// set the text of the ID
-	SetWindowTextW(hCmb, id2.c_str());
+	SetWindowTextW(hCmb, id2.str().c_str());
 
 	if (g_settings.bHideID)
 		return;	 // don't use macro IDs
@@ -2123,10 +2123,11 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 		g_res.search(found, ET_LANG, rt, BAD_NAME, BAD_LANG);
 		for (auto e : found)
 		{
-			INT i = ComboBox_FindStringExact(hCmb, -1, e->m_name.c_str());
+			MString name = e->m_name.str();
+			INT i = ComboBox_FindStringExact(hCmb, -1, name.c_str());
 			if (i != CB_ERR)
 				continue;
-			ComboBox_AddString(hCmb, e->m_name.c_str());
+			ComboBox_AddString(hCmb, name.c_str());
 		}
 	}
 }
@@ -2201,10 +2202,11 @@ void InitResNameComboBoxDword(HWND hCmb, const DWORD& id, IDTYPE_ nIDTYPE_)
 		g_res.search(found, ET_LANG, rt, BAD_NAME, BAD_LANG);
 		for (auto e : found)
 		{
-			INT i = ComboBox_FindStringExact(hCmb, -1, e->m_name.c_str());
+			MString name = e->m_name.str();
+			INT i = ComboBox_FindStringExact(hCmb, -1, name.c_str());
 			if (i != CB_ERR)
 				continue;
-			ComboBox_AddString(hCmb, e->m_name.c_str());
+			ComboBox_AddString(hCmb, name.c_str());
 		}
 	}
 }
@@ -2218,7 +2220,7 @@ void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, ID
 	InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
 	// set the ID text to combobox
-	SetWindowTextW(hCmb, id2.c_str());
+	SetWindowTextW(hCmb, id2.str().c_str());
 
 	if (g_settings.bHideID)
 		return;	 // don't use the macro IDs

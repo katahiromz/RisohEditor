@@ -803,7 +803,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 			PostUpdateArrow(hwnd);
 
 			WCHAR szText[MAX_PATH];
-			StringCchCopyW(szText, _countof(szText), new_type.c_str());
+			StringCchCopyW(szText, _countof(szText), new_type.str().c_str());
 
 			if (!DoRetypeEntry(szText, entry, old_type, new_type))
 				return FALSE; // reject
@@ -842,7 +842,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 			PostUpdateArrow(hwnd);
 
 			WCHAR szText[MAX_PATH];
-			StringCchCopyW(szText, _countof(szText), new_name.c_str());
+			StringCchCopyW(szText, _countof(szText), new_name.str().c_str());
 
 			DoRenameEntry(szText, entry, old_name, new_name);
 			DoSetFileModified(TRUE);
@@ -7337,7 +7337,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, MIdOrString& old_
 
 	if (entry->m_type == L"RISOHTEMPLATE")
 	{
-		WORD wID = WORD(g_db.GetValue(L"RESOURCE", new_name.c_str()));
+		WORD wID = WORD(g_db.GetValue(L"RESOURCE", new_name.str().c_str()));
 		if (wID != 0)
 			new_name = wID;
 	}

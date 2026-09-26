@@ -1905,7 +1905,7 @@ void MRadWindow::create_maps(LANGID lang)
 		auto& item = m_dialog_res[i];
 		// is it a STATIC control?
 		if (item.m_class == 0x0082 ||
-			lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+			lstrcmpiW(item.m_class.str().c_str(), L"STATIC") == 0)
 		{
 			if ((item.m_style & SS_TYPEMASK) == SS_ICON)
 			{
