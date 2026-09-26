@@ -432,12 +432,25 @@ public:
 		WCHAR szFile[MAX_PATH];
 		StringCchCopyW(szFile, _countof(szFile), strFile.c_str());
 
+		WCHAR text[MAX_PATH] = {};
+		HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+		INT iItem = ComboBox_GetCurSel(hCmb1);
+		if (iItem == CB_ERR)
+			ComboBox_GetText(hCmb1, text, _countof(text));
+		else
+			ComboBox_GetLBText(hCmb1, iItem, text);
+		StrTrim(text, L" \t");
+
 		// initialize OPENFILENAME structure
-		OPENFILENAMEW ofn;
-		ZeroMemory(&ofn, sizeof(ofn));
-		ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-		ofn.hwndOwner = hwnd;
-		ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ALLFILES));
+		OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+		if (lstrcmpiW(text, L"RT_GROUP_ICON (14)") == 0)
+			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
+		else if (lstrcmpiW(text, L"RT_GROUP_CURSOR (12)") == 0)
+			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
+		else if (lstrcmpiW(text, L"RT_BITMAP (2)") == 0)
+			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
+		else
+			ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ALLFILES));
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = _countof(szFile);
 		ofn.lpstrTitle = LoadStringDx(IDS_ADDRES);
