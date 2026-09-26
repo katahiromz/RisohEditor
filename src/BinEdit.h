@@ -257,6 +257,7 @@ protected:
     size_t m_gutterAnchorLine = 0;
     bool m_insertMode = true;
     bool m_suppressImeChar = false;
+    int m_changed_flag_lock = 0; // 変更フラグロック
 
     // レイアウト位置情報
     int m_addrColX = 0;

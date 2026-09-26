@@ -863,6 +863,9 @@ void BinEdit::ShowContextMenu(int screenX, int screenY)
 
 void BinEdit::NotifyChanged()
 {
+    if (m_changed_flag_lock)
+        return;
+
     HWND hParent = GetParent(m_hwnd);
     if (hParent)
     {
@@ -877,6 +880,7 @@ void BinEdit::NotifyChanged()
 
 void BinEdit::SetDataSrc(data_type* data_src)
 {
+    ++m_changed_flag_lock;
     m_data_src = (data_src ? data_src : &m_data);
     m_anchorOffset = 0;
     m_caretOffset = 0;
@@ -886,6 +890,7 @@ void BinEdit::SetDataSrc(data_type* data_src)
     EnsureCaretVisible();
     InvalidateAll();
     RebuildDecodeCache();
+    --m_changed_flag_lock;
 }
 
 void BinEdit::SetData(data_type data)
@@ -931,6 +936,7 @@ void BinEdit::resize(size_t cb)
 
 void BinEdit::SetLimit(size_t min_len, size_t max_len)
 {
+    m_changed_flag_lock++;
     if (min_len > max_len)
         std::swap(min_len, max_len); // 安全側に倒す (逆転していたら入れ替える)
 
@@ -942,6 +948,7 @@ void BinEdit::SetLimit(size_t min_len, size_t max_len)
         resize(m_minLen);
     else if (cur > m_maxLen)
         resize(m_maxLen);
+    m_changed_flag_lock--;
 }
 
 void BinEdit::SetTextMode(BinEditTextMode mode)
