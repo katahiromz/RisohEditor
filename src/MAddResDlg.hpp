@@ -37,6 +37,12 @@ public:
 	EntryBase *m_added_entry = nullptr;
 	BOOL m_bOldModified = FALSE;
 
+	// preview (for RT_GROUP_ICON / RT_GROUP_CURSOR / RT_BITMAP)
+	MIdOrString m_curType;
+	HICON m_hIcon = NULL;
+	HCURSOR m_hCursor = NULL;
+	HBITMAP m_hBitmap = NULL;
+
 	MAddResDlg()
 		: MDialogBase(IDD_ADDRES)
 		, m_type(0xFFFF)
@@ -58,6 +64,13 @@ public:
 		m_pAutoComplete1->Release();
 		m_pAutoComplete2->unbind();
 		m_pAutoComplete2->Release();
+
+		if (m_hIcon)
+			DestroyIcon(m_hIcon);
+		if (m_hCursor)
+			DestroyCursor(m_hCursor);
+		if (m_hBitmap)
+			DeleteObject(m_hBitmap);
 	}
 
 	BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -86,11 +99,14 @@ public:
 		InitLangComboBox(hCmb3, GetDefaultResLanguage());
 		SubclassChildDx(m_cmb3, cmb3);
 
+		// no preview yet
+		ShowWindow(GetDlgItem(hwnd, ico1), SW_HIDE);
+
 		// for file
 		if (m_file)
 		{
 			SetDlgItemTextW(hwnd, edt1, m_file);
-			DoFile(hwnd, m_file);
+			DoFile(hwnd, m_file, m_type);
 		}
 		FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
 
@@ -127,6 +143,121 @@ public:
 	bool HasSample(const MIdOrString& type, const MIdOrString& name, LANGID wLang) const
 	{
 		return !GetRisohTemplate(type, name, wLang).empty();
+	}
+
+	// Handles OK for RT_GROUP_ICON, RT_GROUP_CURSOR, and RT_BITMAP, taking over
+	// the role of the former MAddIconDlg, MAddCursorDlg, and MAddBitmapDlg.
+	void OnOkIconCursorBitmap(HWND hwnd, HWND hEdt1, MIdOrString type,
+	                          const MIdOrString& name, LANGID lang)
+	{
+		// the file is mandatory for these types
+		std::wstring file;
+		if (!Edt1_CheckFile(hEdt1, file))
+			return;
+
+		if (type == RT_GROUP_ICON)
+		{
+			if (auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang))
+			{
+				INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
+				switch (id)
+				{
+				case IDYES:
+					g_res.delete_entry(entry);
+					break;
+				case IDNO:
+				case IDCANCEL:
+					return;
+				}
+			}
+
+			if (!g_res.add_group_icon(name, lang, file))
+			{
+				ErrorBoxDx(IDS_CANNOTADDICON);
+				return;
+			}
+		}
+		else if (type == RT_BITMAP)
+		{
+			if (auto entry = g_res.find(ET_LANG, RT_BITMAP, name, lang))
+			{
+				INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
+				switch (id)
+				{
+				case IDYES:
+					g_res.delete_entry(entry);
+					break;
+				case IDNO:
+				case IDCANCEL:
+					return;
+				}
+			}
+
+			if (!g_res.add_bitmap(name, lang, file))
+			{
+				ErrorBoxDx(IDS_CANTADDBMP);
+				return;
+			}
+		}
+		else // RT_GROUP_CURSOR
+		{
+			// *.ani files masquerade as RT_GROUP_CURSOR until we can inspect them
+			BOOL bAni = FALSE;
+			LPCWSTR pchExt = PathFindExtensionW(file.c_str());
+			if (lstrcmpiW(pchExt, L".ani") == 0)
+				bAni = TRUE;
+
+			if (auto entry = g_res.find(ET_LANG, (bAni ? RT_ANICURSOR : RT_GROUP_CURSOR), name, lang))
+			{
+				INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
+				switch (id)
+				{
+				case IDYES:
+					g_res.delete_entry(entry);
+					break;
+				case IDNO:
+				case IDCANCEL:
+					return;
+				}
+			}
+
+			if (!bAni)
+			{
+				// *.cur files can actually be RIFF-based animated cursors too
+				MByteStream bs;
+				if (bs.LoadFromFile(file.c_str()) && bs.size() >= 4)
+				{
+					if (memcmp(bs.ptr(), "RIFF", 4) == 0)
+						bAni = TRUE;
+				}
+			}
+
+			if (bAni)
+			{
+				type = RT_ANICURSOR;
+				MByteStream bs;
+				if (!bs.LoadFromFile(file.c_str()) ||
+					!g_res.add_lang_entry(type, name, lang, bs.data()))
+				{
+					ErrorBoxDx(IDS_CANNOTADDCUR);
+					return;
+				}
+			}
+			else
+			{
+				if (!g_res.add_group_cursor(name, lang, file))
+				{
+					ErrorBoxDx(IDS_CANNOTADDCUR);
+					return;
+				}
+			}
+		}
+
+		m_type = type;
+		m_name = name;
+		m_lang = lang;
+
+		EndDialog(IDOK);
 	}
 
 	void OnOK(HWND hwnd)
@@ -175,6 +306,15 @@ public:
 		HWND hEdt1 = GetDlgItem(hwnd, edt1);
 		std::wstring file = GetWindowTextW(hEdt1);
 		mstr_trim(file);
+
+		// RT_GROUP_ICON, RT_GROUP_CURSOR, and RT_BITMAP need their own special
+		// handling (this is what MAddIconDlg, MAddCursorDlg, and MAddBitmapDlg
+		// used to do before they were merged into this dialog)
+		if (type == RT_GROUP_ICON || type == RT_GROUP_CURSOR || type == RT_BITMAP)
+		{
+			OnOkIconCursorBitmap(hwnd, hEdt1, type, name, lang);
+			return;
+		}
 
 		if (file.empty() && !HasSample(type, name, lang))
 		{
@@ -306,11 +446,11 @@ public:
 		ofn.lpstrDefExt = L"bin";   // the default extension
 		if (GetOpenFileNameW(&ofn)) // "OK" button was pressed
 		{
-			DoFile(hwnd, szFile);
+			DoFile(hwnd, szFile, m_curType);
 		}
 	}
 
-	void DoFile(HWND hwnd, LPCWSTR szFile)
+	void DoFile(HWND hwnd, LPCWSTR szFile, const MIdOrString& type)
 	{
 		// set the file path
 		SetDlgItemTextW(hwnd, edt1, szFile);
@@ -323,6 +463,66 @@ public:
 			StringCchCopyW(szText, _countof(szText), szFile);
 			PathRemoveExtensionW(szText);
 			ComboBox_SetText(GetDlgItem(hwnd, cmb2), SanitizeIdentifier(PathFindFileNameW(szText)).c_str());
+		}
+
+		// update the icon/cursor/bitmap preview, if any
+		UpdatePreview(hwnd, type, szFile);
+	}
+
+	// Shows a preview of the file being added when it's an icon, a cursor, or
+	// a bitmap; hides the preview for any other resource type.
+	void UpdatePreview(HWND hwnd, const MIdOrString& type, LPCWSTR szFile)
+	{
+		HWND hIco1 = GetDlgItem(hwnd, ico1);
+		if (!hIco1)
+			return;
+
+		// clear the previous preview
+		SendMessage(hIco1, STM_SETIMAGE, IMAGE_ICON, 0);
+		if (m_hIcon)
+		{
+			DestroyIcon(m_hIcon);
+			m_hIcon = NULL;
+		}
+		if (m_hCursor)
+		{
+			DestroyCursor(m_hCursor);
+			m_hCursor = NULL;
+		}
+		if (m_hBitmap)
+		{
+			DeleteObject(m_hBitmap);
+			m_hBitmap = NULL;
+		}
+
+		LONG_PTR style = GetWindowLongPtr(hIco1, GWL_STYLE);
+
+		if (type == RT_GROUP_ICON && szFile && *szFile)
+		{
+			m_hIcon = (HICON)LoadImage(NULL, szFile, IMAGE_ICON, 32, 32,
+			                            LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+			SetWindowLongPtr(hIco1, GWL_STYLE, (style & ~SS_TYPEMASK) | SS_ICON);
+			SendMessage(hIco1, STM_SETIMAGE, IMAGE_ICON, (LPARAM)m_hIcon);
+			ShowWindow(hIco1, m_hIcon ? SW_SHOW : SW_HIDE);
+		}
+		else if (type == RT_GROUP_CURSOR && szFile && *szFile)
+		{
+			m_hCursor = LoadCursorFromFile(szFile);
+			SetWindowLongPtr(hIco1, GWL_STYLE, (style & ~SS_TYPEMASK) | SS_ICON);
+			SendMessage(hIco1, STM_SETIMAGE, IMAGE_CURSOR, (LPARAM)m_hCursor);
+			ShowWindow(hIco1, m_hCursor ? SW_SHOW : SW_HIDE);
+		}
+		else if (type == RT_BITMAP && szFile && *szFile)
+		{
+			m_hBitmap = (HBITMAP)LoadImage(NULL, szFile, IMAGE_BITMAP, 32, 32,
+			                                LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+			SetWindowLongPtr(hIco1, GWL_STYLE, (style & ~SS_TYPEMASK) | SS_BITMAP);
+			SendMessage(hIco1, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)m_hBitmap);
+			ShowWindow(hIco1, m_hBitmap ? SW_SHOW : SW_HIDE);
+		}
+		else
+		{
+			ShowWindow(hIco1, SW_HIDE);
 		}
 	}
 
@@ -371,6 +571,12 @@ public:
 		{
 			type = MIdOrString(strIDType.c_str());
 		}
+
+		// remember the current type and refresh the preview
+		m_curType = type;
+		MStringW curFile = GetDlgItemTextW(hwnd, edt1);
+		mstr_trim(curFile);
+		UpdatePreview(hwnd, type, curFile.c_str());
 
 		if (HasSample(type, m_name, m_lang))
 		{
@@ -422,6 +628,32 @@ public:
 		GetComboBoxInfo(m_cmb2, &info);
 		HWND hwndEdit = info.hwndItem;
 		m_pAutoComplete1->bind(hwndEdit);
+	}
+
+	// Selects the item of cmb1 (the resource type combobox) that matches the
+	// given resource type (RT_*), then refreshes the dialog as if the user had
+	// chosen it. Used to guess the resource type from a dropped file's extension.
+	void SelectResType(HWND hwnd, const MIdOrString& type)
+	{
+		INT nCount = ComboBox_GetCount(m_cmb1);
+		for (INT i = 0; i < nCount; ++i)
+		{
+			MString strIDType = GetComboBoxLBText(m_cmb1, i);
+			mstr_trim(strIDType);
+
+			// cut off the text from " (" to end
+			size_t k = strIDType.find(L" (");
+			if (k != MString::npos)
+				strIDType = strIDType.substr(0, k);
+
+			WORD nRT_ = (WORD)g_db.GetValue(L"RESOURCE", strIDType);
+			if (nRT_ != 0 && type == nRT_)
+			{
+				ComboBox_SetCurSel(m_cmb1, i);
+				OnCmb1(hwnd);
+				return;
+			}
+		}
 	}
 
 	void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -480,7 +712,17 @@ public:
 		// file(s) has dropped
 		WCHAR file[MAX_PATH];
 		DragQueryFileW(hdrop, 0, file, _countof(file));
-		DoFile(hwnd, file);
+
+		// guess the resource type from the file extension
+		LPCWSTR pchExt = PathFindExtensionW(file);
+		if (lstrcmpiW(pchExt, L".ico") == 0)
+			SelectResType(hwnd, RT_GROUP_ICON);
+		else if (lstrcmpiW(pchExt, L".cur") == 0)
+			SelectResType(hwnd, RT_GROUP_CURSOR);
+		else if (lstrcmpiW(pchExt, L".bmp") == 0)
+			SelectResType(hwnd, RT_BITMAP);
+
+		DoFile(hwnd, file, m_curType);
 	}
 
 	INT_PTR CALLBACK

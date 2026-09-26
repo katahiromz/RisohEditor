@@ -1,5 +1,6 @@
 ﻿## SEJARAH
 
+    - IDD_ADDBITMAP, IDD_ADDCURSOR, dan IDD_ADDICON telah digabungkan ke dalam IDD_ADDRES.
 - v.6.2.1 (2026-09-19)
     - Menambahkan pengodean "Picture".
     - Menambahkan tipe sumber daya "STREAM".

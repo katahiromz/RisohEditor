@@ -18,9 +18,6 @@
 #include "ToolbarRes.hpp"
 #include "VersionRes.hpp"
 
-#include "MAddBitmapDlg.hpp"
-#include "MAddCursorDlg.hpp"
-#include "MAddIconDlg.hpp"
 #include "MAdviceResHDlg.hpp"
 #include "MChooseLangDlg.hpp"
 #include "MCloneInNewLangDlg.hpp"
@@ -418,7 +415,8 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 		return;
 
 	// show the dialog
-	MAddIconDlg dialog;
+	MAddResDlg dialog;
+	dialog.m_type = RT_GROUP_ICON;
 	if (dialog.DialogBoxDx(hwnd) == IDOK)
 	{
 		// refresh the ID list window
@@ -488,7 +486,8 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 		return;
 
 	// show the dialog
-	MAddBitmapDlg dialog;
+	MAddResDlg dialog;
+	dialog.m_type = RT_BITMAP;
 	if (dialog.DialogBoxDx(hwnd) == IDOK)
 	{
 		// refresh the ID list window
@@ -534,7 +533,8 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 		return;
 
 	// show the dialog
-	MAddCursorDlg dialog;
+	MAddResDlg dialog;
+	dialog.m_type = RT_GROUP_CURSOR;
 	if (dialog.DialogBoxDx(hwnd) == IDOK)
 	{
 		// refresh the ID list window
@@ -2612,7 +2612,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 	else if (lstrcmpiW(pchDotExt, L".ico") == 0)
 	{
 		// show the dialog
-		MAddIconDlg dialog;
+		MAddResDlg dialog;
+		dialog.m_type = RT_GROUP_ICON;
 		dialog.m_file = pszFile;
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
@@ -2632,7 +2633,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 	else if (lstrcmpiW(pchDotExt, L".cur") == 0 || lstrcmpiW(pchDotExt, L".ani") == 0)
 	{
 		// show the dialog
-		MAddCursorDlg dialog;
+		MAddResDlg dialog;
+		dialog.m_type = RT_GROUP_CURSOR;
 		dialog.m_file = pszFile;
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{
@@ -2708,7 +2710,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 	else if (lstrcmpiW(pchDotExt, L".bmp") == 0 || lstrcmpiW(pchDotExt, L".dib") == 0)
 	{
 		// show the dialog
-		MAddBitmapDlg dialog;
+		MAddResDlg dialog;
+		dialog.m_type = RT_BITMAP;
 		dialog.m_file = pszFile;
 		if (dialog.DialogBoxDx(hwnd) == IDOK)
 		{

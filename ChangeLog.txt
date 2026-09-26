@@ -1,5 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
+    - Merged IDD_ADDBITMAP, IDD_ADDCURSOR, and IDD_ADDICON into IDD_ADDRES.
 - v.6.2.1 (2026-09-19)
     - Added "Picture" encoding.
     - Added "STREAM" resource type.

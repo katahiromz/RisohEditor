@@ -1,5 +1,6 @@
 ﻿## ІСТОРІЯ (Журнал змін)
 
+    - IDD_ADDBITMAP, IDD_ADDCURSOR та IDD_ADDICON об'єднано в IDD_ADDRES.
 - v.6.2.1 (2026-09-19)
     - Додано кодування «Picture».
     - Додано тип ресурсу «STREAM».

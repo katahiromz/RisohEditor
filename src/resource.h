@@ -17,12 +17,9 @@
 #define IDC_DUMMYCONTROLID2                 1001
 
 #define IDD_REPLACERES                      100
-#define IDD_ADDICON                         101
 #define IDD_REPLACEICON                     102
-#define IDD_ADDBITMAP                       103
 #define IDD_REPLACEBMP                      104
 #define IDD_ADDRES                          105
-#define IDD_ADDCURSOR                       106
 #define IDD_REPLACECUR                      107
 #define IDD_MENUTEST                        108
 #define IDD_ADDKEY                          109
