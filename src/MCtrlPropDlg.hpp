@@ -303,7 +303,7 @@ public:
 			if ((m_flags & F_CLASS) || (flags & F_CLASS))
 			{
 				item.m_class = m_item.m_class;
-				if (!IsThereWndClass(item.m_class.c_str()))
+				if (!IsThereWndClass(item.m_class.str().c_str()))
 				{
 					HWND hCmb4 = GetDlgItem(m_hwnd, cmb4);
 					ComboBox_SetEditSel(hCmb4, 0, -1);
@@ -331,7 +331,7 @@ public:
 					item.m_str_list.clear();
 				}
 			}
-			if (lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+			if (lstrcmpiW(item.m_class.str().c_str(), L"STATIC") == 0)
 			{
 				DWORD style = item.m_style;
 				if ((style & SS_TYPEMASK) == SS_ICON ||
@@ -339,7 +339,7 @@ public:
 				{
 					if (item.m_title.str().size() && mchr_is_digit(item.m_title.str()[0]))
 					{
-						LONG n = mstr_parse_int(item.m_title.c_str());
+						LONG n = mstr_parse_int(item.m_title.str().c_str());
 						item.m_title = WORD(n);
 					}
 				}
@@ -479,7 +479,7 @@ public:
 
 		if (m_flags & F_CLASS)
 		{
-			InitTables(m_item.m_class.c_str());
+			InitTables(m_item.m_class.str().c_str());
 		}
 		else
 		{
@@ -487,7 +487,7 @@ public:
 		}
 
 		HWND hCmb4 = GetDlgItem(hwnd, cmb4);
-		InitWndClassComboBox(hCmb4, m_item.m_class.c_str());
+		InitWndClassComboBox(hCmb4, m_item.m_class.str().c_str());
 		SubclassChildDx(m_cmb4, cmb4);
 
 		WCHAR szText[MAX_PATH];
@@ -564,7 +564,7 @@ public:
 		}
 		else if (m_flags & F_CLASS)
 		{
-			SetDlgItemText(hwnd, cmb4, m_item.m_class.c_str());
+			SetDlgItemText(hwnd, cmb4, m_item.m_class.str().c_str());
 		}
 
 		if (m_bTitleMixed)
@@ -577,7 +577,7 @@ public:
 			if (!m_item.m_title.empty())
 			{
 				if (m_item.m_title.is_int())
-					strCaption = m_item.m_title.c_str();
+					strCaption = m_item.m_title.str();
 				else
 					strCaption = m_item.m_title.quoted_wstr();
 			}

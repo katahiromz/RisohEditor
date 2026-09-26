@@ -339,9 +339,10 @@ public:
 	{
 		for (auto& item : m_items)
 		{
-			if (StrCmpNIW(item.m_class.c_str(), L"AtlAxWin", 8) == 0)
+			MString class_name = item.m_class.str();
+			if (StrCmpNIW(class_name.c_str(), L"AtlAxWin", 8) == 0)
 				return TRUE;
-			if (item.m_class.c_str()[0] == L'{')
+			if (class_name[0] == L'{')
 				return TRUE;
 		}
 		return FALSE;

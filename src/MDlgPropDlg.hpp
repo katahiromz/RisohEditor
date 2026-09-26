@@ -144,7 +144,7 @@ public:
 		SendDlgItemMessageW(hwnd, edt6, EM_LIMITTEXT, MAX_PATH - 1, 0);
 		SendDlgItemMessageW(hwnd, edt7, EM_LIMITTEXT, MAX_PATH - 1, 0);
 
-		MString strCaption = m_dialog_res.m_title.c_str();
+		MString strCaption = m_dialog_res.m_title.str();
 		if (strCaption.size())
 		{
 			strCaption = mstr_quote(strCaption);
@@ -191,7 +191,7 @@ public:
 		SetDlgItemInt(hwnd, edt3, m_dialog_res.m_siz.cx, TRUE);
 		SetDlgItemInt(hwnd, edt4, m_dialog_res.m_siz.cy, TRUE);
 
-		SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
+		SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.str_or_empty().c_str());
 
 		MStringW strHelp = g_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
 		SetDlgItemText(hwnd, cmb3, strHelp.c_str());
@@ -203,7 +203,7 @@ public:
 		HWND hwndEdit = info.hwndItem;
 		m_pAutoComplete6->bind(hwndEdit);
 
-		SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().c_str_or_empty());
+		SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().str_or_empty().c_str());
 		SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
 		SendDlgItemMessageW(hwnd, scr5, UDM_SETRANGE32, SHRT_MIN, SHRT_MAX);
@@ -319,8 +319,8 @@ public:
 		MString strMenu = GetDlgItemText(cmb6);
 		mstr_trim(strMenu);
 		MIdOrString menu(strMenu.c_str());
-		if (menu.is_str() && g_db.HasResID(menu.c_str()))
-			menu = (WORD)g_db.GetResIDValue(menu.c_str());
+		if (menu.is_str() && g_db.HasResID(menu.str().c_str()))
+			menu = (WORD)g_db.GetResIDValue(menu.str().c_str());
 		if (menu.is_str())
 			mstr_upper(menu.m_str);
 

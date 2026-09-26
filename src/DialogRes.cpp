@@ -607,24 +607,25 @@ void DialogItem::FixupForRad(bool bRevert)
 			m_siz.cx = 20;
 			m_siz.cy = 20;
 		}
-		if (StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
+		MString class_str = m_class.str();
+		if (StrCmpNIW(class_str.c_str(), TEXT("AtlAxWin"), 8) == 0)
 		{
 			m_class = L"STATIC";
 			m_style |= WS_BORDER;
 		}
-		else if (m_class.c_str()[0] == L'{')
+		else if (class_str[0] == L'{')
 		{
 #ifndef NO_MOLESITE
-			m_title = m_class.c_str();
+			m_title = class_str.c_str();
 			m_class = L"MOleSite";
 			m_style |= WS_BORDER;
 #else
-			m_title = m_class.c_str();
+			m_title = class_str.c_str();
 			m_class = L"STATIC";
 			m_style |= WS_BORDER;
 #endif
 		}
-		else if (m_class.is_str() && !IsClassRegd(m_class.c_str()))
+		else if (m_class.is_str() && !IsClassRegd(class_str.c_str()))
 		{
 			m_class = L"STATIC";
 			m_style &= ~SS_TYPEMASK;
@@ -681,21 +682,22 @@ void DialogItem::FixupForTest(bool bRevert)
 		m_old_style = m_style;
 		m_old_class = m_class;
 		m_old_title = m_title;
+		MString class_str = m_class.str();
 #ifndef ATL_SUPPORT
-		if (StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
+		if (StrCmpNIW(class_str.c_str(), TEXT("AtlAxWin"), 8) == 0)
 		{
 			m_class = L"STATIC";
 			m_style |= WS_BORDER;
 		}
 #endif
-		if (m_class.c_str()[0] == L'{')
+		if (class_str[0] == L'{')
 		{
 #ifndef NO_MOLESITE
-			m_title = m_class.c_str();
+			m_title = class_str.c_str();
 			m_class = L"MOleSite";
 			m_style |= WS_BORDER;
 #else
-			m_title = m_class.c_str();
+			m_title = class_str.c_str();
 			m_class = L"STATIC";
 			m_style |= WS_BORDER;
 #endif
@@ -1161,7 +1163,7 @@ INT DialogRes::GetBaseUnits(INT& y) const
 			if (m_replaced_type_face.empty())
 				lf.lfFaceName[0] = 0;
 			else
-				StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.c_str());
+				StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.str().c_str());
 
 			hFont = CreateFontIndirectW(&lf);
 		}
@@ -1190,10 +1192,10 @@ INT DialogRes::GetBaseUnits(INT& y) const
 			lf.lfItalic = m_italic;
 			lf.lfCharSet = DEFAULT_CHARSET;
 
-			if (!ret && lstrcmpiW(m_replaced_type_face.c_str(), L"MS Shell Dlg") == 0)
+			if (!ret && lstrcmpiW(m_replaced_type_face.str().c_str(), L"MS Shell Dlg") == 0)
 				StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), L"MS Shell Dlg 2");
 			else
-				StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.c_str());
+				StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.str().c_str());
 
 			hFont = CreateFontIndirectW(&lf);
 		}

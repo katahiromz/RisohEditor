@@ -238,7 +238,7 @@ public:
 		// Emit optional table-id prefix when not the default integer 1.
 		if (tableId.is_str())
 		{
-			ret += MTextToWide(CP_ACP, tableId.c_str()).c_str();
+			ret += MTextToWide(CP_ACP, tableId.str().c_str()).c_str();
 			ret += WIDE(" ");
 		}
 		else if (tableId.m_id != 1)
@@ -274,7 +274,7 @@ public:
 		// Emit optional table-id prefix when not the default integer 1.
 		if (tableId.is_str())
 		{
-			ret += MTextToWide(CP_ACP, tableId.c_str()).c_str();
+			ret += MTextToWide(CP_ACP, tableId.str().c_str()).c_str();
 			ret += WIDE(" ");
 		}
 		else if (tableId.m_id != 1)

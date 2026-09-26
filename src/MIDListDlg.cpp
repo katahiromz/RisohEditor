@@ -283,7 +283,7 @@ void MIDListDlg::AddResourceRow(const EntryBase *entry)
 		}
 		else
 		{
-			text1 = entry->m_name.c_str();
+			text1 = entry->m_name.str();
 			text3 = text1;
 		}
 	}
@@ -310,7 +310,7 @@ void MIDListDlg::AddResourceRow(const EntryBase *entry)
 		}
 		else
 		{
-			text1 = entry->m_name.c_str();
+			text1 = entry->m_name.str();
 			text3 = text1;
 		}
 	}

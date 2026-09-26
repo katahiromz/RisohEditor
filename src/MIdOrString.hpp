@@ -197,20 +197,6 @@ struct MIdOrString
 		}
 	}
 
-    mutable MString s_strTmp;
-
-	const TCHAR *c_str() const
-	{
-		s_strTmp = str();
-		return s_strTmp.c_str();
-	}
-
-	const TCHAR *c_str_or_empty() const
-	{
-		s_strTmp = str_or_empty();
-		return s_strTmp.c_str();
-	}
-
 	MString quoted_wstr() const
 	{
 		MString ret;
