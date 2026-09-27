@@ -6881,7 +6881,16 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 	// get the selected entry
 	auto entry = g_res.get_entry();
 
-	if (pnmhdr->code == TCN_SELCHANGE)
+	if (pnmhdr->code == TCN_SELCHANGING)
+	{
+		if (pnmhdr->hwndFrom == m_tab)
+		{
+			if (!CompileIfNecessary(FALSE))
+				return TRUE;
+		}
+		return FALSE;
+	}
+	else if (pnmhdr->code == TCN_SELCHANGE)
 	{
 		if (pnmhdr->hwndFrom == m_tab)
 		{
