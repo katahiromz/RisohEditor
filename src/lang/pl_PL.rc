@@ -1284,9 +1284,9 @@ FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 }
 
 IDD_GOTO_OFFSET DIALOGEX 0, 0, 200, 92
-CAPTION "Go to offset"
+CAPTION "Przejdź do przesunięcia"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
-FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+FONT 9, "MS Shell Dlg", 0, 0, 238 // EASTEUROPE_CHARSET
 {
     LTEXT "&Offset:", stc1, 7, 9, 52, 8
     EDITTEXT edt1, 62, 7, 131, 12, ES_AUTOHSCROLL, WS_EX_CLIENTEDGE
@@ -1294,7 +1294,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
     AUTORADIOBUTTON "&Hex", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
     AUTORADIOBUTTON "&Dec", rad2, 95, 40, 85, 10, WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 88, 68, 50, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 143, 68, 50, 14
+    PUSHBUTTON "Anuluj", IDCANCEL, 143, 68, 50, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////

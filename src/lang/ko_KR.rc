@@ -1283,17 +1283,17 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
 }
 
 IDD_GOTO_OFFSET DIALOGEX 0, 0, 200, 92
-CAPTION "Go to offset"
+CAPTION "오프셋으로 이동"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
-FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
 {
-    LTEXT "&Offset:", stc1, 7, 9, 52, 8
+    LTEXT "&오프셋:", stc1, 7, 9, 52, 8
     EDITTEXT edt1, 62, 7, 131, 12, ES_AUTOHSCROLL, WS_EX_CLIENTEDGE
     LTEXT "", stc2, 7, 24, 186, 10
-    AUTORADIOBUTTON "&Hex", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
-    AUTORADIOBUTTON "&Dec", rad2, 95, 40, 85, 10, WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 88, 68, 50, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 143, 68, 50, 14
+    AUTORADIOBUTTON "&16진수", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "&10진수", rad2, 95, 40, 85, 10, WS_TABSTOP
+    DEFPUSHBUTTON "확인", IDOK, 88, 68, 50, 14
+    PUSHBUTTON "취소", IDCANCEL, 143, 68, 50, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////

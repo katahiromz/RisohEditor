@@ -1285,17 +1285,17 @@ FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
 }
 
 IDD_GOTO_OFFSET DIALOGEX 0, 0, 200, 92
-CAPTION "Go to offset"
+CAPTION "Перехід до зміщення"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
-FONT 9, "MS Shell Dlg", 0, 0, 0 // ANSI_CHARSET
+FONT 9, "MS Shell Dlg", 0, 0, 204 // RUSSIAN_CHARSET
 {
-    LTEXT "&Offset:", stc1, 7, 9, 52, 8
+    LTEXT "&Зміщення:", stc1, 7, 9, 52, 8
     EDITTEXT edt1, 62, 7, 131, 12, ES_AUTOHSCROLL, WS_EX_CLIENTEDGE
     LTEXT "", stc2, 7, 24, 186, 10
-    AUTORADIOBUTTON "&Hex", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
-    AUTORADIOBUTTON "&Dec", rad2, 95, 40, 85, 10, WS_TABSTOP
+    AUTORADIOBUTTON "&Шіст.", rad1, 7, 40, 85, 10, WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "&Дес.", rad2, 95, 40, 85, 10, WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 88, 68, 50, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 143, 68, 50, 14
+    PUSHBUTTON "Скасувати", IDCANCEL, 143, 68, 50, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
