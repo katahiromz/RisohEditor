@@ -518,7 +518,7 @@ void MMainWnd::EndPreviewBatch()
 			m_splitter2.SendMessageDx(WM_SETREDRAW, TRUE, 0);
 
 		InvalidateRect(m_hCodeEditor, nullptr, TRUE);
-		InvalidateRect(*m_phHexViewer, nullptr, TRUE);
+		InvalidateRect(*m_phHexEdit, nullptr, TRUE);
 		InvalidateRect(m_splitter2, nullptr, TRUE);
 		InvalidateRect(m_hBmpView, nullptr, TRUE);
 
@@ -540,8 +540,8 @@ VOID MMainWnd::HidePreview(STV stv, BOOL bWillRePreview/* = FALSE*/,
 		DestroyRadWindow();
 	}
 
-	// clear m_phHexViewer
-	m_phHexViewer->SetDataSrc(nullptr);
+	// clear m_phHexEdit
+	m_phHexEdit->SetDataSrc(nullptr);
 
 	// clear m_hCodeEditor
 	if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
@@ -599,7 +599,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv, BOOL bDestroy
 	if (bDestroyRad)
 		DestroyRadWindow();
 
-	m_phHexViewer->SetDataSrc(&const_cast<EntryBase*>(entry)->m_data);
+	m_phHexEdit->SetDataSrc(&const_cast<EntryBase*>(entry)->m_data);
 
 	if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
 	{

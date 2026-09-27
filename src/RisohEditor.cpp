@@ -607,7 +607,7 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 	assert(m_hSrcFont);
 
 	// set the fonts to the controls
-	SetWindowFont(*m_phHexViewer, m_hBinFont, TRUE);
+	SetWindowFont(*m_phHexEdit, m_hBinFont, TRUE);
 	SetWindowFont(m_hCodeEditor, m_hSrcFont, TRUE);
 }
 
@@ -943,7 +943,7 @@ void MMainWnd::DoEnableControls(BOOL bEnable)
 	::EnableWindow(m_hwnd, bEnable);
 	::EnableWindow(m_hCodeEditor, bEnable);
 	::EnableWindow(m_hBmpView, bEnable);
-	::EnableWindow(*m_phHexViewer, bEnable);
+	::EnableWindow(*m_phHexEdit, bEnable);
 	::EnableWindow(m_hToolBar, bEnable);
 	::EnableWindow(m_id_list_dlg, bEnable);
 	::EnableWindow(m_hwndTV, bEnable);
@@ -1158,14 +1158,14 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 	return bOK;
 }
 
-void MMainWnd::UpdateHexViewerContent()
+void MMainWnd::UpdateHexEditContent()
 {
 	auto entry = g_res.get_entry();
-	if (entry && m_phHexViewer->GetDataSrc() != &entry->m_data)
+	if (entry && m_phHexEdit->GetDataSrc() != &entry->m_data)
 	{
-		m_phHexViewer->SetDataSrc(&entry->m_data);
+		m_phHexEdit->SetDataSrc(&entry->m_data);
 	}
-	SetFocus(*m_phHexViewer);
+	SetFocus(*m_phHexEdit);
 }
 
 void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
@@ -1180,11 +1180,11 @@ void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 			m_tab.SetCurSel(1);
 		ShowWindow(m_hCodeEditor, SW_HIDE);
 		ShowWindow(m_hBmpView, SW_HIDE);
-		ShowWindow(*m_phHexViewer, SW_SHOWNORMAL);
+		ShowWindow(*m_phHexEdit, SW_SHOWNORMAL);
 		m_splitter2.SetPaneCount(1);
-		m_splitter2.SetPane(0, *m_phHexViewer);
+		m_splitter2.SetPane(0, *m_phHexEdit);
 
-		UpdateHexViewerContent();
+		UpdateHexEditContent();
 	}
 	else
 	{
@@ -1195,21 +1195,21 @@ void MMainWnd::SetShowMode(SHOW_MODE mode, BOOL bShowBinary)
 		case SHOW_MOVIE:
 			ShowWindow(m_hCodeEditor, SW_HIDE);
 			ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
-			ShowWindow(*m_phHexViewer, SW_HIDE);
+			ShowWindow(*m_phHexEdit, SW_HIDE);
 			m_splitter2.SetPaneCount(1);
 			m_splitter2.SetPane(0, m_hBmpView);
 			break;
 		case SHOW_CODEONLY:
 			ShowWindow(m_hCodeEditor, SW_SHOWNOACTIVATE);
 			ShowWindow(m_hBmpView, SW_HIDE);
-			ShowWindow(*m_phHexViewer, SW_HIDE);
+			ShowWindow(*m_phHexEdit, SW_HIDE);
 			m_splitter2.SetPaneCount(1);
 			m_splitter2.SetPane(0, m_hCodeEditor);
 			break;
 		case SHOW_CODEANDBMP:
 			ShowWindow(m_hCodeEditor, SW_SHOWNOACTIVATE);
 			ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
-			ShowWindow(*m_phHexViewer, SW_HIDE);
+			ShowWindow(*m_phHexEdit, SW_HIDE);
 			m_splitter2.SetPaneCount(2);
 			m_splitter2.SetPane(0, m_hCodeEditor);
 			m_splitter2.SetPane(1, m_hBmpView);
@@ -1496,7 +1496,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		}
 
 		// hide the binary EDIT control
-		m_phHexViewer->SetDataSrc(nullptr);
+		m_phHexEdit->SetDataSrc(nullptr);
 		break;
 
 	default:
@@ -1505,7 +1505,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 		m_hBmpView.DestroyView();
 
 		// hide the binary EDIT control
-		m_phHexViewer->SetDataSrc(nullptr);
+		m_phHexEdit->SetDataSrc(nullptr);
 
 		// it's non editable
 		bEditable = FALSE;
@@ -6035,7 +6035,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
 	g_res.delete_all();
 	g_res.delete_invalid();
 
-	HWND hHexViewer = *m_phHexViewer;
+	HWND hHexViewer = *m_phHexEdit;
 	DestroyWindow(hHexViewer);
 
 	DestroyRadWindow();
@@ -6925,7 +6925,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 			g_res.on_delete_item(entry);
 			DoSetFileModified(TRUE);
 		}
-		m_phHexViewer->SetDataSrc(nullptr);
+		m_phHexEdit->SetDataSrc(nullptr);
 	} 
 	else if (pnmhdr->code == NM_DBLCLK)
 	{
@@ -6975,7 +6975,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 		MWaitCursor wait;
 		if (!m_bLoading)
 		{
-			m_phHexViewer->SetDataSrc(nullptr);
+			m_phHexEdit->SetDataSrc(nullptr);
 			if (entry)
 			{
 				// select the entry to update the text
@@ -8072,8 +8072,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	// create the binary EDIT control
 	BinEdit::RegisterWindowClass(m_hInst);
     HWND hHexViewer = BinEdit::Create(m_splitter2, 3, 0, 0, 0, 0, m_hInst);
-	m_phHexViewer = BinEdit::FromHwnd(hHexViewer);
-	m_phHexViewer->SetLimit(1, 0x7FFFFFFF);
+	m_phHexEdit = BinEdit::FromHwnd(hHexViewer);
+	m_phHexEdit->SetLimit(1, 0x7FFFFFFF);
 
 	// create source EDIT control
 	if (!ReCreateSrcEdit())
@@ -8348,14 +8348,14 @@ void MMainWnd::OnTimer(HWND hwnd, UINT id)
 		// Invalidate the edit and its children (the line-number static) together.
 		::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 
-		// entry->m_data --> m_phHexViewer (binary)
+		// entry->m_data --> m_phHexEdit (binary)
 		if (m_bShowBinEdit)
 		{
-			UpdateHexViewerContent();
+			UpdateHexEditContent();
 		}
 		else
 		{
-			m_phHexViewer->SetDataSrc(nullptr);
+			m_phHexEdit->SetDataSrc(nullptr);
 			SetFocus(m_hCodeEditor);
 		}
 	}

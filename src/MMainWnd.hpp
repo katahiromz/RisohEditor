@@ -93,11 +93,11 @@ protected:
 	LANGID          m_lang;
 	BOOL            m_bShowBinEdit;
 
-	void UpdateHexViewerContent();
+	void UpdateHexEditContent();
 
 	// classes
 	MRadWindow      m_rad_window;               // the RADical window
-	BinEdit*        m_phHexViewer;              // the binary editor
+	BinEdit*        m_phHexEdit;              // the binary editor
 	HWND            m_hCodeEditor;              // the EDIT control for source
 	MBmpView        m_hBmpView;                 // the bitmap view
 	MSplitterWnd    m_splitter1;                // 1st splitter window

@@ -3098,7 +3098,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 {
 	HWND hwndCodeEditor = m_hCodeEditor;
-	HWND hwndHexViewer = *m_phHexViewer;
+	HWND hwndHexViewer = *m_phHexEdit;
 	HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
 	HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
 	HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
@@ -3122,7 +3122,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 
 	HWND ahwnd[] =
 	{
-		m_hwndTV, m_hCodeEditor, *m_phHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
+		m_hwndTV, m_hCodeEditor, *m_phHexEdit, hwndRad, m_hFindReplaceDlg, hwndIDList
 	};
 
 	UINT i;
@@ -3166,7 +3166,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 	else if (hwndHexViewer == ahwnd[i])
 	{
 		OnSelChange(hwnd, 1);
-		SetFocus(*m_phHexViewer);
+		SetFocus(*m_phHexEdit);
 	}
 	else
 	{
@@ -3711,7 +3711,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		}
 	}
 
-	if (hwndCtl == *m_phHexViewer)
+	if (hwndCtl == *m_phHexEdit)
 	{
 		if (codeNotify == BEN_CHANGE)
 		{
