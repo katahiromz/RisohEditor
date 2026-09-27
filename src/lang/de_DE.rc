@@ -258,20 +258,20 @@ IDR_BINEDIT_CTX_MENU MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Cu&t\tCtrl+X", ID_BINEDIT_CUT
-        MENUITEM "&Copy\tCtrl+C", ID_BINEDIT_COPY
-        MENUITEM "&Paste\tCtrl+V", ID_BINEDIT_PASTE
-        MENUITEM "&Delete\tDel", ID_BINEDIT_DELETE
+        MENUITEM "&Ausschneiden\tCtrl+X", ID_BINEDIT_CUT
+        MENUITEM "&Kopieren\tCtrl+C", ID_BINEDIT_COPY
+        MENUITEM "&Einfügen\tCtrl+V", ID_BINEDIT_PASTE
+        MENUITEM "&Löschen\tEntf", ID_BINEDIT_DELETE
         MENUITEM SEPARATOR
-        MENUITEM "Select &All\tCtrl+A", ID_BINEDIT_SELECTALL
-        MENUITEM "&Go to offset...\tCtrl+G", ID_BINEDIT_GOTO
+        MENUITEM "&Alles auswählen\tCtrl+A", ID_BINEDIT_SELECTALL
+        MENUITEM "&Gehe zu Offset...\tCtrl+G", ID_BINEDIT_GOTO
         MENUITEM SEPARATOR
         MENUITEM "ANSI", ID_BINEDIT_ANSI
         MENUITEM "UTF-8", ID_BINEDIT_UTF8
         MENUITEM "UTF-16", ID_BINEDIT_UTF16
         MENUITEM "Shift_JIS", ID_BINEDIT_SJIS
         MENUITEM SEPARATOR
-        MENUITEM "Copy d&ump string", ID_BINEDIT_COPYDUMPTEXT
+        MENUITEM "D&ump-Text kopieren", ID_BINEDIT_COPYDUMPTEXT
     }
 }
 
