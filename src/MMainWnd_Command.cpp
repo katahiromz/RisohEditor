@@ -2439,6 +2439,9 @@ void MMainWnd::OnTest(HWND hwnd)
 // ID_GOTOLINE
 void MMainWnd::OnGoToLine(HWND hwnd)
 {
+	if (m_tab.GetCurSel() != 0)
+		return;
+
 	MGoToLineDlg dialog;
 	if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -2458,6 +2461,8 @@ void MMainWnd::OnGoToLine(HWND hwnd)
 // ID_FIND: find the text
 void MMainWnd::OnFind(HWND hwnd)
 {
+	SetShowMode(SHOW_CODEONLY, FALSE);
+
 	m_search.bDownward = TRUE;
 	OnItemSearch(hwnd);
 }
@@ -2465,6 +2470,8 @@ void MMainWnd::OnFind(HWND hwnd)
 // ID_FINDDOWNWARD: find next
 BOOL MMainWnd::OnFindNext(HWND hwnd)
 {
+	SetShowMode(SHOW_CODEONLY, FALSE);
+
 	m_search.bDownward = TRUE;
 	if (m_search.strText.empty())
 	{
@@ -2478,6 +2485,8 @@ BOOL MMainWnd::OnFindNext(HWND hwnd)
 // ID_FINDUPWARD: find previous
 BOOL MMainWnd::OnFindPrev(HWND hwnd)
 {
+	SetShowMode(SHOW_CODEONLY, FALSE);
+
 	m_search.bDownward = FALSE;
 	if (m_search.strText.empty())
 	{
@@ -2491,6 +2500,8 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 // ID_ITEMSEARCH: show the item search dialog
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
+	SetShowMode(SHOW_CODEONLY, FALSE);
+
 	// is there "item search" dialogs?
 	if (MItemSearchDlg::Dialog())
 	{
