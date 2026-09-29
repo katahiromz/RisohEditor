@@ -8082,7 +8082,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 	BinEdit::RegisterWindowClass(m_hInst);
     HWND hHexViewer = BinEdit::Create(m_splitter2, 3, 0, 0, 0, 0, m_hInst);
 	m_phHexEdit = BinEdit::FromHwnd(hHexViewer);
-	m_phHexEdit->SetLimit(1, 0x7FFFFFFF);
+	m_phHexEdit->SetLimit(1, 0x3FFFFFFF);
 
 	// create source EDIT control
 	if (!ReCreateSrcEdit())
