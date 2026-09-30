@@ -1,6 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.2.2 (2026-XX-YY)
+- v.6.2.2 (01.10.2026)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON sono stati uniti in IDD_ADDRES.
     - Aggiunto un editor binario per le risorse.
     - Corretta la visualizzazione della profondità di bit per RT_GROUP_ICON nelle icone di Vista.

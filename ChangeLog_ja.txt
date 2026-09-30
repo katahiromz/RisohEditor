@@ -1,6 +1,6 @@
 ﻿## 更新履歴
 
-- v.6.2.2 (2026-XX-YY)
+- v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP、IDD_ADDCURSOR、IDD_ADDICON を IDD_ADDRES に統合。
     - リソースのバイナリエディタを追加。
     - Vistaアイコンについて RT_GROUP_ICON のビットの深さを修正。

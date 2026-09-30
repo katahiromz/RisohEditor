@@ -1,6 +1,6 @@
 ﻿## HISTORIA
 
-- v.6.2.2 (2026-XX-YY)
+- v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON se han fusionado en IDD_ADDRES.
     - Se ha añadido un editor binario para los recursos.
     - Se ha corregido la visualización de la profundidad de bits para RT_GROUP_ICON en los iconos de Vista.
