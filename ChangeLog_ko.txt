@@ -4,6 +4,7 @@
 - v.6.2.2 (2026-XX-YY)
     - IDD_ADDBITMAP, IDD_ADDCURSOR, IDD_ADDICON을 IDD_ADDRES에 통합.
     - 리소스 바이너리 편집기를 추가.
+    - Vista 아이콘의 RT_GROUP_ICON 비트 심도 표시 문제를 수정했습니다.
 - v.6.2.1 (2026-09-19)
     - "Picture" 인코딩을 추가했습니다.
     - "STREAM" 리소스 유형을 추가했습니다.

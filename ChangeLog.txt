@@ -3,6 +3,7 @@
 - v.6.2.2 (2026-XX-YY)
     - Merged IDD_ADDBITMAP, IDD_ADDCURSOR, and IDD_ADDICON into IDD_ADDRES.
     - Added a resource binary editor.
+    - Fixed the bit depth display for RT_GROUP_ICON in Vista icons.
 - v.6.2.1 (2026-09-19)
     - Added "Picture" encoding.
     - Added "STREAM" resource type.

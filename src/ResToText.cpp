@@ -1534,6 +1534,36 @@ DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
 	return ret;
 }
 
+// Get the real bits-per-pixel of a PNG-compressed (Vista) icon image.
+// Returns 0 if the data is not a valid PNG.
+static WORD GetPngBitsPerPixel(const std::vector<BYTE>& data)
+{
+	static const BYTE s_pngSignature[8] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n' };
+
+	// signature(8) + length(4) + "IHDR"(4) + width(4) + height(4) + depth(1) + color type(1)
+	if (data.size() < 26 ||
+		memcmp(&data[0], s_pngSignature, sizeof(s_pngSignature)) != 0 ||
+		memcmp(&data[12], "IHDR", 4) != 0)
+	{
+		return 0;
+	}
+
+	const BYTE bit_depth = data[24];
+	const BYTE color_type = data[25];
+
+	WORD channels;
+	switch (color_type)
+	{
+	case 0: channels = 1; break; // grayscale
+	case 2: channels = 3; break; // RGB
+	case 3: channels = 1; break; // palette
+	case 4: channels = 2; break; // grayscale + alpha
+	case 6: channels = 4; break; // RGBA
+	default: return 0;
+	}
+	return (WORD)(channels * bit_depth);
+}
+
 MStringW
 DumpGroupIconInfo(const std::vector<BYTE>& data)
 {
@@ -1561,14 +1591,23 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
 		WORD Width = pEntries[i].bWidth;
 		WORD Height = pEntries[i].bHeight;
 		WORD nID = pEntries[i].nID;
+		WORD BitCount = pEntries[i].wBitCount;
 
 		if (Width == 0)
 			Width = 256;
 		if (Height == 0)
 			Height = 256;
 
-		ret += LoadStringPrintfDx(IDS_ICONINFO,
-			i, Width, Height, pEntries[i].wBitCount, nID);
+		// Vista icons (PNG-compressed): the group entry's wBitCount may be
+		// 0 or unreliable, so read the real bit depth from the PNG header.
+		if (auto entry = g_res.find(ET_LANG, RT_ICON, nID))
+		{
+			auto& icon_entry = (EntryBase&)*entry;
+			if (WORD wPngBits = GetPngBitsPerPixel(icon_entry.m_data))
+				BitCount = wPngBits;
+		}
+
+		ret += LoadStringPrintfDx(IDS_ICONINFO, i, Width, Height, BitCount, nID);
 	}
 
 	return ret;
