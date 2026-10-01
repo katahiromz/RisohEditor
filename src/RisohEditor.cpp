@@ -8022,7 +8022,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 		return FALSE;
 	}
 
-	DWORD style, exstyle;
+	DWORD style;
 
 	// create the splitter windows
 	style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;

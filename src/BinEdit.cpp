@@ -1281,7 +1281,7 @@ void BinEdit::OnPaint(HWND hwnd)
     HBITMAP memBmp = CreateCompatibleBitmap(hdc, rc.right, rc.bottom);
     HBITMAP oldBmp = static_cast<HBITMAP>(SelectObject(memDC, memBmp));
 
-    const bool enabled = IsWindowEnabled(m_hwnd);
+    const BOOL enabled = IsWindowEnabled(m_hwnd);
     const bool normalBk = enabled && !m_readOnly;
     FillRect(memDC, &rc, reinterpret_cast<HBRUSH>((normalBk ? COLOR_WINDOW : COLOR_3DFACE) + 1));
 
