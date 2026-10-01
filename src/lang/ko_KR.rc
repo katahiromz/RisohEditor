@@ -353,7 +353,6 @@ FONT 9, "Malgun Gothic", 0, 0, 129 // HANGEUL_CHARSET
     ICON 0, ico1, 5, 113, 0, 0
     LTEXT "", stc2, 45, 118, 100, 10
     PUSHBUTTON "찾아보기(&B)...", psh1, 150, 115, 60, 14
-    LTEXT "", stc2, 5, 112, 100, 10
     DEFPUSHBUTTON "확인", IDOK, 35, 150, 60, 14
     PUSHBUTTON "취소", IDCANCEL, 115, 150, 60, 14
 }
