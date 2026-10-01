@@ -3,7 +3,7 @@
 - v.6.2.2 (01.10.2026)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON sono stati uniti in IDD_ADDRES.
     - Aggiunto un editor binario per le risorse.
-    - Corretta la visualizzazione della profondità di bit per RT_GROUP_ICON nelle icone di Vista.
+    - Corretta la visualizzazione bit profondità per RT_GROUP_ICON nelle icone di Vista.
 - v.6.2.1 (19.09.2026)
     - Aggiunta la codifica "Immagine".
     - Aggiunto il tipo di risorsa "STREAM".
