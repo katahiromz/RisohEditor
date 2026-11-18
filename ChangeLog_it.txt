@@ -1,8 +1,8 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.2.4 (20XX-YY-ZZ)
-    - Split 32-bit and 64-bit version of mcdx.exe.
-    - Split 32-bit and 64-bit version of MyWndCtrl.dll.
+    - Sono state separate le versioni a 32 e 64 bit di mcdx.exe.
+    - Sono state separate le versioni a 32 e 64 bit di MyWndCtrl.dll.
 - v.6.2.3 (18.11.2026)
     - Risolto il problema di gestione dell'input da tastiera nel ciclo principale.
     - Risolti i problemi relativi alle finestre RAD e alla messa a fuoco.

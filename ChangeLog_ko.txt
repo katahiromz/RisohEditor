@@ -2,8 +2,8 @@
 // 업데이트 내역
 
 - v.6.2.4 (20XX-YY-ZZ)
-    - Split 32-bit and 64-bit version of mcdx.exe.
-    - Split 32-bit and 64-bit version of MyWndCtrl.dll.
+    - mcdx.exe의 32비트 버전과 64비트 버전을 분리했습니다.
+    - MyWndCtrl.dll의 32비트 버전과 64비트 버전을 분리했습니다.
 - v.6.2.3 (2026-11-18)
     - 메인 루프의 키 입력 처리를 수정했습니다.
     - RAD 창 및 포커스 관련 문제를 해결했습니다.

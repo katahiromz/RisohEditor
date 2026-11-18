@@ -1,8 +1,8 @@
 ﻿## SEJARAH
 
 - v.6.2.4 (20XX-YY-ZZ)
-    - Split 32-bit and 64-bit version of mcdx.exe.
-    - Split 32-bit and 64-bit version of MyWndCtrl.dll.
+    - Memisahkan versi 32-bit dan 64-bit dari mcdx.exe.
+    - Memisahkan versi 32-bit dan 64-bit dari MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)
     - Memperbaiki pemrosesan input tombol pada loop utama.
     - Memperbaiki masalah pada jendela RAD dan fokus.

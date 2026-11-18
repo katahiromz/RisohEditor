@@ -1,8 +1,8 @@
 ﻿## HISTORIA
 
 - v.6.2.4 (20XX-YY-ZZ)
-    - Split 32-bit and 64-bit version of mcdx.exe.
-    - Split 32-bit and 64-bit version of MyWndCtrl.dll.
+    - Se separaron las versiones de 32 y 64 bits de mcdx.exe.
+    - Se separaron las versiones de 32 y 64 bits de MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)
     - Se corrigió el manejo de la entrada de teclas en el bucle principal.
     - Se han solucionado los problemas con las ventanas y el enfoque de RAD.
