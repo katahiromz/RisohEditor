@@ -1,5 +1,6 @@
 ﻿## HISTORY (ChangeLog)
 
+- v.6.2.4 (20XX-YY-ZZ)
 - v.6.2.3 (2026-11-18)
     - Fixed key input handling in the main loop.
     - Resolved issues with the RAD window and focus.

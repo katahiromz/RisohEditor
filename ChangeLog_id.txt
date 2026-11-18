@@ -1,5 +1,6 @@
 ﻿## SEJARAH
 
+- v.6.2.4 (20XX-YY-ZZ)
 - v.6.2.3 (2026-11-18)
     - Memperbaiki pemrosesan input tombol pada loop utama.
     - Memperbaiki masalah pada jendela RAD dan fokus.
