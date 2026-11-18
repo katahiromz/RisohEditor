@@ -8595,46 +8595,8 @@ void MMainWnd::DoMsg(MSG& msg)
 	if (DoMsgCtrlA(&msg))
 		return;
 
-	// do access keys
-	if (IsWindow(m_hwnd))
-	{
-		if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-			return;
-	}
-
-	if (IsWindow(m_arrow.m_dialog))
-	{
-		if (msg.message == WM_KEYDOWN)
-		{
-			if (m_arrow.DoComplement(m_arrow, msg.wParam))
-				return;
-		}
-		if (::IsDialogMessage(m_arrow.m_dialog, &msg))
-			return;
-	}
-
-	// do the popup windows
-	if (IsWindow(m_rad_window))
-	{
-		if (::TranslateAccelerator(m_rad_window, m_hAccel, &msg))
-			return;
-	}
-
-	if (IsWindow(m_rad_window.m_rad_dialog))
-	{
-		if (::TranslateAccelerator(m_rad_window.m_rad_dialog, m_hAccel, &msg))
-			return;
-		if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
-			return;
-	}
-
-	if (IsWindow(m_id_list_dlg))
-	{
-		if (::TranslateAccelerator(m_id_list_dlg, m_hAccel, &msg))
-			return;
-		if (::IsDialogMessage(m_id_list_dlg, &msg))
-			return;
-	}
+	if (s_hwndEga && ::IsDialogMessageW(s_hwndEga, &msg))
+		return;
 
 	// F1
 	if (msg.message == WM_KEYDOWN && msg.wParam == VK_F1 &&
@@ -8642,24 +8604,36 @@ void MMainWnd::DoMsg(MSG& msg)
 		GetKeyState(VK_MENU) >= 0)
 	{
 		DoHelp();
+		return;
 	}
 
-	// close the find/replace dialog if any
-	if (IsWindow(m_hFindReplaceDlg))
+	if (IsWindow(m_arrow.m_dialog))
 	{
-		if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+		if (msg.message == WM_KEYDOWN && m_arrow.DoComplement(m_arrow, msg.wParam))
+			return;
+		if (::IsDialogMessage(m_arrow.m_dialog, &msg))
 			return;
 	}
+
+	if (m_rad_window.m_rad_dialog && ::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
+		return;
+
+	if (m_id_list_dlg && ::IsDialogMessage(m_id_list_dlg, &msg))
+		return;
+
+	// close the find/replace dialog if any
+	if (m_hFindReplaceDlg && ::IsDialogMessage(m_hFindReplaceDlg, &msg))
+		return;
 
 	// do the item search dialog
 	if (MItemSearchDlg::Dialog())
 	{
-		HWND hDlg = *MItemSearchDlg::Dialog();
-		if (::IsDialogMessage(hDlg, &msg))
+		if (::IsDialogMessage(*MItemSearchDlg::Dialog(), &msg))
 			return; // processed
 	}
 
-	if (s_hwndEga && ::IsDialogMessageW(s_hwndEga, &msg))
+	// do access keys
+	if (m_hwnd && ::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
 		return;
 
 	// the default processing
@@ -8680,9 +8654,6 @@ INT_PTR MMainWnd::RunDx()
 			DebugBreak();
 			return -1;
 		}
-
-		if (::IsWindow(s_hwndEga) && ::IsDialogMessage(s_hwndEga, &msg))
-			continue;
 
 		// do messaging
 		DoMsg(msg);
