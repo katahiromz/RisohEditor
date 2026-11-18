@@ -1,6 +1,6 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
-- v.6.2.3 (2026-XX-YY)
+- v.6.2.3 (18.11.2026)
     - Risolto il problema di gestione dell'input da tastiera nel ciclo principale.
     - Risolti i problemi relativi alle finestre RAD e alla messa a fuoco.
 - v.6.2.2 (01.10.2026)

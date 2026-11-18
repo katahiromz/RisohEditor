@@ -1,6 +1,6 @@
 ﻿## HISTÓRICO
 
-- v.6.2.3 (2026-XX-YY)
+- v.6.2.3 (2026-11-18)
     - Corrigido o tratamento da entrada de teclas no loop principal.
     - Problemas com janelas RAD e foco foram resolvidos.
 - v.6.2.2 (2026-10-01)
