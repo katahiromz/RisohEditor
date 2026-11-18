@@ -2831,7 +2831,11 @@ INT MMainWnd::CheckData(VOID)
 
 	// mcdx.exe
 	PathRemoveFileSpecW(szPath);
+#ifdef _WIN64
+	PathAppendW(szPath, L"mcdx64.exe");
+#else
 	PathAppendW(szPath, L"mcdx.exe");
+#endif
 	if (PathFileExistsW(szPath))
 	{
 		StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), szPath);
@@ -2839,10 +2843,18 @@ INT MMainWnd::CheckData(VOID)
 	else
 	{
 		StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), m_szDataFolder);
+#ifdef _WIN64
+		StringCchCatW(m_szMcdxExe, _countof(m_szMcdxExe), L"\\bin\\mcdx64.exe");
+#else
 		StringCchCatW(m_szMcdxExe, _countof(m_szMcdxExe), L"\\bin\\mcdx.exe");
+#endif
 		if (!PathFileExistsW(m_szMcdxExe))
 		{
+#ifdef _WIN64
+			ErrorBoxDx(TEXT("ERROR: No mcdx64.exe found."));
+#else
 			ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
+#endif
 			return -8;  // failure
 		}
 	}
