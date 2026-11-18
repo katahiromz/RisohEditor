@@ -39,5 +39,8 @@ endif()
 # MyWndCtrl.dll
 add_library(MyWndCtrl SHARED MyWndCtrl.cpp)
 set_target_properties (MyWndCtrl PROPERTIES PREFIX "")
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set_target_properties(MyWndCtrl PROPERTIES OUTPUT_NAME "MyWndCtrl64")
+endif()
 
 ##############################################################################

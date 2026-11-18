@@ -2,6 +2,7 @@
 
 - v.6.2.4 (20XX-YY-ZZ)
     - Split 32-bit and 64-bit version of mcdx.exe.
+    - Split 32-bit and 64-bit version of MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)
     - Fixed key input handling in the main loop.
     - Resolved issues with the RAD window and focus.
