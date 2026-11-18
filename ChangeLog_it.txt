@@ -1,6 +1,7 @@
 ## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.6.2.4 (20XX-YY-ZZ)
+    - È stato confermato che l'incidente è stato causato da un conflitto tra le versioni a 32 e 64 bit.
     - Sono state separate le versioni a 32 e 64 bit di mcdx.exe.
     - Sono state separate le versioni a 32 e 64 bit di MyWndCtrl.dll.
 - v.6.2.3 (18.11.2026)

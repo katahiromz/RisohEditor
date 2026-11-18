@@ -1,6 +1,7 @@
 ﻿## SEJARAH
 
 - v.6.2.4 (20XX-YY-ZZ)
+    - Dikonfirmasi bahwa insiden terjadi akibat konflik antara versi 32-bit dan 64-bit.
     - Memisahkan versi 32-bit dan 64-bit dari mcdx.exe.
     - Memisahkan versi 32-bit dan 64-bit dari MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)

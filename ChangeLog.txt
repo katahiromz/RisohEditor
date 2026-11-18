@@ -1,6 +1,7 @@
 ﻿## HISTORY (ChangeLog)
 
 - v.6.2.4 (20XX-YY-ZZ)
+    - It has been confirmed that issues were occurring due to a conflict between the 32-bit and 64-bit versions.
     - Separated the 32-bit and 64-bit versions of mcdx.exe.
     - Separated the 32-bit and 64-bit versions of MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)

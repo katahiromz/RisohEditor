@@ -1,6 +1,7 @@
 ﻿## HISTORIA
 
 - v.6.2.4 (20XX-YY-ZZ)
+    - Se confirmó que el accidente fue causado por un conflicto entre las versiones de 32 bits y de 64 bits.
     - Se separaron las versiones de 32 y 64 bits de mcdx.exe.
     - Se separaron las versiones de 32 y 64 bits de MyWndCtrl.dll.
 - v.6.2.3 (2026-11-18)
