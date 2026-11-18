@@ -8357,6 +8357,9 @@ void MMainWnd::OnTimer(HWND hwnd, UINT id)
 		// Invalidate the edit and its children (the line-number static) together.
 		::RedrawWindow(m_hCodeEditor, NULL, NULL, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_NOERASE);
 
+		const BOOL bRadActive = IsWindow(m_rad_window) &&
+		                        (::GetActiveWindow() == (HWND)m_rad_window);
+
 		// entry->m_data --> m_phHexEdit (binary)
 		if (m_bShowBinEdit)
 		{
@@ -8365,7 +8368,8 @@ void MMainWnd::OnTimer(HWND hwnd, UINT id)
 		else
 		{
 			m_phHexEdit->SetDataSrc(nullptr);
-			SetFocus(m_hCodeEditor);
+			if (!bRadActive)
+				SetFocus(m_hCodeEditor);
 		}
 	}
 }
@@ -8614,9 +8618,6 @@ void MMainWnd::DoMsg(MSG& msg)
 		if (::IsDialogMessage(m_arrow.m_dialog, &msg))
 			return;
 	}
-
-	if (m_rad_window.m_rad_dialog && ::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
-		return;
 
 	if (m_id_list_dlg && ::IsDialogMessage(m_id_list_dlg, &msg))
 		return;

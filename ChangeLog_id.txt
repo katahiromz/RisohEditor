@@ -2,6 +2,7 @@
 
 - v.6.2.3 (2026-XX-YY)
     - Memperbaiki pemrosesan input tombol pada loop utama.
+    - Memperbaiki masalah pada jendela RAD dan fokus.
 - v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP, IDD_ADDCURSOR, dan IDD_ADDICON telah digabungkan ke dalam IDD_ADDRES.
     - Menambahkan editor biner untuk sumber daya.

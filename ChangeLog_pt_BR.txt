@@ -2,6 +2,7 @@
 
 - v.6.2.3 (2026-XX-YY)
     - Corrigido o tratamento da entrada de teclas no loop principal.
+    - Problemas com janelas RAD e foco foram resolvidos.
 - v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON foram mesclados em IDD_ADDRES.
     - Adicionado um editor binário para recursos.

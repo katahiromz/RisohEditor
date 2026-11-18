@@ -3,6 +3,7 @@
 
 - v.6.2.3 (2026-XX-YY)
     - 메인 루프의 키 입력 처리를 수정했습니다.
+    - RAD 창 및 포커스 관련 문제를 해결했습니다.
 - v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP, IDD_ADDCURSOR, IDD_ADDICON을 IDD_ADDRES로 통합했습니다.
     - 리소스 바이너리 편집기를 추가했습니다.

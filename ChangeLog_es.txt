@@ -2,6 +2,7 @@
 
 - v.6.2.3 (2026-XX-YY)
     - Se corrigió el manejo de la entrada de teclas en el bucle principal.
+    - Se han solucionado los problemas con las ventanas y el enfoque de RAD.
 - v.6.2.2 (2026-10-01)
     - IDD_ADDBITMAP, IDD_ADDCURSOR e IDD_ADDICON se han fusionado en IDD_ADDRES.
     - Se ha añadido un editor binario para los recursos.
