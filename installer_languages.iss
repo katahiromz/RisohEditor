@@ -35,6 +35,7 @@ english.AssociateRcFiles=Associate file with *.rc extension to RisohEditor
 english.AssociateResFiles=Associate file with *.res extension to RisohEditor
 english.LaunchProgram=Run %1
 english.CreateDesktopIcon=Create program shortcut on &desktop
+english.AdditionalTasks=Additional tasks:
 
 brazilianportuguese.ReadmeEnglish=ReadMe (inglês)
 brazilianportuguese.ReadmeJapanese=ReadMe (japonês)
@@ -135,10 +136,11 @@ hungarian.CreateDesktopIcon=Program parancsikon létrehozása az asztalon
 italian.ReadmeEnglish=File Leggimi (Inglese)
 italian.ReadmeJapanese=File Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
-italian.AssociateRcFiles=Associa file con estensione *.rc a RisohEditor
-italian.AssociateResFiles=Associa file con estensione *.res a RisohEditor
+italian.AssociateRcFiles=Associa file con estensione .rc a RisohEditor
+italian.AssociateResFiles=Associa file con estensione .res a RisohEditor
 italian.LaunchProgram=Esegui %1
 italian.CreateDesktopIcon=Crea collegamento programma sul &desktop
+italian.AdditionalTasks=Attività aggiuntive:
 
 korean.ReadmeEnglish=ReadMe (영어)
 korean.ReadmeJapanese=ReadMe (일본어)

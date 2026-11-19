@@ -59,7 +59,7 @@ SolidCompression=yes
 UsePreviousAppDir=yes
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalTasks}"
 Name: "rc_association"; Description: "{cm:AssociateRcFiles}"
 Name: "res_association"; Description: "{cm:AssociateResFiles}"
 
